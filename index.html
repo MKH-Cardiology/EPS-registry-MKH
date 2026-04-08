@@ -87,8 +87,9 @@
     .radio-item:hover { border-color:#93c5fd; background:#f0f7ff; }
     .radio-item input[type=radio] { width:15px; height:15px; accent-color:var(--blue-primary); flex-shrink:0; }
 
-    /* Tab active */
-    .tab-active { border-bottom:3px solid var(--blue-primary); color:#1e3a8a; font-weight:700; }
+    /* Premium header accent */
+    header { border-bottom: 2px solid transparent; background-image: linear-gradient(white,white), linear-gradient(90deg,#1d4ed8,#3b82f6,#1d4ed8); background-origin: border-box; background-clip: padding-box, border-box; }
+    .tab-active { border-bottom:3px solid var(--blue-primary); color:#1e3a8a; font-weight:700; padding-bottom:2px; }
 
     /* Sub-section revealed on Yes */
     .sub-reveal { display:none; margin-top:12px; padding:14px; border-left:3px solid var(--blue-primary); background:#f8faff; border-radius:0 10px 10px 0; }
@@ -128,6 +129,12 @@
     .g4 { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
     @media (max-width:768px) { .g2,.g3,.g4 { grid-template-columns:1fr; } }
     @media (max-width:1024px) { .g3 { grid-template-columns:1fr 1fr; } .g4 { grid-template-columns:1fr 1fr; } }
+    /* Inline identification grids responsive */
+    @media (max-width:640px) {
+        #idFields [style*="grid-template-columns:1fr 1fr 1fr"] { grid-template-columns:1fr !important; }
+        #idFields [style*="grid-template-columns:1fr 1fr 1fr 1fr"] { grid-template-columns:1fr 1fr !important; }
+        #idFields [style*="grid-template-columns:1fr 1fr"] { grid-template-columns:1fr !important; }
+    }
 
     /* Progress indicator */
     .progress-bar { height:4px; background:#e2e8f0; border-radius:2px; overflow:hidden; }
@@ -152,15 +159,33 @@
 
 <!-- HEADER -->
 
-<header class="bg-white border-b-2 border-blue-600 shadow-md sticky top-0 z-50">
-    <div class="max-w-screen-2xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
-        <div class="flex items-center gap-4">
-            <div class="w-12 h-12 bg-red-50 border border-red-200 rounded-xl flex items-center justify-center">
-                <i class="fas fa-heart-pulse text-red-600 text-xl"></i>
+<header class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
+    <div class="max-w-screen-2xl mx-auto px-4 py-2.5 flex flex-wrap justify-between items-center gap-4">
+        <div class="flex items-center gap-3">
+            <!-- Custom EP Registry Logo -->
+            <div style="width:52px;height:52px;flex-shrink:0;">
+                <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+                    <rect width="52" height="52" rx="14" fill="url(#logoGrad)"/>
+                    <!-- Outer ring pulse -->
+                    <circle cx="26" cy="22" r="12" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" fill="none"/>
+                    <!-- Heart shape -->
+                    <path d="M26 31 C26 31 17 24.5 17 19.5 C17 16.5 19.5 14 22.5 14 C24.2 14 25.7 14.9 26 15.5 C26.3 14.9 27.8 14 29.5 14 C32.5 14 35 16.5 35 19.5 C35 24.5 26 31 26 31Z" fill="white" opacity="0.95"/>
+                    <!-- ECG trace across heart -->
+                    <polyline points="18,20 21,20 22.5,17 24,23 25.5,18.5 27,20 30,20 31.5,20" stroke="#1d4ed8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    <!-- Bottom text badge -->
+                    <rect x="8" y="38" width="36" height="10" rx="5" fill="rgba(255,255,255,0.18)"/>
+                    <text x="26" y="45.5" text-anchor="middle" fill="white" font-size="5.5" font-weight="700" font-family="'DM Sans',sans-serif" letter-spacing="0.8">EPS REGISTRY</text>
+                    <defs>
+                        <linearGradient id="logoGrad" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#1d4ed8"/>
+                            <stop offset="100%" stop-color="#0f172a"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
             </div>
             <div>
-                <div class="font-bold text-gray-900 text-lg leading-tight">Mubarak Alkabeer Hospital</div>
-                <div class="text-xs font-semibold text-blue-600 tracking-wide">Advanced Electrophysiology Registry</div>
+                <div class="font-bold text-gray-900 text-base leading-tight tracking-tight">Mubarak Alkabeer Hospital</div>
+                <div class="text-xs font-semibold text-blue-600 tracking-widest uppercase">Advanced Electrophysiology Registry</div>
             </div>
         </div>
         <nav class="flex gap-6">
@@ -200,71 +225,66 @@
                 1. Identification
             </div>
 
-            <div class="card card-yellow mb-5 flex items-start gap-3">
-                <i class="fas fa-lock text-amber-600 mt-0.5"></i>
-                <div>
-                    <div class="font-bold text-amber-900 text-sm">Skip Identification</div>
-                    <div class="text-xs text-amber-800 mt-1">If identification info is not available, you may skip this section and proceed. Identification fields are NOT required to save.</div>
-                    <label class="flex items-center gap-2 mt-2 cursor-pointer">
-                        <input type="checkbox" id="skipIdentification" onchange="toggleSkipId()" class="w-4 h-4 accent-amber-600">
-                        <span class="text-sm font-bold text-amber-900">Skip Identification Section</span>
-                    </label>
-                </div>
-            </div>
-
             <div id="idFields">
-                <div class="g2 mb-4">
-                    <div class="md:col-span-2" style="grid-column:1/-1">
-                        <label class="lbl">1.1 Patient Name (Initials)</label>
-                        <div class="grid grid-cols-3 gap-2">
-                            <input type="text" name="nameFirst" placeholder="First" class="inp">
-                            <input type="text" name="nameMiddle" placeholder="Middle" class="inp">
-                            <input type="text" name="nameLast" placeholder="Last" class="inp">
-                        </div>
+                <!-- Row 1: Patient Name full width -->
+                <div class="mb-4">
+                    <label class="lbl">1.1 Patient Name (Initials) <span style="color:#dc2626">*</span></label>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+                        <input type="text" id="req_nameFirst" name="nameFirst" placeholder="First" class="inp">
+                        <input type="text" name="nameMiddle" placeholder="Middle" class="inp">
+                        <input type="text" id="req_nameLast" name="nameLast" placeholder="Last" class="inp">
                     </div>
                 </div>
-                <div class="g2 mb-4">
+
+                <!-- Row 2: Civil ID + CRF -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" class="mb-4">
                     <div>
-                        <label class="lbl">1.2 Civil ID</label>
-                        <input type="text" id="civilId" name="civilId" inputmode="numeric" maxlength="12" placeholder="12 digits" class="inp mono">
+                        <label class="lbl">1.2 Civil ID <span style="color:#dc2626">*</span></label>
+                        <input type="text" id="civilId" name="civilId" inputmode="numeric" maxlength="12" placeholder="12 digits" class="inp" style="font-family:'DM Mono',monospace;">
                     </div>
                     <div>
-                        <label class="lbl">1.3 CRF Number <span class="text-xs text-gray-400">(assigned by online system)</span></label>
-                        <input type="text" name="crfNo" class="inp mono">
+                        <label class="lbl">1.3 CRF Number <span style="color:#dc2626">*</span> <span class="text-xs text-gray-400">(assigned by online system)</span></label>
+                        <input type="text" id="req_crfNo" name="crfNo" class="inp" style="font-family:'DM Mono',monospace;">
                     </div>
                 </div>
-                <div class="g4 mb-4">
-                    <div>
+
+                <!-- Row 3: Gender + Nationality + YOB + Age — all equal height -->
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;" class="mb-4">
+                    <div style="display:flex;flex-direction:column;">
                         <label class="lbl">1.4 Gender</label>
-                        <select name="gender" class="inp">
+                        <select name="gender" class="inp" style="flex:1;">
                             <option value="">Select...</option>
                             <option>Male</option><option>Female</option>
                         </select>
                     </div>
-                    <div>
+                    <div style="display:flex;flex-direction:column;">
                         <label class="lbl">1.5 Nationality</label>
-                        <select name="nationality" id="nationalitySelect" class="inp"></select>
+                        <select name="nationality" id="nationalitySelect" class="inp" style="flex:1;"></select>
                     </div>
-                    <div>
+                    <div style="display:flex;flex-direction:column;">
                         <label class="lbl">1.6 Year of Birth</label>
-                        <input type="number" id="yob" name="yob" placeholder="YYYY" class="inp" min="1900" max="2025">
+                        <input type="number" id="yob" name="yob" placeholder="YYYY" class="inp" min="1900" max="2025" style="flex:1;">
                     </div>
-                    <div>
-                        <label class="lbl">1.6a Estimated Age <span class="text-xs text-gray-400">(if YOB unknown)</span></label>
-                        <input type="number" id="estAge" name="estimatedAge" placeholder="yrs" class="inp">
+                    <div style="display:flex;flex-direction:column;">
+                        <label class="lbl">1.6a Est. Age <span class="text-xs text-gray-400">(if YOB unknown)</span></label>
+                        <input type="number" id="estAge" name="estimatedAge" placeholder="yrs" class="inp" style="flex:1;">
                     </div>
                 </div>
-                <div class="g2 mb-4">
+
+                <!-- Row 4: Admission Date + File Number -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" class="mb-4">
                     <div>
                         <label class="lbl">1.7 Hospital Admission Date</label>
                         <input type="date" id="req_admDate" name="admissionDate" class="inp">
                     </div>
                     <div>
-                        <label class="lbl">File Number</label>
-                        <input type="text" id="req_fileNo" name="fileNumber" inputmode="numeric" maxlength="6" placeholder="6 digits" class="inp mono">
+                        <label class="lbl">File Number <span style="color:#dc2626">*</span></label>
+                        <input type="text" id="req_fileNo" name="fileNumber" inputmode="numeric" maxlength="6" placeholder="6 digits" class="inp" style="font-family:'DM Mono',monospace;">
                     </div>
                 </div>
-                <div class="g2">
+
+                <!-- Row 5: Contacts -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
                     <div>
                         <label class="lbl">1.8 Patient Contact Number</label>
                         <input type="tel" name="patientContact" class="inp">
@@ -1981,8 +2001,34 @@ window.changeStep = function(dir) {
 // ============================================================
 // NATIONALITY LIST
 // ============================================================
-const countries = ["Kuwait","Saudi Arabia","Bahrain","Qatar","UAE","Oman","Egypt","Jordan","Lebanon","Syria","Palestine","Iraq","Yemen","Libya","Morocco","Tunisia","Algeria","India","Philippines","Pakistan","Bangladesh","Sri Lanka","Nepal","Indonesia","UK","USA","Canada","France","Germany","Italy","Spain","Other"];
-document.getElementById('nationalitySelect').innerHTML = countries.map(c=>`<option>${c}</option>`).join('');
+const countries = [
+    "Afghan","Albanian","Algerian","American","Andorran","Angolan","Antiguan","Argentine","Armenian","Australian","Austrian","Azerbaijani",
+    "Bahamian","Bahraini","Bangladeshi","Barbadian","Belarusian","Belgian","Belizean","Beninese","Bhutanese","Bolivian","Bosnian","Botswanan","Brazilian","Bruneian","Bulgarian","Burkinabe","Burundian",
+    "Cabo Verdean","Cambodian","Cameroonian","Canadian","Central African","Chadian","Chilean","Chinese","Colombian","Comoran","Congolese","Costa Rican","Croatian","Cuban","Cypriot","Czech",
+    "Danish","Djiboutian","Dominican","Dutch",
+    "East Timorese","Ecuadorean","Egyptian","Emirati","Equatorial Guinean","Eritrean","Estonian","Ethiopian",
+    "Fijian","Filipino","Finnish","French",
+    "Gabonese","Gambian","Georgian","German","Ghanaian","Greek","Grenadian","Guatemalan","Guinean","Guyanese",
+    "Haitian","Honduran","Hungarian",
+    "Icelandic","Indian","Indonesian","Iranian","Iraqi","Irish","Israeli","Italian","Ivorian",
+    "Jamaican","Japanese","Jordanian",
+    "Kazakhstani","Kenyan","Korean","Kuwaiti","Kyrgyz",
+    "Laotian","Latvian","Lebanese","Lesotho","Liberian","Libyan","Liechtensteiner","Lithuanian","Luxembourgish",
+    "Macedonian","Malagasy","Malawian","Malaysian","Maldivian","Malian","Maltese","Mauritanian","Mauritian","Mexican","Micronesian","Moldovan","Monegasque","Mongolian","Montenegrin","Moroccan","Mozambican",
+    "Namibian","Nepalese","New Zealander","Nicaraguan","Nigerian","Norwegian",
+    "Omani",
+    "Pakistani","Palauan","Panamanian","Papua New Guinean","Paraguayan","Peruvian","Polish","Portuguese",
+    "Qatari",
+    "Romanian","Russian","Rwandan",
+    "Saint Lucian","Salvadoran","Samoan","Saudi Arabian","Senegalese","Serbian","Sierra Leonean","Singaporean","Slovak","Slovenian","Somali","South African","South Sudanese","Spanish","Sri Lankan","Sudanese","Surinamese","Swazi","Swedish","Swiss","Syrian",
+    "Taiwanese","Tajik","Tanzanian","Thai","Togolese","Trinidadian","Tunisian","Turkish","Turkmen",
+    "Ugandan","Ukrainian","Uruguayan","Uzbek",
+    "Venezuelan","Vietnamese",
+    "Yemeni",
+    "Zambian","Zimbabwean",
+    "Other"
+];
+document.getElementById('nationalitySelect').innerHTML = countries.map(c=>`<option value="${c}">${c}</option>`).join('');
 
 // ============================================================
 // SIMPLE RISK ITEMS (4.5–4.13)
@@ -2080,13 +2126,7 @@ window.setYN = function(btn, key, val) {
     }
 };
 
-// ============================================================
-// SKIP IDENTIFICATION
-// ============================================================
-window.toggleSkipId = function() {
-    const skip = document.getElementById('skipIdentification').checked;
-    document.getElementById('idFields').style.display = skip ? 'none' : 'block';
-};
+// (Skip identification removed — fields are now mandatory)
 
 // ============================================================
 // EP REASON → SHOW PROCEDURE SECTIONS
@@ -2196,6 +2236,41 @@ window.switchTab = function(tab) {
 // ============================================================
 document.getElementById('epsForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    // Mandatory field validation
+    const mandatory = [
+        { id: 'req_nameFirst', label: 'Patient First Name' },
+        { id: 'req_nameLast',  label: 'Patient Last Name' },
+        { id: 'civilId',       label: 'Civil ID' },
+        { id: 'req_crfNo',     label: 'CRF Number' },
+        { id: 'req_fileNo',    label: 'File Number' },
+    ];
+    for (const f of mandatory) {
+        const el = document.getElementById(f.id);
+        if (!el || !el.value.trim()) {
+            goToStep(0);
+            el?.focus();
+            el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.style.borderColor = '#dc2626';
+            el.style.boxShadow = '0 0 0 3px rgba(220,38,38,.15)';
+            setTimeout(() => { el.style.borderColor = ''; el.style.boxShadow = ''; }, 3000);
+            alert(`⚠ Required field missing: "${f.label}"\nPlease fill in all mandatory fields (*) before saving.`);
+            return;
+        }
+    }
+    if (!/^\d{12}$/.test(document.getElementById('civilId').value)) {
+        goToStep(0);
+        alert('Civil ID must be exactly 12 digits.');
+        document.getElementById('civilId').focus();
+        return;
+    }
+    if (!/^\d{6}$/.test(document.getElementById('req_fileNo').value)) {
+        goToStep(0);
+        alert('File Number must be exactly 6 digits.');
+        document.getElementById('req_fileNo').focus();
+        return;
+    }
+
     const fd = new FormData(e.target);
     const dataObj = Object.fromEntries(fd.entries());
     e.target.querySelectorAll('input[type="checkbox"]').forEach(cb => { dataObj[cb.name] = cb.checked; });
