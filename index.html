@@ -198,6 +198,24 @@
 
 <main class="max-w-screen-2xl mx-auto px-4 py-6">
 
+<!-- ===== LIVE SEARCH BAR (Main Screen) ===== -->
+
+<div id="mainSearchBar" class="mb-4">
+    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm px-5 py-4 flex items-center gap-3">
+        <i class="fas fa-search text-gray-400 shrink-0"></i>
+        <input type="text" id="qs_input" oninput="quickSearch()" placeholder="Search by Civil ID, File Number or CRF Number..." class="inp" style="border:none;box-shadow:none;padding:0;font-size:15px;" autocomplete="off">
+        <button onclick="clearQuickSearch()" class="btn btn-gray text-sm px-3 py-2 shrink-0"><i class="fas fa-times"></i></button>
+    </div>
+    <!-- Live results dropdown -->
+    <div id="qs_results" class="hidden mt-1 bg-white rounded-2xl border border-blue-200 shadow-xl overflow-hidden z-40 relative">
+        <div class="px-4 py-2 bg-blue-50 border-b border-blue-100 flex items-center justify-between">
+            <span class="text-xs font-bold text-blue-700 uppercase tracking-wide">Search Results</span>
+            <span id="qs_count" class="badge badge-blue text-xs">0 found</span>
+        </div>
+        <div id="qs_list" class="max-h-72 overflow-y-auto divide-y divide-gray-100"></div>
+    </div>
+</div>
+
 <!-- ===== REGISTRY FORM SECTION ===== -->
 
 <section id="section-form" class="bg-white rounded-2xl shadow-lg border border-gray-100 flex flex-col md:flex-row min-h-[80vh] overflow-hidden relative">
@@ -965,22 +983,22 @@
             <!-- 9.1–9.4 All patients -->
             <div class="card mb-4">
                 <div class="font-bold text-gray-800 text-sm mb-3">9.1–9.4 All Patients</div>
-                <div class="g4">
-                    <div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;align-items:start;">
+                    <div style="display:flex;flex-direction:column;">
                         <label class="lbl">9.1 Procedure Start Date</label>
-                        <input type="date" name="procStartDate" class="inp">
+                        <input type="date" name="procStartDate" class="inp" style="flex:1;height:40px;">
                     </div>
-                    <div>
+                    <div style="display:flex;flex-direction:column;">
                         <label class="lbl">9.2 Procedure Start Time (24h)</label>
-                        <input type="time" name="procStartTime" class="inp">
+                        <input type="time" name="procStartTime" class="inp" style="flex:1;height:40px;">
                     </div>
-                    <div>
+                    <div style="display:flex;flex-direction:column;">
                         <label class="lbl">9.3 Procedure Finish Time (24h)</label>
-                        <input type="time" name="procEndTime" class="inp">
+                        <input type="time" name="procEndTime" class="inp" style="flex:1;height:40px;">
                     </div>
-                    <div>
+                    <div style="display:flex;flex-direction:column;">
                         <label class="lbl">9.4 Operator Name</label>
-                        <select name="operatorName" class="inp">
+                        <select name="operatorName" class="inp" style="flex:1;height:40px;">
                             <option value="">Select operator...</option>
                             <option>Dr. Operator 1</option>
                             <option>Dr. Operator 2</option>
@@ -1923,13 +1941,73 @@
 <!-- ===== ANALYTICS ===== -->
 
 <section id="section-analytics" class="hidden bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-gray-100 min-h-[80vh]">
-    <h2 class="text-xl font-bold text-gray-800 mb-6 border-b pb-3 flex items-center gap-2"><i class="fas fa-chart-line text-blue-600"></i> Clinical Analytics</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="card card-gray flex flex-col items-center"><h3 class="font-bold text-gray-700 mb-3 text-sm">Gender Demographics</h3><div class="w-full max-w-[280px] aspect-square"><canvas id="genderChart"></canvas></div></div>
-        <div class="card card-gray flex flex-col items-center"><h3 class="font-bold text-gray-700 mb-3 text-sm">Reasons for EP Lab</h3><div class="w-full max-w-[280px] aspect-square"><canvas id="procChart"></canvas></div></div>
-        <div class="card card-gray flex flex-col items-center"><h3 class="font-bold text-gray-700 mb-3 text-sm">AFib Presence</h3><div class="w-full max-w-[280px] aspect-square"><canvas id="afibChart"></canvas></div></div>
-        <div class="card card-gray flex flex-col items-center"><h3 class="font-bold text-gray-700 mb-3 text-sm">Discharge Status</h3><div class="w-full max-w-[280px] aspect-square"><canvas id="dischargeChart"></canvas></div></div>
+    <div class="flex items-center justify-between mb-6 border-b pb-3">
+        <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2"><i class="fas fa-chart-line text-blue-600"></i> Clinical Analytics Dashboard</h2>
+        <button onclick="fetchAnalytics()" class="btn btn-primary text-sm"><i class="fas fa-sync-alt"></i> Refresh</button>
     </div>
+
+```
+<!-- KPI Summary Cards -->
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;" class="mb-6" id="kpiRow">
+    <div class="card" style="border-left:4px solid #1d4ed8;padding:16px;">
+        <div class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Total Patients</div>
+        <div class="text-3xl font-black text-blue-700" id="kpi_total">—</div>
+    </div>
+    <div class="card" style="border-left:4px solid #16a34a;padding:16px;">
+        <div class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Procedure Success</div>
+        <div class="text-3xl font-black text-green-600" id="kpi_success">—</div>
+    </div>
+    <div class="card" style="border-left:4px solid #dc2626;padding:16px;">
+        <div class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Complications</div>
+        <div class="text-3xl font-black text-red-600" id="kpi_complications">—</div>
+    </div>
+    <div class="card" style="border-left:4px solid #d97706;padding:16px;">
+        <div class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">AFib Prevalence</div>
+        <div class="text-3xl font-black text-amber-600" id="kpi_afib">—</div>
+    </div>
+</div>
+
+<!-- Row 1: Demographics -->
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;" class="mb-5">
+    <div class="card card-gray flex flex-col">
+        <div class="font-bold text-gray-700 text-sm mb-3 flex items-center gap-2"><i class="fas fa-venus-mars text-blue-500"></i> Gender Distribution</div>
+        <div style="height:200px;position:relative;"><canvas id="genderChart"></canvas></div>
+    </div>
+    <div class="card card-gray flex flex-col">
+        <div class="font-bold text-gray-700 text-sm mb-3 flex items-center gap-2"><i class="fas fa-procedures text-indigo-500"></i> EP Lab Reasons</div>
+        <div style="height:200px;position:relative;"><canvas id="procChart"></canvas></div>
+    </div>
+    <div class="card card-gray flex flex-col">
+        <div class="font-bold text-gray-700 text-sm mb-3 flex items-center gap-2"><i class="fas fa-door-open text-orange-500"></i> Discharge Outcomes</div>
+        <div style="height:200px;position:relative;"><canvas id="dischargeChart"></canvas></div>
+    </div>
+</div>
+
+<!-- Row 2: Clinical -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;" class="mb-5">
+    <div class="card card-gray flex flex-col">
+        <div class="font-bold text-gray-700 text-sm mb-3 flex items-center gap-2"><i class="fas fa-heartbeat text-red-500"></i> Comorbidities Prevalence</div>
+        <div style="height:220px;position:relative;"><canvas id="comorbChart"></canvas></div>
+    </div>
+    <div class="card card-gray flex flex-col">
+        <div class="font-bold text-gray-700 text-sm mb-3 flex items-center gap-2"><i class="fas fa-exclamation-triangle text-amber-500"></i> Complication Types</div>
+        <div style="height:220px;position:relative;"><canvas id="compChart"></canvas></div>
+    </div>
+</div>
+
+<!-- Row 3: Device + Medications -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div class="card card-gray flex flex-col">
+        <div class="font-bold text-gray-700 text-sm mb-3 flex items-center gap-2"><i class="fas fa-microchip text-purple-500"></i> Prior CIED Types</div>
+        <div style="height:200px;position:relative;"><canvas id="ciedChart"></canvas></div>
+    </div>
+    <div class="card card-gray flex flex-col">
+        <div class="font-bold text-gray-700 text-sm mb-3 flex items-center gap-2"><i class="fas fa-pills text-green-500"></i> Top Home Medications</div>
+        <div style="height:200px;position:relative;"><canvas id="medsChart"></canvas></div>
+    </div>
+</div>
+```
+
 </section>
 
 </main>
@@ -2294,6 +2372,7 @@ document.getElementById('epsForm').addEventListener('submit', async (e) => {
         document.querySelectorAll('input[type="hidden"][id^="val_"]').forEach(h=>h.value='No');
         document.querySelectorAll('.proc-section').forEach(s=>s.classList.remove('show'));
         goToStep(0);
+        loadRecordsCache(); // refresh quick search cache
     } catch(err) { console.error(err); alert("Error saving."); }
 });
 
@@ -2328,6 +2407,8 @@ window.fetchData = async function() {
         tbody.appendChild(tr);
     });
     if(!allData.length) tbody.innerHTML='<tr><td colspan="5" class="text-center py-8 text-gray-400">No records found</td></tr>';
+    // Refresh quick search cache
+    _allRecordsCache = allData.slice();
 };
 window.deleteRecord = async function(id) {
     if(confirm("Permanently delete this record?")) { await deleteDoc(doc(window._db,"patients_full",id)); fetchData(); }
@@ -2374,27 +2455,207 @@ window.exportToPDF = function() {
 };
 
 // ============================================================
-// ANALYTICS
+// QUICK SEARCH (main screen live search)
+// ============================================================
+let _allRecordsCache = [];
+
+async function loadRecordsCache() {
+    const snapshot = await getDocs(collection(window._db,"patients_full"));
+    _allRecordsCache = [];
+    snapshot.forEach(docSnap => {
+        const d = docSnap.data(); d.id = docSnap.id;
+        d.fullName = `${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();
+        _allRecordsCache.push(d);
+    });
+}
+loadRecordsCache();
+
+window.quickSearch = function() {
+    const q = document.getElementById('qs_input').value.trim();
+    if(!q) { document.getElementById('qs_results').classList.add('hidden'); return; }
+
+    const results = _allRecordsCache.filter(d =>
+        (d.civilId||'').includes(q) ||
+        (d.fileNumber||'').includes(q) ||
+        (d.crfNo||'').includes(q)
+    );
+
+    const container = document.getElementById('qs_results');
+    const list = document.getElementById('qs_list');
+    document.getElementById('qs_count').textContent = `${results.length} found`;
+
+    if(!results.length) {
+        list.innerHTML = '<div class="px-4 py-6 text-center text-gray-400 text-sm">No matching records found</div>';
+    } else {
+        list.innerHTML = results.slice(0,8).map(d => `
+            <div class="px-4 py-3 hover:bg-blue-50 cursor-pointer transition flex items-center justify-between gap-3"
+                 onclick='editFromSearch(${JSON.stringify(d).replace(/'/g,"\\'")})'>
+                <div>
+                    <div class="font-bold text-gray-800 text-sm">${d.fullName || 'Anonymous'}</div>
+                    <div class="text-xs text-gray-500 mt-0.5">
+                        <span class="mr-3">CID: <span class="font-mono font-semibold">${d.civilId||'—'}</span></span>
+                        <span class="mr-3">File: <span class="font-mono font-semibold">${d.fileNumber||'—'}</span></span>
+                        <span>CRF: <span class="font-mono font-semibold">${d.crfNo||'—'}</span></span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                    <span class="badge badge-blue text-xs">${d.epReason||'—'}</span>
+                    <button class="btn btn-yellow text-xs px-2 py-1" title="Edit"><i class="fas fa-edit"></i></button>
+                </div>
+            </div>
+        `).join('');
+    }
+    container.classList.remove('hidden');
+};
+
+window.clearQuickSearch = function() {
+    document.getElementById('qs_input').value = '';
+    document.getElementById('qs_results').classList.add('hidden');
+};
+
+window.editFromSearch = function(data) {
+    clearQuickSearch();
+    editRecord(data);
+};
+
+// Close quick search on outside click
+document.addEventListener('click', e => {
+    if(!document.getElementById('mainSearchBar').contains(e.target)) {
+        document.getElementById('qs_results').classList.add('hidden');
+    }
+});
+
+// ============================================================
+// ANALYTICS — Full rich dashboard from registry data
 // ============================================================
 let charts={};
-window.fetchAnalytics = async function() {
-    const snapshot=await getDocs(collection(window._db,"patients_full"));
-    let m=0,f=0; let procCounts={}; let afib={Yes:0,No:0}; let disch={};
-    snapshot.forEach(doc=>{
-        const d=doc.data();
-        d.gender==='Male'?m++:f++;
-        if(d.epReason) procCounts[d.epReason]=(procCounts[d.epReason]||0)+1;
-        if(d.hx_afib) afib[d.hx_afib]=(afib[d.hx_afib]||0)+1;
-        if(d.dischargeStatus) disch[d.dischargeStatus]=(disch[d.dischargeStatus]||0)+1;
+function mkChart(id, type, labels, data, colors, opts={}) {
+    if(charts[id]) charts[id].destroy();
+    const canvas = document.getElementById(id);
+    if(!canvas) return;
+    charts[id] = new Chart(canvas, {
+        type,
+        data: { labels, datasets: [{ data, backgroundColor: colors, borderColor: colors.map(c=>c+'cc'), borderWidth: type==='bar'?0:2 }] },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { position: type==='bar'?'top':'right', labels: { font:{size:11}, boxWidth:12, padding:8 } },
+                ...opts
+            },
+            scales: type==='bar' ? { y:{ beginAtZero:true, ticks:{stepSize:1, font:{size:11}}, grid:{color:'#f1f5f9'} }, x:{ticks:{font:{size:10}}} } : {},
+        }
     });
-    const mkChart=(id,type,labels,data,colors)=>{
-        if(charts[id]) charts[id].destroy();
-        charts[id]=new Chart(document.getElementById(id),{type,data:{labels,datasets:[{data,backgroundColor:colors}]},options:{responsive:true,maintainAspectRatio:false}});
-    };
+}
+
+window.fetchAnalytics = async function() {
+    const snapshot = await getDocs(collection(window._db,"patients_full"));
+    const rows = [];
+    snapshot.forEach(docSnap => rows.push(docSnap.data()));
+
+    const total = rows.length;
+    if(!total) { alert('No data yet in registry.'); return; }
+
+    // KPIs
+    const successCount = rows.filter(r=>r.procSuccess==='Yes').length;
+    const afibCount = rows.filter(r=>r.hx_afib==='Yes').length;
+    const compCount = rows.filter(r=>
+        r.cx_stroke==='Yes'||r.cx_bleeding==='Yes'||r.cx_tamponade2==='Yes'||
+        r.cx_pneumothorax==='Yes'||r.cx_cardShock==='Yes'||r.cx_renal==='Yes'
+    ).length;
+
+    document.getElementById('kpi_total').textContent = total;
+    document.getElementById('kpi_success').textContent = total ? `${Math.round(successCount/total*100)}%` : '—';
+    document.getElementById('kpi_complications').textContent = total ? `${Math.round(compCount/total*100)}%` : '—';
+    document.getElementById('kpi_afib').textContent = total ? `${Math.round(afibCount/total*100)}%` : '—';
+
+    // Gender
+    const m = rows.filter(r=>r.gender==='Male').length;
+    const f = rows.filter(r=>r.gender==='Female').length;
     mkChart('genderChart','doughnut',['Male','Female'],[m,f],['#3b82f6','#ec4899']);
-    mkChart('procChart','pie',Object.keys(procCounts),Object.values(procCounts),['#10b981','#f59e0b','#6366f1','#ef4444','#8b5cf6']);
-    mkChart('afibChart','doughnut',Object.keys(afib),Object.values(afib),['#f97316','#e2e8f0']);
-    mkChart('dischargeChart','bar',Object.keys(disch),Object.values(disch),['#3b82f6']);
+
+    // EP Reason
+    const procCounts = {};
+    rows.forEach(r=>{ if(r.epReason) procCounts[r.epReason]=(procCounts[r.epReason]||0)+1; });
+    mkChart('procChart','pie',Object.keys(procCounts),Object.values(procCounts),
+        ['#10b981','#6366f1','#f59e0b','#ef4444','#8b5cf6']);
+
+    // Discharge
+    const disch = {};
+    rows.forEach(r=>{ if(r.dischargeStatus) disch[r.dischargeStatus]=(disch[r.dischargeStatus]||0)+1; });
+    mkChart('dischargeChart','doughnut',Object.keys(disch),Object.values(disch),
+        ['#22c55e','#3b82f6','#f97316','#ef4444','#94a3b8']);
+
+    // Comorbidities
+    const comorb = [
+        { label:'AFib', val: rows.filter(r=>r.hx_afib==='Yes').length },
+        { label:'HTN',  val: rows.filter(r=>r.hx_htn==='Yes').length },
+        { label:'DM',   val: rows.filter(r=>r.hx_dm==='Yes').length },
+        { label:'CAD',  val: rows.filter(r=>r.hx_cad==='Yes').length },
+        { label:'HF',   val: rows.filter(r=>r.hx_hf==='Yes').length },
+        { label:'Prior MI', val: rows.filter(r=>r.hx_mi==='Yes').length },
+        { label:'CVD',  val: rows.filter(r=>r.hx_cvd==='Yes').length },
+        { label:'Dialysis', val: rows.filter(r=>r.hx_dialysis==='Yes').length },
+        { label:'Lung Dis.', val: rows.filter(r=>r.hx_lung==='Yes').length },
+    ].sort((a,b)=>b.val-a.val);
+    mkChart('comorbChart','bar',
+        comorb.map(c=>c.label), comorb.map(c=>c.val),
+        comorb.map((_,i)=>`hsl(${210+i*18},75%,55%)`));
+
+    // Complications
+    const comps = [
+        { label:'Stroke',       val: rows.filter(r=>r.cx_stroke==='Yes').length },
+        { label:'Bleeding',     val: rows.filter(r=>r.cx_bleeding==='Yes').length },
+        { label:'Tamponade',    val: rows.filter(r=>r.cx_tamponade2==='Yes').length },
+        { label:'Pneumothorax', val: rows.filter(r=>r.cx_pneumothorax==='Yes').length },
+        { label:'Renal impair.', val: rows.filter(r=>r.cx_renal==='Yes').length },
+        { label:'Card. Shock',  val: rows.filter(r=>r.cx_cardShock==='Yes').length },
+        { label:'Vascular',     val: rows.filter(r=>r.cx_vascular==='Yes').length },
+        { label:'Peri. effus.', val: rows.filter(r=>r.cx_periEff==='Yes').length },
+    ].filter(c=>c.val>0).sort((a,b)=>b.val-a.val);
+    mkChart('compChart','bar',
+        comps.length ? comps.map(c=>c.label) : ['No complications recorded'],
+        comps.length ? comps.map(c=>c.val) : [0],
+        comps.map((_,i)=>`hsl(${0+i*22},75%,55%)`));
+
+    // Prior CIED
+    const ciedMap = {
+        'Single PPM': rows.filter(r=>r.cied_single===true||r.cied_single==='true').length,
+        'Dual PPM':   rows.filter(r=>r.cied_dual===true||r.cied_dual==='true').length,
+        'CRT-D':      rows.filter(r=>r.cied_crtd===true||r.cied_crtd==='true').length,
+        'ICD Single': rows.filter(r=>r.cied_icdSingle===true||r.cied_icdSingle==='true').length,
+        'ICD Dual':   rows.filter(r=>r.cied_icdDual===true||r.cied_icdDual==='true').length,
+        'S-ICD':      rows.filter(r=>r.cied_sicd===true||r.cied_sicd==='true').length,
+        'CRT-P':      rows.filter(r=>r.cied_crtp===true||r.cied_crtp==='true').length,
+    };
+    const ciedFiltered = Object.entries(ciedMap).filter(([,v])=>v>0);
+    mkChart('ciedChart','doughnut',
+        ciedFiltered.length ? ciedFiltered.map(e=>e[0]) : ['No prior CIED data'],
+        ciedFiltered.length ? ciedFiltered.map(e=>e[1]) : [1],
+        ['#6366f1','#3b82f6','#ec4899','#f59e0b','#10b981','#ef4444','#8b5cf6']);
+
+    // Top Medications
+    const medFields = [
+        {label:'Amiodarone',   field:'homeMed_amiodarone'},
+        {label:'Beta Blocker', field:'homeMed_betablocker'},
+        {label:'Aspirin',      field:'homeMed_aspirin'},
+        {label:'Warfarin',     field:'homeMed_warfarin'},
+        {label:'Apixaban',     field:'homeMed_apixaban'},
+        {label:'Clopidogrel',  field:'homeMed_clopidogrel'},
+        {label:'ACE-I',        field:'homeMed_acei'},
+        {label:'Sotalol',      field:'homeMed_sotalol'},
+        {label:'Digoxin',      field:'homeMed_digoxin'},
+        {label:'Furosemide',   field:'homeMed_loopdiuretic'},
+    ];
+    const medsData = medFields.map(m=>({
+        label: m.label,
+        val: rows.filter(r=>r[m.field]===true||r[m.field]==='true').length
+    })).sort((a,b)=>b.val-a.val);
+    mkChart('medsChart','bar',
+        medsData.map(m=>m.label), medsData.map(m=>m.val),
+        medsData.map((_,i)=>`hsl(${140+i*15},65%,48%)`));
+
+    // Refresh cache too
+    await loadRecordsCache();
 };
 </script>
 
