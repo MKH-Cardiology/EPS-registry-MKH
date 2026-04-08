@@ -79,147 +79,185 @@
                     <input type="hidden" id="editRecordId" name="recordId" value="">
 
                     <div class="form-step active flex-1" id="step-0">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2"><i class="fas fa-id-card text-blue-500 mr-2"></i> 1, 2 & 3. Identification & Admission</h2>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2"><i class="fas fa-id-card text-blue-500 mr-2"></i> Identification</h2>
                         <div class="bg-red-50 border border-red-200 text-red-800 p-3 rounded-lg text-sm mb-6 font-semibold">
-                            <i class="fas fa-lock mr-1"></i> These are the ONLY restricted fields. You cannot save the record without them.
+                            <i class="fas fa-lock mr-1"></i> These are the ONLY restricted fields required to save.
                         </div>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div><label class="block text-sm font-semibold text-gray-700">1.1 Patient Name <span class="text-red-500">*</span></label><input type="text" id="req_name" name="patientName" class="input-premium"></div>
                             
-                            <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4 shadow-sm">
-                                <div><label class="block text-sm font-semibold text-gray-700">1.2 Kuwaiti Civil ID <span class="text-red-500">*</span></label><input type="text" id="req_civilId" name="civilId" inputmode="numeric" pattern="\d{12}" maxlength="12" placeholder="12 Digits" class="input-premium font-mono bg-white border-blue-200"></div>
-                                <div><label class="block text-sm font-semibold text-gray-700">Age</label><input type="number" name="age" id="age" readonly class="input-premium bg-gray-100 font-bold text-blue-700"></div>
-                                <div><label class="block text-sm font-semibold text-gray-700">1.6 Year of Birth</label><input type="number" name="yob" id="yob" readonly class="input-premium bg-gray-100"></div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">Patient Name (Initials) <span class="text-red-500">*</span></label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <input type="text" id="req_nameFirst" name="nameFirst" placeholder="(First)" class="input-premium">
+                                    <input type="text" id="req_nameMiddle" name="nameMiddle" placeholder="(Middle)" class="input-premium">
+                                    <input type="text" id="req_nameLast" name="nameLast" placeholder="(Last)" class="input-premium">
+                                </div>
                             </div>
+                            
+                            <div><label class="block text-sm font-semibold text-gray-700">Civil ID <span class="text-red-500">*</span></label><input type="text" id="req_civilId" name="civilId" inputmode="numeric" pattern="\d{12}" maxlength="12" placeholder="12 Digits" class="input-premium font-mono bg-white border-blue-200"></div>
+                            <div><label class="block text-sm font-semibold text-gray-700">Nationality</label><select id="nationality" name="nationality" class="input-premium"></select></div>
 
-                            <div><label class="block text-sm font-semibold text-gray-700">File Number <span class="text-red-500">*</span></label><input type="text" id="req_fileNo" name="fileNumber" inputmode="numeric" pattern="\d{6}" maxlength="6" placeholder="6 Digits" class="input-premium font-mono"></div>
-                            <div><label class="block text-sm font-semibold text-gray-700">1.3 CRF Number <span class="text-red-500">*</span></label><input type="text" id="req_crfNo" name="crfNo" class="input-premium font-mono"></div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label class="block text-sm font-semibold text-gray-700">Year of Birth</label><input type="number" name="yob" id="yob" class="input-premium bg-gray-100"></div>
+                                <div><label class="block text-sm font-semibold text-gray-700">Estimated Age</label><input type="number" name="estimatedAge" id="estimatedAge" placeholder="If YOB unknown" class="input-premium bg-gray-100 font-bold text-blue-700"></div>
+                            </div>
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700">1.4 Gender <span class="text-red-500">*</span></label>
+                                <label class="block text-sm font-semibold text-gray-700">Gender <span class="text-red-500">*</span></label>
                                 <select id="req_gender" name="gender" class="input-premium"><option value="">Select...</option><option value="Male">Male</option><option value="Female">Female</option></select>
                             </div>
-                            <div><label class="block text-sm font-semibold text-gray-700">1.7 Admission Date <span class="text-red-500">*</span></label><input type="date" id="req_admDate" name="admissionDate" class="input-premium"></div>
-                            
-                            <div class="md:col-span-2 p-4 border rounded-xl bg-gray-50">
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">2. Reason for EP Lab</label>
-                                <select name="epReason" class="input-premium mb-4">
-                                    <option value="">Select...</option>
-                                    <option value="CRT/AICD">CRT/AICD with or without pacing</option>
-                                    <option value="Pacemaker - Temporary">Pacemaker - Temporary</option>
-                                    <option value="Pacemaker - Permanent">Pacemaker - Permanent</option>
-                                    <option value="Pacemaker - Temp followed by Perm">Pacemaker - Temp followed by Perm</option>
-                                    <option value="EPS/Ablation">EPS/Ablation</option>
-                                    <option value="LAAO">Left Atrial Appendage Occlusion (LAAO)</option>
-                                </select>
-                                
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">3.1 Patient Origin</label>
-                                <select name="patientOrigin" class="input-premium">
-                                    <option value="">Select...</option>
-                                    <option value="Home">Home</option>
-                                    <option value="Transferred from other hospital">Transferred from other hospital</option>
-                                    <option value="Same hospital Inpatient">Same hospital Inpatient (another dept)</option>
-                                    <option value="Clinic">Clinic (primary/private/outpatient)</option>
-                                </select>
-                            </div>
+
+                            <div><label class="block text-sm font-semibold text-gray-700">Patient Contact Number</label><input type="tel" name="patientContact" class="input-premium"></div>
+                            <div><label class="block text-sm font-semibold text-gray-700">Relative Contact Number</label><input type="tel" name="relativeContact" class="input-premium"></div>
+
+                            <div><label class="block text-sm font-semibold text-gray-700">File Number <span class="text-red-500">*</span></label><input type="text" id="req_fileNo" name="fileNumber" inputmode="numeric" pattern="\d{6}" maxlength="6" placeholder="6 Digits" class="input-premium font-mono"></div>
+                            <div><label class="block text-sm font-semibold text-gray-700">CRF Number <span class="text-red-500">*</span></label><input type="text" id="req_crfNo" name="crfNo" class="input-premium font-mono"></div>
                         </div>
                     </div>
 
                     <div class="form-step flex-1" id="step-1">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2"><i class="fas fa-heartbeat text-red-500 mr-2"></i> 4 & 5. History & Examination</h2>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2"><i class="fas fa-hospital-user text-indigo-500 mr-2"></i> Reason for EP Lab & Admission</h2>
+                        
+                        <div class="p-5 border border-indigo-200 rounded-xl bg-indigo-50/30 mb-6">
+                            <label class="block text-lg font-bold text-indigo-900 mb-3">Patient is coming to EP Lab because of (choose one only):</label>
+                            <div class="space-y-3">
+                                <label class="flex items-center gap-3"><input type="radio" name="epReason" value="CRT/AICD" onchange="togglePacemaker()" class="w-5 h-5 text-indigo-600"> <span class="font-medium">CRT/AICD with or without pacing</span></label>
+                                <label class="flex items-center gap-3"><input type="radio" name="epReason" value="Pacemaker" onchange="togglePacemaker()" class="w-5 h-5 text-indigo-600"> <span class="font-medium">Pacemaker</span></label>
+                                
+                                <div id="pacemakerTypeDiv" class="hidden ml-8 p-3 bg-white border border-indigo-200 rounded-lg shadow-inner">
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Pacemaker type:</label>
+                                    <select name="pacemakerType" class="input-premium">
+                                        <option value="">Select...</option>
+                                        <option value="Temporary pacemaker">Temporary pacemaker</option>
+                                        <option value="Permanent pacemaker">Permanent pacemaker</option>
+                                        <option value="Temporary followed by permanent pacemaker same hospitalization">Temporary followed by permanent pacemaker same hospitalization</option>
+                                    </select>
+                                </div>
+
+                                <label class="flex items-center gap-3"><input type="radio" name="epReason" value="EPS/Ablation" onchange="togglePacemaker()" class="w-5 h-5 text-indigo-600"> <span class="font-medium">EPS/Ablation</span></label>
+                                <label class="flex items-center gap-3"><input type="radio" name="epReason" value="LAAO" onchange="togglePacemaker()" class="w-5 h-5 text-indigo-600"> <span class="font-medium">Left Atrial Appendage Occlusion (LAAO - WATCHMAN)</span></label>
+                            </div>
+                        </div>
+
+                        <div class="p-5 border rounded-xl bg-gray-50">
+                            <h3 class="font-bold text-gray-800 border-b pb-2 mb-4">Hospital Admission</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div><label class="block text-sm font-semibold text-gray-700">Admission Date <span class="text-red-500">*</span></label><input type="date" id="req_admDate" name="admissionDate" class="input-premium"></div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700">Patient Origin</label>
+                                    <select name="patientOrigin" class="input-premium">
+                                        <option value="">Select...</option>
+                                        <option value="Home">Home</option>
+                                        <option value="Transferred from other hospital">Transferred from other hospital</option>
+                                        <option value="Same hospital Inpatient">Same hospital Inpatient (another dept)</option>
+                                        <option value="Clinic">Clinic (primary/private/outpatient)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-step flex-1" id="step-2">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2"><i class="fas fa-heartbeat text-red-500 mr-2"></i> History and Risk Factors</h2>
+                        
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 bg-gray-50 p-4 rounded-xl border">
                             <div><label class="block text-xs font-bold text-gray-500">Systolic BP</label><input type="number" name="sysBp" class="input-premium mt-1"></div>
                             <div><label class="block text-xs font-bold text-gray-500">Diastolic BP</label><input type="number" name="diaBp" class="input-premium mt-1"></div>
                             <div><label class="block text-xs font-bold text-gray-500">Heart Rate (bpm)</label><input type="number" name="hr" class="input-premium mt-1"></div>
                             <div><label class="block text-xs font-bold text-gray-500">Weight (kg)</label><input type="number" name="weight" class="input-premium mt-1"></div>
                         </div>
-                        <p class="text-sm font-bold text-gray-700 mb-3 border-b pb-1">Check all applicable medical history:</p>
+
+                        <div class="p-5 border border-red-200 rounded-xl bg-red-50/30 mb-6">
+                            <label class="block font-bold text-lg text-red-900 mb-2">Atrial Fibrillation:</label>
+                            <select name="hx_afib" id="hx_afib" onchange="toggleAfibDetails()" class="input-premium max-w-xs border-red-300">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                            </select>
+
+                            <div id="afibDetails" class="hidden mt-4 p-4 bg-white border border-red-200 rounded-lg shadow-sm grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-semibold">AFib Classification:</label>
+                                    <select name="afibClassification" class="input-premium mt-1">
+                                        <option value="">Select...</option>
+                                        <option value="Paroxysmal">Paroxysmal (terminating spontaneously w/in 7 days)</option>
+                                        <option value="Persistent">Persistent (>7 days)</option>
+                                        <option value="Long standing persistent">Long standing persistent (>1 year)</option>
+                                        <option value="Permanent">Permanent</option>
+                                    </select>
+                                </div>
+                                <div><label class="block text-sm font-semibold">Plans for Cardioversion:</label><select name="afibCardioversion" class="input-premium"><option value="No">No</option><option value="Yes">Yes</option></select></div>
+                                <div><label class="block text-sm font-semibold">Prior attempt of ablation:</label><select name="afibPriorAblation" class="input-premium"><option value="No">No</option><option value="Yes">Yes</option></select></div>
+                                <div><label class="block text-sm font-semibold">CHA2DS2-VASc score:</label><select name="afibChads" class="input-premium"><option value="">Select</option><option>0</option><option>1</option><option>2</option><option>3</option><option>>3</option></select></div>
+                                <div><label class="block text-sm font-semibold">HAS-BLED score:</label><select name="afibHasBled" class="input-premium"><option value="">Select</option><option>0</option><option>1</option><option>2</option><option>3</option><option>>3</option></select></div>
+                                <div><label class="block text-sm font-semibold">Contraindication to long-term OAC:</label><select name="afibContraOAC" class="input-premium"><option value="No">No</option><option value="Yes">Yes</option></select></div>
+                                <div><label class="block text-sm font-semibold">Prior major bleeding:</label><select name="afibMajorBleed" class="input-premium"><option value="No">No</option><option value="Yes">Yes</option></select></div>
+                            </div>
+                        </div>
+
+                        <p class="text-sm font-bold text-gray-700 mb-3 border-b pb-1">Other Medical History:</p>
                         <div id="historyGrid" class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6 bg-white p-4 rounded border"></div>
 
                         <div class="p-5 border border-blue-200 rounded-xl bg-blue-50/50">
-                            <label class="block font-bold text-blue-900 mb-2">4.25 Prior CV Implantable Electronic Device (CIED)</label>
+                            <label class="block font-bold text-blue-900 mb-2">Prior CV Implantable Electronic Device (CIED)</label>
                             <select name="ciedType" class="input-premium max-w-md bg-white border-blue-300">
                                 <option value="None">No Prior CIED</option><option value="Single chamber PPM">Single chamber transvenous PPM</option><option value="Dual chamber PPM">Dual chamber transvenous PPM</option><option value="CRT-P">CRT-P</option><option value="Leadless PPM">Leadless PPM</option><option value="ICD single/dual">ICD (Single/Dual)</option><option value="CRT-D">CRT-D</option><option value="S-ICD">S-ICD (Sub Q)</option>
                             </select>
                         </div>
                     </div>
 
-                    <div class="form-step flex-1" id="step-2">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2"><i class="fas fa-pills text-blue-500 mr-2"></i> 6. Home Medications (At Admission)</h2>
+                    <div class="form-step flex-1" id="step-3">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2"><i class="fas fa-pills text-blue-500 mr-2"></i> Home Medications (At Admission)</h2>
                         <div class="bg-gray-50 p-4 rounded-xl border">
                             <div id="homeMedsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div>
                         </div>
                     </div>
 
-                    <div class="form-step flex-1" id="step-3">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2"><i class="fas fa-file-medical-alt text-purple-500 mr-2"></i> 7 & 8. Investigations & Labs</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="form-step flex-1" id="step-4">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2"><i class="fas fa-microscope text-purple-500 mr-2"></i> Investigations & Procedure</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             <div class="p-5 border rounded-xl bg-gray-50 shadow-sm">
-                                <h3 class="font-bold text-gray-800 border-b pb-2 mb-4">7.1 ECG & Echocardiogram</h3>
+                                <h3 class="font-bold text-gray-800 border-b pb-2 mb-4">ECG & Echocardiogram</h3>
                                 <div class="space-y-4">
                                     <div><label class="block text-sm font-semibold">Primary Rhythm</label><select name="ecgRhythm" class="input-premium"><option value="">Select...</option><option>Sinus</option><option>Atrial Fibrillation</option><option>Atrial Flutter</option><option>Heart Block</option><option>Paced Rhythm</option></select></div>
                                     <div><label class="block text-sm font-semibold">LVEF (%)</label><input type="number" name="lvef" class="input-premium"></div>
-                                    <div><label class="block text-sm font-semibold">Valvular Disease</label><select name="valveDisease" class="input-premium"><option value="None">None/Mild</option><option value="Moderate">Moderate</option><option value="Severe">Severe</option></select></div>
                                 </div>
                             </div>
                             <div class="p-5 border rounded-xl bg-gray-50 shadow-sm">
-                                <h3 class="font-bold text-gray-800 border-b pb-2 mb-4">8. Laboratory Values</h3>
+                                <h3 class="font-bold text-gray-800 border-b pb-2 mb-4">Laboratory Values</h3>
                                 <div class="grid grid-cols-1 gap-4">
                                     <div><label class="text-sm font-semibold">Creatinine (Initial)</label><input type="number" step="0.1" name="creatInit" class="input-premium"></div>
                                     <div><label class="text-sm font-semibold">Hemoglobin</label><input type="number" step="0.1" name="hgb" class="input-premium"></div>
-                                    <div><label class="text-sm font-semibold">INR</label><input type="number" step="0.1" name="inr" class="input-premium"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-step flex-1" id="step-4">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2"><i class="fas fa-procedures text-teal-500 mr-2"></i> 9 & 10. Procedure</h2>
-                        
-                        <div class="bg-white p-5 border border-teal-200 rounded-xl shadow-sm mb-6 bg-teal-50/20">
-                            <h3 class="font-bold text-teal-900 border-b pb-2 mb-4">9. EPS / Ablation Specifics</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-semibold">9.1 Ablation Target</label>
-                                    <select name="ablationTarget" class="input-premium"><option value="">Select...</option><option>AVNRT</option><option>AVRT/WPW</option><option>Atrial tachycardia</option><option>Atrial flutter</option><option>AF</option><option>PVC</option><option>VT</option></select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-semibold">9.2 Substrate Mapping</label>
-                                    <select name="substrateMapping" class="input-premium"><option value="No">No</option><option value="Yes - CARTO">Yes - CARTO</option><option value="Yes - EnSite">Yes - EnSite</option><option value="Yes - Rhythmia">Yes - Rhythmia</option><option value="Yes - Other">Yes - Other</option></select>
-                                </div>
-                                <div class="md:col-span-2">
-                                    <label class="block text-sm font-semibold">9.3 Ablation Energy</label>
-                                    <select name="ablationEnergy" class="input-premium"><option value="">Select...</option><option>RF</option><option>Cryo</option><option>Pulsed Field</option><option>Laser</option><option>Other</option></select>
                                 </div>
                             </div>
                         </div>
 
                         <div class="p-5 border border-red-200 rounded-xl bg-red-50/50">
-                            <h3 class="font-bold text-red-800 mb-3"><i class="fas fa-exclamation-triangle mr-2"></i>10. Complications</h3>
+                            <h3 class="font-bold text-red-800 mb-3"><i class="fas fa-exclamation-triangle mr-2"></i>Procedure Complications</h3>
                             <div id="compsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
                         </div>
                     </div>
 
                     <div class="form-step flex-1" id="step-5">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2"><i class="fas fa-door-open text-orange-500 mr-2"></i> 11, 12 & 13. Outcomes & Discharge</h2>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2"><i class="fas fa-door-open text-orange-500 mr-2"></i> Outcomes & Discharge</h2>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 border rounded-xl shadow-sm mb-6">
                             <div class="md:col-span-2">
-                                <label class="block font-bold text-lg mb-2">11. Immediate Procedure Success?</label>
+                                <label class="block font-bold text-lg mb-2">Immediate Procedure Success?</label>
                                 <div class="flex gap-6 mt-2">
                                     <label class="flex items-center gap-2 text-lg"><input type="radio" name="procSuccess" value="Yes" class="w-5 h-5 text-blue-600"> Yes</label>
                                     <label class="flex items-center gap-2 text-lg"><input type="radio" name="procSuccess" value="No" class="w-5 h-5 text-blue-600"> No</label>
                                 </div>
                             </div>
                             <hr class="md:col-span-2">
-                            <div><label class="block text-sm font-semibold text-gray-700">12.1 Date of Discharge/Death</label><input type="date" name="dischargeDate" class="input-premium mt-1"></div>
+                            <div><label class="block text-sm font-semibold text-gray-700">Date of Discharge/Death</label><input type="date" name="dischargeDate" class="input-premium mt-1"></div>
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700">12.3 Discharge Status</label>
+                                <label class="block text-sm font-semibold text-gray-700">Discharge Status</label>
                                 <select name="dischargeStatus" class="input-premium mt-1"><option value="">Select...</option><option>Alive - Home</option><option>Alive - Transfer to Surgery</option><option>Alive - LAMA</option><option>Dead - Cardiac</option><option>Dead - Non-Cardiac</option></select>
                             </div>
                         </div>
 
-                        <h3 class="font-bold text-gray-800 mb-3"><i class="fas fa-prescription-bottle-alt text-green-500 mr-2"></i>13. Discharge Medications</h3>
+                        <h3 class="font-bold text-gray-800 mb-3"><i class="fas fa-prescription-bottle-alt text-green-500 mr-2"></i>Discharge Medications</h3>
                         <div class="bg-green-50 p-4 rounded-xl border border-green-100">
                             <div id="dischargeMedsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div>
                         </div>
@@ -245,7 +283,7 @@
                 </div>
             </div>
             <div class="bg-gray-50 p-4 rounded-xl mb-6 flex flex-wrap gap-4 border border-gray-200">
-                <div class="flex-1 min-w-[150px]"><label class="text-xs font-bold text-gray-500">Name</label><input type="text" id="searchName" class="input-premium"></div>
+                <div class="flex-1 min-w-[150px]"><label class="text-xs font-bold text-gray-500">First Name</label><input type="text" id="searchName" class="input-premium"></div>
                 <div class="flex-1 min-w-[150px]"><label class="text-xs font-bold text-gray-500">Civil ID</label><input type="text" id="searchCivilId" class="input-premium"></div>
                 <div class="flex-1 min-w-[150px]"><label class="text-xs font-bold text-gray-500">File Number</label><input type="text" id="searchFileNo" class="input-premium"></div>
                 <div class="flex items-end"><button onclick="fetchData()" class="bg-blue-600 text-white px-6 py-2.5 rounded hover:bg-blue-700 shadow"><i class="fas fa-search"></i> Search</button></div>
@@ -296,27 +334,40 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // --- UI Dynamic Toggles ---
+        window.togglePacemaker = function() {
+            const val = document.querySelector('input[name="epReason"]:checked')?.value;
+            const pmDiv = document.getElementById('pacemakerTypeDiv');
+            if(val === "Pacemaker") pmDiv.classList.remove('hidden');
+            else { pmDiv.classList.add('hidden'); document.querySelector('select[name="pacemakerType"]').value = ""; }
+        };
+
+        window.toggleAfibDetails = function() {
+            const val = document.getElementById('hx_afib').value;
+            const afDiv = document.getElementById('afibDetails');
+            if(val === "Yes") afDiv.classList.remove('hidden');
+            else { afDiv.classList.add('hidden'); }
+        };
+
         // --- Data Generation Arrays ---
-        const historyItems = ["Atrial fibrillation", "SVT", "VT / VF", "Cardiomyopathy", "Heart failure (NYHA II-IV)", "Coronary artery disease", "Prior MI", "Valvular heart disease", "Stroke/TIA", "Chronic lung disease", "Renal Failure / Dialysis", "Diabetes mellitus", "Hypertension", "Syncope"];
+        const countries = ["Kuwait", "Saudi Arabia", "Bahrain", "Qatar", "UAE", "Oman", "Egypt", "Jordan", "Lebanon", "Syria", "India", "Philippines", "Pakistan", "Bangladesh", "Sri Lanka", "UK", "USA", "Canada", "Other"];
+        const historyItems = ["SVT", "VT / VF", "Cardiomyopathy", "Heart failure (NYHA II-IV)", "Coronary artery disease", "Prior MI", "Valvular heart disease", "Stroke/TIA", "Chronic lung disease", "Renal Failure / Dialysis", "Diabetes mellitus", "Hypertension", "Syncope"];
         const compItems = ["Cardiac Arrest", "Pulmonary Edema", "Cardiac Tamponade", "Stroke / TIA", "Bleeding requiring transfusion", "Hematoma requiring surgery", "Pneumothorax", "Lead Dislodgement"];
-        
-        // Updated exact medication list based on documents
         const medsList = ["Amiodarone", "Disopyramide", "Flecainide", "Procainamide", "Propafenone", "Sotalol", "Verapamil", "Diltiazem", "Unfractionated Heparin", "LMWH", "Warfarin", "DOAC (Apixaban/Rivaroxaban)", "Aspirin", "Prasugrel", "Clopidogrel", "Ticagrelor", "Cangrelor", "ACE-I/ARB", "Beta Blockers", "MRA", "Loop diuretics"];
 
-        // Inject Checkboxes into UI
+        // Inject HTML
+        document.getElementById('nationality').innerHTML = countries.map(c => `<option value="${c}">${c}</option>`).join('');
         document.getElementById('historyGrid').innerHTML = historyItems.map(h => `<label class="flex items-center gap-2 p-2 border rounded hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="hx_${h.replace(/\W+/g, '')}" class="w-4 h-4 text-blue-600 rounded"> <span class="text-sm font-medium">${h}</span></label>`).join('');
         document.getElementById('compsGrid').innerHTML = compItems.map(c => `<label class="flex items-center gap-2 p-2 bg-white border rounded cursor-pointer"><input type="checkbox" name="comp_${c.replace(/\W+/g, '')}" class="w-4 h-4 text-red-600 rounded"> <span class="text-sm font-medium">${c}</span></label>`).join('');
         
-        // Inject Separated Meds Grid
         const generateMedGrid = (prefix, color) => medsList.map((m, i) => `<label class="flex items-center gap-2 p-2 bg-white border rounded cursor-pointer hover:bg-${color}-50"><input type="checkbox" name="${prefix}_${i}" class="w-5 h-5 text-${color}-600 rounded"> <span class="text-sm font-medium text-gray-700">${m}</span></label>`).join('');
         document.getElementById('homeMedsGrid').innerHTML = generateMedGrid('homeMed', 'blue');
         document.getElementById('dischargeMedsGrid').innerHTML = generateMedGrid('dcMed', 'green');
 
-        // --- Stepper & Free Navigation Logic ---
-        const steps = ["Identification", "History & Exam", "Home Meds", "Investigations", "Procedure", "D/C Meds & Outcome"];
+        // --- Stepper Navigation ---
+        const steps = ["Identification", "Reason & Adm.", "History & Exam", "Home Meds", "Procedure", "Outcome & D/C Meds"];
         let currentStep = 0;
         
-        // Generate clickable stepper icons
         document.getElementById('stepper').innerHTML = steps.map((s, i) => `
             <li onclick="goToStep(${i})" class="flex items-center gap-2 md:gap-4 whitespace-nowrap cursor-pointer group">
                 <div id="step-icon-${i}" class="shrink-0 w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold border-2 transition-all group-hover:shadow-md ${i===0?'step-active':'step-inactive'}">${i+1}</div>
@@ -328,14 +379,11 @@
             document.getElementById(`step-${currentStep}`).classList.remove('active');
             document.getElementById(`step-icon-${currentStep}`).className = "shrink-0 w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold border-2 transition-all step-inactive";
             document.getElementById(`step-text-${currentStep}`).className = "text-xs md:text-sm transition-all font-medium text-gray-500";
-
             currentStep = stepIndex;
-
             document.getElementById(`step-${currentStep}`).classList.add('active');
             document.getElementById(`step-icon-${currentStep}`).className = "shrink-0 w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold border-2 transition-all step-active";
             document.getElementById(`step-text-${currentStep}`).className = "text-xs md:text-sm transition-all font-bold text-blue-800";
-
-            // Hide/Show Prev Next Buttons based on position
+            
             document.getElementById('btnPrev').classList.toggle('hidden', currentStep === 0);
             document.getElementById('btnNext').classList.toggle('hidden', currentStep === steps.length - 1);
         };
@@ -345,7 +393,7 @@
             if(newStep >= 0 && newStep < steps.length) goToStep(newStep);
         };
 
-        // --- Kuwaiti Civil ID Auto Age ---
+        // --- Civil ID Auto Age ---
         document.getElementById('req_civilId').addEventListener('input', function(e) {
             const cid = e.target.value;
             if(cid.length === 12 && /^\d+$/.test(cid)) {
@@ -354,23 +402,21 @@
                 let year = 0;
                 if (centuryDigit === 2) year = 1900 + yearDigits;
                 else if (centuryDigit === 3) year = 2000 + yearDigits;
-                
                 if (year > 0) {
                     document.getElementById('yob').value = year;
-                    document.getElementById('age').value = new Date().getFullYear() - year;
+                    document.getElementById('estimatedAge').value = new Date().getFullYear() - year;
                 }
             } else {
-                document.getElementById('yob').value = ""; document.getElementById('age').value = "";
+                document.getElementById('yob').value = ""; document.getElementById('estimatedAge').value = "";
             }
         });
 
-        // --- Tab Control ---
+        // --- Tabs ---
         window.switchAppTab = function(tabName) {
             if(tabName === 'admin') {
                 if(prompt("Enter Admin PIN (2468):") !== "2468") return alert("Access Denied");
                 fetchData();
             } else if (tabName === 'analytics') { fetchAnalytics(); }
-            
             ['form', 'admin', 'analytics'].forEach(t => {
                 document.getElementById(`section-${t}`).classList.add('hidden-section');
                 document.getElementById(`tab-${t}`).className = 'whitespace-nowrap pb-1 text-gray-500 hover:text-blue-700 transition font-medium';
@@ -379,25 +425,23 @@
             document.getElementById(`tab-${tabName}`).className = 'whitespace-nowrap pb-1 tab-active transition';
         };
 
-        // --- Strict Validation on Submit Only ---
+        // --- Save Form (Identification Validation Only) ---
         document.getElementById('epsForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            // JS validation to ensure step 0 is filled before ANY saving.
-            const requiredFields = ['req_name', 'req_civilId', 'req_fileNo', 'req_crfNo', 'req_gender', 'req_admDate'];
+            // JS validation to ensure step 0 is filled before saving.
+            const requiredFields = ['req_nameFirst', 'req_nameLast', 'req_civilId', 'req_fileNo', 'req_crfNo', 'req_gender', 'req_admDate'];
             for(let id of requiredFields) {
                 const el = document.getElementById(id);
                 if(!el.value) {
-                    goToStep(0); // Jump back to step 0
+                    goToStep(0);
                     alert(`Action Restricted: Missing required Identification field. Please fill it before saving.`);
-                    el.focus();
-                    return; 
+                    el.focus(); return; 
                 }
             }
-            if(!/^\d{12}$/.test(document.getElementById('req_civilId').value)) { goToStep(0); return alert("Civil ID must be 12 digits"); }
-            if(!/^\d{6}$/.test(document.getElementById('req_fileNo').value)) { goToStep(0); return alert("File No must be 6 digits"); }
+            if(!/^\d{12}$/.test(document.getElementById('req_civilId').value)) { goToStep(0); return alert("Civil ID must be exactly 12 digits"); }
+            if(!/^\d{6}$/.test(document.getElementById('req_fileNo').value)) { goToStep(0); return alert("File Number must be exactly 6 digits"); }
 
-            // Serialization
             const formData = new FormData(e.target);
             const dataObj = Object.fromEntries(formData.entries());
             e.target.querySelectorAll('input[type="checkbox"]').forEach(cb => { dataObj[cb.name] = cb.checked; });
@@ -415,6 +459,7 @@
                     alert("Success: New Patient Saved securely!");
                 }
                 e.target.reset(); goToStep(0); 
+                togglePacemaker(); toggleAfibDetails();
             } catch (error) { console.error(error); alert("Error saving data."); }
         });
 
@@ -431,15 +476,19 @@
 
             snapshot.forEach((docSnap) => {
                 const data = docSnap.data(); data.id = docSnap.id;
-                if(sName && !data.patientName?.toLowerCase().includes(sName)) return;
+                const fullName = `${data.nameFirst||''} ${data.nameMiddle||''} ${data.nameLast||''}`.trim();
+                
+                if(sName && !fullName.toLowerCase().includes(sName)) return;
                 if(sCivil && !data.civilId?.includes(sCivil)) return;
                 if(sFile && !data.fileNumber?.includes(sFile)) return;
+                
+                data.fullName = fullName; // for export convenience
                 allData.push(data);
                 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td class="px-4 py-3 border-b"><div class="font-bold text-gray-800">${data.patientName || 'N/A'}</div><div class="text-xs text-gray-500">${data.gender} | ${data.age || '?'} yrs</div></td>
-                    <td class="px-4 py-3 border-b text-sm"><div><span class="font-semibold text-gray-600">CID:</span> ${data.civilId}</div><div><span class="font-semibold text-gray-600">File:</span> ${data.fileNumber}</div><div class="text-xs text-gray-400">CRF: ${data.crfNo}</div></td>
+                    <td class="px-4 py-3 border-b"><div class="font-bold text-gray-800">${fullName || 'N/A'}</div><div class="text-xs text-gray-500">${data.gender} | Age: ${data.estimatedAge || '?'}</div></td>
+                    <td class="px-4 py-3 border-b text-sm"><div><span class="font-semibold text-gray-600">CID:</span> ${data.civilId}</div><div><span class="font-semibold text-gray-600">File:</span> ${data.fileNumber}</div></td>
                     <td class="px-4 py-3 border-b text-sm text-gray-700">${data.epReason || 'None specified'}</td>
                     <td class="px-4 py-3 border-b text-right space-x-2">
                         <button onclick='editRecord(${JSON.stringify(data).replace(/'/g, "\\'")})' class="bg-yellow-500 text-white p-2 rounded shadow hover:bg-yellow-600 mb-1"><i class="fas fa-edit"></i></button>
@@ -466,6 +515,7 @@
                     else el.value = data[key];
                 }
             });
+            togglePacemaker(); toggleAfibDetails();
             goToStep(0);
         };
 
@@ -478,7 +528,7 @@
         window.exportToPDF = function() {
             if(!allData.length) return alert("No data");
             const { jsPDF } = window.jspdf; const doc = new jsPDF('landscape'); doc.text("Mubarak Alkabeer Hospital - EP Registry", 14, 15);
-            const tableData = allData.map(row => [row.patientName, row.civilId, row.fileNumber, row.gender, row.age, row.epReason, row.dischargeStatus]);
+            const tableData = allData.map(row => [row.fullName, row.civilId, row.fileNumber, row.gender, row.estimatedAge, row.epReason, row.dischargeStatus]);
             doc.autoTable({ head: [['Name', 'Civil ID', 'File No.', 'Gender', 'Age', 'Reason for EP Lab', 'Outcome']], body: tableData, startY: 20 });
             doc.save("MKH_Registry.pdf");
         };
