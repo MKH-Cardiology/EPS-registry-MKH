@@ -37,10 +37,10 @@
         .input-premium:focus { border-color: #3b82f6; outline: none; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
     </style>
 </head>
-<body class="text-gray-800 h-screen flex flex-col">
+<body class="text-gray-800 min-h-screen relative">
 
-    <header class="bg-white shadow-md sticky top-0 z-50 border-b-4 border-blue-600 shrink-0">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+    <header class="bg-white shadow-md sticky top-0 z-50 border-b-4 border-blue-600 w-full">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap justify-between items-center gap-4">
             <div class="flex items-center gap-4">
                 <div class="p-2 bg-red-50 rounded-lg">
                     <svg class="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -49,30 +49,30 @@
                     </svg>
                 </div>
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-900 leading-tight">Mubarak Alkabeer Hospital</h1>
-                    <p class="text-sm font-semibold text-blue-600">Advanced Electrophysiology Registry</p>
+                    <h1 class="text-xl md:text-2xl font-bold text-gray-900 leading-tight">Mubarak Alkabeer Hospital</h1>
+                    <p class="text-xs md:text-sm font-semibold text-blue-600">Advanced Electrophysiology Registry</p>
                 </div>
             </div>
-            <nav class="flex gap-8">
-                <button onclick="switchAppTab('form')" id="tab-form" class="pb-1 tab-active transition">Registry Form</button>
-                <button onclick="switchAppTab('admin')" id="tab-admin" class="pb-1 text-gray-500 hover:text-blue-700 transition">Admin Panel</button>
-                <button onclick="switchAppTab('analytics')" id="tab-analytics" class="pb-1 text-gray-500 hover:text-blue-700 transition">Analytics</button>
+            <nav class="flex gap-4 md:gap-8 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
+                <button onclick="switchAppTab('form')" id="tab-form" class="whitespace-nowrap pb-1 tab-active transition">Registry Form</button>
+                <button onclick="switchAppTab('admin')" id="tab-admin" class="whitespace-nowrap pb-1 text-gray-500 hover:text-blue-700 transition">Admin Panel</button>
+                <button onclick="switchAppTab('analytics')" id="tab-analytics" class="whitespace-nowrap pb-1 text-gray-500 hover:text-blue-700 transition">Analytics</button>
             </nav>
         </div>
     </header>
 
-    <main class="flex-1 overflow-auto p-4 sm:p-6 lg:p-8 w-full max-w-7xl mx-auto">
+    <main class="w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 mt-4">
         
-        <section id="section-form" class="bg-white rounded-2xl shadow-xl border border-gray-100 flex flex-col md:flex-row overflow-hidden min-h-[75vh]">
+        <section id="section-form" class="bg-white rounded-2xl shadow-xl border border-gray-100 flex flex-col md:flex-row min-h-[75vh]">
             
-            <div class="w-full md:w-72 bg-gradient-to-b from-gray-50 to-gray-100 p-6 border-r border-gray-200">
+            <div class="w-full md:w-72 bg-gradient-to-b from-gray-50 to-gray-100 p-6 md:border-r border-b md:border-b-0 border-gray-200 shrink-0">
                 <h3 class="text-xs font-bold text-blue-800 uppercase tracking-widest mb-6">Patient Journey</h3>
-                <ul class="space-y-4" id="stepper">
+                <ul class="flex md:flex-col gap-4 md:gap-4 overflow-x-auto md:overflow-visible pb-2 md:pb-0" id="stepper">
                     </ul>
             </div>
 
-            <div class="flex-1 p-6 md:p-10 overflow-y-auto bg-white relative">
-                <div id="editModeBanner" class="hidden absolute top-0 left-0 w-full bg-yellow-400 text-yellow-900 text-center py-1 font-bold text-sm z-10">
+            <div class="flex-1 p-6 md:p-10 relative">
+                <div id="editModeBanner" class="hidden absolute top-0 left-0 w-full bg-yellow-400 text-yellow-900 text-center py-1 font-bold text-sm z-10 rounded-t-xl md:rounded-tr-2xl">
                     EDITING RECORD MODE - Save when finished
                 </div>
 
@@ -84,26 +84,30 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div><label class="block text-sm font-semibold text-gray-700">Patient Name <span class="text-red-500">*</span></label><input type="text" name="patientName" required class="input-premium"></div>
                             
-                            <div class="bg-blue-50 p-3 rounded-lg border border-blue-100 md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4 shadow-sm">
                                 <div>
                                     <label class="block text-sm font-semibold text-gray-700">Kuwaiti Civil ID <span class="text-red-500">*</span></label>
-                                    <input type="text" name="civilId" id="civilId" inputmode="numeric" pattern="\d{12}" maxlength="12" minlength="12" required placeholder="12 Digits" class="input-premium font-mono">
-                                    <p class="text-xs text-gray-500 mt-1">Age will auto-calculate</p>
+                                    <input type="text" name="civilId" id="civilId" inputmode="numeric" pattern="\d{12}" maxlength="12" minlength="12" required placeholder="12 Digits" class="input-premium font-mono bg-white border-blue-200">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-semibold text-gray-700">Auto-Calculated Age</label>
-                                    <input type="number" name="age" id="age" readonly class="input-premium bg-gray-100 font-bold text-blue-700">
+                                    <label class="block text-sm font-semibold text-gray-700">Age</label>
+                                    <input type="number" name="age" id="age" readonly class="input-premium bg-gray-100 font-bold text-blue-700 cursor-not-allowed">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-semibold text-gray-700">Year of Birth (YOB)</label>
-                                    <input type="number" name="yob" id="yob" readonly class="input-premium bg-gray-100">
+                                    <label class="block text-sm font-semibold text-gray-700">Year of Birth</label>
+                                    <input type="number" name="yob" id="yob" readonly class="input-premium bg-gray-100 cursor-not-allowed">
                                 </div>
                             </div>
 
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700">CRF/File No <span class="text-red-500">*</span></label>
-                                <input type="text" name="crfNo" id="crfNo" inputmode="numeric" pattern="\d{6}" maxlength="6" minlength="6" required placeholder="6 Digits" class="input-premium font-mono">
+                                <label class="block text-sm font-semibold text-gray-700">File Number <span class="text-red-500">*</span></label>
+                                <input type="text" name="fileNumber" id="fileNumber" inputmode="numeric" pattern="\d{6}" maxlength="6" minlength="6" required placeholder="Strictly 6 Digits" class="input-premium font-mono">
                             </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700">CRF Number <span class="text-red-500">*</span></label>
+                                <input type="text" name="crfNo" id="crfNo" required placeholder="Assigned by system" class="input-premium font-mono">
+                            </div>
+
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700">Gender <span class="text-red-500">*</span></label>
                                 <select name="gender" required class="input-premium">
@@ -111,7 +115,7 @@
                                 </select>
                             </div>
                             <div><label class="block text-sm font-semibold text-gray-700">Hospital Admission Date <span class="text-red-500">*</span></label><input type="date" name="admissionDate" required class="input-premium"></div>
-                            <div>
+                            <div class="md:col-span-2">
                                 <label class="block text-sm font-semibold text-gray-700">Reason for EP Lab <span class="text-red-500">*</span></label>
                                 <select name="epReason" required class="input-premium">
                                     <option value="">Select...</option>
@@ -155,10 +159,10 @@
 
                     <div class="form-step" id="step-2">
                         <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2"><i class="fas fa-pills text-green-500 mr-2"></i> 6 & 13. Medications</h2>
-                        <div class="bg-yellow-50 p-3 rounded text-sm text-yellow-800 border border-yellow-200 mb-4">
+                        <div class="bg-yellow-50 p-3 rounded-lg text-sm text-yellow-800 border border-yellow-200 mb-4">
                             <i class="fas fa-info-circle mr-1"></i> Tick fields for medications taken at Admission (Home) and/or upon Discharge.
                         </div>
-                        <div class="overflow-y-auto max-h-[450px] border rounded-xl shadow-sm">
+                        <div class="overflow-x-auto overflow-y-auto max-h-[450px] border rounded-xl shadow-sm">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-100 sticky top-0 z-10 shadow-sm">
                                     <tr>
@@ -262,7 +266,7 @@
                         </div>
                     </div>
 
-                    <div class="flex justify-between pt-6 border-t mt-8 bg-white sticky bottom-0 pb-4 z-10">
+                    <div class="flex justify-between pt-6 mt-8">
                         <button type="button" id="btnPrev" onclick="changeStep(-1)" class="hidden bg-gray-200 text-gray-800 font-bold px-6 py-3 rounded-lg shadow hover:bg-gray-300 transition"><i class="fas fa-arrow-left mr-2"></i> Previous</button>
                         <button type="button" id="btnNext" onclick="changeStep(1)" class="ml-auto bg-blue-600 text-white font-bold px-8 py-3 rounded-lg shadow-lg hover:bg-blue-700 transition transform hover:-translate-y-0.5">Next Step <i class="fas fa-arrow-right ml-2"></i></button>
                         <button type="submit" id="btnSubmit" class="hidden ml-auto bg-green-600 text-white font-bold px-8 py-3 rounded-lg shadow-lg hover:bg-green-700 transition transform hover:-translate-y-0.5"><i class="fas fa-save mr-2"></i> Save Registry Record</button>
@@ -281,9 +285,9 @@
             </div>
             
             <div class="bg-gray-50 p-4 rounded-xl mb-6 flex flex-wrap gap-4 border border-gray-200">
-                <div class="flex-1 min-w-[200px]"><label class="text-xs font-bold text-gray-500">Name</label><input type="text" id="searchName" class="input-premium"></div>
-                <div class="flex-1 min-w-[200px]"><label class="text-xs font-bold text-gray-500">Civil ID</label><input type="text" id="searchCivilId" class="input-premium"></div>
-                <div class="flex-1 min-w-[200px]"><label class="text-xs font-bold text-gray-500">CRF Number</label><input type="text" id="searchCrfNo" class="input-premium"></div>
+                <div class="flex-1 min-w-[150px]"><label class="text-xs font-bold text-gray-500">Name</label><input type="text" id="searchName" class="input-premium"></div>
+                <div class="flex-1 min-w-[150px]"><label class="text-xs font-bold text-gray-500">Civil ID</label><input type="text" id="searchCivilId" class="input-premium"></div>
+                <div class="flex-1 min-w-[150px]"><label class="text-xs font-bold text-gray-500">File Number</label><input type="text" id="searchFileNo" class="input-premium"></div>
                 <div class="flex items-end"><button onclick="fetchData()" class="bg-blue-600 text-white px-6 py-2.5 rounded hover:bg-blue-700 shadow"><i class="fas fa-search"></i> Search</button></div>
             </div>
             
@@ -348,9 +352,9 @@
         let currentStep = 0;
         
         document.getElementById('stepper').innerHTML = steps.map((s, i) => `
-            <li class="flex items-center gap-4">
-                <div id="step-icon-${i}" class="w-10 h-10 rounded-full flex items-center justify-center font-bold border-2 transition-all ${i===0?'step-active':'step-inactive'}">${i+1}</div>
-                <span id="step-text-${i}" class="text-sm transition-all ${i===0?'font-bold text-blue-800':'font-medium text-gray-500'}">${s}</span>
+            <li class="flex items-center gap-2 md:gap-4 whitespace-nowrap">
+                <div id="step-icon-${i}" class="shrink-0 w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold border-2 transition-all ${i===0?'step-active':'step-inactive'}">${i+1}</div>
+                <span id="step-text-${i}" class="text-xs md:text-sm transition-all ${i===0?'font-bold text-blue-800':'font-medium text-gray-500'}">${s}</span>
             </li>
         `).join('');
 
@@ -370,21 +374,21 @@
                 // Specific ID validations on Step 0
                 if (currentStep === 0) {
                     const cid = document.getElementById('civilId').value;
-                    const crf = document.getElementById('crfNo').value;
+                    const fno = document.getElementById('fileNumber').value;
                     if(!/^\d{12}$/.test(cid)) return alert("Error: Civil ID must be exactly 12 numbers.");
-                    if(!/^\d{6}$/.test(crf)) return alert("Error: CRF Number must be exactly 6 numbers.");
+                    if(!/^\d{6}$/.test(fno)) return alert("Error: File Number must be exactly 6 numbers.");
                 }
             }
 
             document.getElementById(`step-${currentStep}`).classList.remove('active');
-            document.getElementById(`step-icon-${currentStep}`).className = "w-10 h-10 rounded-full flex items-center justify-center font-bold border-2 transition-all step-inactive";
-            document.getElementById(`step-text-${currentStep}`).className = "text-sm transition-all font-medium text-gray-500";
+            document.getElementById(`step-icon-${currentStep}`).className = "shrink-0 w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold border-2 transition-all step-inactive";
+            document.getElementById(`step-text-${currentStep}`).className = "text-xs md:text-sm transition-all font-medium text-gray-500";
 
             currentStep += direction;
 
             document.getElementById(`step-${currentStep}`).classList.add('active');
-            document.getElementById(`step-icon-${currentStep}`).className = "w-10 h-10 rounded-full flex items-center justify-center font-bold border-2 transition-all step-active";
-            document.getElementById(`step-text-${currentStep}`).className = "text-sm transition-all font-bold text-blue-800";
+            document.getElementById(`step-icon-${currentStep}`).className = "shrink-0 w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold border-2 transition-all step-active";
+            document.getElementById(`step-text-${currentStep}`).className = "text-xs md:text-sm transition-all font-bold text-blue-800";
 
             document.getElementById('btnPrev').classList.toggle('hidden', currentStep === 0);
             
@@ -426,10 +430,10 @@
             
             ['form', 'admin', 'analytics'].forEach(t => {
                 document.getElementById(`section-${t}`).classList.add('hidden-section');
-                document.getElementById(`tab-${t}`).className = 'pb-1 text-gray-500 hover:text-blue-700 transition font-medium';
+                document.getElementById(`tab-${t}`).className = 'whitespace-nowrap pb-1 text-gray-500 hover:text-blue-700 transition font-medium';
             });
             document.getElementById(`section-${tabName}`).classList.remove('hidden-section');
-            document.getElementById(`tab-${tabName}`).className = 'pb-1 tab-active transition';
+            document.getElementById(`tab-${tabName}`).className = 'whitespace-nowrap pb-1 tab-active transition';
         };
 
         // --- Form Submission (Create / Update) ---
@@ -438,12 +442,11 @@
             const formData = new FormData(e.target);
             const dataObj = Object.fromEntries(formData.entries());
             
-            // Capture unchecked checkboxes as false
             e.target.querySelectorAll('input[type="checkbox"]').forEach(cb => { dataObj[cb.name] = cb.checked; });
             dataObj.timestamp = new Date();
 
             const recordId = dataObj.recordId;
-            delete dataObj.recordId; // remove from pure data
+            delete dataObj.recordId;
 
             try {
                 if (recordId) {
@@ -456,7 +459,7 @@
                     alert("Success: New Patient Saved!");
                 }
                 e.target.reset();
-                currentStep = 0; changeStep(0); // Reset UI
+                currentStep = 0; changeStep(0); 
             } catch (error) { console.error(error); alert("Error saving data."); }
         });
 
@@ -465,7 +468,7 @@
         window.fetchData = async function() {
             const sName = document.getElementById('searchName').value.toLowerCase();
             const sCivil = document.getElementById('searchCivilId').value;
-            const sCrf = document.getElementById('searchCrfNo').value;
+            const sFile = document.getElementById('searchFileNo').value;
             
             const snapshot = await getDocs(collection(db, "patients_full"));
             const tbody = document.getElementById('tableBody');
@@ -475,7 +478,7 @@
                 const data = docSnap.data(); data.id = docSnap.id;
                 if(sName && !data.patientName?.toLowerCase().includes(sName)) return;
                 if(sCivil && !data.civilId?.includes(sCivil)) return;
-                if(sCrf && !data.crfNo?.includes(sCrf)) return;
+                if(sFile && !data.fileNumber?.includes(sFile)) return;
                 allData.push(data);
                 
                 const tr = document.createElement('tr');
@@ -486,13 +489,14 @@
                     </td>
                     <td class="px-4 py-3 border-b text-sm">
                         <div><span class="font-semibold text-gray-600">CID:</span> ${data.civilId}</div>
-                        <div><span class="font-semibold text-gray-600">CRF:</span> ${data.crfNo}</div>
+                        <div><span class="font-semibold text-gray-600">File:</span> ${data.fileNumber || 'N/A'}</div>
+                        <div class="text-xs text-gray-400">CRF: ${data.crfNo || 'N/A'}</div>
                     </td>
                     <td class="px-4 py-3 border-b text-sm text-gray-700">
                         ${data.procPerformed || 'None specified'}
                     </td>
                     <td class="px-4 py-3 border-b text-right space-x-2">
-                        <button onclick='editRecord(${JSON.stringify(data).replace(/'/g, "\\'")})' class="bg-yellow-500 text-white p-2 rounded shadow hover:bg-yellow-600"><i class="fas fa-edit"></i></button>
+                        <button onclick='editRecord(${JSON.stringify(data).replace(/'/g, "\\'")})' class="bg-yellow-500 text-white p-2 rounded shadow hover:bg-yellow-600 mb-1"><i class="fas fa-edit"></i></button>
                         <button onclick="deleteRecord('${data.id}')" class="bg-red-600 text-white p-2 rounded shadow hover:bg-red-700"><i class="fas fa-trash"></i></button>
                     </td>
                 `;
@@ -512,7 +516,6 @@
             document.getElementById('editModeBanner').classList.remove('hidden');
             document.getElementById('btnSubmit').innerHTML = '<i class="fas fa-sync-alt mr-2"></i> Update Record';
 
-            // Populate fields dynamically
             Object.keys(data).forEach(key => {
                 const el = document.getElementsByName(key)[0];
                 if(el) {
@@ -524,7 +527,6 @@
                     else el.value = data[key];
                 }
             });
-            // Ensure UI stepper is at step 0
             while(currentStep > 0) changeStep(-1);
         };
 
@@ -541,12 +543,12 @@
             if(!allData.length) return alert("No data");
             const { jsPDF } = window.jspdf; const doc = new jsPDF('landscape');
             doc.text("Mubarak Alkabeer Hospital - EP Registry", 14, 15);
-            const tableData = allData.map(row => [row.patientName, row.civilId, row.crfNo, row.gender, row.age, row.procPerformed, row.dischargeStatus]);
-            doc.autoTable({ head: [['Name', 'Civil ID', 'CRF', 'Gender', 'Age', 'Procedure', 'Outcome']], body: tableData, startY: 20 });
+            const tableData = allData.map(row => [row.patientName, row.civilId, row.fileNumber, row.gender, row.age, row.procPerformed, row.dischargeStatus]);
+            doc.autoTable({ head: [['Name', 'Civil ID', 'File No.', 'Gender', 'Age', 'Procedure', 'Outcome']], body: tableData, startY: 20 });
             doc.save("MKH_Registry.pdf");
         };
 
-        // --- Analytics (Chart.js) ---
+        // --- Analytics ---
         let chart1, chart2;
         window.fetchAnalytics = async function() {
             const snapshot = await getDocs(collection(db, "patients_full"));
