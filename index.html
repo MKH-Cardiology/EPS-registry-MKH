@@ -127,11 +127,12 @@
     .g2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
     .g3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
     .g4 { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+    @media (max-width:640px) { .g2,.g3,.g4 { grid-template-columns:1fr !important; } }
     @media (max-width:768px) { .g2,.g3,.g4 { grid-template-columns:1fr; } }
     @media (max-width:1024px) { .g3 { grid-template-columns:1fr 1fr; } .g4 { grid-template-columns:1fr 1fr; } }
-    /* Procedure 9.1-9.4 grid — 2x2 on mobile, 4-col on desktop */
-    .proc-grid-4 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-    @media (min-width:900px) { .proc-grid-4 { grid-template-columns:1fr 1fr 1fr 1fr; } }
+    /* Procedure 9.1-9.4 — always single column stack */
+    .proc-stack { display:flex !important; flex-direction:column !important; gap:14px !important; }
+    .proc-stack > div { width:100% !important; }
 
     /* Analytics accordion */
     .analytic-panel { border:1.5px solid #e2e8f0; border-radius:12px; overflow:hidden; margin-bottom:10px; }
@@ -993,7 +994,7 @@
             <!-- 9.1–9.4 All patients -->
             <div class="card mb-4">
                 <div class="font-bold text-gray-800 text-sm mb-4">9.1–9.4 All Patients</div>
-                <div class="proc-grid-4">
+                <div class="proc-stack">
                     <div>
                         <label class="lbl">9.1 Procedure Start Date</label>
                         <input type="date" name="procStartDate" class="inp">
