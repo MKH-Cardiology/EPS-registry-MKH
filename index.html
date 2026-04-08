@@ -15,158 +15,202 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --blue-primary: #1d4ed8;
-            --blue-light: #eff6ff;
-            --blue-border: #bfdbfe;
-            --red-accent: #dc2626;
-            --green-accent: #16a34a;
-            --gray-bg: #f1f5f9;
-            --card-border: #e2e8f0;
+            --blue-primary: #2563eb;
+            --blue-dark:    #1d4ed8;
+            --blue-light:   #eff6ff;
+            --blue-border:  #bfdbfe;
+            --red-accent:   #e11d48;
+            --green-accent: #059669;
+            --amber-accent: #d97706;
+            --gray-bg:      #f0f4f8;
+            --card-border:  #e2e8f0;
+            --text-main:    #0f172a;
+            --text-sub:     #475569;
         }
-        * { box-sizing: border-box; }
-        body { font-family: 'DM Sans', sans-serif; background: var(--gray-bg); color: #1e293b; }
-        code, .mono { font-family: 'DM Mono', monospace; }
+        * { box-sizing:border-box; }
+        body { font-family:'DM Sans',sans-serif; background:var(--gray-bg); color:var(--text-main); }
+        code,.mono { font-family:'DM Mono',monospace; }
 
 ```
     /* Scrollbar */
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: #f1f5f9; }
-    ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+    ::-webkit-scrollbar { width:5px; height:5px; }
+    ::-webkit-scrollbar-track { background:#f1f5f9; }
+    ::-webkit-scrollbar-thumb { background:#94a3b8; border-radius:4px; }
+    ::-webkit-scrollbar-thumb:hover { background:#64748b; }
+
+    /* Toast system */
+    #toast-container { position:fixed; top:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:10px; pointer-events:none; }
+    .toast { display:flex; align-items:center; gap:12px; padding:14px 18px; border-radius:12px; font-size:13px; font-weight:600; min-width:260px; max-width:340px; box-shadow:0 8px 32px rgba(0,0,0,.18); pointer-events:all; animation:toastIn .3s cubic-bezier(.34,1.56,.64,1); transition:opacity .3s, transform .3s; }
+    .toast.out { opacity:0; transform:translateX(20px); }
+    @keyframes toastIn { from { opacity:0; transform:translateX(40px); } to { opacity:1; transform:translateX(0); } }
+    .toast-success { background:#064e3b; color:#d1fae5; border-left:4px solid #10b981; }
+    .toast-error   { background:#7f1d1d; color:#fee2e2; border-left:4px solid #ef4444; }
+    .toast-info    { background:#1e3a8a; color:#dbeafe; border-left:4px solid #60a5fa; }
+    .toast-warning { background:#78350f; color:#fef3c7; border-left:4px solid #f59e0b; }
+    .toast-icon    { font-size:16px; flex-shrink:0; }
+
+    /* Auto-save indicator */
+    #autosave-indicator { position:fixed; bottom:80px; right:16px; z-index:200; background:#0f172a; color:#94a3b8; font-size:11px; font-weight:600; padding:6px 12px; border-radius:20px; display:flex; align-items:center; gap:6px; opacity:0; transition:opacity .4s; pointer-events:none; }
+    #autosave-indicator.show { opacity:1; }
+    #autosave-dot { width:7px; height:7px; border-radius:50%; background:#94a3b8; }
+    #autosave-indicator.saving #autosave-dot { background:#f59e0b; animation:pulse 1s infinite; }
+    #autosave-indicator.saved  #autosave-dot { background:#10b981; }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.3;} }
+
+    /* CHADS score badge */
+    .chads-badge { display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:20px; font-size:13px; font-weight:700; margin-top:8px; }
+    .chads-low    { background:#dcfce7; color:#15803d; }
+    .chads-medium { background:#fef9c3; color:#a16207; }
+    .chads-high   { background:#fee2e2; color:#b91c1c; }
 
     /* Stepper */
-    .step-dot { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; border:2px solid #cbd5e1; background:#fff; color:#94a3b8; transition:all .25s; cursor:pointer; flex-shrink:0; }
-    .step-dot.active { background:var(--blue-primary); border-color:var(--blue-primary); color:#fff; box-shadow:0 0 0 4px #bfdbfe; }
-    .step-dot.done { background:#dcfce7; border-color:#16a34a; color:#16a34a; }
-    .step-label { font-size:11px; font-weight:600; color:#64748b; margin-top:4px; text-align:center; line-height:1.3; max-width:72px; }
-    .step-label.active { color:var(--blue-primary); }
-    .step-connector { flex:1; height:2px; background:#e2e8f0; margin:0 4px; margin-bottom:12px; }
+    .step-dot { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; border:2px solid #cbd5e1; background:#fff; color:#94a3b8; transition:all .3s cubic-bezier(.34,1.3,.64,1); cursor:pointer; flex-shrink:0; }
+    .step-dot.active { background:var(--blue-primary); border-color:var(--blue-primary); color:#fff; box-shadow:0 0 0 5px rgba(37,99,235,.2); }
+    .step-dot.done   { background:#ecfdf5; border-color:#10b981; color:#10b981; }
+    .step-label { font-size:10px; font-weight:600; color:#94a3b8; margin-top:5px; text-align:center; line-height:1.3; max-width:72px; transition:color .2s; }
+    .step-label.active { color:var(--blue-primary); font-weight:700; }
+    .step-connector { flex:1; height:2px; background:#e2e8f0; margin:0 3px; margin-bottom:14px; }
 
     /* Form Step */
-    .form-step { display:none; animation:fadeUp .3s ease; }
+    .form-step { display:none; animation:fadeUp .35s cubic-bezier(.22,1,.36,1); }
     .form-step.active { display:block; }
-    @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(14px);} to{opacity:1;transform:translateY(0);} }
 
-    /* Inputs */
-    .inp { width:100%; padding:8px 12px; border:1.5px solid #d1d5db; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:14px; background:#fff; transition:border-color .2s, box-shadow .2s; }
-    .inp:focus { border-color:var(--blue-primary); outline:none; box-shadow:0 0 0 3px rgba(29,78,216,.12); }
-    .inp-sm { padding:6px 10px; font-size:13px; }
-    select.inp { cursor:pointer; }
+    /* Inputs — refined */
+    .inp { width:100%; padding:9px 13px; border:1.5px solid #d1d5db; border-radius:9px; font-family:'DM Sans',sans-serif; font-size:14px; background:#fff; color:var(--text-main); transition:border-color .2s, box-shadow .25s, background .2s; appearance:none; -webkit-appearance:none; }
+    .inp:focus { border-color:var(--blue-primary); outline:none; box-shadow:0 0 0 4px rgba(37,99,235,.14); background:#fafcff; }
+    .inp:hover:not(:focus) { border-color:#9ca3af; }
+    .inp-sm { padding:7px 10px; font-size:13px; }
+    select.inp { cursor:pointer; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:32px; }
     textarea.inp { resize:vertical; min-height:80px; }
+    .inp.error { border-color:var(--red-accent)!important; box-shadow:0 0 0 4px rgba(225,29,72,.12)!important; animation:shake .4s ease; }
+    @keyframes shake { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-4px);} 75%{transform:translateX(4px);} }
 
     /* Labels */
-    .lbl { display:block; font-size:12px; font-weight:600; color:#475569; margin-bottom:4px; letter-spacing:.02em; }
-    .lbl-req::after { content:'*'; color:var(--red-accent); margin-left:3px; }
+    .lbl { display:block; font-size:12px; font-weight:600; color:var(--text-sub); margin-bottom:5px; letter-spacing:.025em; }
 
-    /* Cards */
-    .card { background:#fff; border:1.5px solid var(--card-border); border-radius:12px; padding:20px; }
-    .card-blue { border-color:#bfdbfe; background:#f0f7ff; }
-    .card-red { border-color:#fecaca; background:#fff5f5; }
-    .card-green { border-color:#bbf7d0; background:#f0fdf4; }
+    /* Cards — deeper shadows */
+    .card { background:#fff; border:1.5px solid var(--card-border); border-radius:14px; padding:20px; box-shadow:0 1px 4px rgba(0,0,0,.04); transition:box-shadow .2s; }
+    .card:hover { box-shadow:0 4px 16px rgba(0,0,0,.07); }
+    .card-blue   { border-color:#bfdbfe; background:#f0f7ff; }
+    .card-red    { border-color:#fecdd3; background:#fff1f2; }
+    .card-green  { border-color:#a7f3d0; background:#f0fdf4; }
     .card-yellow { border-color:#fde68a; background:#fffbeb; }
-    .card-purple { border-color:#e9d5ff; background:#faf5ff; }
-    .card-gray { border-color:#e2e8f0; background:#f8fafc; }
+    .card-purple { border-color:#ddd6fe; background:#faf5ff; }
+    .card-gray   { border-color:#e2e8f0; background:#f8fafc; }
 
     /* Section titles */
-    .sec-title { font-size:18px; font-weight:700; color:#1e293b; display:flex; align-items:center; gap:10px; padding-bottom:12px; border-bottom:2px solid #e2e8f0; margin-bottom:20px; }
-    .sec-title .icon-wrap { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+    .sec-title { font-size:17px; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:10px; padding-bottom:13px; border-bottom:2px solid #e2e8f0; margin-bottom:20px; letter-spacing:-.01em; }
+    .sec-title .icon-wrap { width:38px; height:38px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; box-shadow:0 2px 8px rgba(0,0,0,.1); }
 
     /* Yes/No Toggles */
-    .yn-group { display:flex; gap:8px; }
-    .yn-btn { padding:5px 14px; border-radius:6px; border:1.5px solid #d1d5db; font-size:13px; font-weight:600; cursor:pointer; transition:all .2s; background:#fff; }
-    .yn-btn.yn-yes.selected { background:#dcfce7; border-color:#16a34a; color:#15803d; }
-    .yn-btn.yn-no.selected { background:#fee2e2; border-color:#dc2626; color:#dc2626; }
+    .yn-group { display:flex; gap:6px; }
+    .yn-btn { padding:5px 16px; border-radius:7px; border:1.5px solid #d1d5db; font-size:12px; font-weight:700; cursor:pointer; transition:all .2s; background:#fff; letter-spacing:.02em; }
+    .yn-btn:hover { border-color:#9ca3af; }
+    .yn-btn.yn-yes.selected { background:#ecfdf5; border-color:#10b981; color:#065f46; box-shadow:0 2px 8px rgba(16,185,129,.2); }
+    .yn-btn.yn-no.selected  { background:#fff1f2; border-color:#e11d48; color:#9f1239; box-shadow:0 2px 8px rgba(225,29,72,.15); }
 
     /* Checkbox items */
-    .chk-item { display:flex; align-items:center; gap:8px; padding:8px 10px; border:1.5px solid #e2e8f0; border-radius:8px; background:#fff; cursor:pointer; transition:all .2s; font-size:13px; font-weight:500; }
-    .chk-item:hover { border-color:#93c5fd; background:#f0f7ff; }
+    .chk-item { display:flex; align-items:center; gap:9px; padding:9px 12px; border:1.5px solid #e2e8f0; border-radius:9px; background:#fff; cursor:pointer; transition:all .2s; font-size:13px; font-weight:500; }
+    .chk-item:hover { border-color:#93c5fd; background:#eff6ff; box-shadow:0 2px 8px rgba(37,99,235,.08); }
     .chk-item input[type=checkbox] { width:15px; height:15px; accent-color:var(--blue-primary); flex-shrink:0; }
-    .chk-item.chk-red input[type=checkbox] { accent-color:var(--red-accent); }
 
     /* Radio items */
-    .radio-item { display:flex; align-items:center; gap:8px; padding:8px 12px; border:1.5px solid #e2e8f0; border-radius:8px; background:#fff; cursor:pointer; font-size:13px; font-weight:500; transition:all .2s; }
-    .radio-item:hover { border-color:#93c5fd; background:#f0f7ff; }
+    .radio-item { display:flex; align-items:center; gap:9px; padding:9px 13px; border:1.5px solid #e2e8f0; border-radius:9px; background:#fff; cursor:pointer; font-size:13px; font-weight:500; transition:all .2s; }
+    .radio-item:hover { border-color:#93c5fd; background:#eff6ff; box-shadow:0 2px 8px rgba(37,99,235,.08); }
     .radio-item input[type=radio] { width:15px; height:15px; accent-color:var(--blue-primary); flex-shrink:0; }
 
-    /* Premium header accent */
-    header { border-bottom: 2px solid transparent; background-image: linear-gradient(white,white), linear-gradient(90deg,#1d4ed8,#3b82f6,#1d4ed8); background-origin: border-box; background-clip: padding-box, border-box; }
+    /* Header */
+    header { border-bottom:2px solid transparent; background-image:linear-gradient(#fff,#fff),linear-gradient(90deg,#1d4ed8,#3b82f6,#6366f1); background-origin:border-box; background-clip:padding-box,border-box; box-shadow:0 2px 12px rgba(0,0,0,.06); }
     .tab-active { border-bottom:3px solid var(--blue-primary); color:#1e3a8a; font-weight:700; padding-bottom:2px; }
 
-    /* Sub-section revealed on Yes */
-    .sub-reveal { display:none; margin-top:12px; padding:14px; border-left:3px solid var(--blue-primary); background:#f8faff; border-radius:0 10px 10px 0; }
+    /* Sub-reveal */
+    .sub-reveal { display:none; margin-top:12px; padding:14px 16px; border-left:3px solid var(--blue-primary); background:#f8faff; border-radius:0 11px 11px 0; }
     .sub-reveal.show { display:block; animation:fadeUp .25s ease; }
 
-    /* Conditional for Section 2 choices */
+    /* Proc sections */
     .proc-section { display:none; }
-    .proc-section.show { display:block; }
+    .proc-section.show { display:block; animation:fadeUp .3s ease; }
 
     /* Buttons */
-    .btn { padding:10px 20px; border-radius:9px; font-weight:700; font-size:14px; cursor:pointer; transition:all .2s; display:inline-flex; align-items:center; gap:8px; border:none; }
-    .btn-primary { background:var(--blue-primary); color:#fff; }
-    .btn-primary:hover { background:#1e40af; transform:translateY(-1px); }
-    .btn-gray { background:#f1f5f9; color:#475569; border:1.5px solid #e2e8f0; }
-    .btn-gray:hover { background:#e2e8f0; }
-    .btn-green { background:var(--green-accent); color:#fff; }
-    .btn-green:hover { background:#15803d; transform:translateY(-1px); }
-    .btn-red { background:var(--red-accent); color:#fff; }
-    .btn-red:hover { background:#b91c1c; }
-    .btn-yellow { background:#d97706; color:#fff; }
+    .btn { padding:10px 20px; border-radius:10px; font-weight:700; font-size:14px; cursor:pointer; transition:all .2s; display:inline-flex; align-items:center; gap:8px; border:none; letter-spacing:.01em; }
+    .btn-primary { background:var(--blue-primary); color:#fff; box-shadow:0 4px 14px rgba(37,99,235,.35); }
+    .btn-primary:hover { background:var(--blue-dark); transform:translateY(-1px); box-shadow:0 6px 18px rgba(37,99,235,.4); }
+    .btn-primary:active { transform:translateY(0); }
+    .btn-gray { background:#f8fafc; color:#475569; border:1.5px solid #e2e8f0; }
+    .btn-gray:hover { background:#f1f5f9; border-color:#cbd5e1; }
+    .btn-green { background:var(--green-accent); color:#fff; box-shadow:0 4px 14px rgba(5,150,105,.3); }
+    .btn-green:hover { background:#047857; transform:translateY(-1px); box-shadow:0 6px 18px rgba(5,150,105,.35); }
+    .btn-red { background:var(--red-accent); color:#fff; box-shadow:0 2px 8px rgba(225,29,72,.25); }
+    .btn-red:hover { background:#be123c; }
+    .btn-yellow { background:#d97706; color:#fff; box-shadow:0 2px 8px rgba(217,119,6,.25); }
     .btn-yellow:hover { background:#b45309; }
 
-    /* Table */
-    .admin-table th { background:#f1f5f9; padding:10px 14px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:#64748b; text-align:left; }
-    .admin-table td { padding:10px 14px; font-size:13px; border-bottom:1px solid #f1f5f9; vertical-align:middle; }
+    /* Admin table */
+    .admin-table th { background:#f8fafc; padding:11px 14px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:#64748b; text-align:left; border-bottom:1.5px solid #e2e8f0; }
+    .admin-table td { padding:11px 14px; font-size:13px; border-bottom:1px solid #f1f5f9; vertical-align:middle; }
     .admin-table tr:hover td { background:#f8fafc; }
 
-    /* Hidden utility */
+    /* Hidden */
     .hidden { display:none !important; }
 
-    /* Edit mode banner */
-    #editModeBanner { position:absolute; top:0; left:0; right:0; background:#fbbf24; color:#78350f; font-weight:700; text-align:center; font-size:13px; padding:6px; z-index:20; border-radius:12px 12px 0 0; }
+    /* Edit banner */
+    #editModeBanner { position:absolute; top:0; left:0; right:0; background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; font-weight:800; text-align:center; font-size:13px; padding:8px; z-index:20; border-radius:14px 14px 0 0; letter-spacing:.03em; text-shadow:0 1px 2px rgba(0,0,0,.15); }
 
-    /* Grid utilities */
+    /* Grids */
     .g2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
     .g3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
     .g4 { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
-    @media (max-width:640px) { .g2,.g3,.g4 { grid-template-columns:1fr !important; } }
-    @media (max-width:768px) { .g2,.g3,.g4 { grid-template-columns:1fr; } }
+    @media (max-width:640px)  { .g2,.g3,.g4 { grid-template-columns:1fr !important; } }
+    @media (max-width:768px)  { .g2,.g3,.g4 { grid-template-columns:1fr; } }
     @media (max-width:1024px) { .g3 { grid-template-columns:1fr 1fr; } .g4 { grid-template-columns:1fr 1fr; } }
-    /* Procedure 9.1-9.4 — always single column stack */
+
+    /* Proc stack — always vertical */
     .proc-stack { display:flex !important; flex-direction:column !important; gap:14px !important; }
     .proc-stack > div { width:100% !important; }
 
     /* Analytics accordion */
-    .analytic-panel { border:1.5px solid #e2e8f0; border-radius:12px; overflow:hidden; margin-bottom:10px; }
-    .analytic-header { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; background:#f8fafc; cursor:pointer; user-select:none; }
-    .analytic-header:active { background:#f1f5f9; }
+    .analytic-panel { border:1.5px solid #e2e8f0; border-radius:13px; overflow:hidden; margin-bottom:10px; box-shadow:0 1px 4px rgba(0,0,0,.04); }
+    .analytic-header { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; background:#f8fafc; cursor:pointer; user-select:none; transition:background .15s; }
+    .analytic-header:hover { background:#f1f5f9; }
+    .analytic-header:active { background:#e9eef5; }
     .analytic-body { display:none; padding:16px; background:#fff; border-top:1.5px solid #e2e8f0; }
     .analytic-body.open { display:block; animation:fadeUp .2s ease; }
     .analytic-chevron { transition:transform .25s; font-size:12px; color:#94a3b8; }
     .analytic-chevron.open { transform:rotate(180deg); }
-        #idFields [style*="grid-template-columns:1fr 1fr 1fr"] { grid-template-columns:1fr !important; }
-        #idFields [style*="grid-template-columns:1fr 1fr 1fr 1fr"] { grid-template-columns:1fr 1fr !important; }
-        #idFields [style*="grid-template-columns:1fr 1fr"] { grid-template-columns:1fr !important; }
+
+    /* Inline ID grids responsive */
+    @media (max-width:640px) {
+        #idFields [style*="grid-template-columns:1fr 1fr 1fr"]      { grid-template-columns:1fr !important; }
+        #idFields [style*="grid-template-columns:1fr 1fr 1fr 1fr"]  { grid-template-columns:1fr 1fr !important; }
+        #idFields [style*="grid-template-columns:1fr 1fr"]          { grid-template-columns:1fr !important; }
     }
 
-    /* Progress indicator */
-    .progress-bar { height:4px; background:#e2e8f0; border-radius:2px; overflow:hidden; }
-    .progress-fill { height:100%; background:linear-gradient(90deg, var(--blue-primary), #60a5fa); border-radius:2px; transition:width .4s ease; }
+    /* Progress bar */
+    .progress-bar  { height:4px; background:#e2e8f0; border-radius:2px; overflow:hidden; }
+    .progress-fill { height:100%; background:linear-gradient(90deg,var(--blue-primary),#60a5fa); border-radius:2px; transition:width .45s cubic-bezier(.22,1,.36,1); }
 
-    /* Badge */
-    .badge { display:inline-block; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:700; }
-    .badge-blue { background:#dbeafe; color:#1d4ed8; }
-    .badge-green { background:#dcfce7; color:#16a34a; }
-    .badge-red { background:#fee2e2; color:#dc2626; }
-    .badge-gray { background:#f1f5f9; color:#64748b; }
+    /* Badges */
+    .badge { display:inline-block; padding:2px 9px; border-radius:20px; font-size:11px; font-weight:700; letter-spacing:.02em; }
+    .badge-blue   { background:#dbeafe; color:#1d4ed8; }
+    .badge-green  { background:#d1fae5; color:#065f46; }
+    .badge-red    { background:#ffe4e6; color:#9f1239; }
+    .badge-gray   { background:#f1f5f9; color:#475569; }
 
-    .required-star { color:var(--red-accent); }
-
-    /* Step navigation sticky footer */
-    .step-footer { position:sticky; bottom:0; background:rgba(255,255,255,.95); backdrop-filter:blur(8px); border-top:1.5px solid #e2e8f0; padding:14px 24px; display:flex; justify-content:space-between; align-items:center; gap:12px; z-index:30; }
+    /* Step footer */
+    .step-footer { position:sticky; bottom:0; background:rgba(255,255,255,.97); backdrop-filter:blur(12px); border-top:1.5px solid #e2e8f0; padding:14px 24px; display:flex; justify-content:space-between; align-items:center; gap:12px; z-index:30; }
 </style>
 ```
 
 </head>
 <body class="min-h-screen">
+<!-- Toast container -->
+<div id="toast-container"></div>
+<!-- Autosave indicator -->
+<div id="autosave-indicator">
+    <div id="autosave-dot"></div>
+    <span id="autosave-text">Draft saved</span>
+</div>
 
 <!-- HEADER -->
 
@@ -440,20 +484,69 @@
                             <select name="afibPriorAblation" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select>
                         </div>
                         <div>
-                            <label class="lbl">4.1c CHA₂DS₂-VASc score</label>
-                            <select name="afibChads" class="inp"><option value="">Select</option><option>0</option><option>1</option><option>2</option><option>3</option><option>&gt;3</option></select>
-                        </div>
-                        <div>
-                            <label class="lbl">4.1d HAS-BLED score</label>
-                            <select name="afibHasBled" class="inp"><option value="">Select</option><option>0</option><option>1</option><option>2</option><option>3</option><option>&gt;3</option></select>
-                        </div>
-                        <div>
                             <label class="lbl">4.1f Contraindication to long-term OAC</label>
                             <select name="afibContraOAC" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select>
                         </div>
                         <div>
                             <label class="lbl">4.1g Prior major bleeding</label>
                             <select name="afibMajorBleed" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select>
+                        </div>
+                    </div>
+
+                    <!-- CHA₂DS₂-VASc AUTO CALCULATOR -->
+                    <div class="card card-blue mt-2" style="padding:16px;">
+                        <div style="font-size:12px;font-weight:800;color:#1e3a8a;margin-bottom:12px;display:flex;align-items:center;gap:6px;">
+                            <i class="fas fa-calculator text-blue-600"></i> CHA₂DS₂-VASc Auto-Calculator
+                        </div>
+                        <div class="g2" style="gap:8px;">
+                            <label class="chk-item" style="font-size:12px;">
+                                <input type="checkbox" id="chads_chf" onchange="calcChads()">
+                                <span><b>C</b> — CHF / HF (1pt)</span>
+                            </label>
+                            <label class="chk-item" style="font-size:12px;">
+                                <input type="checkbox" id="chads_htn" onchange="calcChads()">
+                                <span><b>H</b> — Hypertension (1pt)</span>
+                            </label>
+                            <label class="chk-item" style="font-size:12px;">
+                                <input type="checkbox" id="chads_age75" onchange="calcChads()">
+                                <span><b>A₂</b> — Age ≥75 (2pts)</span>
+                            </label>
+                            <label class="chk-item" style="font-size:12px;">
+                                <input type="checkbox" id="chads_dm" onchange="calcChads()">
+                                <span><b>D</b> — Diabetes (1pt)</span>
+                            </label>
+                            <label class="chk-item" style="font-size:12px;">
+                                <input type="checkbox" id="chads_stroke" onchange="calcChads()">
+                                <span><b>S₂</b> — Stroke/TIA/TE (2pts)</span>
+                            </label>
+                            <label class="chk-item" style="font-size:12px;">
+                                <input type="checkbox" id="chads_vasc" onchange="calcChads()">
+                                <span><b>V</b> — Vascular disease (1pt)</span>
+                            </label>
+                            <label class="chk-item" style="font-size:12px;">
+                                <input type="checkbox" id="chads_age65" onchange="calcChads()">
+                                <span><b>A</b> — Age 65–74 (1pt)</span>
+                            </label>
+                            <label class="chk-item" style="font-size:12px;">
+                                <input type="checkbox" id="chads_female" onchange="calcChads()">
+                                <span><b>Sc</b> — Female sex (1pt)</span>
+                            </label>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:12px;margin-top:12px;">
+                            <div id="chads_result" class="chads-badge chads-low">Score: 0 — Low Risk</div>
+                            <div style="font-size:11px;color:#475569;">Auto-fills the score field →</div>
+                        </div>
+                        <input type="hidden" name="afibChads_auto" id="afibChads_auto" value="0">
+                    </div>
+
+                    <div class="g2 mt-3">
+                        <div>
+                            <label class="lbl">4.1c CHA₂DS₂-VASc score <span style="font-size:10px;color:#64748b;">(auto-filled above)</span></label>
+                            <select name="afibChads" id="afibChads_select" class="inp"><option value="">Select</option><option>0</option><option>1</option><option>2</option><option>3</option><option>&gt;3</option></select>
+                        </div>
+                        <div>
+                            <label class="lbl">4.1d HAS-BLED score</label>
+                            <select name="afibHasBled" class="inp"><option value="">Select</option><option>0</option><option>1</option><option>2</option><option>3</option><option>&gt;3</option></select>
                         </div>
                     </div>
                 </div>
@@ -2354,11 +2447,146 @@ document.querySelector('input[name="crtInd_inherited"]')?.addEventListener('chan
 });
 
 // ============================================================
+// TOAST NOTIFICATION SYSTEM
+// ============================================================
+window.showToast = function(message, type='info', duration=3500) {
+    const icons = { success:'fa-circle-check', error:'fa-circle-xmark', info:'fa-circle-info', warning:'fa-triangle-exclamation' };
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `<i class="fas ${icons[type]} toast-icon"></i><span>${message}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.classList.add('out');
+        setTimeout(() => toast.remove(), 350);
+    }, duration);
+};
+
+// ============================================================
+// CHA₂DS₂-VASc CALCULATOR
+// ============================================================
+window.calcChads = function() {
+    let score = 0;
+    if(document.getElementById('chads_chf')?.checked)    score += 1;
+    if(document.getElementById('chads_htn')?.checked)    score += 1;
+    if(document.getElementById('chads_age75')?.checked)  score += 2;
+    if(document.getElementById('chads_dm')?.checked)     score += 1;
+    if(document.getElementById('chads_stroke')?.checked) score += 2;
+    if(document.getElementById('chads_vasc')?.checked)   score += 1;
+    if(document.getElementById('chads_age65')?.checked)  score += 1;
+    if(document.getElementById('chads_female')?.checked) score += 1;
+
+    const badge = document.getElementById('chads_result');
+    let label, cls;
+    if(score === 0)       { label='Low Risk';    cls='chads-low'; }
+    else if(score === 1)  { label='Low-Moderate';cls='chads-low'; }
+    else if(score <= 3)   { label='Moderate Risk';cls='chads-medium'; }
+    else                  { label='High Risk';   cls='chads-high'; }
+
+    badge.className = `chads-badge ${cls}`;
+    badge.textContent = `Score: ${score} — ${label}`;
+    document.getElementById('afibChads_auto').value = score;
+
+    // Auto-fill the select
+    const sel = document.getElementById('afibChads_select');
+    if(sel) {
+        const opt = score > 3 ? '>3' : String(score);
+        [...sel.options].forEach(o => o.selected = o.value === opt);
+    }
+};
+
+// ============================================================
+// AUTO-SAVE (drafts to localStorage every 30 seconds)
+// ============================================================
+let autoSaveTimer = null;
+const DRAFT_KEY = 'eps_draft_v1';
+
+function showAutosaveStatus(state) {
+    const el = document.getElementById('autosave-indicator');
+    const txt = document.getElementById('autosave-text');
+    el.className = 'show ' + state;
+    txt.textContent = state === 'saving' ? 'Saving draft…' : 'Draft saved';
+    clearTimeout(window._asHide);
+    if(state === 'saved') window._asHide = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+function schedulAutoSave() {
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(() => {
+        const fd = new FormData(document.getElementById('epsForm'));
+        const draft = Object.fromEntries(fd.entries());
+        document.getElementById('epsForm').querySelectorAll('input[type="checkbox"]').forEach(cb => { draft[cb.name] = cb.checked; });
+        showAutosaveStatus('saving');
+        setTimeout(() => {
+            try { localStorage.setItem(DRAFT_KEY, JSON.stringify(draft)); showAutosaveStatus('saved'); }
+            catch(e) { /* storage full */ }
+        }, 400);
+    }, 2000);
+}
+
+function restoreDraft() {
+    try {
+        const raw = localStorage.getItem(DRAFT_KEY);
+        if(!raw) return;
+        const draft = JSON.parse(raw);
+        // Only restore if no record id (fresh form)
+        if(draft.recordId) return;
+        Object.keys(draft).forEach(key => {
+            const el = document.getElementsByName(key)[0];
+            if(!el) return;
+            if(el.type==='checkbox') el.checked = draft[key]==='true'||draft[key]===true;
+            else if(el.type!=='radio') el.value = draft[key]||'';
+        });
+        showToast('Draft restored from last session','info',4000);
+    } catch(e) {}
+}
+
+function clearDraft() { try { localStorage.removeItem(DRAFT_KEY); } catch(e){} }
+
+// Attach auto-save listeners to all form inputs
+document.getElementById('epsForm').addEventListener('input', schedulAutoSave);
+document.getElementById('epsForm').addEventListener('change', schedulAutoSave);
+
+// Restore draft on load (after short delay to let form build)
+setTimeout(restoreDraft, 800);
+
+// ============================================================
+// CLEAN DATA — zero out hidden sub-section fields before save
+// ============================================================
+function getCleanFormData(form) {
+    const fd = new FormData(form);
+    const data = Object.fromEntries(fd.entries());
+    form.querySelectorAll('input[type="checkbox"]').forEach(cb => { data[cb.name] = cb.checked; });
+    form.querySelectorAll('input[type="radio"]:checked').forEach(r => { data[r.name] = r.value; });
+
+    // Null out fields inside hidden sub-reveals (not .show)
+    form.querySelectorAll('.sub-reveal:not(.show)').forEach(section => {
+        section.querySelectorAll('input,select,textarea').forEach(el => {
+            if(el.name) {
+                if(el.type === 'checkbox' || el.type === 'radio') data[el.name] = false;
+                else data[el.name] = '';
+            }
+        });
+    });
+    // Null out hidden procedure sections
+    form.querySelectorAll('.proc-section:not(.show)').forEach(section => {
+        section.querySelectorAll('input,select,textarea').forEach(el => {
+            if(el.name) {
+                if(el.type === 'checkbox' || el.type === 'radio') data[el.name] = false;
+                else data[el.name] = '';
+            }
+        });
+    });
+    return data;
+}
+
+// ============================================================
 // TABS
 // ============================================================
 window.switchTab = function(tab) {
     if(tab==='admin') {
-        if(prompt("Enter Admin PIN:")!=="2468") { alert("Access Denied"); return; }
+        const pin = prompt('Enter Admin PIN:');
+        if(pin !== '2468') { showToast('Access denied — incorrect PIN','error'); return; }
         fetchData();
     } else if(tab==='analytics') { fetchAnalytics(); }
     ['form','admin','analytics'].forEach(t => {
@@ -2372,68 +2600,84 @@ window.switchTab = function(tab) {
 // ============================================================
 // SAVE FORM
 // ============================================================
+function resetFormUI(form) {
+    form.reset();
+    document.querySelectorAll('.sub-reveal').forEach(s => s.classList.remove('show'));
+    document.querySelectorAll('.yn-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.yn-btn.yn-no').forEach(b => b.classList.add('selected'));
+    document.querySelectorAll('input[type="hidden"][id^="val_"]').forEach(h => h.value = 'No');
+    document.querySelectorAll('.proc-section').forEach(s => s.classList.remove('show'));
+    // Reset CHADS calculator
+    document.querySelectorAll('[id^="chads_"]').forEach(el => { if(el.type==='checkbox') el.checked=false; });
+    calcChads();
+    goToStep(0);
+    clearDraft();
+}
+
 document.getElementById('epsForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Mandatory field validation
+    // Mandatory field validation with shake + toast
     const mandatory = [
-        { id: 'req_nameFirst', label: 'Patient First Name' },
-        { id: 'req_nameLast',  label: 'Patient Last Name' },
-        { id: 'civilId',       label: 'Civil ID' },
-        { id: 'req_crfNo',     label: 'CRF Number' },
-        { id: 'req_fileNo',    label: 'File Number' },
+        { id:'req_nameFirst', label:'Patient First Name' },
+        { id:'req_nameLast',  label:'Patient Last Name' },
+        { id:'civilId',       label:'Civil ID' },
+        { id:'req_crfNo',     label:'CRF Number' },
+        { id:'req_fileNo',    label:'File Number' },
     ];
-    for (const f of mandatory) {
+    for(const f of mandatory) {
         const el = document.getElementById(f.id);
-        if (!el || !el.value.trim()) {
+        if(!el || !el.value.trim()) {
             goToStep(0);
             el?.focus();
-            el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            el.style.borderColor = '#dc2626';
-            el.style.boxShadow = '0 0 0 3px rgba(220,38,38,.15)';
-            setTimeout(() => { el.style.borderColor = ''; el.style.boxShadow = ''; }, 3000);
-            alert(`⚠ Required field missing: "${f.label}"\nPlease fill in all mandatory fields (*) before saving.`);
+            el?.scrollIntoView({ behavior:'smooth', block:'center' });
+            el?.classList.add('error');
+            setTimeout(() => el?.classList.remove('error'), 2000);
+            showToast(`Required field missing: "${f.label}"`, 'error', 4000);
             return;
         }
     }
-    if (!/^\d{12}$/.test(document.getElementById('civilId').value)) {
+    if(!/^\d{12}$/.test(document.getElementById('civilId').value)) {
         goToStep(0);
-        alert('Civil ID must be exactly 12 digits.');
-        document.getElementById('civilId').focus();
+        document.getElementById('civilId').classList.add('error');
+        setTimeout(() => document.getElementById('civilId').classList.remove('error'), 2000);
+        showToast('Civil ID must be exactly 12 digits', 'error');
         return;
     }
-    if (!/^\d{6}$/.test(document.getElementById('req_fileNo').value)) {
+    if(!/^\d{6}$/.test(document.getElementById('req_fileNo').value)) {
         goToStep(0);
-        alert('File Number must be exactly 6 digits.');
-        document.getElementById('req_fileNo').focus();
+        document.getElementById('req_fileNo').classList.add('error');
+        setTimeout(() => document.getElementById('req_fileNo').classList.remove('error'), 2000);
+        showToast('File Number must be exactly 6 digits', 'error');
         return;
     }
 
-    const fd = new FormData(e.target);
-    const dataObj = Object.fromEntries(fd.entries());
-    e.target.querySelectorAll('input[type="checkbox"]').forEach(cb => { dataObj[cb.name] = cb.checked; });
-    e.target.querySelectorAll('input[type="radio"]:checked').forEach(r => { dataObj[r.name] = r.value; });
+    const dataObj = getCleanFormData(e.target);
     dataObj.timestamp = new Date();
-
     const recordId = dataObj.recordId; delete dataObj.recordId;
+
+    const btn = document.getElementById('btnSubmit');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+
     try {
         if(recordId) {
-            await setDoc(doc(window._db,"patients_full",recordId), dataObj);
-            alert("Record Updated!");
+            await setDoc(doc(window._db,'patients_full',recordId), dataObj);
+            showToast('Record updated successfully', 'success');
             document.getElementById('editModeBanner').classList.add('hidden');
         } else {
-            await addDoc(collection(window._db,"patients_full"), dataObj);
-            alert("New Patient Saved!");
+            await addDoc(collection(window._db,'patients_full'), dataObj);
+            showToast('New patient record saved!', 'success');
         }
-        e.target.reset();
-        document.querySelectorAll('.sub-reveal').forEach(s=>s.classList.remove('show'));
-        document.querySelectorAll('.yn-btn').forEach(b=>{b.classList.remove('selected');});
-        document.querySelectorAll('.yn-btn.yn-no').forEach(b=>b.classList.add('selected'));
-        document.querySelectorAll('input[type="hidden"][id^="val_"]').forEach(h=>h.value='No');
-        document.querySelectorAll('.proc-section').forEach(s=>s.classList.remove('show'));
-        goToStep(0);
-        loadRecordsCache(); // refresh quick search cache
-    } catch(err) { console.error(err); alert("Error saving."); }
+        resetFormUI(e.target);
+        loadRecordsCache();
+    } catch(err) {
+        console.error(err);
+        showToast('Save failed — check your connection', 'error', 5000);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-save"></i> Save Record';
+    }
 });
 
 // ============================================================
@@ -2441,21 +2685,21 @@ document.getElementById('epsForm').addEventListener('submit', async (e) => {
 // ============================================================
 let allData = [];
 window.fetchData = async function() {
-    const sName = document.getElementById('searchName').value.toLowerCase();
+    const sName  = document.getElementById('searchName').value.toLowerCase();
     const sCivil = document.getElementById('searchCivilId').value;
-    const sFile = document.getElementById('searchFileNo').value;
-    const snapshot = await getDocs(collection(window._db,"patients_full"));
+    const sFile  = document.getElementById('searchFileNo').value;
+    const snapshot = await getDocs(collection(window._db,'patients_full'));
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML=''; allData=[];
     snapshot.forEach(docSnap => {
-        const data = docSnap.data(); data.id=docSnap.id;
+        const data = docSnap.data(); data.id = docSnap.id;
         const fullName = `${data.nameFirst||''} ${data.nameMiddle||''} ${data.nameLast||''}`.trim();
-        if(sName && !fullName.toLowerCase().includes(sName)) return;
+        if(sName  && !fullName.toLowerCase().includes(sName)) return;
         if(sCivil && !data.civilId?.includes(sCivil)) return;
-        if(sFile && !data.fileNumber?.includes(sFile)) return;
-        data.fullName=fullName; allData.push(data);
-        const tr=document.createElement('tr');
-        tr.innerHTML=`
+        if(sFile  && !data.fileNumber?.includes(sFile)) return;
+        data.fullName = fullName; allData.push(data);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
             <td><div class="font-bold text-gray-800">${fullName||'Anonymous'}</div><div class="text-xs text-gray-500">${data.gender||''} | Age: ${data.estimatedAge||'?'}</div></td>
             <td class="text-xs"><div><span class="font-semibold text-gray-500">CID:</span> ${data.civilId||'—'}</div><div><span class="font-semibold text-gray-500">File:</span> ${data.fileNumber||'—'}</div></td>
             <td><span class="badge badge-blue">${data.epReason||'—'}</span></td>
@@ -2467,12 +2711,18 @@ window.fetchData = async function() {
         tbody.appendChild(tr);
     });
     if(!allData.length) tbody.innerHTML='<tr><td colspan="5" class="text-center py-8 text-gray-400">No records found</td></tr>';
-    // Refresh quick search cache
     _allRecordsCache = allData.slice();
 };
+
 window.deleteRecord = async function(id) {
-    if(confirm("Permanently delete this record?")) { await deleteDoc(doc(window._db,"patients_full",id)); fetchData(); }
+    if(!confirm('Permanently delete this record?')) return;
+    try {
+        await deleteDoc(doc(window._db,'patients_full',id));
+        showToast('Record deleted','warning');
+        fetchData();
+    } catch(e) { showToast('Delete failed','error'); }
 };
+
 window.editRecord = function(data) {
     switchTab('form');
     document.getElementById('epsForm').reset();
@@ -2481,13 +2731,12 @@ window.editRecord = function(data) {
     Object.keys(data).forEach(key => {
         const el = document.getElementsByName(key)[0];
         if(!el) return;
-        if(el.type==='checkbox') el.checked=!!data[key];
-        else if(el.type==='radio') {
-            document.getElementsByName(key).forEach(r => { if(r.value===data[key]) r.checked=true; });
-        } else el.value=data[key]||'';
+        if(el.type==='checkbox') el.checked = !!data[key];
+        else if(el.type==='radio') document.getElementsByName(key).forEach(r => { if(r.value===data[key]) r.checked=true; });
+        else el.value = data[key]||'';
     });
-    // Re-trigger UI state
     if(data.epReason) onEpReasonChange();
+    showToast('Record loaded for editing','info');
     goToStep(0);
 };
 
@@ -2495,23 +2744,25 @@ window.editRecord = function(data) {
 // EXPORT
 // ============================================================
 window.exportToExcel = function() {
-    if(!allData.length) return alert("No data");
-    const ws=XLSX.utils.json_to_sheet(allData);
-    const wb=XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb,ws,"Registry");
-    XLSX.writeFile(wb,"MKH_EP_Registry.xlsx");
+    if(!allData.length) { showToast('No data to export','warning'); return; }
+    const ws = XLSX.utils.json_to_sheet(allData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Registry');
+    XLSX.writeFile(wb, 'MKH_EP_Registry.xlsx');
+    showToast('Excel file downloaded','success');
 };
 window.exportToPDF = function() {
-    if(!allData.length) return alert("No data");
-    const {jsPDF}=window.jspdf;
-    const d=new jsPDF('landscape');
-    d.text("Mubarak Alkabeer Hospital - EP Registry",14,15);
+    if(!allData.length) { showToast('No data to export','warning'); return; }
+    const {jsPDF} = window.jspdf;
+    const d = new jsPDF('landscape');
+    d.text('Mubarak Alkabeer Hospital - EP Registry', 14, 15);
     d.autoTable({
         head:[['Name','Civil ID','File No.','Gender','Age','EP Reason','Admission','Discharge']],
         body:allData.map(r=>[r.fullName,r.civilId,r.fileNumber,r.gender,r.estimatedAge,r.epReason,r.admissionDate,r.dischargeStatus]),
         startY:22
     });
-    d.save("MKH_Registry.pdf");
+    d.save('MKH_Registry.pdf');
+    showToast('PDF file downloaded','success');
 };
 
 // ============================================================
