@@ -129,8 +129,18 @@
     .g4 { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
     @media (max-width:768px) { .g2,.g3,.g4 { grid-template-columns:1fr; } }
     @media (max-width:1024px) { .g3 { grid-template-columns:1fr 1fr; } .g4 { grid-template-columns:1fr 1fr; } }
-    /* Inline identification grids responsive */
-    @media (max-width:640px) {
+    /* Procedure 9.1-9.4 grid — 2x2 on mobile, 4-col on desktop */
+    .proc-grid-4 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    @media (min-width:900px) { .proc-grid-4 { grid-template-columns:1fr 1fr 1fr 1fr; } }
+
+    /* Analytics accordion */
+    .analytic-panel { border:1.5px solid #e2e8f0; border-radius:12px; overflow:hidden; margin-bottom:10px; }
+    .analytic-header { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; background:#f8fafc; cursor:pointer; user-select:none; }
+    .analytic-header:active { background:#f1f5f9; }
+    .analytic-body { display:none; padding:16px; background:#fff; border-top:1.5px solid #e2e8f0; }
+    .analytic-body.open { display:block; animation:fadeUp .2s ease; }
+    .analytic-chevron { transition:transform .25s; font-size:12px; color:#94a3b8; }
+    .analytic-chevron.open { transform:rotate(180deg); }
         #idFields [style*="grid-template-columns:1fr 1fr 1fr"] { grid-template-columns:1fr !important; }
         #idFields [style*="grid-template-columns:1fr 1fr 1fr 1fr"] { grid-template-columns:1fr 1fr !important; }
         #idFields [style*="grid-template-columns:1fr 1fr"] { grid-template-columns:1fr !important; }
@@ -982,23 +992,23 @@
 
             <!-- 9.1–9.4 All patients -->
             <div class="card mb-4">
-                <div class="font-bold text-gray-800 text-sm mb-3">9.1–9.4 All Patients</div>
-                <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;align-items:start;">
-                    <div style="display:flex;flex-direction:column;">
+                <div class="font-bold text-gray-800 text-sm mb-4">9.1–9.4 All Patients</div>
+                <div class="proc-grid-4">
+                    <div>
                         <label class="lbl">9.1 Procedure Start Date</label>
-                        <input type="date" name="procStartDate" class="inp" style="flex:1;height:40px;">
+                        <input type="date" name="procStartDate" class="inp">
                     </div>
-                    <div style="display:flex;flex-direction:column;">
+                    <div>
                         <label class="lbl">9.2 Procedure Start Time (24h)</label>
-                        <input type="time" name="procStartTime" class="inp" style="flex:1;height:40px;">
+                        <input type="time" name="procStartTime" class="inp">
                     </div>
-                    <div style="display:flex;flex-direction:column;">
+                    <div>
                         <label class="lbl">9.3 Procedure Finish Time (24h)</label>
-                        <input type="time" name="procEndTime" class="inp" style="flex:1;height:40px;">
+                        <input type="time" name="procEndTime" class="inp">
                     </div>
-                    <div style="display:flex;flex-direction:column;">
+                    <div>
                         <label class="lbl">9.4 Operator Name</label>
-                        <select name="operatorName" class="inp" style="flex:1;height:40px;">
+                        <select name="operatorName" class="inp">
                             <option value="">Select operator...</option>
                             <option>Dr. Operator 1</option>
                             <option>Dr. Operator 2</option>
@@ -1940,70 +1950,119 @@
 
 <!-- ===== ANALYTICS ===== -->
 
-<section id="section-analytics" class="hidden bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-gray-100 min-h-[80vh]">
-    <div class="flex items-center justify-between mb-6 border-b pb-3">
-        <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2"><i class="fas fa-chart-line text-blue-600"></i> Clinical Analytics Dashboard</h2>
-        <button onclick="fetchAnalytics()" class="btn btn-primary text-sm"><i class="fas fa-sync-alt"></i> Refresh</button>
+<section id="section-analytics" class="hidden bg-white rounded-2xl shadow-lg p-4 md:p-6 border border-gray-100 min-h-[80vh]">
+    <div class="flex items-center justify-between mb-4 border-b pb-3">
+        <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+            <i class="fas fa-chart-line text-blue-600"></i> Clinical Analytics
+        </h2>
+        <button onclick="fetchAnalytics()" class="btn btn-primary text-sm px-4 py-2">
+            <i class="fas fa-sync-alt"></i> Refresh
+        </button>
     </div>
 
 ```
-<!-- KPI Summary Cards -->
-<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;" class="mb-6" id="kpiRow">
-    <div class="card" style="border-left:4px solid #1d4ed8;padding:16px;">
-        <div class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Total Patients</div>
-        <div class="text-3xl font-black text-blue-700" id="kpi_total">—</div>
+<!-- KPI Strip -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" class="mb-4">
+    <div style="border-left:4px solid #1d4ed8;background:#eff6ff;border-radius:10px;padding:12px;">
+        <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;">Total Patients</div>
+        <div style="font-size:28px;font-weight:900;color:#1d4ed8;line-height:1.1;" id="kpi_total">—</div>
     </div>
-    <div class="card" style="border-left:4px solid #16a34a;padding:16px;">
-        <div class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Procedure Success</div>
-        <div class="text-3xl font-black text-green-600" id="kpi_success">—</div>
+    <div style="border-left:4px solid #16a34a;background:#f0fdf4;border-radius:10px;padding:12px;">
+        <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;">Procedure Success</div>
+        <div style="font-size:28px;font-weight:900;color:#16a34a;line-height:1.1;" id="kpi_success">—</div>
     </div>
-    <div class="card" style="border-left:4px solid #dc2626;padding:16px;">
-        <div class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Complications</div>
-        <div class="text-3xl font-black text-red-600" id="kpi_complications">—</div>
+    <div style="border-left:4px solid #dc2626;background:#fff5f5;border-radius:10px;padding:12px;">
+        <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;">Complication Rate</div>
+        <div style="font-size:28px;font-weight:900;color:#dc2626;line-height:1.1;" id="kpi_complications">—</div>
     </div>
-    <div class="card" style="border-left:4px solid #d97706;padding:16px;">
-        <div class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">AFib Prevalence</div>
-        <div class="text-3xl font-black text-amber-600" id="kpi_afib">—</div>
-    </div>
-</div>
-
-<!-- Row 1: Demographics -->
-<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;" class="mb-5">
-    <div class="card card-gray flex flex-col">
-        <div class="font-bold text-gray-700 text-sm mb-3 flex items-center gap-2"><i class="fas fa-venus-mars text-blue-500"></i> Gender Distribution</div>
-        <div style="height:200px;position:relative;"><canvas id="genderChart"></canvas></div>
-    </div>
-    <div class="card card-gray flex flex-col">
-        <div class="font-bold text-gray-700 text-sm mb-3 flex items-center gap-2"><i class="fas fa-procedures text-indigo-500"></i> EP Lab Reasons</div>
-        <div style="height:200px;position:relative;"><canvas id="procChart"></canvas></div>
-    </div>
-    <div class="card card-gray flex flex-col">
-        <div class="font-bold text-gray-700 text-sm mb-3 flex items-center gap-2"><i class="fas fa-door-open text-orange-500"></i> Discharge Outcomes</div>
-        <div style="height:200px;position:relative;"><canvas id="dischargeChart"></canvas></div>
+    <div style="border-left:4px solid #d97706;background:#fffbeb;border-radius:10px;padding:12px;">
+        <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;">AFib Prevalence</div>
+        <div style="font-size:28px;font-weight:900;color:#d97706;line-height:1.1;" id="kpi_afib">—</div>
     </div>
 </div>
 
-<!-- Row 2: Clinical -->
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;" class="mb-5">
-    <div class="card card-gray flex flex-col">
-        <div class="font-bold text-gray-700 text-sm mb-3 flex items-center gap-2"><i class="fas fa-heartbeat text-red-500"></i> Comorbidities Prevalence</div>
-        <div style="height:220px;position:relative;"><canvas id="comorbChart"></canvas></div>
+<!-- Accordion Panels -->
+<div class="analytic-panel">
+    <div class="analytic-header" onclick="toggleAnalytic('gender')">
+        <span style="font-size:13px;font-weight:700;color:#1e293b;display:flex;align-items:center;gap:8px;">
+            <i class="fas fa-venus-mars text-blue-500"></i> Gender Distribution
+        </span>
+        <i class="fas fa-chevron-down analytic-chevron" id="chev_gender"></i>
     </div>
-    <div class="card card-gray flex flex-col">
-        <div class="font-bold text-gray-700 text-sm mb-3 flex items-center gap-2"><i class="fas fa-exclamation-triangle text-amber-500"></i> Complication Types</div>
-        <div style="height:220px;position:relative;"><canvas id="compChart"></canvas></div>
+    <div class="analytic-body" id="body_gender">
+        <div style="height:220px;position:relative;"><canvas id="genderChart"></canvas></div>
     </div>
 </div>
 
-<!-- Row 3: Device + Medications -->
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-    <div class="card card-gray flex flex-col">
-        <div class="font-bold text-gray-700 text-sm mb-3 flex items-center gap-2"><i class="fas fa-microchip text-purple-500"></i> Prior CIED Types</div>
-        <div style="height:200px;position:relative;"><canvas id="ciedChart"></canvas></div>
+<div class="analytic-panel">
+    <div class="analytic-header" onclick="toggleAnalytic('proc')">
+        <span style="font-size:13px;font-weight:700;color:#1e293b;display:flex;align-items:center;gap:8px;">
+            <i class="fas fa-procedures text-indigo-500"></i> EP Lab Reasons
+        </span>
+        <i class="fas fa-chevron-down analytic-chevron" id="chev_proc"></i>
     </div>
-    <div class="card card-gray flex flex-col">
-        <div class="font-bold text-gray-700 text-sm mb-3 flex items-center gap-2"><i class="fas fa-pills text-green-500"></i> Top Home Medications</div>
-        <div style="height:200px;position:relative;"><canvas id="medsChart"></canvas></div>
+    <div class="analytic-body" id="body_proc">
+        <div style="height:220px;position:relative;"><canvas id="procChart"></canvas></div>
+    </div>
+</div>
+
+<div class="analytic-panel">
+    <div class="analytic-header" onclick="toggleAnalytic('discharge')">
+        <span style="font-size:13px;font-weight:700;color:#1e293b;display:flex;align-items:center;gap:8px;">
+            <i class="fas fa-door-open text-orange-500"></i> Discharge Outcomes
+        </span>
+        <i class="fas fa-chevron-down analytic-chevron" id="chev_discharge"></i>
+    </div>
+    <div class="analytic-body" id="body_discharge">
+        <div style="height:220px;position:relative;"><canvas id="dischargeChart"></canvas></div>
+    </div>
+</div>
+
+<div class="analytic-panel">
+    <div class="analytic-header" onclick="toggleAnalytic('comorb')">
+        <span style="font-size:13px;font-weight:700;color:#1e293b;display:flex;align-items:center;gap:8px;">
+            <i class="fas fa-heartbeat text-red-500"></i> Comorbidities
+        </span>
+        <i class="fas fa-chevron-down analytic-chevron" id="chev_comorb"></i>
+    </div>
+    <div class="analytic-body" id="body_comorb">
+        <div style="height:240px;position:relative;"><canvas id="comorbChart"></canvas></div>
+    </div>
+</div>
+
+<div class="analytic-panel">
+    <div class="analytic-header" onclick="toggleAnalytic('comp')">
+        <span style="font-size:13px;font-weight:700;color:#1e293b;display:flex;align-items:center;gap:8px;">
+            <i class="fas fa-exclamation-triangle text-amber-500"></i> Complications
+        </span>
+        <i class="fas fa-chevron-down analytic-chevron" id="chev_comp"></i>
+    </div>
+    <div class="analytic-body" id="body_comp">
+        <div style="height:240px;position:relative;"><canvas id="compChart"></canvas></div>
+    </div>
+</div>
+
+<div class="analytic-panel">
+    <div class="analytic-header" onclick="toggleAnalytic('cied')">
+        <span style="font-size:13px;font-weight:700;color:#1e293b;display:flex;align-items:center;gap:8px;">
+            <i class="fas fa-microchip text-purple-500"></i> Prior CIED Types
+        </span>
+        <i class="fas fa-chevron-down analytic-chevron" id="chev_cied"></i>
+    </div>
+    <div class="analytic-body" id="body_cied">
+        <div style="height:220px;position:relative;"><canvas id="ciedChart"></canvas></div>
+    </div>
+</div>
+
+<div class="analytic-panel">
+    <div class="analytic-header" onclick="toggleAnalytic('meds')">
+        <span style="font-size:13px;font-weight:700;color:#1e293b;display:flex;align-items:center;gap:8px;">
+            <i class="fas fa-pills text-green-500"></i> Top Home Medications
+        </span>
+        <i class="fas fa-chevron-down analytic-chevron" id="chev_meds"></i>
+    </div>
+    <div class="analytic-body" id="body_meds">
+        <div style="height:240px;position:relative;"><canvas id="medsChart"></canvas></div>
     </div>
 </div>
 ```
@@ -2524,6 +2583,21 @@ document.addEventListener('click', e => {
         document.getElementById('qs_results').classList.add('hidden');
     }
 });
+
+// ============================================================
+// ANALYTICS ACCORDION TOGGLE
+// ============================================================
+window.toggleAnalytic = function(key) {
+    const body = document.getElementById('body_' + key);
+    const chev = document.getElementById('chev_' + key);
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    chev.classList.toggle('open', !isOpen);
+    // Resize chart inside if it exists
+    if(!isOpen && charts[key+'Chart']) {
+        setTimeout(() => charts[key+'Chart'].resize(), 50);
+    }
+};
 
 // ============================================================
 // ANALYTICS — Full rich dashboard from registry data
