@@ -353,9 +353,9 @@
                     <div id="pmTypeDiv" class="hidden ml-8 mt-1">
                         <label class="lbl">2.1 Pacemaker type:</label>
                         <div class="space-y-1 mt-1">
-                            <label class="radio-item"><input type="radio" name="pacemakerType" value="Temporary pacemaker"> Temporary pacemaker</label>
-                            <label class="radio-item"><input type="radio" name="pacemakerType" value="Permanent pacemaker"> Permanent pacemaker</label>
-                            <label class="radio-item"><input type="radio" name="pacemakerType" value="Temporary followed by permanent same hospitalization"> Temporary followed by permanent pacemaker same hospitalization</label>
+                            <label class="radio-item"><input type="radio" name="pacemakerType" value="Temporary pacemaker" onchange="onEpReasonChange()"> Temporary pacemaker</label>
+                            <label class="radio-item"><input type="radio" name="pacemakerType" value="Permanent pacemaker" onchange="onEpReasonChange()"> Permanent pacemaker</label>
+                            <label class="radio-item"><input type="radio" name="pacemakerType" value="Temporary followed by permanent same hospitalization" onchange="onEpReasonChange()"> Temporary followed by permanent pacemaker same hospitalization</label>
                         </div>
                     </div>
                     <label class="radio-item"><input type="radio" name="epReason" value="EPS/Ablation" onchange="onEpReasonChange()"> EPS/Ablation</label>
@@ -1190,7 +1190,7 @@
             <div class="proc-section" id="proc_temppm">
                 <div class="card card-gray mb-3" style="border-left:4px solid #64748b;">
                     <div style="font-weight:800;color:#334155;font-size:14px;margin-bottom:4px;">9.6 — Temporary Pacemaker</div>
-                    <div style="font-size:11px;color:#64748b;">Answer because Section 2 choice is "B. Pacemaker" (Temporary or Temporary followed by PPM)</div>
+                    <div style="font-size:11px;color:#64748b;">Shown because Pacemaker type is "Temporary pacemaker" or "Temporary followed by permanent"</div>
                 </div>
 
                 <div class="card mb-3">
@@ -1261,7 +1261,7 @@
             <div class="proc-section" id="proc_permpm">
                 <div class="card card-gray mb-3" style="border-left:4px solid #475569;">
                     <div style="font-weight:800;color:#1e293b;font-size:14px;margin-bottom:4px;">9.7 — Permanent Pacemaker</div>
-                    <div style="font-size:11px;color:#64748b;">Answer because Section 2 choice is "B. Permanent Pacemaker"</div>
+                    <div style="font-size:11px;color:#64748b;">Shown because Pacemaker type is "Permanent pacemaker" or "Temporary followed by permanent"</div>
                 </div>
 
                 <!-- 9.7a Generator -->
@@ -2331,6 +2331,8 @@ window.setYN = function(btn, key, val) {
 // ============================================================
 window.onEpReasonChange = function() {
     const val = document.querySelector('input[name="epReason"]:checked')?.value;
+    const pmType = document.querySelector('input[name="pacemakerType"]:checked')?.value;
+
     document.getElementById('pmTypeDiv').classList.toggle('hidden', val !== 'Pacemaker');
 
     // Hide all proc sections and the no-reason banner
@@ -2338,18 +2340,37 @@ window.onEpReasonChange = function() {
 
     if(!val) {
         document.getElementById('proc_noReason').style.display = 'block';
-    } else {
-        document.getElementById('proc_noReason').style.display = 'none';
-        if(val === 'CRT/AICD') {
-            document.getElementById('proc_crtaicd').classList.add('show');
-        } else if(val === 'Pacemaker') {
+        return;
+    }
+
+    document.getElementById('proc_noReason').style.display = 'none';
+
+    if(val === 'CRT/AICD') {
+        document.getElementById('proc_crtaicd').classList.add('show');
+
+    } else if(val === 'Pacemaker') {
+        // Only show sections once a pacemaker sub-type is picked
+        if(!pmType) {
+            // No sub-type yet — show the yellow banner again prompting sub-type selection
+            document.getElementById('proc_noReason').style.display = 'block';
+            document.getElementById('proc_noReason').querySelector('div:nth-child(2)').textContent = 'Please select the Pacemaker type (2.1) above to load the correct section.';
+        } else if(pmType === 'Temporary pacemaker') {
+            // Only 9.6
+            document.getElementById('proc_temppm').classList.add('show');
+        } else if(pmType === 'Permanent pacemaker') {
+            // Only 9.7
+            document.getElementById('proc_permpm').classList.add('show');
+        } else if(pmType === 'Temporary followed by permanent same hospitalization') {
+            // Both 9.6 and 9.7
             document.getElementById('proc_temppm').classList.add('show');
             document.getElementById('proc_permpm').classList.add('show');
-        } else if(val === 'EPS/Ablation') {
-            document.getElementById('proc_eps').classList.add('show');
-        } else if(val === 'LAAO') {
-            document.getElementById('proc_laao').classList.add('show');
         }
+
+    } else if(val === 'EPS/Ablation') {
+        document.getElementById('proc_eps').classList.add('show');
+
+    } else if(val === 'LAAO') {
+        document.getElementById('proc_laao').classList.add('show');
     }
 };
 
