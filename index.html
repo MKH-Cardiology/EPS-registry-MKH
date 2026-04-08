@@ -2603,20 +2603,26 @@ window.toggleAnalytic = function(key) {
 // ANALYTICS — Full rich dashboard from registry data
 // ============================================================
 let charts={};
-function mkChart(id, type, labels, data, colors, opts={}) {
+function mkChart(id, type, labels, data, colors) {
     if(charts[id]) charts[id].destroy();
     const canvas = document.getElementById(id);
     if(!canvas) return;
     charts[id] = new Chart(canvas, {
         type,
-        data: { labels, datasets: [{ data, backgroundColor: colors, borderColor: colors.map(c=>c+'cc'), borderWidth: type==='bar'?0:2 }] },
+        data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: type==='bar'?0:2, borderColor:'#fff' }] },
         options: {
-            responsive: true, maintainAspectRatio: false,
+            responsive: true,
+            maintainAspectRatio: false,
             plugins: {
-                legend: { position: type==='bar'?'top':'right', labels: { font:{size:11}, boxWidth:12, padding:8 } },
-                ...opts
+                legend: {
+                    position: type==='bar' ? 'top' : 'bottom',
+                    labels: { font:{size:11}, boxWidth:12, padding:8 }
+                }
             },
-            scales: type==='bar' ? { y:{ beginAtZero:true, ticks:{stepSize:1, font:{size:11}}, grid:{color:'#f1f5f9'} }, x:{ticks:{font:{size:10}}} } : {},
+            scales: type==='bar' ? {
+                y: { beginAtZero:true, ticks:{stepSize:1, font:{size:10}}, grid:{color:'#f1f5f9'} },
+                x: { ticks:{font:{size:10}, maxRotation:35} }
+            } : {}
         }
     });
 }
