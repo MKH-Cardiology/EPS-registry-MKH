@@ -1,4 +1,6 @@
 // js/app.js
+// MKH Advanced Electrophysiology Registry
+// Includes: Firebase, Stepper, Form Logic, Validations, Clinical Interlinking, Admin, Analytics
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, collection, addDoc, setDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -19,14 +21,14 @@ window._db = db;
 // STEPPER SETUP
 // ============================================================
 const STEPS = [
-    { label: "Identification", icon: "fa-id-card" },
-    { label: "EP Reason & Admission", icon: "fa-hospital-user" },
-    { label: "History & Exam", icon: "fa-heartbeat" },
-    { label: "Home Meds", icon: "fa-pills" },
-    { label: "Investigations", icon: "fa-microscope" },
-    { label: "Procedure", icon: "fa-procedures" },
-    { label: "Complications", icon: "fa-exclamation-triangle" },
-    { label: "Outcome & D/C", icon: "fa-door-open" },
+    { label: "Identification",       icon: "fa-id-card" },
+    { label: "EP Reason & Admission",icon: "fa-hospital-user" },
+    { label: "History & Exam",       icon: "fa-heartbeat" },
+    { label: "Home Meds",            icon: "fa-pills" },
+    { label: "Investigations",       icon: "fa-microscope" },
+    { label: "Procedure",            icon: "fa-procedures" },
+    { label: "Complications",        icon: "fa-exclamation-triangle" },
+    { label: "Outcome & D/C",        icon: "fa-door-open" },
 ];
 let currentStep = 0;
 
@@ -37,7 +39,7 @@ STEPS.forEach((s, i) => {
     li.innerHTML = `<div id="sdot-${i}" class="step-dot ${i===0?'active':''}"><i class="fas ${s.icon} text-xs"></i></div><div id="slbl-${i}" class="step-label ${i===0?'active':''}">${s.label}</div>`;
     li.onclick = () => goToStep(i);
     stepperList.appendChild(li);
-    if(i < STEPS.length-1) {
+    if(i < STEPS.length - 1) {
         const conn = document.createElement('li');
         conn.className = 'step-connector hidden md:block';
         stepperList.appendChild(conn);
@@ -53,14 +55,15 @@ window.goToStep = function(idx) {
     document.getElementById(`sdot-${currentStep}`).classList.add('active');
     document.getElementById(`slbl-${currentStep}`).classList.add('active');
     document.getElementById('btnPrev').classList.toggle('hidden', currentStep === 0);
-    document.getElementById('btnNext').classList.toggle('hidden', currentStep === STEPS.length-1);
-    document.getElementById('stepLabel').textContent = `Step ${currentStep+1} of ${STEPS.length}`;
-    document.getElementById('progressFill').style.width = `${((currentStep+1)/STEPS.length)*100}%`;
+    document.getElementById('btnNext').classList.toggle('hidden', currentStep === STEPS.length - 1);
+    document.getElementById('stepLabel').textContent = `Step ${currentStep + 1} of ${STEPS.length}`;
+    document.getElementById('progressFill').style.width = `${((currentStep + 1) / STEPS.length) * 100}%`;
     document.getElementById('formScrollArea').scrollTop = 0;
 };
+
 window.changeStep = function(dir) {
     const n = currentStep + dir;
-    if(n>=0 && n<STEPS.length) goToStep(n);
+    if(n >= 0 && n < STEPS.length) goToStep(n);
 };
 
 // ============================================================
@@ -93,23 +96,23 @@ const countries = [
     "Zambian","Zimbabwean",
     "Other"
 ];
-document.getElementById('nationalitySelect').innerHTML = countries.map(c=>`<option value="${c}">${c}</option>`).join('');
+document.getElementById('nationalitySelect').innerHTML = countries.map(c => `<option value="${c}">${c}</option>`).join('');
 
 // ============================================================
 // SIMPLE RISK ITEMS (4.5–4.13)
 // ============================================================
 const simpleRiskItems = [
-    {name:"hx_cad", label:"4.5 Coronary artery disease"},
-    {name:"hx_mi", label:"4.6 Myocardial infarction"},
-    {name:"hx_valve", label:"4.7 Valvular heart disease"},
-    {name:"hx_cvd", label:"4.8 Cerebrovascular disease"},
-    {name:"hx_lung", label:"4.9 Chronic lung disease"},
-    {name:"hx_dialysis", label:"4.10 Currently on dialysis"},
-    {name:"hx_dm", label:"4.11 Diabetes mellitus"},
-    {name:"hx_htn", label:"4.12 Hypertension"},
-    {name:"hx_familialSyndrome", label:"4.13 Familial syndrome – risk of sudden death"},
+    { name:"hx_cad",            label:"4.5 Coronary artery disease" },
+    { name:"hx_mi",             label:"4.6 Myocardial infarction" },
+    { name:"hx_valve",          label:"4.7 Valvular heart disease" },
+    { name:"hx_cvd",            label:"4.8 Cerebrovascular disease" },
+    { name:"hx_lung",           label:"4.9 Chronic lung disease" },
+    { name:"hx_dialysis",       label:"4.10 Currently on dialysis" },
+    { name:"hx_dm",             label:"4.11 Diabetes mellitus" },
+    { name:"hx_htn",            label:"4.12 Hypertension" },
+    { name:"hx_familialSyndrome",label:"4.13 Familial syndrome – risk of sudden death" },
 ];
-document.getElementById('simpleRiskGrid').innerHTML = simpleRiskItems.map(r=>`
+document.getElementById('simpleRiskGrid').innerHTML = simpleRiskItems.map(r => `
 <div>
     <label class="lbl">${r.label}</label>
     <select name="${r.name}" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select>
@@ -119,41 +122,40 @@ document.getElementById('simpleRiskGrid').innerHTML = simpleRiskItems.map(r=>`
 // MEDICATIONS LISTS
 // ============================================================
 const medsList = [
-    {name:"Amiodarone", field:"amiodarone"},
-    {name:"Disopyramide", field:"disopyramide"},
-    {name:"Flecainide", field:"flecainide"},
-    {name:"Procainamide", field:"procainamide"},
-    {name:"Propafenone", field:"propafenone"},
-    {name:"Sotalol", field:"sotalol"},
-    {name:"Verapamil", field:"verapamil"},
-    {name:"Diltiazem", field:"diltiazem"},
-    {name:"Warfarin", field:"warfarin"},
-    {name:"Dabigatran", field:"dabigatran"},
-    {name:"Apixaban", field:"apixaban"},
-    {name:"Rivaroxaban", field:"rivaroxaban"},
-    {name:"Edoxaban", field:"edoxaban"},
-    {name:"LMWH", field:"lmwh"},
-    {name:"Unfractionated Heparin", field:"ufheparin"},
-    {name:"Aspirin", field:"aspirin"},
-    {name:"Prasugrel", field:"prasugrel"},
-    {name:"Clopidogrel", field:"clopidogrel"},
-    {name:"Ticagrelor", field:"ticagrelor"},
-    {name:"Cangrelor", field:"cangrelor"},
-    {name:"ACE-I (Any)", field:"acei"},
-    {name:"ARB (Any)", field:"arb"},
-    {name:"ARNI", field:"arni"},
-    {name:"SGLT inhibitor", field:"sglt"},
-    {name:"Beta Blockers", field:"betablocker"},
-    {name:"MRA", field:"mra"},
-    {name:"Digoxin", field:"digoxin"},
-    {name:"Loop diuretics", field:"loopdiuretic"},
+    {name:"Amiodarone",          field:"amiodarone"},
+    {name:"Disopyramide",        field:"disopyramide"},
+    {name:"Flecainide",          field:"flecainide"},
+    {name:"Procainamide",        field:"procainamide"},
+    {name:"Propafenone",         field:"propafenone"},
+    {name:"Sotalol",             field:"sotalol"},
+    {name:"Verapamil",           field:"verapamil"},
+    {name:"Diltiazem",           field:"diltiazem"},
+    {name:"Warfarin",            field:"warfarin"},
+    {name:"Dabigatran",          field:"dabigatran"},
+    {name:"Apixaban",            field:"apixaban"},
+    {name:"Rivaroxaban",         field:"rivaroxaban"},
+    {name:"Edoxaban",            field:"edoxaban"},
+    {name:"LMWH",                field:"lmwh"},
+    {name:"Unfractionated Heparin",field:"ufheparin"},
+    {name:"Aspirin",             field:"aspirin"},
+    {name:"Prasugrel",           field:"prasugrel"},
+    {name:"Clopidogrel",         field:"clopidogrel"},
+    {name:"Ticagrelor",          field:"ticagrelor"},
+    {name:"Cangrelor",           field:"cangrelor"},
+    {name:"ACE-I (Any)",         field:"acei"},
+    {name:"ARB (Any)",           field:"arb"},
+    {name:"ARNI",                field:"arni"},
+    {name:"SGLT inhibitor",      field:"sglt"},
+    {name:"Beta Blockers",       field:"betablocker"},
+    {name:"MRA",                 field:"mra"},
+    {name:"Digoxin",             field:"digoxin"},
+    {name:"Loop diuretics",      field:"loopdiuretic"},
 ];
 
-const homeMedsGrid = document.getElementById('homeMedsGrid');
+const homeMedsGrid     = document.getElementById('homeMedsGrid');
 const dischargeMedsGrid = document.getElementById('dischargeMedsGrid');
-
 medsList.forEach(m => {
-    homeMedsGrid.innerHTML += `<label class="chk-item"><input type="checkbox" name="homeMed_${m.field}" class="w-4 h-4"> <span>${m.name}</span></label>`;
+    homeMedsGrid.innerHTML     += `<label class="chk-item"><input type="checkbox" name="homeMed_${m.field}" class="w-4 h-4"> <span>${m.name}</span></label>`;
     dischargeMedsGrid.innerHTML += `<label class="chk-item"><input type="checkbox" name="dcMed_${m.field}" class="w-4 h-4"> <span>${m.name}</span></label>`;
 });
 
@@ -162,17 +164,17 @@ medsList.forEach(m => {
 // ============================================================
 document.getElementById('civilId').addEventListener('input', function() {
     const v = this.value;
-    if(v.length===12 && /^\d+$/.test(v)) {
+    if(v.length === 12 && /^\d+$/.test(v)) {
         const cen = parseInt(v[0]);
-        const yr = parseInt(v.substring(1,3));
-        let year = cen===2 ? 1900+yr : cen===3 ? 2000+yr : 0;
+        const yr  = parseInt(v.substring(1, 3));
+        const year = cen === 2 ? 1900 + yr : cen === 3 ? 2000 + yr : 0;
         if(year > 0) {
-            document.getElementById('yob').value = year;
-            document.getElementById('estAge').value = new Date().getFullYear() - year;
+            document.getElementById('yob').value     = year;
+            document.getElementById('estAge').value  = new Date().getFullYear() - year;
         }
     } else {
-        document.getElementById('yob').value='';
-        document.getElementById('estAge').value='';
+        document.getElementById('yob').value    = '';
+        document.getElementById('estAge').value = '';
     }
 });
 
@@ -180,53 +182,46 @@ document.getElementById('civilId').addEventListener('input', function() {
 // YES/NO TOGGLE
 // ============================================================
 window.setYN = function(btn, key, val) {
-    const group = btn.closest('.yn-group').querySelectorAll('.yn-btn');
-    group.forEach(b => b.classList.remove('selected'));
+    btn.closest('.yn-group').querySelectorAll('.yn-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
-    document.getElementById('val_'+key).value = val;
-    const sub = document.getElementById('sub_'+key);
-    if(sub) {
-        if(val==='Yes') sub.classList.add('show');
-        else sub.classList.remove('show');
-    }
+    document.getElementById('val_' + key).value = val;
+    const sub = document.getElementById('sub_' + key);
+    if(sub) sub.classList.toggle('show', val === 'Yes');
 };
 
 // ============================================================
-// EP REASON → SHOW PROCEDURE SECTIONS
+// EP REASON → SHOW CORRECT PROCEDURE SECTION
 // ============================================================
 window.onEpReasonChange = function() {
-    const val = document.querySelector('input[name="epReason"]:checked')?.value;
+    const val    = document.querySelector('input[name="epReason"]:checked')?.value;
     const pmType = document.querySelector('input[name="pacemakerType"]:checked')?.value;
 
     document.getElementById('pmTypeDiv').classList.toggle('hidden', val !== 'Pacemaker');
-
-    // Hide all proc sections and the no-reason banner
     document.querySelectorAll('.proc-section').forEach(s => s.classList.remove('show'));
 
+    const noReason = document.getElementById('proc_noReason');
+
     if(!val) {
-        document.getElementById('proc_noReason').style.display = 'block';
+        noReason.style.display = 'block';
+        noReason.querySelector('div:nth-child(2)').textContent = 'No procedure selected yet';
+        noReason.querySelector('div:nth-child(3)').textContent = 'Go to Step 2 — Reason for EP Lab and choose a procedure.';
         return;
     }
 
-    document.getElementById('proc_noReason').style.display = 'none';
+    noReason.style.display = 'none';
 
     if(val === 'CRT/AICD') {
         document.getElementById('proc_crtaicd').classList.add('show');
 
     } else if(val === 'Pacemaker') {
-        // Only show sections once a pacemaker sub-type is picked
         if(!pmType) {
-            // No sub-type yet — show the yellow banner again prompting sub-type selection
-            document.getElementById('proc_noReason').style.display = 'block';
-            document.getElementById('proc_noReason').querySelector('div:nth-child(2)').textContent = 'Please select the Pacemaker type (2.1) above to load the correct section.';
+            noReason.style.display = 'block';
+            noReason.querySelector('div:nth-child(3)').textContent = 'Please select the Pacemaker type (2.1) above to load the correct section.';
         } else if(pmType === 'Temporary pacemaker') {
-            // Only 9.6
             document.getElementById('proc_temppm').classList.add('show');
         } else if(pmType === 'Permanent pacemaker') {
-            // Only 9.7
             document.getElementById('proc_permpm').classList.add('show');
         } else if(pmType === 'Temporary followed by permanent same hospitalization') {
-            // Both 9.6 and 9.7
             document.getElementById('proc_temppm').classList.add('show');
             document.getElementById('proc_permpm').classList.add('show');
         }
@@ -236,6 +231,7 @@ window.onEpReasonChange = function() {
 
     } else if(val === 'LAAO') {
         document.getElementById('proc_laao').classList.add('show');
+        checkAfibLaao();
     }
 };
 
@@ -244,60 +240,58 @@ window.onEpReasonChange = function() {
 // ============================================================
 window.onCrtGenChange = function() {
     const val = document.querySelector('input[name="crtGenerator"]:checked')?.value;
-    document.getElementById('crtGen_initial').classList.toggle('show', val==='Initial implant');
-    document.getElementById('crtGen_replace').classList.toggle('show', val==='Generator replacement');
-    document.getElementById('crtGen_explant').classList.toggle('show', val==='Generator explant');
+    document.getElementById('crtGen_initial').classList.toggle('show', val === 'Initial implant');
+    document.getElementById('crtGen_replace').classList.toggle('show', val === 'Generator replacement');
+    document.getElementById('crtGen_explant').classList.toggle('show', val === 'Generator explant');
 };
 window.onCrtDeviceType = function() {
     const val = document.querySelector('input[name="crtDeviceType"]:checked')?.value;
-    document.getElementById('crtDualSub').classList.toggle('show', val==='CRT-D' || val==='ICD-Dual chamber');
+    document.getElementById('crtDualSub').classList.toggle('show', val === 'CRT-D' || val === 'ICD-Dual chamber');
 };
 window.onCrtPMType = function() {
     const val = document.querySelector('input[name="crtPMType"]:checked')?.value;
-    document.getElementById('crtLBBBsub').classList.toggle('show', val==='LBBB PPM');
+    document.getElementById('crtLBBBsub').classList.toggle('show', val === 'LBBB PPM');
 };
 window.onCrtLead = function() {
     const val = document.querySelector('input[name="crtLead"]:checked')?.value;
-    document.getElementById('crtLeadExistSub').classList.toggle('show', val==='Existing lead');
+    document.getElementById('crtLeadExistSub').classList.toggle('show', val === 'Existing lead');
 };
 window.onPpmGenChange = function() {
     const val = document.querySelector('input[name="ppmGenerator"]:checked')?.value;
-    document.getElementById('ppmGen_initial').classList.toggle('show', val==='Initial implant');
-    document.getElementById('ppmGen_replace').classList.toggle('show', val==='Generator replacement');
-    document.getElementById('ppmGen_explant').classList.toggle('show', val==='Generator explant');
+    document.getElementById('ppmGen_initial').classList.toggle('show', val === 'Initial implant');
+    document.getElementById('ppmGen_replace').classList.toggle('show', val === 'Generator replacement');
+    document.getElementById('ppmGen_explant').classList.toggle('show', val === 'Generator explant');
 };
 window.onPpmDeviceType = function() {
     const val = document.querySelector('input[name="ppmDeviceType"]:checked')?.value;
-    document.getElementById('ppmLBBBsub').classList.toggle('show', val==='LBBB PPM');
+    document.getElementById('ppmLBBBsub').classList.toggle('show', val === 'LBBB PPM');
 };
 window.onPpmLead = function() {
     const val = document.querySelector('input[name="ppmLead"]:checked')?.value;
-    document.getElementById('ppmLeadExistSub').classList.toggle('show', val==='Existing lead');
+    document.getElementById('ppmLeadExistSub').classList.toggle('show', val === 'Existing lead');
 };
-window.toggleTpmCause = function(divId) {
+window.toggleTpmCause = function() {
     setTimeout(() => {
-        const drugChecked = document.getElementById('tpm_drugChk')?.checked;
-        const miChecked = document.getElementById('tpm_miChk')?.checked;
-        document.getElementById('drugDiv').classList.toggle('show', !!drugChecked);
-        document.getElementById('miDiv').classList.toggle('show', !!miChecked);
+        document.getElementById('drugDiv').classList.toggle('show', !!document.getElementById('tpm_drugChk')?.checked);
+        document.getElementById('miDiv').classList.toggle('show',  !!document.getElementById('tpm_miChk')?.checked);
     }, 0);
 };
 window.onCathManip = function() {
     const val = document.querySelector('input[name="epsCathManip"]:checked')?.value;
-    document.getElementById('cathManipOther').classList.toggle('show', val==='Other');
+    document.getElementById('cathManipOther').classList.toggle('show', val === 'Other');
 };
 window.onMappingSystem = function() {
     const val = document.querySelector('input[name="epsMappingSystem"]:checked')?.value;
-    document.getElementById('mappingOther').classList.toggle('show', val==='Other');
+    document.getElementById('mappingOther').classList.toggle('show', val === 'Other');
 };
 window.onBleedType = function() {
     const val = document.querySelector('input[name="bleedType"]:checked')?.value;
-    document.getElementById('bleedType3sub').classList.toggle('show', val==='Type 3');
+    document.getElementById('bleedType3sub').classList.toggle('show', val === 'Type 3');
 };
 window.onDischargeStatus = function() {
     const val = document.querySelector('input[name="dischargeStatus"]:checked')?.value;
-    document.getElementById('dischDead').classList.toggle('show', val==='Dead');
-    document.getElementById('dischAlive').classList.toggle('show', val==='Alive');
+    document.getElementById('dischDead').classList.toggle('show',  val === 'Dead');
+    document.getElementById('dischAlive').classList.toggle('show', val === 'Alive');
 };
 
 // CRT inherited sub
@@ -306,13 +300,245 @@ document.querySelector('input[name="crtInd_inherited"]')?.addEventListener('chan
 });
 
 // ============================================================
+// VALIDATION HELPERS
+// ============================================================
+function showWarning(el, msg) {
+    el.style.borderColor = '#f59e0b';
+    el.style.boxShadow   = '0 0 0 3px rgba(245,158,11,.15)';
+    let tip = el.parentNode.querySelector('.val-tip');
+    if(!tip) { tip = document.createElement('div'); tip.className = 'val-tip'; tip.style.cssText = 'font-size:11px;color:#b45309;font-weight:600;margin-top:3px;'; el.parentNode.appendChild(tip); }
+    tip.textContent = '⚠ ' + msg;
+}
+function showError(el, msg) {
+    el.style.borderColor = '#dc2626';
+    el.style.boxShadow   = '0 0 0 3px rgba(220,38,38,.15)';
+    let tip = el.parentNode.querySelector('.val-tip');
+    if(!tip) { tip = document.createElement('div'); tip.className = 'val-tip'; tip.style.cssText = 'font-size:11px;color:#dc2626;font-weight:600;margin-top:3px;'; el.parentNode.appendChild(tip); }
+    tip.textContent = '✖ ' + msg;
+}
+function clearValidation(el) {
+    if(!el) return;
+    el.style.borderColor = '';
+    el.style.boxShadow   = '';
+    el.parentNode.querySelector('.val-tip')?.remove();
+}
+
+// Attach numeric range validation on blur
+function attachRangeValidation(name, min, max, unit = '', warnOnly = false) {
+    const el = document.querySelector(`[name="${name}"]`);
+    if(!el) return;
+    el.addEventListener('blur', function() {
+        if(!this.value) { clearValidation(this); return; }
+        const v = parseFloat(this.value);
+        if(isNaN(v)) return;
+        if(v < min || v > max) {
+            const msg = `Expected ${min}–${max}${unit ? ' ' + unit : ''}`;
+            warnOnly ? showWarning(this, msg) : showError(this, msg);
+        } else {
+            clearValidation(this);
+        }
+    });
+}
+
+// ============================================================
+// NUMBER RANGE VALIDATIONS
+// ============================================================
+// Vitals
+attachRangeValidation('sysBp',            50,  300, 'mmHg');
+attachRangeValidation('diaBp',            20,  200, 'mmHg');
+attachRangeValidation('hr',               20,  300, '/min');
+attachRangeValidation('weight',            1,  300, 'kg');
+attachRangeValidation('height',           50,  250, 'cm');
+// Labs
+attachRangeValidation('creatInit',        10, 3000, 'µmol/L');
+attachRangeValidation('creatPeak',        10, 3000, 'µmol/L');
+attachRangeValidation('hgbInit',           1,   25, 'g/dL');
+attachRangeValidation('hgbLowest',         1,   25, 'g/dL');
+attachRangeValidation('sodium',          100,  170, 'mEq/L');
+attachRangeValidation('potassium',       1.5,    9, 'mEq/L');
+attachRangeValidation('magnesium',       0.3,    3, 'mEq/L');
+attachRangeValidation('inr',             0.5,   15);
+// Echo
+attachRangeValidation('lvesd',             1,  100, 'mm');
+attachRangeValidation('lvedd',             1,  100, 'mm');
+attachRangeValidation('rvsp',              5,  150, 'mmHg');
+attachRangeValidation('laaOstial',         5,   50, 'mm');
+attachRangeValidation('laaDepth',          5,   50, 'mm');
+// QRS — all instances: 60–800 msec
+attachRangeValidation('ecgQRS',           60,  800, 'msec');
+attachRangeValidation('crtLBBBqrs',       60,  800, 'msec');
+attachRangeValidation('ppmLBBBqrs',       60,  800, 'msec');
+attachRangeValidation('cspQRS',           60,  800, 'msec');
+// Procedure times
+attachRangeValidation('epsAblTime',        1,  600, 'min');
+attachRangeValidation('epsFluoroTime',     0,  300, 'min');
+// Transfusion
+attachRangeValidation('transfusionUnits',  1,   50, 'units');
+// Demographics
+attachRangeValidation('yob',            1900, new Date().getFullYear());
+attachRangeValidation('estimatedAge',      0,  120, 'yrs');
+
+// LVEF — special handling: error outside 5–85%, warning if <10 or >80
+document.querySelector('[name="lvef"]')?.addEventListener('blur', function() {
+    if(!this.value) { clearValidation(this); return; }
+    const v = parseFloat(this.value);
+    if(v < 5 || v > 85)       showError(this, 'Expected 5–85%');
+    else if(v < 10 || v > 80) showWarning(this, `LVEF ${v}% — unusual value, please confirm`);
+    else                       clearValidation(this);
+    // Trigger LVEF ≤ 35% suggestion
+    checkLvefSuggestion(v);
+});
+
+// ============================================================
+// CLINICAL INTERLINKING
+// ============================================================
+
+// 1. Systolic BP > Diastolic BP
+const sysBpEl = document.querySelector('[name="sysBp"]');
+const diaBpEl = document.querySelector('[name="diaBp"]');
+function checkBP() {
+    const s = parseFloat(sysBpEl?.value);
+    const d = parseFloat(diaBpEl?.value);
+    if(s && d) {
+        if(s <= d) {
+            showError(sysBpEl, 'Systolic must be greater than Diastolic');
+            showError(diaBpEl, 'Diastolic must be less than Systolic');
+        } else {
+            clearValidation(sysBpEl);
+            clearValidation(diaBpEl);
+        }
+    }
+}
+sysBpEl?.addEventListener('blur', checkBP);
+diaBpEl?.addEventListener('blur', checkBP);
+
+// 2. Discharge date ≥ Admission date
+document.querySelector('[name="dischargeDate"]')?.addEventListener('change', function() {
+    const adm = document.getElementById('req_admDate')?.value;
+    if(adm && this.value && this.value < adm) showError(this, 'Discharge date cannot be before admission date');
+    else clearValidation(this);
+});
+
+// 3. Procedure date ≥ Admission date
+document.querySelector('[name="procStartDate"]')?.addEventListener('change', function() {
+    const adm = document.getElementById('req_admDate')?.value;
+    if(adm && this.value && this.value < adm) showError(this, 'Procedure date cannot be before admission date');
+    else clearValidation(this);
+});
+
+// 4. Procedure finish time > start time
+document.querySelector('[name="procEndTime"]')?.addEventListener('change', function() {
+    const start = document.querySelector('[name="procStartTime"]')?.value;
+    if(start && this.value && this.value <= start) showWarning(this, 'Finish time should be after start time');
+    else clearValidation(this);
+});
+
+// 5. Civil ID century digit (must start with 2 or 3)
+document.getElementById('civilId')?.addEventListener('blur', function() {
+    const v = this.value;
+    if(v.length === 12 && /^\d{12}$/.test(v)) {
+        const c = parseInt(v[0]);
+        if(c !== 2 && c !== 3) showError(this, 'Civil ID must start with 2 (born 1900s) or 3 (born 2000s)');
+        else clearValidation(this);
+    }
+});
+
+// 6. YOB ↔ Estimated Age consistency
+function checkYobAge() {
+    const yob = parseInt(document.getElementById('yob')?.value);
+    const age = parseInt(document.getElementById('estAge')?.value);
+    if(yob && age) {
+        const calcAge = new Date().getFullYear() - yob;
+        if(Math.abs(calcAge - age) > 2) showWarning(document.getElementById('estAge'), `Age (${age}) doesn't match YOB ${yob} — expected ~${calcAge}`);
+        else clearValidation(document.getElementById('estAge'));
+    }
+}
+document.getElementById('yob')?.addEventListener('blur', checkYobAge);
+document.getElementById('estAge')?.addEventListener('blur', checkYobAge);
+
+// 7. LVEF ≤ 35% → suggestion banner for CRT/ICD indications in 9.5a
+function checkLvefSuggestion(v) {
+    const existing = document.getElementById('lvef_suggest');
+    if(!isNaN(v) && v <= 35) {
+        const icm  = document.querySelector('[name="crtInd_icmEF"]');
+        const nicm = document.querySelector('[name="crtInd_nicmEF"]');
+        if(icm && !icm.checked && !nicm?.checked && !existing) {
+            const banner = document.createElement('div');
+            banner.id = 'lvef_suggest';
+            banner.style.cssText = 'background:#fef9c3;border:1.5px solid #fde047;border-radius:8px;padding:10px 14px;margin-top:10px;font-size:12px;color:#a16207;font-weight:600;';
+            banner.innerHTML = '💡 LVEF ≤ 35% detected — consider checking <b>ICM with EF ≤ 35%</b> or <b>Non-ICM with EF ≤ 35%</b> in Section 9.5a indications.';
+            const parent = document.querySelector('[name="lvef"]')?.closest('.sub-reveal') || document.querySelector('[name="lvef"]')?.parentNode;
+            parent?.appendChild(banner);
+        }
+    } else {
+        existing?.remove();
+    }
+}
+
+// 8. Cardiac Arrest = Yes → suggestion banner for 9.5a "Survivors" checkbox
+const cardArrestObs = new MutationObserver(() => {
+    const val     = document.getElementById('val_cardArrest')?.value;
+    const survBox = document.querySelector('[name="crtInd_surv"]');
+    let banner    = document.getElementById('arrest_suggest');
+    if(val === 'Yes' && survBox && !survBox.checked) {
+        if(!banner) {
+            banner = document.createElement('div');
+            banner.id = 'arrest_suggest';
+            banner.style.cssText = 'background:#fef9c3;border:1.5px solid #fde047;border-radius:8px;padding:8px 12px;margin-top:6px;font-size:12px;color:#a16207;font-weight:600;';
+            banner.innerHTML = '💡 Cardiac Arrest recorded — consider checking <b>Survivors of cardiac arrest with VT/VF</b> in Section 9.5a.';
+            document.getElementById('sub_cardArrest')?.appendChild(banner);
+        }
+    } else {
+        banner?.remove();
+    }
+});
+const caHidden = document.getElementById('val_cardArrest');
+if(caHidden) cardArrestObs.observe(caHidden, { attributes:true, attributeFilter:['value'] });
+
+// 9. AFib = No + LAAO selected → red warning banner
+function checkAfibLaao() {
+    const afib   = document.getElementById('val_afib')?.value;
+    const reason = document.querySelector('input[name="epReason"]:checked')?.value;
+    let banner   = document.getElementById('laao_afib_warn');
+    if(afib === 'No' && reason === 'LAAO') {
+        if(!banner) {
+            banner = document.createElement('div');
+            banner.id = 'laao_afib_warn';
+            banner.style.cssText = 'background:#fee2e2;border:1.5px solid #fca5a5;border-radius:8px;padding:10px 14px;margin-top:8px;font-size:12px;color:#b91c1c;font-weight:600;';
+            banner.innerHTML = '⚠ Warning: AFib is marked <b>No</b>, but LAAO (WATCHMAN) is selected. Non-valvular AFib is the primary indication for LAAO. Please verify.';
+            document.getElementById('proc_laao')?.insertAdjacentElement('afterbegin', banner);
+        }
+    } else {
+        banner?.remove();
+    }
+}
+document.querySelectorAll('input[name="epReason"]').forEach(r => r.addEventListener('change', checkAfibLaao));
+const afibHidden = document.getElementById('val_afib');
+if(afibHidden) new MutationObserver(checkAfibLaao).observe(afibHidden, { attributes:true, attributeFilter:['value'] });
+
+// 10. Prior CIED = No → auto-default Generator to "Initial implant"
+const ciedHidden = document.getElementById('val_cied');
+if(ciedHidden) {
+    new MutationObserver(() => {
+        if(ciedHidden.value === 'No') {
+            const crt = document.querySelector('[name="crtGenerator"][value="Initial implant"]');
+            const ppm = document.querySelector('[name="ppmGenerator"][value="Initial implant"]');
+            if(crt && !document.querySelector('[name="crtGenerator"]:checked')) { crt.checked = true; onCrtGenChange(); }
+            if(ppm && !document.querySelector('[name="ppmGenerator"]:checked')) { ppm.checked = true; onPpmGenChange(); }
+        }
+    }).observe(ciedHidden, { attributes:true, attributeFilter:['value'] });
+}
+
+// ============================================================
 // TABS
 // ============================================================
 window.switchTab = function(tab) {
-    if(tab==='admin') {
+    if(tab === 'admin') {
         if(prompt('Enter Admin PIN:') !== '2468') { alert('Access Denied'); return; }
         fetchData();
-    } else if(tab==='analytics') { fetchAnalytics(); }
+    } else if(tab === 'analytics') {
+        fetchAnalytics();
+    }
     ['form','admin','analytics'].forEach(t => {
         document.getElementById(`section-${t}`).classList.add('hidden');
         document.getElementById(`tab-${t}`).className = 'pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition';
@@ -322,7 +548,7 @@ window.switchTab = function(tab) {
 };
 
 // ============================================================
-// SAVE FORM
+// SAVE / RESET
 // ============================================================
 function resetFormUI(form) {
     form.reset();
@@ -331,14 +557,17 @@ function resetFormUI(form) {
     document.querySelectorAll('.yn-btn.yn-no').forEach(b => b.classList.add('selected'));
     document.querySelectorAll('input[type="hidden"][id^="val_"]').forEach(h => h.value = 'No');
     document.querySelectorAll('.proc-section').forEach(s => s.classList.remove('show'));
+    document.querySelectorAll('.val-tip').forEach(t => t.remove());
+    document.querySelectorAll('.inp').forEach(el => { el.style.borderColor = ''; el.style.boxShadow = ''; });
     document.getElementById('proc_noReason').style.display = 'block';
+    ['lvef_suggest','arrest_suggest','laao_afib_warn'].forEach(id => document.getElementById(id)?.remove());
     goToStep(0);
 }
 
 document.getElementById('epsForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Mandatory validation
+    // ── Mandatory fields ──
     const mandatory = [
         { id:'req_nameFirst', label:'Patient First Name' },
         { id:'req_nameLast',  label:'Patient Last Name' },
@@ -352,38 +581,73 @@ document.getElementById('epsForm').addEventListener('submit', async (e) => {
             goToStep(0);
             el?.focus();
             el?.scrollIntoView({ behavior:'smooth', block:'center' });
-            el.style.borderColor = '#dc2626';
-            el.style.boxShadow = '0 0 0 3px rgba(220,38,38,.15)';
-            setTimeout(() => { el.style.borderColor = ''; el.style.boxShadow = ''; }, 2500);
+            showError(el, 'This field is required');
+            setTimeout(() => clearValidation(el), 3000);
             alert(`Required field missing: "${f.label}"\nPlease fill all mandatory fields (*) before saving.`);
             return;
         }
     }
-    if(!/^\d{12}$/.test(document.getElementById('civilId').value)) {
+
+    // ── Civil ID format ──
+    const civId = document.getElementById('civilId').value;
+    if(!/^\d{12}$/.test(civId)) {
         goToStep(0); alert('Civil ID must be exactly 12 digits.'); return;
     }
+    const civFirst = parseInt(civId[0]);
+    if(civFirst !== 2 && civFirst !== 3) {
+        goToStep(0); alert('Civil ID must start with 2 (born 1900s) or 3 (born 2000s).'); return;
+    }
+
+    // ── File Number format ──
     if(!/^\d{6}$/.test(document.getElementById('req_fileNo').value)) {
         goToStep(0); alert('File Number must be exactly 6 digits.'); return;
     }
 
-    const fd = new FormData(e.target);
+    // ── Date logic ──
+    const admDate  = document.getElementById('req_admDate')?.value;
+    const procDate = document.querySelector('[name="procStartDate"]')?.value;
+    const dischDate= document.querySelector('[name="dischargeDate"]')?.value;
+    if(procDate  && admDate && procDate  < admDate) { goToStep(5); alert('Procedure date cannot be before admission date.'); return; }
+    if(dischDate && admDate && dischDate < admDate) { goToStep(7); alert('Discharge date cannot be before admission date.');  return; }
+
+    // ── BP cross-check ──
+    const sys = parseFloat(document.querySelector('[name="sysBp"]')?.value);
+    const dia = parseFloat(document.querySelector('[name="diaBp"]')?.value);
+    if(sys && dia && sys <= dia) {
+        if(!confirm(`Systolic BP (${sys}) ≤ Diastolic BP (${dia}). This seems unusual. Save anyway?`)) return;
+    }
+
+    // ── Duplicate Civil ID check ──
+    const recordId = document.getElementById('editRecordId').value;
+    const dupSnap  = await getDocs(collection(window._db, 'patients_full'));
+    let dupFound   = false;
+    dupSnap.forEach(docSnap => {
+        if(docSnap.id !== recordId && docSnap.data().civilId === civId) dupFound = true;
+    });
+    if(dupFound) {
+        if(!confirm(`⚠ A record with Civil ID ${civId} already exists.\n\nSave as a new record anyway?`)) return;
+    }
+
+    // ── Collect data ──
+    const fd      = new FormData(e.target);
     const dataObj = Object.fromEntries(fd.entries());
     e.target.querySelectorAll('input[type="checkbox"]').forEach(cb => { dataObj[cb.name] = cb.checked; });
     e.target.querySelectorAll('input[type="radio"]:checked').forEach(r => { dataObj[r.name] = r.value; });
     dataObj.timestamp = new Date();
-    const recordId = dataObj.recordId; delete dataObj.recordId;
+    const recId = dataObj.recordId;
+    delete dataObj.recordId;
 
     const btn = document.getElementById('btnSubmit');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+    btn.disabled   = true;
+    btn.innerHTML  = '<i class="fas fa-spinner fa-spin"></i> Saving…';
 
     try {
-        if(recordId) {
-            await setDoc(doc(window._db,'patients_full',recordId), dataObj);
+        if(recId) {
+            await setDoc(doc(window._db, 'patients_full', recId), dataObj);
             alert('Record updated successfully!');
             document.getElementById('editModeBanner').classList.add('hidden');
         } else {
-            await addDoc(collection(window._db,'patients_full'), dataObj);
+            await addDoc(collection(window._db, 'patients_full'), dataObj);
             alert('New patient record saved!');
         }
         resetFormUI(e.target);
@@ -392,22 +656,23 @@ document.getElementById('epsForm').addEventListener('submit', async (e) => {
         console.error(err);
         alert('Save failed — check your connection.');
     } finally {
-        btn.disabled = false;
+        btn.disabled  = false;
         btn.innerHTML = '<i class="fas fa-save"></i> Save Record';
     }
 });
 
 // ============================================================
-// ADMIN
+// ADMIN PANEL
 // ============================================================
 let allData = [];
+
 window.fetchData = async function() {
     const sName  = document.getElementById('searchName').value.toLowerCase();
     const sCivil = document.getElementById('searchCivilId').value;
     const sFile  = document.getElementById('searchFileNo').value;
-    const snapshot = await getDocs(collection(window._db,'patients_full'));
+    const snapshot = await getDocs(collection(window._db, 'patients_full'));
     const tbody = document.getElementById('tableBody');
-    tbody.innerHTML=''; allData=[];
+    tbody.innerHTML = ''; allData = [];
     snapshot.forEach(docSnap => {
         const data = docSnap.data(); data.id = docSnap.id;
         const fullName = `${data.nameFirst||''} ${data.nameMiddle||''} ${data.nameLast||''}`.trim();
@@ -427,16 +692,14 @@ window.fetchData = async function() {
             </td>`;
         tbody.appendChild(tr);
     });
-    if(!allData.length) tbody.innerHTML='<tr><td colspan="5" class="text-center py-8 text-gray-400">No records found</td></tr>';
+    if(!allData.length) tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-400">No records found</td></tr>';
     _allRecordsCache = allData.slice();
 };
 
 window.deleteRecord = async function(id) {
     if(!confirm('Permanently delete this record?')) return;
-    try {
-        await deleteDoc(doc(window._db,'patients_full',id));
-        fetchData();
-    } catch(e) { alert('Delete failed.'); }
+    try { await deleteDoc(doc(window._db, 'patients_full', id)); fetchData(); }
+    catch(e) { alert('Delete failed.'); }
 };
 
 window.editRecord = function(data) {
@@ -447,9 +710,9 @@ window.editRecord = function(data) {
     Object.keys(data).forEach(key => {
         const el = document.getElementsByName(key)[0];
         if(!el) return;
-        if(el.type==='checkbox') el.checked = !!data[key];
-        else if(el.type==='radio') document.getElementsByName(key).forEach(r => { if(r.value===data[key]) r.checked=true; });
-        else el.value = data[key]||'';
+        if(el.type === 'checkbox')    el.checked = !!data[key];
+        else if(el.type === 'radio')  document.getElementsByName(key).forEach(r => { if(r.value === data[key]) r.checked = true; });
+        else                          el.value = data[key] || '';
     });
     if(data.epReason) onEpReasonChange();
     goToStep(0);
@@ -472,19 +735,19 @@ window.exportToPDF = function() {
     d.text('Mubarak Alkabeer Hospital - EP Registry', 14, 15);
     d.autoTable({
         head:[['Name','Civil ID','File No.','Gender','Age','EP Reason','Admission','Discharge']],
-        body:allData.map(r=>[r.fullName,r.civilId,r.fileNumber,r.gender,r.estimatedAge,r.epReason,r.admissionDate,r.dischargeStatus]),
-        startY:22
+        body:allData.map(r => [r.fullName, r.civilId, r.fileNumber, r.gender, r.estimatedAge, r.epReason, r.admissionDate, r.dischargeStatus]),
+        startY: 22
     });
     d.save('MKH_Registry.pdf');
 };
 
 // ============================================================
-// QUICK SEARCH (main screen live search)
+// QUICK SEARCH
 // ============================================================
 let _allRecordsCache = [];
 
 async function loadRecordsCache() {
-    const snapshot = await getDocs(collection(window._db,"patients_full"));
+    const snapshot = await getDocs(collection(window._db, 'patients_full'));
     _allRecordsCache = [];
     snapshot.forEach(docSnap => {
         const d = docSnap.data(); d.id = docSnap.id;
@@ -497,25 +760,20 @@ loadRecordsCache();
 window.quickSearch = function() {
     const q = document.getElementById('qs_input').value.trim();
     if(!q) { document.getElementById('qs_results').classList.add('hidden'); return; }
-
     const results = _allRecordsCache.filter(d =>
-        (d.civilId||'').includes(q) ||
-        (d.fileNumber||'').includes(q) ||
-        (d.crfNo||'').includes(q)
+        (d.civilId||'').includes(q) || (d.fileNumber||'').includes(q) || (d.crfNo||'').includes(q)
     );
-
     const container = document.getElementById('qs_results');
-    const list = document.getElementById('qs_list');
+    const list      = document.getElementById('qs_list');
     document.getElementById('qs_count').textContent = `${results.length} found`;
-
     if(!results.length) {
         list.innerHTML = '<div class="px-4 py-6 text-center text-gray-400 text-sm">No matching records found</div>';
     } else {
-        list.innerHTML = results.slice(0,8).map(d => `
+        list.innerHTML = results.slice(0, 8).map(d => `
             <div class="px-4 py-3 hover:bg-blue-50 cursor-pointer transition flex items-center justify-between gap-3"
                  onclick='editFromSearch(${JSON.stringify(d).replace(/'/g,"\\'")})'>
                 <div>
-                    <div class="font-bold text-gray-800 text-sm">${d.fullName || 'Anonymous'}</div>
+                    <div class="font-bold text-gray-800 text-sm">${d.fullName||'Anonymous'}</div>
                     <div class="text-xs text-gray-500 mt-0.5">
                         <span class="mr-3">CID: <span class="font-mono font-semibold">${d.civilId||'—'}</span></span>
                         <span class="mr-3">File: <span class="font-mono font-semibold">${d.fileNumber||'—'}</span></span>
@@ -524,10 +782,9 @@ window.quickSearch = function() {
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
                     <span class="badge badge-blue text-xs">${d.epReason||'—'}</span>
-                    <button class="btn btn-yellow text-xs px-2 py-1" title="Edit"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-yellow text-xs px-2 py-1"><i class="fas fa-edit"></i></button>
                 </div>
-            </div>
-        `).join('');
+            </div>`).join('');
     }
     container.classList.remove('hidden');
 };
@@ -537,20 +794,15 @@ window.clearQuickSearch = function() {
     document.getElementById('qs_results').classList.add('hidden');
 };
 
-window.editFromSearch = function(data) {
-    clearQuickSearch();
-    editRecord(data);
-};
+window.editFromSearch = function(data) { clearQuickSearch(); editRecord(data); };
 
-// Close quick search on outside click
 document.addEventListener('click', e => {
-    if(!document.getElementById('mainSearchBar').contains(e.target)) {
+    if(!document.getElementById('mainSearchBar').contains(e.target))
         document.getElementById('qs_results').classList.add('hidden');
-    }
 });
 
 // ============================================================
-// ANALYTICS ACCORDION TOGGLE
+// ANALYTICS ACCORDION
 // ============================================================
 window.toggleAnalytic = function(key) {
     const body = document.getElementById('body_' + key);
@@ -558,111 +810,87 @@ window.toggleAnalytic = function(key) {
     const isOpen = body.classList.contains('open');
     body.classList.toggle('open', !isOpen);
     chev.classList.toggle('open', !isOpen);
-    // Resize chart inside if it exists
-    if(!isOpen && charts[key+'Chart']) {
-        setTimeout(() => charts[key+'Chart'].resize(), 50);
-    }
+    if(!isOpen && charts[key + 'Chart']) setTimeout(() => charts[key + 'Chart'].resize(), 50);
 };
 
 // ============================================================
-// ANALYTICS — Full rich dashboard from registry data
+// ANALYTICS CHARTS
 // ============================================================
-let charts={};
+let charts = {};
 function mkChart(id, type, labels, data, colors) {
     if(charts[id]) charts[id].destroy();
     const canvas = document.getElementById(id);
     if(!canvas) return;
     charts[id] = new Chart(canvas, {
         type,
-        data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: type==='bar'?0:2, borderColor:'#fff' }] },
+        data: { labels, datasets: [{ data, backgroundColor:colors, borderWidth:type==='bar'?0:2, borderColor:'#fff' }] },
         options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: type==='bar' ? 'top' : 'bottom',
-                    labels: { font:{size:11}, boxWidth:12, padding:8 }
-                }
-            },
-            scales: type==='bar' ? {
-                y: { beginAtZero:true, ticks:{stepSize:1, font:{size:10}}, grid:{color:'#f1f5f9'} },
-                x: { ticks:{font:{size:10}, maxRotation:35} }
-            } : {}
+            responsive:true, maintainAspectRatio:false,
+            plugins: { legend:{ position:type==='bar'?'top':'bottom', labels:{font:{size:11},boxWidth:12,padding:8} } },
+            scales: type==='bar' ? { y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10}},grid:{color:'#f1f5f9'}}, x:{ticks:{font:{size:10},maxRotation:35}} } : {}
         }
     });
 }
 
 window.fetchAnalytics = async function() {
-    const snapshot = await getDocs(collection(window._db,"patients_full"));
+    const snapshot = await getDocs(collection(window._db, 'patients_full'));
     const rows = [];
     snapshot.forEach(docSnap => rows.push(docSnap.data()));
-
     const total = rows.length;
     if(!total) { alert('No data yet in registry.'); return; }
 
-    // KPIs
-    const successCount = rows.filter(r=>r.procSuccess==='Yes').length;
-    const afibCount = rows.filter(r=>r.hx_afib==='Yes').length;
-    const compCount = rows.filter(r=>
-        r.cx_stroke==='Yes'||r.cx_bleeding==='Yes'||r.cx_tamponade2==='Yes'||
-        r.cx_pneumothorax==='Yes'||r.cx_cardShock==='Yes'||r.cx_renal==='Yes'
+    const successCount = rows.filter(r => r.procSuccess === 'Yes').length;
+    const afibCount    = rows.filter(r => r.hx_afib === 'Yes').length;
+    const compCount    = rows.filter(r =>
+        r.cx_stroke==='Yes' || r.cx_bleeding==='Yes' || r.cx_tamponade2==='Yes' ||
+        r.cx_pneumothorax==='Yes' || r.cx_cardShock==='Yes' || r.cx_renal==='Yes'
     ).length;
 
-    document.getElementById('kpi_total').textContent = total;
-    document.getElementById('kpi_success').textContent = total ? `${Math.round(successCount/total*100)}%` : '—';
-    document.getElementById('kpi_complications').textContent = total ? `${Math.round(compCount/total*100)}%` : '—';
-    document.getElementById('kpi_afib').textContent = total ? `${Math.round(afibCount/total*100)}%` : '—';
+    document.getElementById('kpi_total').textContent         = total;
+    document.getElementById('kpi_success').textContent       = `${Math.round(successCount/total*100)}%`;
+    document.getElementById('kpi_complications').textContent = `${Math.round(compCount/total*100)}%`;
+    document.getElementById('kpi_afib').textContent          = `${Math.round(afibCount/total*100)}%`;
 
-    // Gender
-    const m = rows.filter(r=>r.gender==='Male').length;
-    const f = rows.filter(r=>r.gender==='Female').length;
-    mkChart('genderChart','doughnut',['Male','Female'],[m,f],['#3b82f6','#ec4899']);
+    mkChart('genderChart','doughnut',['Male','Female'],
+        [rows.filter(r=>r.gender==='Male').length, rows.filter(r=>r.gender==='Female').length],
+        ['#3b82f6','#ec4899']);
 
-    // EP Reason
-    const procCounts = {};
-    rows.forEach(r=>{ if(r.epReason) procCounts[r.epReason]=(procCounts[r.epReason]||0)+1; });
-    mkChart('procChart','pie',Object.keys(procCounts),Object.values(procCounts),
-        ['#10b981','#6366f1','#f59e0b','#ef4444','#8b5cf6']);
+    const pc = {};
+    rows.forEach(r => { if(r.epReason) pc[r.epReason] = (pc[r.epReason]||0)+1; });
+    mkChart('procChart','pie',Object.keys(pc),Object.values(pc),['#10b981','#6366f1','#f59e0b','#ef4444','#8b5cf6']);
 
-    // Discharge
-    const disch = {};
-    rows.forEach(r=>{ if(r.dischargeStatus) disch[r.dischargeStatus]=(disch[r.dischargeStatus]||0)+1; });
-    mkChart('dischargeChart','doughnut',Object.keys(disch),Object.values(disch),
-        ['#22c55e','#3b82f6','#f97316','#ef4444','#94a3b8']);
+    const di = {};
+    rows.forEach(r => { if(r.dischargeStatus) di[r.dischargeStatus] = (di[r.dischargeStatus]||0)+1; });
+    mkChart('dischargeChart','doughnut',Object.keys(di),Object.values(di),['#22c55e','#3b82f6','#f97316','#ef4444','#94a3b8']);
 
-    // Comorbidities
     const comorb = [
-        { label:'AFib', val: rows.filter(r=>r.hx_afib==='Yes').length },
-        { label:'HTN',  val: rows.filter(r=>r.hx_htn==='Yes').length },
-        { label:'DM',   val: rows.filter(r=>r.hx_dm==='Yes').length },
-        { label:'CAD',  val: rows.filter(r=>r.hx_cad==='Yes').length },
-        { label:'HF',   val: rows.filter(r=>r.hx_hf==='Yes').length },
-        { label:'Prior MI', val: rows.filter(r=>r.hx_mi==='Yes').length },
-        { label:'CVD',  val: rows.filter(r=>r.hx_cvd==='Yes').length },
-        { label:'Dialysis', val: rows.filter(r=>r.hx_dialysis==='Yes').length },
-        { label:'Lung Dis.', val: rows.filter(r=>r.hx_lung==='Yes').length },
+        {label:'AFib',    val:rows.filter(r=>r.hx_afib==='Yes').length},
+        {label:'HTN',     val:rows.filter(r=>r.hx_htn==='Yes').length},
+        {label:'DM',      val:rows.filter(r=>r.hx_dm==='Yes').length},
+        {label:'CAD',     val:rows.filter(r=>r.hx_cad==='Yes').length},
+        {label:'HF',      val:rows.filter(r=>r.hx_hf==='Yes').length},
+        {label:'Prior MI',val:rows.filter(r=>r.hx_mi==='Yes').length},
+        {label:'CVD',     val:rows.filter(r=>r.hx_cvd==='Yes').length},
+        {label:'Dialysis',val:rows.filter(r=>r.hx_dialysis==='Yes').length},
+        {label:'Lung Dis.',val:rows.filter(r=>r.hx_lung==='Yes').length},
     ].sort((a,b)=>b.val-a.val);
-    mkChart('comorbChart','bar',
-        comorb.map(c=>c.label), comorb.map(c=>c.val),
-        comorb.map((_,i)=>`hsl(${210+i*18},75%,55%)`));
+    mkChart('comorbChart','bar',comorb.map(c=>c.label),comorb.map(c=>c.val),comorb.map((_,i)=>`hsl(${210+i*18},75%,55%)`));
 
-    // Complications
     const comps = [
-        { label:'Stroke',       val: rows.filter(r=>r.cx_stroke==='Yes').length },
-        { label:'Bleeding',     val: rows.filter(r=>r.cx_bleeding==='Yes').length },
-        { label:'Tamponade',    val: rows.filter(r=>r.cx_tamponade2==='Yes').length },
-        { label:'Pneumothorax', val: rows.filter(r=>r.cx_pneumothorax==='Yes').length },
-        { label:'Renal impair.', val: rows.filter(r=>r.cx_renal==='Yes').length },
-        { label:'Card. Shock',  val: rows.filter(r=>r.cx_cardShock==='Yes').length },
-        { label:'Vascular',     val: rows.filter(r=>r.cx_vascular==='Yes').length },
-        { label:'Peri. effus.', val: rows.filter(r=>r.cx_periEff==='Yes').length },
+        {label:'Stroke',      val:rows.filter(r=>r.cx_stroke==='Yes').length},
+        {label:'Bleeding',    val:rows.filter(r=>r.cx_bleeding==='Yes').length},
+        {label:'Tamponade',   val:rows.filter(r=>r.cx_tamponade2==='Yes').length},
+        {label:'Pneumothorax',val:rows.filter(r=>r.cx_pneumothorax==='Yes').length},
+        {label:'Renal impair.',val:rows.filter(r=>r.cx_renal==='Yes').length},
+        {label:'Card. Shock', val:rows.filter(r=>r.cx_cardShock==='Yes').length},
+        {label:'Vascular',    val:rows.filter(r=>r.cx_vascular==='Yes').length},
+        {label:'Peri. effus.',val:rows.filter(r=>r.cx_periEff==='Yes').length},
     ].filter(c=>c.val>0).sort((a,b)=>b.val-a.val);
     mkChart('compChart','bar',
         comps.length ? comps.map(c=>c.label) : ['No complications recorded'],
-        comps.length ? comps.map(c=>c.val) : [0],
+        comps.length ? comps.map(c=>c.val)   : [0],
         comps.map((_,i)=>`hsl(${0+i*22},75%,55%)`));
 
-    // Prior CIED
     const ciedMap = {
         'Single PPM': rows.filter(r=>r.cied_single===true||r.cied_single==='true').length,
         'Dual PPM':   rows.filter(r=>r.cied_dual===true||r.cied_dual==='true').length,
@@ -672,13 +900,12 @@ window.fetchAnalytics = async function() {
         'S-ICD':      rows.filter(r=>r.cied_sicd===true||r.cied_sicd==='true').length,
         'CRT-P':      rows.filter(r=>r.cied_crtp===true||r.cied_crtp==='true').length,
     };
-    const ciedFiltered = Object.entries(ciedMap).filter(([,v])=>v>0);
+    const cf = Object.entries(ciedMap).filter(([,v])=>v>0);
     mkChart('ciedChart','doughnut',
-        ciedFiltered.length ? ciedFiltered.map(e=>e[0]) : ['No prior CIED data'],
-        ciedFiltered.length ? ciedFiltered.map(e=>e[1]) : [1],
+        cf.length ? cf.map(e=>e[0]) : ['No prior CIED data'],
+        cf.length ? cf.map(e=>e[1]) : [1],
         ['#6366f1','#3b82f6','#ec4899','#f59e0b','#10b981','#ef4444','#8b5cf6']);
 
-    // Top Medications
     const medFields = [
         {label:'Amiodarone',   field:'homeMed_amiodarone'},
         {label:'Beta Blocker', field:'homeMed_betablocker'},
@@ -691,14 +918,11 @@ window.fetchAnalytics = async function() {
         {label:'Digoxin',      field:'homeMed_digoxin'},
         {label:'Furosemide',   field:'homeMed_loopdiuretic'},
     ];
-    const medsData = medFields.map(m=>({
+    const medsData = medFields.map(m => ({
         label: m.label,
-        val: rows.filter(r=>r[m.field]===true||r[m.field]==='true').length
-    })).sort((a,b)=>b.val-a.val);
-    mkChart('medsChart','bar',
-        medsData.map(m=>m.label), medsData.map(m=>m.val),
-        medsData.map((_,i)=>`hsl(${140+i*15},65%,48%)`));
+        val:   rows.filter(r => r[m.field]===true || r[m.field]==='true').length
+    })).sort((a,b) => b.val - a.val);
+    mkChart('medsChart','bar',medsData.map(m=>m.label),medsData.map(m=>m.val),medsData.map((_,i)=>`hsl(${140+i*15},65%,48%)`));
 
-    // Refresh cache too
     await loadRecordsCache();
 };
