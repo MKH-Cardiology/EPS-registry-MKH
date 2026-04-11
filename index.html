@@ -856,17 +856,88 @@ function applyLock(status){
 }
 
 // ── SUBMIT FINAL ─────────────────────────────────────────────
-window.submitFinal=async function(){
-  const recId=document.getElementById('editRecordId').value;
-  if(!recId){alert('Save as draft first, then submit.');return;}
-  if(!confirm('Submit this record? It will be locked until admin review.'))return;
+// ── SHARED SAVE FUNCTION (used by both Save Draft and Submit) ─
+async function saveRecord(targetStatus){
+  const form=document.getElementById('epsForm');
+  // Validation
+  const mandatory=[
+    {id:'req_nameFirst',label:'Patient First Name'},{id:'req_nameLast',label:'Patient Last Name'},
+    {id:'civilId',label:'Civil ID'},{id:'req_crfNo',label:'CRF Number'},{id:'req_fileNo',label:'File Number'},
+  ];
+  for(const f of mandatory){
+    const el=document.getElementById(f.id);
+    if(!el||!el.value.trim()){goToStep(0);el?.focus();shErr(el,'Required');setTimeout(()=>clrV(el),3000);alert(`Required: "${f.label}"`);return false;}
+  }
+  if(!/^\d{12}$/.test(document.getElementById('civilId').value)){goToStep(0);alert('Civil ID must be 12 digits.');return false;}
+  const cf=parseInt(document.getElementById('civilId').value[0]);
+  if(cf!==2&&cf!==3){goToStep(0);alert('Civil ID must start with 2 or 3.');return false;}
+  if(!/^\d{6}$/.test(document.getElementById('req_fileNo').value)){goToStep(0);alert('File Number must be 6 digits.');return false;}
+  const admDate=document.getElementById('req_admDate')?.value;
+  const procDate=document.querySelector('[name="procStartDate"]')?.value;
+  const dischDate=document.querySelector('[name="dischargeDate"]')?.value;
+  if(procDate&&admDate&&procDate<admDate){goToStep(5);alert('Procedure date before admission date.');return false;}
+  if(dischDate&&admDate&&dischDate<admDate){goToStep(7);alert('Discharge date before admission date.');return false;}
+  const sys=parseFloat(document.querySelector('[name="sysBp"]')?.value);
+  const dia=parseFloat(document.querySelector('[name="diaBp"]')?.value);
+  if(sys&&dia&&sys<=dia){if(!confirm(`Systolic (${sys}) ≤ Diastolic (${dia}). Save anyway?`))return false;}
+  const civilIdVal=document.getElementById('civilId').value;
+  const recordId=document.getElementById('editRecordId').value;
+  const dupSnap=await getDocs(collection(db,'patients_full'));
+  let dupFound=false;
+  dupSnap.forEach(ds=>{if(ds.id!==recordId&&ds.data().civilId===civilIdVal)dupFound=true;});
+  if(dupFound){if(!confirm(`⚠ Civil ID ${civilIdVal} already exists. Save anyway?`))return false;}
+  // Build data object
+  const fd=new FormData(form);
+  const dataObj=Object.fromEntries(fd.entries());
+  form.querySelectorAll('input[type="checkbox"]').forEach(cb=>{dataObj[cb.name]=cb.checked;});
+  form.querySelectorAll('input[type="radio"]:checked').forEach(r=>{dataObj[r.name]=r.value;});
+  dataObj.timestamp=new Date();
+  dataObj.recordStatus=targetStatus;
+  if(targetStatus==='submitted') dataObj.submittedAt=new Date();
+  const recId=dataObj.recordId; delete dataObj.recordId;
+  // Disable both buttons during save
+  const btnDraft=document.getElementById('btnSubmit');
+  const btnSubmit=document.getElementById('btnSubmitFinal');
+  btnDraft.disabled=true; btnSubmit.disabled=true;
+  btnDraft.innerHTML='<i class="fas fa-spinner fa-spin"></i> Saving…';
   try{
-    await updateDoc(doc(db,'patients_full',recId),{recordStatus:'submitted',submittedAt:new Date()});
-    alert('Submitted successfully.');
-    document.getElementById('recordStatus').value='submitted';
-    applyLock('submitted');
+    if(recId){
+      await setDoc(doc(db,'patients_full',recId),dataObj);
+      alert(targetStatus==='submitted'?'Record submitted and locked!':'Record updated!');
+    } else {
+      const newDoc=await addDoc(collection(db,'patients_full'),dataObj);
+      document.getElementById('editRecordId').value=newDoc.id;
+      alert(targetStatus==='submitted'?'Record saved and submitted!':'Saved as draft!');
+    }
+    if(targetStatus==='submitted'){
+      document.getElementById('recordStatus').value='submitted';
+      applyLock('submitted');
+    } else {
+      document.getElementById('editModeBanner').classList.add('hidden');
+      resetFormUI(form);
+    }
     loadRecordsCache();
-  }catch(e){alert('Submit failed.');}
+    return true;
+  }catch(err){
+    console.error(err);
+    alert('Save failed — check connection.');
+    return false;
+  }finally{
+    btnDraft.disabled=false; btnSubmit.disabled=false;
+    btnDraft.innerHTML='<i class="fas fa-save"></i> Save Draft';
+    btnSubmit.innerHTML='<i class="fas fa-paper-plane"></i> Submit';
+  }
+}
+
+// ── SAVE DRAFT (form submit event) ───────────────────────────
+document.getElementById('epsForm').addEventListener('submit',async(e)=>{
+  e.preventDefault();
+  await saveRecord('draft');
+});
+
+window.submitFinal=async function(){
+  if(!confirm('Submit this record? It will be locked until admin review.'))return;
+  await saveRecord('submitted');
 };
 window.markReviewed=async function(id){
   if(!confirm('Mark as Reviewed?'))return;
@@ -897,52 +968,7 @@ function resetFormUI(f){
   goToStep(0);
 }
 
-// ── SAVE ─────────────────────────────────────────────────────
-document.getElementById('epsForm').addEventListener('submit',async(e)=>{
-  e.preventDefault();
-  const mandatory=[
-    {id:'req_nameFirst',label:'Patient First Name'},{id:'req_nameLast',label:'Patient Last Name'},
-    {id:'civilId',label:'Civil ID'},{id:'req_crfNo',label:'CRF Number'},{id:'req_fileNo',label:'File Number'},
-  ];
-  for(const f of mandatory){
-    const el=document.getElementById(f.id);
-    if(!el||!el.value.trim()){goToStep(0);el?.focus();shErr(el,'Required');setTimeout(()=>clrV(el),3000);alert(`Required: "${f.label}"`);return;}
-  }
-  if(!/^\d{12}$/.test(document.getElementById('civilId').value)){goToStep(0);alert('Civil ID must be 12 digits.');return;}
-  const cf=parseInt(document.getElementById('civilId').value[0]);
-  if(cf!==2&&cf!==3){goToStep(0);alert('Civil ID must start with 2 or 3.');return;}
-  if(!/^\d{6}$/.test(document.getElementById('req_fileNo').value)){goToStep(0);alert('File Number must be 6 digits.');return;}
-  const admDate=document.getElementById('req_admDate')?.value;
-  const procDate=document.querySelector('[name="procStartDate"]')?.value;
-  const dischDate=document.querySelector('[name="dischargeDate"]')?.value;
-  if(procDate&&admDate&&procDate<admDate){goToStep(5);alert('Procedure date before admission date.');return;}
-  if(dischDate&&admDate&&dischDate<admDate){goToStep(7);alert('Discharge date before admission date.');return;}
-  const sys=parseFloat(document.querySelector('[name="sysBp"]')?.value);
-  const dia=parseFloat(document.querySelector('[name="diaBp"]')?.value);
-  if(sys&&dia&&sys<=dia){if(!confirm(`Systolic (${sys}) ≤ Diastolic (${dia}). Save anyway?`))return;}
-  const civilIdVal=document.getElementById('civilId').value;
-  const recordId=document.getElementById('editRecordId').value;
-  const dupSnap=await getDocs(collection(db,'patients_full'));
-  let dupFound=false;
-  dupSnap.forEach(ds=>{if(ds.id!==recordId&&ds.data().civilId===civilIdVal)dupFound=true;});
-  if(dupFound){if(!confirm(`⚠ Civil ID ${civilIdVal} already exists. Save anyway?`))return;}
-  const fd=new FormData(e.target);
-  const dataObj=Object.fromEntries(fd.entries());
-  e.target.querySelectorAll('input[type="checkbox"]').forEach(cb=>{dataObj[cb.name]=cb.checked;});
-  e.target.querySelectorAll('input[type="radio"]:checked').forEach(r=>{dataObj[r.name]=r.value;});
-  dataObj.timestamp=new Date();
-  if(!dataObj.recordStatus||dataObj.recordStatus==='')dataObj.recordStatus='draft';
-  const recId=dataObj.recordId;delete dataObj.recordId;
-  const btn=document.getElementById('btnSubmit');
-  btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Saving…';
-  try{
-    if(recId){await setDoc(doc(db,'patients_full',recId),dataObj);alert('Record updated!');}
-    else{await addDoc(collection(db,'patients_full'),dataObj);alert('Saved as draft!');}
-    document.getElementById('editModeBanner').classList.add('hidden');
-    resetFormUI(e.target);loadRecordsCache();
-  }catch(err){console.error(err);alert('Save failed — check connection.');}
-  finally{btn.disabled=false;btn.innerHTML='<i class="fas fa-save"></i> Save Draft';}
-});
+
 
 // ── DASHBOARD ────────────────────────────────────────────────
 let _dashFilter='all',_dashData=[];
