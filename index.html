@@ -644,13 +644,14 @@ import { getFirestore, collection, addDoc, setDoc, getDocs, deleteDoc, doc, upda
 const _app = initializeApp({apiKey:"AIzaSyBocWe4k3ljikv2D2a_f7RDlPRnAaH6Zxs",authDomain:"eps-registry-mkh.firebaseapp.com",projectId:"eps-registry-mkh",storageBucket:"eps-registry-mkh.firebasestorage.app",messagingSenderId:"893225906696",appId:"1:893225906696:web:d4c4324b4d9e3edecc57bd"});
 const _db = getFirestore(_app);
 window._db = _db;
-window._col = (...a) => collection(_db,...a);
+window._col = (...a) => collection(...a);
 window._addDoc = (...a) => addDoc(...a);
 window._setDoc = (...a) => setDoc(...a);
 window._getDocs = (...a) => getDocs(...a);
 window._deleteDoc = (...a) => deleteDoc(...a);
-window._doc = (...a) => doc(_db,...a);
+window._doc = (...a) => doc(...a);
 window._updateDoc = (...a) => updateDoc(...a);
+window._getDb = () => _db;
 window.dispatchEvent(new Event('firebaseReady'));
 </script>
 
@@ -670,7 +671,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Wait for Firebase then start
 function initApp() {
-  db = window._db;
+  db = window._getDb ? window._getDb() : window._db;
 
 // ── STEPPER ────────────────────────────────────────────────
 const STEPS=[
