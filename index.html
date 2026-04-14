@@ -198,13 +198,31 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     <div style="display:flex;align-items:center;gap:8px;border-left:1.5px solid #e2e8f0;padding-left:12px;">
       <div id="userBadge" style="font-size:11px;font-weight:700;color:#475569;"></div>
       <span id="roleBadge"></span>
-      <button onclick="doSignOut()" style="font-size:11px;font-weight:700;color:#94a3b8;background:none;border:1px solid #e2e8f0;border-radius:6px;padding:4px 8px;cursor:pointer;">
-        <i class="fas fa-sign-out-alt"></i>
-      </button>
+      <button onclick="showChangePwd()" title="Change Password" style="font-size:11px;font-weight:700;color:#94a3b8;background:none;border:1px solid #e2e8f0;border-radius:6px;padding:4px 8px;cursor:pointer;"><i class="fas fa-key"></i></button>
+      <button onclick="doSignOut()" title="Sign Out" style="font-size:11px;font-weight:700;color:#94a3b8;background:none;border:1px solid #e2e8f0;border-radius:6px;padding:4px 8px;cursor:pointer;"><i class="fas fa-sign-out-alt"></i></button>
     </div>
   </nav>
 </div>
 </header>
+
+<!-- CHANGE PASSWORD MODAL -->
+
+<div id="changePwdModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9998;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;padding:32px;width:340px;max-width:95vw;box-shadow:0 24px 64px rgba(0,0,0,.3);">
+    <div style="font-size:18px;font-weight:900;color:#0f172a;margin-bottom:6px;"><i class="fas fa-key text-blue-600 mr-2"></i>Change Password</div>
+    <div style="font-size:12px;color:#64748b;margin-bottom:20px;">Enter your new password below.</div>
+    <div id="changePwdError" style="display:none;background:#fff1f2;color:#be123c;border:1px solid #fecdd3;border-radius:8px;padding:9px 12px;font-size:13px;font-weight:600;margin-bottom:14px;"></div>
+    <div id="changePwdSuccess" style="display:none;background:#f0fdf4;color:#065f46;border:1px solid #a7f3d0;border-radius:8px;padding:9px 12px;font-size:13px;font-weight:600;margin-bottom:14px;"></div>
+    <label class="lbl">New Password</label>
+    <input type="password" id="newPwd1" class="inp" style="margin-bottom:12px;" placeholder="Min 6 characters">
+    <label class="lbl">Confirm New Password</label>
+    <input type="password" id="newPwd2" class="inp" style="margin-bottom:20px;" placeholder="Repeat password">
+    <div style="display:flex;gap:10px;">
+      <button onclick="doChangePwd()" class="btn btn-primary" style="flex:1;justify-content:center;"><i class="fas fa-save"></i> Update Password</button>
+      <button onclick="closeChangePwd()" class="btn btn-gray">Cancel</button>
+    </div>
+  </div>
+</div>
 <main class="max-w-screen-2xl mx-auto px-4 py-6">
 <!-- SEARCH BAR -->
 <div id="mainSearchBar" class="mb-4">
@@ -870,6 +888,46 @@ window.doSignOut = async function() {
   if (!confirm('Sign out?')) return;
   await window._signOut();
   location.reload();
+};
+
+window.showChangePwd = function() {
+  document.getElementById('changePwdModal').style.display = 'flex';
+  document.getElementById('changePwdError').style.display = 'none';
+  document.getElementById('changePwdSuccess').style.display = 'none';
+  document.getElementById('newPwd1').value = '';
+  document.getElementById('newPwd2').value = '';
+};
+
+window.closeChangePwd = function() {
+  document.getElementById('changePwdModal').style.display = 'none';
+};
+
+window.doChangePwd = async function() {
+  const p1 = document.getElementById('newPwd1').value;
+  const p2 = document.getElementById('newPwd2').value;
+  const errEl = document.getElementById('changePwdError');
+  const okEl  = document.getElementById('changePwdSuccess');
+  errEl.style.display = 'none';
+  okEl.style.display  = 'none';
+
+  if (!p1 || !p2) { errEl.textContent = 'Please fill both fields.'; errEl.style.display = 'block'; return; }
+  if (p1.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; errEl.style.display = 'block'; return; }
+  if (p1 !== p2) { errEl.textContent = 'Passwords do not match.'; errEl.style.display = 'block'; return; }
+
+  try {
+    const user = window._auth.currentUser;
+    await user.updatePassword(p1);
+    okEl.textContent = 'Password updated successfully!';
+    okEl.style.display = 'block';
+    setTimeout(() => window.closeChangePwd(), 2000);
+  } catch (e) {
+    if (e.code === 'auth/requires-recent-login') {
+      errEl.textContent = 'Session expired. Please sign out and sign in again, then change your password.';
+    } else {
+      errEl.textContent = 'Error: ' + (e.message || e.code);
+    }
+    errEl.style.display = 'block';
+  }
 };
 
 function showLoginError(msg) {
