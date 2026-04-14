@@ -284,7 +284,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" class="mb-4">
       <div><label class="lbl">1.2 Civil ID <span style="color:#dc2626">*</span></label><input type="text" id="civilId" name="civilId" inputmode="numeric" maxlength="12" placeholder="12 digits" class="inp" style="font-family:'DM Mono',monospace;"></div>
-      <div><label class="lbl">1.3 CRF Number <span style="color:#dc2626">*</span></label><input type="text" id="req_crfNo" name="crfNo" class="inp" style="font-family:'DM Mono',monospace;"></div>
+      <div><label class="lbl">1.3 CRF Number <span style="color:#dc2626">*</span></label><input type="text" id="req_crfNo" name="crfNo" inputmode="numeric" maxlength="6" placeholder="6 digits" class="inp" style="font-family:'DM Mono',monospace;"></div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;" class="mb-4">
       <div><label class="lbl">1.4 Gender</label><select name="gender" class="inp"><option value="">Select...</option><option>Male</option><option>Female</option></select></div>
@@ -1193,6 +1193,7 @@ async function saveRecord(targetStatus){
   }
   if(!/^\d{12}$/.test(document.getElementById('civilId').value)){goToStep(0);alert('Civil ID must be 12 digits.');return false;}
   if(!/^\d{6}$/.test(document.getElementById('req_fileNo').value)){goToStep(0);alert('File Number must be 6 digits.');return false;}
+  if(!/^\d{6}$/.test(document.getElementById('req_crfNo').value)){goToStep(0);alert('CRF Number must be 6 digits.');return false;}
 
   const fd=new FormData(form);
   const dataObj=Object.fromEntries(fd.entries());
@@ -1423,37 +1424,47 @@ document.addEventListener('click',e=>{if(!document.getElementById('mainSearchBar
 
 // ── USER MANAGEMENT ──────────────────────────────────────
 window.loadUserList=async function(){
-  const snap=await getDocs(collection(db,'users'));
-  const rows=[];
-  snap.forEach(ds=>{const u=ds.data();u.id=ds.id;rows.push(u);});
-  // Count cases per user
-  const patSnap=await getDocs(collection(db,'patients_full'));
-  const counts={};
-  patSnap.forEach(ds=>{const uid=ds.data().enrolledBy;if(uid)counts[uid]=(counts[uid]||0)+1;});
-  // Populate investigator filter dropdowns
-  const invOpts=rows.filter(u=>u.role==='investigator'||u.role==='cso').map(u=>`<option value="${u.id}">${u.displayName||u.email}</option>`).join('');
-  ['filterInvestigatorAdmin','exportInvestigator'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el){const base=el.id==='filterInvestigatorAdmin'?'<option value="">All Investigators</option>':'<option value="">All Investigators</option>';el.innerHTML=base+invOpts;}
-  });
   const tbody=document.getElementById('userTableBody');
   if(!tbody)return;
-  tbody.innerHTML=rows.map(u=>`
-    <tr>
-      <td class="font-bold">${u.displayName||'—'}</td>
-      <td class="text-xs text-gray-500">${u.email||'—'}</td>
-      <td><span class="role-${u.role||'investigator'}">${(u.role||'investigator').toUpperCase()}</span></td>
-      <td class="font-bold text-blue-700">${counts[u.id]||0}</td>
-      <td>${u.active?'<span class="badge badge-green">Active</span>':'<span class="badge badge-red">Disabled</span>'}</td>
-      <td>
-        <button onclick="toggleUserActive('${u.id}',${!u.active})" class="btn ${u.active?'btn-red':'btn-green'} text-xs px-2 py-1 mr-1">
-          ${u.active?'Disable':'Enable'}
-        </button>
-        <button onclick="deleteUserDoc('${u.id}','${u.displayName||u.email}')" class="btn btn-gray text-xs px-2 py-1">
-          <i class="fas fa-trash"></i>
-        </button>
-      </td>
-    </tr>`).join('');
+  tbody.innerHTML='<tr><td colspan="6" class="text-center py-6 text-gray-400"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</td></tr>';
+  try{
+    const snap=await db.collection('users').get();
+    const rows=[];
+    snap.forEach(ds=>{const u=ds.data();u.id=ds.id;rows.push(u);});
+    // Count cases per user
+    const patSnap=await db.collection('patients_full').get();
+    const counts={};
+    patSnap.forEach(ds=>{const uid=ds.data().enrolledBy;if(uid)counts[uid]=(counts[uid]||0)+1;});
+    // Populate investigator filter dropdowns
+    const invOpts=rows.filter(u=>u.role==='investigator'||u.role==='cso').map(u=>`<option value="${u.id}">${u.displayName||u.email}</option>`).join('');
+    ['filterInvestigatorAdmin','exportInvestigator'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el){el.innerHTML='<option value="">All Investigators</option>'+invOpts;}
+    });
+    if(!rows.length){tbody.innerHTML='<tr><td colspan="6" class="text-center py-6 text-gray-400">No users found</td></tr>';return;}
+    tbody.innerHTML=rows.map(u=>`
+      <tr>
+        <td><div class="font-bold text-gray-800">${u.displayName||'—'}</div></td>
+        <td class="text-xs text-gray-500">${u.email||'—'}</td>
+        <td><span class="role-${u.role||'investigator'}">${(u.role||'investigator').toUpperCase()}</span></td>
+        <td class="font-bold text-blue-700 text-center">${counts[u.id]||0}</td>
+        <td>${u.active?'<span class="badge badge-green">Active</span>':'<span class="badge badge-red">Disabled</span>'}</td>
+        <td style="white-space:nowrap;">
+          <button onclick="editUserDoc('${u.id}','${(u.displayName||'').replace(/'/g,"\'")}','${u.email||''}','${u.role||'investigator'}')" class="btn btn-yellow text-xs px-2 py-1 mr-1" title="Edit">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button onclick="toggleUserActive('${u.id}',${!u.active})" class="btn ${u.active?'btn-red':'btn-green'} text-xs px-2 py-1 mr-1" title="${u.active?'Disable':'Enable'}">
+            ${u.active?'<i class="fas fa-ban"></i>':'<i class="fas fa-check"></i>'}
+          </button>
+          <button onclick="deleteUserDoc('${u.id}','${(u.displayName||u.email||'').replace(/'/g,"\'")}' )" class="btn btn-gray text-xs px-2 py-1" title="Delete">
+            <i class="fas fa-trash"></i>
+          </button>
+        </td>
+      </tr>`).join('');
+  }catch(e){
+    console.error('loadUserList error:',e);
+    tbody.innerHTML=`<tr><td colspan="6" class="text-center py-6 text-red-500">Error loading users: ${e.message}</td></tr>`;
+  }
 };
 
 window.showAddUserForm=function(){
@@ -1479,12 +1490,23 @@ window.createUserDocument=async function(){
 
 window.toggleUserActive=async function(uid,newState){
   if(!confirm(`${newState?'Enable':'Disable'} this user?`))return;
-  try{await updateDoc(doc(db,'users',uid),{active:newState});loadUserList();}catch(e){alert('Failed.');}
+  try{await db.collection('users').doc(uid).update({active:newState});loadUserList();}catch(e){alert('Failed: '+e.message);}
 };
 
 window.deleteUserDoc=async function(uid,name){
   if(!confirm(`Remove "${name}" from users? (Does not delete their Firebase Auth account)`))return;
-  try{await deleteDoc(doc(db,'users',uid));loadUserList();}catch(e){alert('Failed.');}
+  try{await db.collection('users').doc(uid).delete();loadUserList();}catch(e){alert('Failed: '+e.message);}
+};
+
+window.editUserDoc=function(uid,name,email,role){
+  const newName=prompt('Display Name:',name);
+  if(newName===null)return;
+  const newRole=prompt('Role (admin / cso / investigator):',role);
+  if(newRole===null)return;
+  if(!['admin','cso','investigator'].includes(newRole)){alert('Invalid role. Use: admin, cso, or investigator');return;}
+  db.collection('users').doc(uid).update({displayName:newName,role:newRole})
+    .then(()=>{alert('User updated!');loadUserList();})
+    .catch(e=>alert('Failed: '+e.message));
 };
 
 // ── DOWNLOADS ────────────────────────────────────────────
