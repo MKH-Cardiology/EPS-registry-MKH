@@ -769,56 +769,62 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </section>
 
 </main>
-<!-- Firebase Compat SDKs — load synchronously, no ES module issues -->
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script>
-(function() {
-  const _app = firebase.initializeApp({
-    apiKey:"AIzaSyBocWe4k3ljikv2D2a_f7RDlPRnAaH6Zxs",
-    authDomain:"eps-registry-mkh.firebaseapp.com",
-    projectId:"eps-registry-mkh",
-    storageBucket:"eps-registry-mkh.firebasestorage.app",
-    messagingSenderId:"893225906696",
-    appId:"1:893225906696:web:d4c4324b4d9e3edecc57bd"
-  });
+// Firebase config — available immediately
+window._FB_CONFIG = {
+  apiKey:"AIzaSyBocWe4k3ljikv2D2a_f7RDlPRnAaH6Zxs",
+  authDomain:"eps-registry-mkh.firebaseapp.com",
+  projectId:"eps-registry-mkh",
+  storageBucket:"eps-registry-mkh.firebasestorage.app",
+  messagingSenderId:"893225906696",
+  appId:"1:893225906696:web:d4c4324b4d9e3edecc57bd"
+};
+window._fbLoaded = 0;
+window._fbReady = false;
 
-const _db   = firebase.firestore();
-const _auth = firebase.auth();
+function _checkFbReady() {
+window._fbLoaded++;
+if (window._fbLoaded < 3) return; // wait for all 3 scripts
+try {
+const app = firebase.initializeApp(window._FB_CONFIG);
+const db   = firebase.firestore();
+const auth = firebase.auth();
 
-// Expose Firestore helpers
-window._getDb  = () => _db;
-window._db     = _db;
-window._col    = (db, path) => db.collection(path);
-window._doc    = (db, path, id) => id ? db.collection(path).doc(id) : db.doc(path);
-window._addDoc = (ref, data) => ref.add(data);
-window._setDoc = (ref, data) => ref.set(data);
-window._getDocs= (ref) => ref.get();
-window._getDoc = (ref) => ref.get();
-window._deleteDoc = (ref) => ref.delete();
-window._updateDoc = (ref, data) => ref.update(data);
-
-// Auth helpers
-window._signIn  = (e,p) => _auth.signInWithEmailAndPassword(e,p);
-window._signOut = () => _auth.signOut();
-window._onAuthStateChanged = (cb) => _auth.onAuthStateChanged(cb);
-
-// One-time setup
+```
+window._db  = db;
+window._auth = auth;
+window._getDb = () => db;
+window._signIn = (e,p) => auth.signInWithEmailAndPassword(e,p);
+window._signOut = () => auth.signOut();
+window._onAuthStateChanged = (cb) => auth.onAuthStateChanged(cb);
 window._setupUsers = async function() {
-const users = [
-{ uid:“qEv59O8pk3bu6cVQjWFExLuoVTb2”, email:“ahmadelsharkawi87@gmail.com”, displayName:“Dr. Ahmed Elsharkawy”, role:“investigator”, active:true }
-];
-for (const u of users) {
-await _db.collection(“users”).doc(u.uid).set({ email:u.email, displayName:u.displayName, role:u.role, active:u.active, createdAt:new Date() });
-console.log(“Created:”, u.displayName);
-}
-alert(“Users created!”);
+  const users = [
+    {uid:"qEv59O8pk3bu6cVQjWFExLuoVTb2",email:"ahmadelsharkawi87@gmail.com",displayName:"Dr. Ahmed Elsharkawy",role:"investigator",active:true}
+  ];
+  for(const u of users){
+    await db.collection("users").doc(u.uid).set({email:u.email,displayName:u.displayName,role:u.role,active:u.active,createdAt:new Date()});
+  }
+  alert("Users created!");
 };
 
-window.dispatchEvent(new Event(‘firebaseReady’));
-})();
+window._fbReady = true;
+window.dispatchEvent(new Event('firebaseReady'));
+console.log("Firebase ready");
+```
+
+} catch(e) {
+console.error(“Firebase init failed:”, e);
+document.getElementById(‘loginError’).textContent = ’Firebase init error: ’ + e.message;
+document.getElementById(‘loginError’).style.display = ‘block’;
+}
+}
 </script>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js" onload="_checkFbReady()" onerror="document.getElementById('loginError').textContent='Failed to load Firebase. Check internet connection.';document.getElementById('loginError').style.display='block';"></script>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js" onload="_checkFbReady()" onerror="console.error('Firestore failed')"></script>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js" onload="_checkFbReady()" onerror="console.error('Auth failed')"></script>
 
 <script>
 function collection(db, path){ return db.collection(path); }
@@ -826,7 +832,7 @@ function addDoc(ref, data){ return ref.add(data); }
 function setDoc(ref, data){ return ref.set(data); }
 function getDocs(ref){ return ref.get(); }
 function deleteDoc(ref){ return ref.delete(); }
-function doc(db, path, id){ return id ? db.collection(path).doc(id) : db.doc(path); }
+function doc(db, path, id){ return db.collection(path).doc(id); }
 function updateDoc(ref, data){ return ref.update(data); }
 let db = null;
 let currentUser = null;
@@ -876,7 +882,6 @@ function showLoginError(msg) {
   if(el){ el.textContent = msg; el.style.display = 'block'; }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
 function initApp() {
   db = window._getDb();
 
@@ -1676,9 +1681,16 @@ window.toggleAnalytic=function(key){
 loadRecordsCache();
 } // end initApp
 
-if(window._db){initApp();}
-else{window.addEventListener('firebaseReady',initApp,{once:true});}
-}); // end DOMContentLoaded
+// Boot: run initApp when both DOM and Firebase are ready
+function _tryBoot() {
+  if (window._fbReady && _domReady) initApp();
+}
+let _domReady = false;
+window.addEventListener('firebaseReady', _tryBoot);
+document.addEventListener('DOMContentLoaded', function() {
+  _domReady = true;
+  _tryBoot();
+});
 </script>
 
 </body>
