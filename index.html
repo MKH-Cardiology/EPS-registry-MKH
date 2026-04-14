@@ -769,71 +769,71 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </section>
 
 </main>
-<script>
-// Firebase config — available immediately
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, setDoc, getDocs, deleteDoc, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
 window._FB_CONFIG = {
-  apiKey:"AIzaSyBocWe4k3ljikv2D2a_f7RDlPRnAaH6Zxs",
-  authDomain:"eps-registry-mkh.firebaseapp.com",
-  projectId:"eps-registry-mkh",
-  storageBucket:"eps-registry-mkh.firebasestorage.app",
-  messagingSenderId:"893225906696",
-  appId:"1:893225906696:web:d4c4324b4d9e3edecc57bd"
+apiKey:“AIzaSyBocWe4k3ljikv2D2a_f7RDlPRnAaH6Zxs”,
+authDomain:“eps-registry-mkh.firebaseapp.com”,
+projectId:“eps-registry-mkh”,
+storageBucket:“eps-registry-mkh.firebasestorage.app”,
+messagingSenderId:“893225906696”,
+appId:“1:893225906696:web:d4c4324b4d9e3edecc57bd”
 };
-window._fbLoaded = 0;
+
 window._fbReady = false;
 
-function _checkFbReady() {
-window._fbLoaded++;
-if (window._fbLoaded < 3) return; // wait for all 3 scripts
 try {
-const app = firebase.initializeApp(window._FB_CONFIG);
-const db   = firebase.firestore();
-const auth = firebase.auth();
+const app = initializeApp(window._FB_CONFIG);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
 ```
-window._db  = db;
+window._db = db;
 window._auth = auth;
 window._getDb = () => db;
-window._signIn = (e,p) => auth.signInWithEmailAndPassword(e,p);
-window._signOut = () => auth.signOut();
-window._onAuthStateChanged = (cb) => auth.onAuthStateChanged(cb);
+window._signIn = (e,p) => signInWithEmailAndPassword(auth, e, p);
+window._signOut = () => signOut(auth);
+window._onAuthStateChanged = (cb) => onAuthStateChanged(auth, cb);
+
+window.collection = collection;
+window.addDoc = addDoc;
+window.setDoc = setDoc;
+window.getDocs = getDocs;
+window.deleteDoc = deleteDoc;
+window.doc = doc;
+window.updateDoc = updateDoc;
+window.getDoc = getDoc;
+
 window._setupUsers = async function() {
   const users = [
     {uid:"qEv59O8pk3bu6cVQjWFExLuoVTb2",email:"ahmadelsharkawi87@gmail.com",displayName:"Dr. Ahmed Elsharkawy",role:"investigator",active:true}
   ];
   for(const u of users){
-    await db.collection("users").doc(u.uid).set({email:u.email,displayName:u.displayName,role:u.role,active:u.active,createdAt:new Date()});
+    await setDoc(doc(db, "users", u.uid), {
+      email: u.email, displayName: u.displayName,
+      role: u.role, active: u.active, createdAt: new Date()
+    });
   }
-  alert("Users created!");
+  console.log("Users created successfully!");
+  alert("Users created successfully!");
 };
 
 window._fbReady = true;
 window.dispatchEvent(new Event('firebaseReady'));
-console.log("Firebase ready");
+console.log("Firebase Modular Initialized Successfully!");
 ```
 
-} catch(e) {
+} catch (e) {
 console.error(“Firebase init failed:”, e);
 document.getElementById(‘loginError’).textContent = ’Firebase init error: ’ + e.message;
 document.getElementById(‘loginError’).style.display = ‘block’;
 }
-}
 </script>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js" onload="_checkFbReady()" onerror="document.getElementById('loginError').textContent='Failed to load Firebase. Check internet connection.';document.getElementById('loginError').style.display='block';"></script>
-
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js" onload="_checkFbReady()" onerror="console.error('Firestore failed')"></script>
-
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js" onload="_checkFbReady()" onerror="console.error('Auth failed')"></script>
-
 <script>
-function collection(db, path){ return db.collection(path); }
-function addDoc(ref, data){ return ref.add(data); }
-function setDoc(ref, data){ return ref.set(data); }
-function getDocs(ref){ return ref.get(); }
-function deleteDoc(ref){ return ref.delete(); }
-function doc(db, path, id){ return db.collection(path).doc(id); }
-function updateDoc(ref, data){ return ref.update(data); }
 let db = null;
 let currentUser = null;
 let currentRole = null;
