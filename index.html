@@ -769,71 +769,66 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </section>
 
 </main>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, setDoc, getDocs, deleteDoc, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-
-window._FB_CONFIG = {
-apiKey:“AIzaSyBocWe4k3ljikv2D2a_f7RDlPRnAaH6Zxs”,
-authDomain:“eps-registry-mkh.firebaseapp.com”,
-projectId:“eps-registry-mkh”,
-storageBucket:“eps-registry-mkh.firebasestorage.app”,
-messagingSenderId:“893225906696”,
-appId:“1:893225906696:web:d4c4324b4d9e3edecc57bd”
-};
-
-window._fbReady = false;
-
-try {
-const app = initializeApp(window._FB_CONFIG);
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-```
-window._db = db;
-window._auth = auth;
-window._getDb = () => db;
-window._signIn = (e,p) => signInWithEmailAndPassword(auth, e, p);
-window._signOut = () => signOut(auth);
-window._onAuthStateChanged = (cb) => onAuthStateChanged(auth, cb);
-
-window.collection = collection;
-window.addDoc = addDoc;
-window.setDoc = setDoc;
-window.getDocs = getDocs;
-window.deleteDoc = deleteDoc;
-window.doc = doc;
-window.updateDoc = updateDoc;
-window.getDoc = getDoc;
-
-window._setupUsers = async function() {
-  const users = [
-    {uid:"qEv59O8pk3bu6cVQjWFExLuoVTb2",email:"ahmadelsharkawi87@gmail.com",displayName:"Dr. Ahmed Elsharkawy",role:"investigator",active:true}
+<script>
+(async function initFirebaseReliably() {
+  const cdns = [
+    "https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-app-compat.js",
+    "https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-firestore-compat.js",
+    "https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-auth-compat.js"
   ];
-  for(const u of users){
-    await setDoc(doc(db, "users", u.uid), {
-      email: u.email, displayName: u.displayName,
-      role: u.role, active: u.active, createdAt: new Date()
+  try {
+    for (const src of cdns) {
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = src;
+        s.onload = resolve;
+        s.onerror = () => reject(new Error('Network Blocked: Failed to load Firebase from CDN.'));
+        document.head.appendChild(s);
+      });
+    }
+    firebase.initializeApp({
+      apiKey:"AIzaSyBocWe4k3ljikv2D2a_f7RDlPRnAaH6Zxs",
+      authDomain:"eps-registry-mkh.firebaseapp.com",
+      projectId:"eps-registry-mkh",
+      storageBucket:"eps-registry-mkh.firebasestorage.app",
+      messagingSenderId:"893225906696",
+      appId:"1:893225906696:web:d4c4324b4d9e3edecc57bd"
     });
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+    window._db = db;
+    window._auth = auth;
+    window._getDb = () => db;
+    window._signIn = (e,p) => auth.signInWithEmailAndPassword(e,p);
+    window._signOut = () => auth.signOut();
+    window._onAuthStateChanged = (cb) => auth.onAuthStateChanged(cb);
+    window._setupUsers = async function() {
+      const users = [{uid:"qEv59O8pk3bu6cVQjWFExLuoVTb2",email:"ahmadelsharkawi87@gmail.com",displayName:"Dr. Ahmed Elsharkawy",role:"investigator",active:true}];
+      for(const u of users){
+        await db.collection("users").doc(u.uid).set({email:u.email,displayName:u.displayName,role:u.role,active:u.active,createdAt:new Date()});
+      }
+      alert("Users created successfully!");
+    };
+    window._fbReady = true;
+    window.dispatchEvent(new Event('firebaseReady'));
+    console.log("Firebase initialized successfully via jsDelivr");
+  } catch (err) {
+    document.getElementById('loginError').textContent = err.message;
+    document.getElementById('loginError').style.display = 'block';
   }
-  console.log("Users created successfully!");
-  alert("Users created successfully!");
-};
-
-window._fbReady = true;
-window.dispatchEvent(new Event('firebaseReady'));
-console.log("Firebase Modular Initialized Successfully!");
-```
-
-} catch (e) {
-console.error(“Firebase init failed:”, e);
-document.getElementById(‘loginError’).textContent = ’Firebase init error: ’ + e.message;
-document.getElementById(‘loginError’).style.display = ‘block’;
-}
+})();
 </script>
 
 <script>
+function collection(db, path){ return db.collection(path); }
+function addDoc(ref, data){ return ref.add(data); }
+function setDoc(ref, data){ return ref.set(data); }
+function getDocs(ref){ return ref.get(); }
+function deleteDoc(ref){ return ref.delete(); }
+function doc(db, path, id){ return db.collection(path).doc(id); }
+function updateDoc(ref, data){ return ref.update(data); }
+function getDoc(ref){ return ref.get(); }
+
 let db = null;
 let currentUser = null;
 let currentRole = null;
