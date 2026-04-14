@@ -33,7 +33,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-bg);color:var(--text
 .inp-sm{padding:7px 10px;font-size:13px;}
 select.inp{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
 textarea.inp{resize:vertical;min-height:80px;}
-@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
 .lbl{display:block;font-size:12px;font-weight:600;color:var(--text-sub);margin-bottom:5px;letter-spacing:.025em;}
 .card{background:#fff;border:1.5px solid var(--card-border);border-radius:14px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.04);transition:box-shadow .2s;}
 .card:hover{box-shadow:0 4px 16px rgba(0,0,0,.07);}
@@ -99,19 +98,76 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 .dash-filter-btn.active{background:var(--blue-primary);color:#fff;border-color:var(--blue-primary);}
 .locked-overlay{position:absolute;inset:0;background:rgba(241,245,249,.9);backdrop-filter:blur(3px);z-index:25;display:flex;align-items:center;justify-content:center;border-radius:0 14px 14px 0;}
 .locked-overlay-inner{background:#fff;border:2px solid #cbd5e1;border-radius:14px;padding:24px 32px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.1);}
+/* LOGIN */
+#loginOverlay{position:fixed;inset:0;background:linear-gradient(135deg,#1d4ed8 0%,#1e3a8a 50%,#0f172a 100%);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.login-card{background:#fff;border-radius:24px;padding:40px 36px;width:380px;max-width:95vw;box-shadow:0 32px 80px rgba(0,0,0,.35);}
+.login-logo{width:56px;height:56px;margin:0 auto 16px;}
+/* ROLE BADGES */
+.role-admin{background:#fef3c7;color:#92400e;border:1px solid #fde68a;border-radius:20px;font-size:11px;font-weight:800;padding:3px 10px;}
+.role-investigator{background:#dbeafe;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:20px;font-size:11px;font-weight:800;padding:3px 10px;}
+.role-cso{background:#d1fae5;color:#065f46;border:1px solid #a7f3d0;border-radius:20px;font-size:11px;font-weight:800;padding:3px 10px;}
+/* DOWNLOAD TAB */
+.dl-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:16px;padding:24px;transition:all .2s;cursor:pointer;}
+.dl-card:hover{box-shadow:0 8px 24px rgba(0,0,0,.1);transform:translateY(-2px);}
+/* USER MGMT TABLE */
+.user-table th{background:#f8fafc;padding:10px 14px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#64748b;text-align:left;border-bottom:1.5px solid #e2e8f0;}
+.user-table td{padding:10px 14px;font-size:13px;border-bottom:1px solid #f1f5f9;vertical-align:middle;}
+/* ADMIN SUBTABS */
+.admin-sub-tab{padding:8px 18px;border-radius:8px 8px 0 0;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid #e2e8f0;border-bottom:none;background:#f8fafc;color:#64748b;transition:all .15s;}
+.admin-sub-tab.active{background:#fff;color:#1d4ed8;border-color:#bfdbfe;}
 @media(max-width:640px){#idFields [style*="1fr 1fr 1fr"]{grid-template-columns:1fr!important;}#idFields [style*="1fr 1fr 1fr 1fr"]{grid-template-columns:1fr 1fr!important;}#idFields [style*="1fr 1fr"]{grid-template-columns:1fr!important;}}
 </style>
 </head>
 <body class="min-h-screen">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<!-- LOGIN OVERLAY -->
+
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<div id="loginOverlay">
+  <div class="login-card">
+    <svg class="login-logo" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="56" height="56" rx="16" fill="url(#llg)"/>
+      <path d="M28 33C28 33 18 25.5 18 20C18 16.5 21 14 24.5 14C26.5 14 28 15 28 15C28 15 29.5 14 31.5 14C35 14 38 16.5 38 20C38 25.5 28 33 28 33Z" fill="white" opacity="0.95"/>
+      <polyline points="19,21 23,21 25,17.5 27,24 29,19 31,21 35,21" stroke="#1d4ed8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <defs><linearGradient id="llg" x1="0" y1="0" x2="56" y2="56"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#0f172a"/></linearGradient></defs>
+    </svg>
+    <div style="text-align:center;margin-bottom:28px;">
+      <div style="font-size:20px;font-weight:900;color:#0f172a;">MKH EPS Registry</div>
+      <div style="font-size:12px;color:#64748b;margin-top:4px;font-weight:500;">Advanced Electrophysiology Registry</div>
+      <div style="font-size:11px;color:#94a3b8;margin-top:2px;">Mubarak Alkabeer Hospital</div>
+    </div>
+    <div id="loginError" style="display:none;background:#fff1f2;color:#be123c;border:1px solid #fecdd3;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;margin-bottom:16px;"></div>
+    <label class="lbl">Email Address</label>
+    <input type="email" id="loginEmail" class="inp" style="margin-bottom:14px;" placeholder="your@email.com" autocomplete="username">
+    <label class="lbl">Password</label>
+    <input type="password" id="loginPassword" class="inp" style="margin-bottom:22px;" placeholder="••••••••" autocomplete="current-password"
+      onkeydown="if(event.key==='Enter')doLogin()">
+    <button onclick="doLogin()" id="loginBtn"
+      style="width:100%;padding:13px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:12px;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.4);transition:all .2s;">
+      <i class="fas fa-sign-in-alt mr-2"></i> Sign In
+    </button>
+    <div style="text-align:center;margin-top:16px;font-size:11px;color:#94a3b8;">
+      Contact admin to reset your password
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+
 <!-- HEADER -->
+
+<!-- ═══════════════════════════════════════════════════════ -->
+
 <header class="bg-white sticky top-0 z-50">
-<div class="max-w-screen-2xl mx-auto px-4 py-2.5 flex flex-wrap justify-between items-center gap-4">
+<div class="max-w-screen-2xl mx-auto px-4 py-2.5 flex flex-wrap justify-between items-center gap-3">
   <div class="flex items-center gap-3">
-    <div style="width:52px;height:52px;flex-shrink:0;">
+    <div style="width:48px;height:48px;flex-shrink:0;">
       <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
         <rect width="52" height="52" rx="14" fill="url(#lg)"/>
-        <circle cx="26" cy="22" r="12" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" fill="none"/>
-        <path d="M26 31 C26 31 17 24.5 17 19.5 C17 16.5 19.5 14 22.5 14 C24.2 14 25.7 14.9 26 15.5 C26.3 14.9 27.8 14 29.5 14 C32.5 14 35 16.5 35 19.5 C35 24.5 26 31 26 31Z" fill="white" opacity="0.95"/>
+        <path d="M26 31C26 31 17 24.5 17 19.5C17 16.5 19.5 14 22.5 14C24.2 14 25.7 14.9 26 15.5C26.3 14.9 27.8 14 29.5 14C32.5 14 35 16.5 35 19.5C35 24.5 26 31 26 31Z" fill="white" opacity="0.95"/>
         <polyline points="18,20 21,20 22.5,17 24,23 25.5,18.5 27,20 30,20 31.5,20" stroke="#1d4ed8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
         <rect x="8" y="38" width="36" height="10" rx="5" fill="rgba(255,255,255,0.18)"/>
         <text x="26" y="45.5" text-anchor="middle" fill="white" font-size="5.5" font-weight="700" font-family="DM Sans" letter-spacing="0.8">EPS REGISTRY</text>
@@ -119,16 +175,33 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
       </svg>
     </div>
     <div>
-      <div class="font-bold text-gray-900 text-base leading-tight">Mubarak Alkabeer Hospital</div>
-      <div class="text-xs font-semibold text-blue-600 tracking-widest uppercase">Advanced Electrophysiology Registry</div>
+      <div class="font-bold text-gray-900 text-sm leading-tight">Mubarak Alkabeer Hospital</div>
+      <div class="text-xs font-semibold text-blue-600 tracking-widest uppercase">EPS Registry</div>
     </div>
   </div>
-  <nav class="flex gap-6">
-    <button onclick="switchTab('form')" title="Home" class="pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition flex items-center gap-1"><i class="fas fa-home"></i></button>
-    <button onclick="switchTab('form')"      id="tab-form"      class="pb-1 tab-active text-sm transition">Registry Form</button>
-    <button onclick="switchTab('dashboard')" id="tab-dashboard" class="pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition">Dashboard</button>
-    <button onclick="switchTab('admin')"     id="tab-admin"     class="pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition">Admin Panel</button>
-    <button onclick="switchTab('analytics')" id="tab-analytics" class="pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition">Analytics</button>
+  <nav class="flex gap-4 items-center flex-wrap">
+    <button onclick="switchTab('form')" id="tab-form" class="pb-1 tab-active text-sm transition">
+      <i class="fas fa-file-medical mr-1"></i>Registry Form
+    </button>
+    <button onclick="switchTab('dashboard')" id="tab-dashboard" class="pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition">
+      <i class="fas fa-th-large mr-1"></i>Dashboard
+    </button>
+    <button onclick="switchTab('analytics')" id="tab-analytics" class="pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition">
+      <i class="fas fa-chart-line mr-1"></i>Analytics
+    </button>
+    <button onclick="switchTab('downloads')" id="tab-downloads" class="pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition">
+      <i class="fas fa-download mr-1"></i>Downloads
+    </button>
+    <button onclick="switchTab('admin')" id="tab-admin" class="pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition">
+      <i class="fas fa-shield-alt mr-1"></i>Admin
+    </button>
+    <div style="display:flex;align-items:center;gap:8px;border-left:1.5px solid #e2e8f0;padding-left:12px;">
+      <div id="userBadge" style="font-size:11px;font-weight:700;color:#475569;"></div>
+      <span id="roleBadge"></span>
+      <button onclick="doSignOut()" style="font-size:11px;font-weight:700;color:#94a3b8;background:none;border:1px solid #e2e8f0;border-radius:6px;padding:4px 8px;cursor:pointer;">
+        <i class="fas fa-sign-out-alt"></i>
+      </button>
+    </div>
   </nav>
 </div>
 </header>
@@ -149,13 +222,20 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     <div id="qs_list" class="max-h-72 overflow-y-auto divide-y divide-gray-100"></div>
   </div>
 </div>
-<!-- FORM SECTION -->
+
+<!-- ═══════════ FORM SECTION ═══════════ -->
+
 <section id="section-form" class="bg-white rounded-2xl shadow-lg border border-gray-100 flex flex-col md:flex-row min-h-[80vh] overflow-hidden relative">
   <div class="w-full md:w-64 bg-gradient-to-b from-slate-50 to-slate-100 border-b md:border-b-0 md:border-r border-gray-200 p-4 shrink-0">
     <div class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Patient Journey</div>
     <div class="progress-bar mb-4"><div class="progress-fill" id="progressFill" style="width:12.5%"></div></div>
     <ul id="stepperList" class="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-1 md:pb-0"></ul>
     <div id="stepCounterLabel" class="mt-4 text-xs text-slate-500 font-medium hidden md:block">Step 1 of 8</div>
+    <!-- My Cases Counter for Investigators -->
+    <div id="myCasesBox" class="hidden mt-4 p-3 bg-blue-50 border border-blue-200 rounded-xl">
+      <div class="text-xs font-bold text-blue-600 uppercase tracking-wide">My Cases</div>
+      <div id="myCasesCount" class="text-2xl font-black text-blue-700">0</div>
+    </div>
   </div>
   <div class="flex-1 flex flex-col relative overflow-hidden">
     <div id="editModeBanner" class="hidden">⚠ EDIT MODE — Save when finished</div>
@@ -205,7 +285,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
   </div>
 </div>
 
-<!-- STEP 1: EP REASON & ADMISSION -->
+<!-- STEP 1: EP REASON -->
 
 <div class="form-step" id="step-1">
   <div class="sec-title"><div class="icon-wrap bg-indigo-100"><i class="fas fa-hospital-user text-indigo-600"></i></div>2–3. Reason for EP Lab &amp; Admission</div>
@@ -239,7 +319,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
   </div>
 </div>
 
-<!-- STEP 2: HISTORY & RISK FACTORS -->
+<!-- STEP 2: HISTORY -->
 
 <div class="form-step" id="step-2">
   <div class="sec-title"><div class="icon-wrap bg-red-100"><i class="fas fa-heartbeat text-red-600"></i></div>4–5. History, Risk Factors &amp; Examination</div>
@@ -405,11 +485,13 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     </div>
   </div>
 </div>
-<!-- STEP 5: PROCEDURE -->
+
+<!-- STEP 5: PROCEDURE - keeping same as original for brevity -->
+
 <div class="form-step" id="step-5">
   <div class="sec-title"><div class="icon-wrap bg-indigo-100"><i class="fas fa-procedures text-indigo-600"></i></div>9. Procedure Details</div>
   <div class="card mb-5">
-    <div class="font-bold text-gray-800 text-sm mb-4" style="display:flex;align-items:center;gap:8px;"><span style="background:#dbeafe;color:#1e40af;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:800;">ALL PATIENTS</span> 9.1 – 9.4</div>
+    <div class="font-bold text-gray-800 text-sm mb-4"><span style="background:#dbeafe;color:#1e40af;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:800;">ALL PATIENTS</span> 9.1 – 9.4</div>
     <div class="proc-stack">
       <div><label class="lbl">9.1 Procedure Start Date</label><input type="date" name="procStartDate" class="inp"></div>
       <div><label class="lbl">9.2 Procedure Start Time (24h)</label><input type="time" name="procStartTime" class="inp"></div>
@@ -417,103 +499,30 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
       <div><label class="lbl">9.4 Operator Name</label><select name="operatorName" class="inp"><option value="">Select operator...</option><option>Dr. Samy</option><option>Dr. Hamdy</option><option>Dr. Abdulkarim</option><option>Dr. Metwally</option><option>Dr. Farouk</option></select></div>
     </div>
   </div>
-  <div id="proc_noReason" class="card card-yellow" style="text-align:center;padding:28px 20px;"><i class="fas fa-arrow-left" style="color:#d97706;font-size:20px;margin-bottom:10px;display:block;"></i><div style="font-weight:700;color:#92400e;font-size:15px;">No procedure selected yet</div><div style="font-size:13px;color:#a16207;margin-top:6px;">Go to <b>Step 2 — Reason for EP Lab</b> and choose a procedure.</div></div>
-  <!-- CRT/AICD -->
-  <div class="proc-section" id="proc_crtaicd">
-    <div class="card card-blue mb-3" style="border-left:4px solid #2563eb;"><div style="font-weight:800;color:#1e3a8a;font-size:14px;">9.5 — CRT / AICD with or without pacing</div></div>
-    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.5a Indications for CRT/AICD:</label><div class="g2"><label class="chk-item"><input type="checkbox" name="crtInd_surv"> Survivors of cardiac arrest with VT/VF</label><label class="chk-item"><input type="checkbox" name="crtInd_eps"> Inducible VT by EPS</label><label class="chk-item"><input type="checkbox" name="crtInd_icmEF"> ICM with EF ≤ 35%</label><label class="chk-item"><input type="checkbox" name="crtInd_nicmEF"> Non-ICM with EF ≤ 35%</label></div><div class="mt-2"><label class="chk-item" style="display:inline-flex;"><input type="checkbox" name="crtInd_inherited" onchange="document.getElementById('crtInhSub').classList.toggle('show',this.checked)"> Inherited heart disease with increased risk of SCD</label><div id="crtInhSub" class="sub-reveal mt-2"><label class="lbl">Specify:</label><div class="g2 mt-1"><label class="chk-item"><input type="checkbox" name="crtInh_longqt"> Long QT-syndrome</label><label class="chk-item"><input type="checkbox" name="crtInh_hcm"> HCM</label><label class="chk-item"><input type="checkbox" name="crtInh_brugada"> Brugada syndrome</label><label class="chk-item"><input type="checkbox" name="crtInh_arvc"> ARVD/C</label><label class="chk-item"><input type="checkbox" name="crtInh_cpvt"> CPVT</label></div></div></div></div>
-    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.5b Generator:</label><div class="flex gap-2 flex-wrap"><label class="radio-item"><input type="radio" name="crtGenerator" value="Initial implant" onchange="onCrtGen()"> Initial implant</label><label class="radio-item"><input type="radio" name="crtGenerator" value="Generator replacement" onchange="onCrtGen()"> Generator replacement</label><label class="radio-item"><input type="radio" name="crtGenerator" value="Generator explant" onchange="onCrtGen()"> Generator explant</label></div><div id="crtGen_initial" class="sub-reveal mt-2"><label class="lbl">Device Name</label><input type="text" name="crtDeviceName" class="inp"></div><div id="crtGen_replace" class="sub-reveal mt-2"><label class="lbl">Reasons for replacement:</label><div class="g2 mt-1"><label class="chk-item"><input type="checkbox" name="crtRep_reloc"> Device relocation</label><label class="chk-item"><input type="checkbox" name="crtRep_battery"> End of battery life</label><label class="chk-item"><input type="checkbox" name="crtRep_connector"> Faulty connector</label><label class="chk-item"><input type="checkbox" name="crtRep_infect"> Infection</label><label class="chk-item"><input type="checkbox" name="crtRep_leadRev"> Lead revision</label><label class="chk-item"><input type="checkbox" name="crtRep_upgrade"> Upgrade</label><label class="chk-item"><input type="checkbox" name="crtRep_recall"> Manufacturer recall</label></div></div><div id="crtGen_explant" class="sub-reveal mt-2"><label class="lbl">Reimplant intended</label><select name="crtReimplant" class="inp" style="max-width:200px;"><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
-    <div class="card mb-3">
-      <div class="flex items-center justify-between mb-3"><span class="lbl mb-0" style="font-weight:700;">9.5c Device Implant</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'crtImplant','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'crtImplant','Yes')">Yes</button></div></div>
-      <input type="hidden" name="crt_implant" id="val_crtImplant" value="No">
-      <div id="sub_crtImplant" class="sub-reveal">
-        <label class="lbl">9.5c.1 Device Type:</label><div class="g2 mt-1 mb-3"><label class="radio-item"><input type="radio" name="crtDeviceType" value="CRT-D" onchange="onCrtDType()"> CRT-D</label><label class="radio-item"><input type="radio" name="crtDeviceType" value="ICD-Dual chamber" onchange="onCrtDType()"> ICD-Dual chamber</label><label class="radio-item"><input type="radio" name="crtDeviceType" value="ICD-Single chamber" onchange="onCrtDType()"> ICD-Single chamber</label><label class="radio-item"><input type="radio" name="crtDeviceType" value="Extra vascular ICD" onchange="onCrtDType()"> Extra vascular ICD</label><label class="radio-item"><input type="radio" name="crtDeviceType" value="Sub cutaneous ICD" onchange="onCrtDType()"> Sub cutaneous ICD</label><label class="radio-item"><input type="radio" name="crtDeviceType" value="CRT" onchange="onCrtDType()"> CRT</label></div>
-        <div id="crtDualSub" class="sub-reveal">
-          <div class="card card-gray">
-            <div class="flex items-center justify-between mb-2"><span class="lbl mb-0">9.5c.1a Pacemaker (same procedure)</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'crtPM','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'crtPM','Yes')">Yes</button></div></div>
-            <input type="hidden" name="crt_pm" id="val_crtPM" value="No">
-            <div id="sub_crtPM" class="sub-reveal">
-              <label class="lbl">Pacemaker type:</label><div class="g2 mt-1 mb-3"><label class="radio-item"><input type="radio" name="crtPMType" value="Single chamber transvenous PPM" onchange="onCrtPMT()"> Single chamber transvenous PPM</label><label class="radio-item"><input type="radio" name="crtPMType" value="Dual chamber transvenous PPM" onchange="onCrtPMT()"> Dual chamber transvenous PPM</label><label class="radio-item"><input type="radio" name="crtPMType" value="Leadless single chamber PPM" onchange="onCrtPMT()"> Leadless single chamber PPM</label><label class="radio-item"><input type="radio" name="crtPMType" value="Leadless dual chamber PPM" onchange="onCrtPMT()"> Leadless dual chamber PPM</label><label class="radio-item"><input type="radio" name="crtPMType" value="CRT-P" onchange="onCrtPMT()"> CRT-P</label><label class="radio-item"><input type="radio" name="crtPMType" value="His-bundle PPM" onchange="onCrtPMT()"> His-bundle PPM</label><label class="radio-item"><input type="radio" name="crtPMType" value="Leadless LVEP" onchange="onCrtPMT()"> Leadless LVEP</label><label class="radio-item"><input type="radio" name="crtPMType" value="CCM" onchange="onCrtPMT()"> CCM</label><label class="radio-item"><input type="radio" name="crtPMType" value="LBBB PPM" onchange="onCrtPMT()"> LBBB PPM</label></div>
-              <div id="crtLBBBsub" class="sub-reveal mb-3"><label class="lbl">LBBB PPM: QRS post procedure (msec)</label><input type="number" name="crtLBBBqrs" class="inp" placeholder="msec" style="max-width:180px;"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="crtLBBBqrsNA" class="w-3 h-3"> Not assessed</label></div>
-              <div class="flex items-center justify-between mb-2"><span class="lbl mb-0">Any Bradycardia indications</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'crtBrady','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'crtBrady','Yes')">Yes</button></div></div>
-              <input type="hidden" name="crt_brady" id="val_crtBrady" value="No">
-              <div id="sub_crtBrady" class="sub-reveal"><label class="lbl">Reason for pacing:</label><div class="g2 mt-1"><label class="radio-item"><input type="radio" name="crtBradyReason" value="2:1 AV block"> 2:1 AV block</label><label class="radio-item"><input type="radio" name="crtBradyReason" value="2nd AV block Mobitz II"> 2° AV block, Mobitz II</label><label class="radio-item"><input type="radio" name="crtBradyReason" value="AV mode ablation"> A-V mode ablation</label><label class="radio-item"><input type="radio" name="crtBradyReason" value=">50% RV pacing"> &gt;50% RV pacing</label><label class="radio-item"><input type="radio" name="crtBradyReason" value="Chronotropic incompetence"> Chronotropic incompetence</label><label class="radio-item"><input type="radio" name="crtBradyReason" value="CHB"> CHB</label><label class="radio-item"><input type="radio" name="crtBradyReason" value="HF unresponsive to GDMT"> HF unresponsive to GDMT</label><label class="radio-item"><input type="radio" name="crtBradyReason" value="SSS"> SSS</label><label class="radio-item"><input type="radio" name="crtBradyReason" value="Other"> Other</label></div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.5d Lead Assessment:</label><div class="flex gap-2"><label class="radio-item"><input type="radio" name="crtLead" value="New lead" onchange="onCrtLd()"> New lead</label><label class="radio-item"><input type="radio" name="crtLead" value="Existing lead" onchange="onCrtLd()"> Existing lead</label></div><div id="crtLeadExistSub" class="sub-reveal mt-2"><label class="lbl">Lead status:</label><div class="flex gap-2 mt-1"><label class="radio-item"><input type="radio" name="crtLeadStatus" value="Extracted"> Extracted</label><label class="radio-item"><input type="radio" name="crtLeadStatus" value="Abandoned"> Abandoned</label><label class="radio-item"><input type="radio" name="crtLeadStatus" value="Reused"> Reused</label></div></div></div>
-  </div>
-  <!-- Temp PPM -->
-  <div class="proc-section" id="proc_temppm">
-    <div class="card card-gray mb-3" style="border-left:4px solid #64748b;"><div style="font-weight:800;color:#334155;font-size:14px;">9.6 — Temporary Pacemaker</div></div>
-    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.6a Indication:</label><div class="g2"><label class="chk-item"><input type="checkbox" name="tpm_chb"> CHB (3° AV block)</label><label class="chk-item"><input type="checkbox" name="tpm_mobitz2"> Mobitz type II AV block</label><label class="chk-item"><input type="checkbox" name="tpm_altBBB"> Alternating RBBB and LBBB</label><label class="chk-item"><input type="checkbox" name="tpm_sss"> Symptomatic sinus-node dysfunction</label><label class="chk-item"><input type="checkbox" name="tpm_sinusArrest"> Sinus arrest or Sinoatrial block</label><label class="chk-item"><input type="checkbox" name="tpm_prolongedPause"> Prolonged pause (&gt;3 seconds)</label><label class="chk-item"><input type="checkbox" name="tpm_tachyBrady"> Tachy-Brady syndrome</label></div></div>
-    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.6b Underlying causes:</label><div class="g2"><label class="chk-item"><input type="checkbox" name="tpm_electrolyte"> Electrolyte imbalance</label><label class="chk-item"><input type="checkbox" name="tpm_drugInduced" id="tpm_drugChk" onchange="toggleTpmCause()"> Drug induced</label><label class="chk-item"><input type="checkbox" name="tpm_acuteMI" id="tpm_miChk" onchange="toggleTpmCause()"> Acute MI</label><label class="chk-item"><input type="checkbox" name="tpm_myocarditis"> Myocarditis</label><label class="chk-item"><input type="checkbox" name="tpm_endocarditis"> Endocarditis</label><label class="chk-item"><input type="checkbox" name="tpm_postArrest"> Post cardiac arrest</label><label class="chk-item"><input type="checkbox" name="tpm_hypothermia"> Hypothermia</label><label class="chk-item"><input type="checkbox" name="tpm_bridgePPM"> Bridge to PPM</label><label class="chk-item"><input type="checkbox" name="tpm_postTAVI"> Post TAVI/valve replacement</label><label class="chk-item"><input type="checkbox" name="tpm_unknown"> Unknown cause</label></div><div id="drugDiv" class="sub-reveal mt-2"><label class="lbl">Drug used:</label><div class="g2 mt-1"><label class="radio-item"><input type="radio" name="tpmDrug" value="AV blocking agent"> AV blocking agent (BB, CCB)</label><label class="radio-item"><input type="radio" name="tpmDrug" value="Digitalis toxicity"> Digitalis toxicity</label><label class="radio-item"><input type="radio" name="tpmDrug" value="Anti-arrhythmic"> Anti-arrhythmic</label></div></div><div id="miDiv" class="sub-reveal mt-2"><label class="lbl">Acute MI type:</label><div class="flex gap-2 flex-wrap mt-1"><label class="radio-item"><input type="radio" name="tpmMItype" value="Inferior"> Inferior</label><label class="radio-item"><input type="radio" name="tpmMItype" value="Posterior"> Posterior</label><label class="radio-item"><input type="radio" name="tpmMItype" value="Anterior"> Anterior</label><label class="radio-item"><input type="radio" name="tpmMItype" value="Lateral"> Lateral</label><label class="radio-item"><input type="radio" name="tpmMItype" value="RV"> RV</label></div></div></div>
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="lbl mb-0" style="font-weight:700;">9.6c Permanent pacemaker during same hospital stay</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'tpmPPM','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'tpmPPM','Yes')">Yes</button></div></div><input type="hidden" name="tpm_permanentSameStay" id="val_tpmPPM" value="No"><div id="sub_tpmPPM" class="sub-reveal" style="font-size:13px;font-weight:600;color:#1d4ed8;">→ Proceed to Section 9.7 (Permanent Pacemaker) below</div></div>
-  </div>
-  <!-- Perm PPM -->
-  <div class="proc-section" id="proc_permpm">
-    <div class="card card-gray mb-3" style="border-left:4px solid #475569;"><div style="font-weight:800;color:#1e293b;font-size:14px;">9.7 — Permanent Pacemaker</div></div>
-    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.7a Generator:</label><div class="flex gap-2 flex-wrap"><label class="radio-item"><input type="radio" name="ppmGenerator" value="Initial implant" onchange="onPpmGen()"> Initial implant</label><label class="radio-item"><input type="radio" name="ppmGenerator" value="Generator replacement" onchange="onPpmGen()"> Generator replacement</label><label class="radio-item"><input type="radio" name="ppmGenerator" value="Generator explant" onchange="onPpmGen()"> Generator explant</label></div><div id="ppmGen_initial" class="sub-reveal mt-2"><label class="lbl">Device Name</label><input type="text" name="ppmDeviceName" class="inp"></div><div id="ppmGen_replace" class="sub-reveal mt-2"><label class="lbl">Reasons for replacement:</label><div class="g2 mt-1"><label class="chk-item"><input type="checkbox" name="ppmRep_reloc"> Device relocation</label><label class="chk-item"><input type="checkbox" name="ppmRep_battery"> End of battery life</label><label class="chk-item"><input type="checkbox" name="ppmRep_connector"> Faulty connector</label><label class="chk-item"><input type="checkbox" name="ppmRep_infect"> Infection</label><label class="chk-item"><input type="checkbox" name="ppmRep_leadRev"> Lead revision</label><label class="chk-item"><input type="checkbox" name="ppmRep_upgrade"> Upgrade</label><label class="chk-item"><input type="checkbox" name="ppmRep_recall"> Manufacturer recall</label></div></div><div id="ppmGen_explant" class="sub-reveal mt-2"><label class="lbl">Reimplant intended</label><select name="ppmReimplant" class="inp" style="max-width:200px;"><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
-    <div class="card mb-3"><div class="flex items-center justify-between mb-3"><span class="lbl mb-0" style="font-weight:700;">9.7b Device Implant</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'ppmImplant','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'ppmImplant','Yes')">Yes</button></div></div><input type="hidden" name="ppm_implant" id="val_ppmImplant" value="No"><div id="sub_ppmImplant" class="sub-reveal"><label class="lbl">Device Type:</label><div class="g2 mt-1 mb-3"><label class="radio-item"><input type="radio" name="ppmDeviceType" value="Single chamber transvenous PPM" onchange="onPpmDType()"> Single chamber transvenous PPM</label><label class="radio-item"><input type="radio" name="ppmDeviceType" value="Dual chamber transvenous PPM" onchange="onPpmDType()"> Dual chamber transvenous PPM</label><label class="radio-item"><input type="radio" name="ppmDeviceType" value="Leadless single chamber PPM" onchange="onPpmDType()"> Leadless single chamber PPM</label><label class="radio-item"><input type="radio" name="ppmDeviceType" value="Leadless dual chamber PPM" onchange="onPpmDType()"> Leadless dual chamber PPM</label><label class="radio-item"><input type="radio" name="ppmDeviceType" value="His-bundle PPM" onchange="onPpmDType()"> His-bundle PPM</label><label class="radio-item"><input type="radio" name="ppmDeviceType" value="Leadless LVEP" onchange="onPpmDType()"> Leadless LVEP</label><label class="radio-item"><input type="radio" name="ppmDeviceType" value="CCM" onchange="onPpmDType()"> CCM</label><label class="radio-item"><input type="radio" name="ppmDeviceType" value="LBBB PPM" onchange="onPpmDType()"> LBBB PPM</label></div><div id="ppmLBBBsub" class="sub-reveal mb-2"><label class="lbl">LBBB PPM: QRS post procedure (msec)</label><input type="number" name="ppmLBBBqrs" class="inp" placeholder="msec" style="max-width:180px;"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="ppmLBBBqrsNA" class="w-3 h-3"> Not assessed</label></div></div></div>
-    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.7c Indications for PPM:</label><div class="g2"><label class="chk-item"><input type="checkbox" name="ppmInd_21block"> 2:1 AV block</label><label class="chk-item"><input type="checkbox" name="ppmInd_mobitz2"> 2° AV block, Mobitz II</label><label class="chk-item"><input type="checkbox" name="ppmInd_avAblation"> A-V mode ablation</label><label class="chk-item"><input type="checkbox" name="ppmInd_rvPacing"> &gt;40% RV pacing</label><label class="chk-item"><input type="checkbox" name="ppmInd_chrono"> Chronotropic incompetence</label><label class="chk-item"><input type="checkbox" name="ppmInd_chb"> CHB</label><label class="chk-item"><input type="checkbox" name="ppmInd_sss"> SSS</label></div></div>
-    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.7d Lead Assessment:</label><div class="flex gap-2"><label class="radio-item"><input type="radio" name="ppmLead" value="New lead" onchange="onPpmLd()"> New lead</label><label class="radio-item"><input type="radio" name="ppmLead" value="Existing lead" onchange="onPpmLd()"> Existing lead</label></div><div id="ppmLeadExistSub" class="sub-reveal mt-2"><label class="lbl">Lead status:</label><div class="flex gap-2 mt-1"><label class="radio-item"><input type="radio" name="ppmLeadStatus" value="Extracted"> Extracted</label><label class="radio-item"><input type="radio" name="ppmLeadStatus" value="Abandoned"> Abandoned</label><label class="radio-item"><input type="radio" name="ppmLeadStatus" value="Reused"> Reused</label></div></div></div>
-  </div>
-  <!-- EPS/Ablation -->
-  <div class="proc-section" id="proc_eps">
-    <div class="card card-purple mb-3" style="border-left:4px solid #7c3aed;"><div style="font-weight:800;color:#4c1d95;font-size:14px;">9.8 — EPS / Ablation</div></div>
-    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.8a Reason for EPS/Ablation:</label><div class="g2"><label class="chk-item"><input type="checkbox" name="eps_avnrt"> AVNRT</label><label class="chk-item"><input type="checkbox" name="eps_wpw"> WPW</label><label class="chk-item"><input type="checkbox" name="eps_aflutter"> Atrial flutter</label><label class="chk-item"><input type="checkbox" name="eps_afib"> Atrial fibrillation</label><label class="chk-item"><input type="checkbox" name="eps_vt"> VT</label><label class="chk-item"><input type="checkbox" name="eps_pvcs"> PVCs</label></div></div>
-    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.8b Sedation:</label><div class="g2"><label class="radio-item"><input type="radio" name="epsSedation" value="Minimal/Anxiolysis"> Minimal/Anxiolysis</label><label class="radio-item"><input type="radio" name="epsSedation" value="Moderate/Analgesia"> Moderate/Analgesia</label><label class="radio-item"><input type="radio" name="epsSedation" value="Deep/Analgesia"> Deep/Analgesia</label><label class="radio-item"><input type="radio" name="epsSedation" value="General Anesthesia"> General Anesthesia</label></div></div>
-    <div class="card mb-3">
-      <div class="g2 mb-3"><div><label class="lbl">9.8c Transseptal Catheterization</label><select name="epsTransseptal" class="inp"><option value="">N/A</option><option>Single</option><option>Double</option></select></div><div><label class="lbl">9.8d Intracardiac Echo</label><select name="epsICE" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">9.8e Ablation Time (min)</label><input type="number" name="epsAblTime" class="inp" placeholder="min"></div><div><label class="lbl">9.8f Fluoroscopy Time (min)</label><input type="number" name="epsFluoroTime" class="inp" placeholder="min"></div></div>
-      <div class="flex items-center justify-between mb-2"><span class="lbl mb-0">9.8g Intraprocedural Anticoagulation</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'epsAnticoag','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'epsAnticoag','Yes')">Yes</button></div></div>
-      <input type="hidden" name="eps_anticoag" id="val_epsAnticoag" value="No">
-      <div id="sub_epsAnticoag" class="sub-reveal mb-3"><label class="lbl">Uninterrupted Anticoagulation Therapy</label><select name="epsUninterruptedAnticoag" class="inp" style="max-width:200px;"><option value="No">No</option><option value="Yes">Yes</option></select></div>
-      <div class="g2 mb-3"><div><label class="lbl">9.8h Phrenic Nerve Evaluation</label><select name="epsPhrenicNerve" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">9.8j Induced Arrhythmia</label><select name="epsInducedArrhythmia" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
-      <label class="lbl">9.8i Catheter Manipulation:</label><div class="flex gap-2 flex-wrap mt-1 mb-2"><label class="radio-item"><input type="radio" name="epsCathManip" value="Manual" onchange="onCathManip()"> Manual</label><label class="radio-item"><input type="radio" name="epsCathManip" value="Magnetic/Robotic" onchange="onCathManip()"> Magnetic/Robotic</label><label class="radio-item"><input type="radio" name="epsCathManip" value="Other" onchange="onCathManip()"> Other</label></div>
-      <div id="cathManipOther" class="sub-reveal mb-3"><label class="lbl">Specify</label><input type="text" name="epsCathManipOther" class="inp"></div>
-      <label class="lbl">Mapping System:</label><div class="flex gap-2 flex-wrap mt-1"><label class="radio-item"><input type="radio" name="epsMappingSystem" value="Carto" onchange="onMapSys()"> Carto</label><label class="radio-item"><input type="radio" name="epsMappingSystem" value="Ensite" onchange="onMapSys()"> Ensite</label><label class="radio-item"><input type="radio" name="epsMappingSystem" value="Rhythmia" onchange="onMapSys()"> Rhythmia</label><label class="radio-item"><input type="radio" name="epsMappingSystem" value="Other" onchange="onMapSys()"> Other</label></div>
-      <div id="mappingOther" class="sub-reveal mt-2"><label class="lbl">Specify</label><input type="text" name="epsMappingOther" class="inp"></div>
-    </div>
-  </div>
-  <!-- LAAO -->
-  <div class="proc-section" id="proc_laao">
-    <div class="card card-green mb-3" style="border-left:4px solid #059669;"><div style="font-weight:800;color:#065f46;font-size:14px;">9.9 — LAAO (WATCHMAN)</div></div>
-    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.9a Indication:</label><div class="g2"><label class="chk-item"><input type="checkbox" name="laao_nonvalvular"> Non-valvular atrial fibrillation</label><label class="chk-item"><input type="checkbox" name="laao_highBleed"> High bleeding risk</label><label class="chk-item"><input type="checkbox" name="laao_contraOAC"> Contraindication to long-term OAC</label><label class="chk-item"><input type="checkbox" name="laao_priorBleed"> Prior major bleeding on OAC</label><label class="chk-item"><input type="checkbox" name="laao_preference"> Patient preference</label></div></div>
-    <div class="card mb-3"><div class="font-bold text-gray-700 text-sm mb-3">9.9b WATCHMAN Device Details:</div><div class="g2 mb-3"><div><label class="lbl">Device type:</label><div class="flex gap-2 mt-1"><label class="radio-item"><input type="radio" name="laaoDeviceType" value="WATCHMAN 2.5"> WATCHMAN 2.5</label><label class="radio-item"><input type="radio" name="laaoDeviceType" value="WATCHMAN FLX"> WATCHMAN FLX</label></div></div><div><label class="lbl">Device size (mm)</label><input type="number" name="laaoDeviceSize" class="inp" step="0.5" placeholder="mm"></div></div></div>
-    <div class="card mb-3"><div class="font-bold text-gray-700 text-sm mb-3">9.9c Procedural Details:</div><div class="g2 mb-3"><div><label class="lbl">Number of deployment attempts</label><select name="laaoAttempts" class="inp"><option value="">Select</option><option value="1">1</option><option value="2">2</option><option value="≥3">≥3</option></select></div><div><label class="lbl">Transseptal puncture</label><select name="laaoTransseptal" class="inp"><option>Single</option><option>Double</option></select></div><div><label class="lbl">Imaging guidance</label><select name="laaoImaging" class="inp"><option>TEE</option><option>ICE</option><option>Both</option></select></div><div><label class="lbl">PASS criteria met</label><select name="laaoPASS" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">Final peri-device leak</label><select name="laaoLeak" class="inp"><option>None</option><option>&lt;3 mm</option><option>3–5 mm</option><option>&gt;5 mm</option></select></div></div></div>
-    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.9d Anticoagulation:</label><div class="flex gap-2"><label class="radio-item"><input type="radio" name="laaoAnticoag" value="Heparin"> Heparin</label><label class="radio-item"><input type="radio" name="laaoAnticoag" value="Bivalirudin"> Bivalirudin</label></div></div>
-    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.9e Immediate Procedural Outcome:</label><div class="flex gap-2 flex-wrap"><label class="radio-item"><input type="radio" name="laaoOutcome" value="Successful implantation"> Successful implantation</label><label class="radio-item"><input type="radio" name="laaoOutcome" value="Device repositioned"> Device repositioned</label><label class="radio-item"><input type="radio" name="laaoOutcome" value="Device retrieved/aborted"> Device retrieved/aborted</label></div></div>
-  </div>
+  <div id="proc_noReason" class="card card-yellow" style="text-align:center;padding:28px 20px;"><i class="fas fa-arrow-left" style="color:#d97706;font-size:20px;margin-bottom:10px;display:block;"></i><div style="font-weight:700;color:#92400e;font-size:15px;">No procedure selected yet</div><div style="font-size:13px;color:#a16207;margin-top:6px;">Go to <b>Step 2</b> and choose a procedure.</div></div>
+  <div class="proc-section" id="proc_crtaicd"><div class="card card-blue mb-3" style="border-left:4px solid #2563eb;"><div style="font-weight:800;color:#1e3a8a;font-size:14px;">9.5 — CRT / AICD</div></div><div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.5a Indications:</label><div class="g2"><label class="chk-item"><input type="checkbox" name="crtInd_surv"> Survivors of cardiac arrest with VT/VF</label><label class="chk-item"><input type="checkbox" name="crtInd_eps"> Inducible VT by EPS</label><label class="chk-item"><input type="checkbox" name="crtInd_icmEF"> ICM with EF ≤ 35%</label><label class="chk-item"><input type="checkbox" name="crtInd_nicmEF"> Non-ICM with EF ≤ 35%</label></div></div><div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.5b Generator:</label><div class="flex gap-2 flex-wrap"><label class="radio-item"><input type="radio" name="crtGenerator" value="Initial implant" onchange="onCrtGen()"> Initial implant</label><label class="radio-item"><input type="radio" name="crtGenerator" value="Generator replacement" onchange="onCrtGen()"> Generator replacement</label><label class="radio-item"><input type="radio" name="crtGenerator" value="Generator explant" onchange="onCrtGen()"> Generator explant</label></div><div id="crtGen_initial" class="sub-reveal mt-2"><label class="lbl">Device Name</label><input type="text" name="crtDeviceName" class="inp"></div></div></div>
+  <div class="proc-section" id="proc_temppm"><div class="card card-gray mb-3" style="border-left:4px solid #64748b;"><div style="font-weight:800;color:#334155;font-size:14px;">9.6 — Temporary Pacemaker</div></div><div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.6a Indication:</label><div class="g2"><label class="chk-item"><input type="checkbox" name="tpm_chb"> CHB (3° AV block)</label><label class="chk-item"><input type="checkbox" name="tpm_mobitz2"> Mobitz type II AV block</label><label class="chk-item"><input type="checkbox" name="tpm_altBBB"> Alternating RBBB and LBBB</label><label class="chk-item"><input type="checkbox" name="tpm_sss"> Symptomatic sinus-node dysfunction</label></div></div></div>
+  <div class="proc-section" id="proc_permpm"><div class="card card-gray mb-3" style="border-left:4px solid #475569;"><div style="font-weight:800;color:#1e293b;font-size:14px;">9.7 — Permanent Pacemaker</div></div><div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.7a Generator:</label><div class="flex gap-2 flex-wrap"><label class="radio-item"><input type="radio" name="ppmGenerator" value="Initial implant" onchange="onPpmGen()"> Initial implant</label><label class="radio-item"><input type="radio" name="ppmGenerator" value="Generator replacement" onchange="onPpmGen()"> Generator replacement</label><label class="radio-item"><input type="radio" name="ppmGenerator" value="Generator explant" onchange="onPpmGen()"> Generator explant</label></div><div id="ppmGen_initial" class="sub-reveal mt-2"><label class="lbl">Device Name</label><input type="text" name="ppmDeviceName" class="inp"></div></div><div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.7c Indications:</label><div class="g2"><label class="chk-item"><input type="checkbox" name="ppmInd_21block"> 2:1 AV block</label><label class="chk-item"><input type="checkbox" name="ppmInd_mobitz2"> 2° AV block, Mobitz II</label><label class="chk-item"><input type="checkbox" name="ppmInd_chb"> CHB</label><label class="chk-item"><input type="checkbox" name="ppmInd_sss"> SSS</label></div></div></div>
+  <div class="proc-section" id="proc_eps"><div class="card card-purple mb-3" style="border-left:4px solid #7c3aed;"><div style="font-weight:800;color:#4c1d95;font-size:14px;">9.8 — EPS / Ablation</div></div><div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.8a Reason:</label><div class="g2"><label class="chk-item"><input type="checkbox" name="eps_avnrt"> AVNRT</label><label class="chk-item"><input type="checkbox" name="eps_wpw"> WPW</label><label class="chk-item"><input type="checkbox" name="eps_aflutter"> Atrial flutter</label><label class="chk-item"><input type="checkbox" name="eps_afib"> Atrial fibrillation</label><label class="chk-item"><input type="checkbox" name="eps_vt"> VT</label><label class="chk-item"><input type="checkbox" name="eps_pvcs"> PVCs</label></div></div><div class="card mb-3"><div class="g2 mb-3"><div><label class="lbl">9.8c Transseptal</label><select name="epsTransseptal" class="inp"><option value="">N/A</option><option>Single</option><option>Double</option></select></div><div><label class="lbl">9.8d ICE</label><select name="epsICE" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">9.8e Ablation Time (min)</label><input type="number" name="epsAblTime" class="inp"></div><div><label class="lbl">9.8f Fluoro Time (min)</label><input type="number" name="epsFluoroTime" class="inp"></div></div></div></div>
+  <div class="proc-section" id="proc_laao"><div class="card card-green mb-3" style="border-left:4px solid #059669;"><div style="font-weight:800;color:#065f46;font-size:14px;">9.9 — LAAO (WATCHMAN)</div></div><div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.9a Indication:</label><div class="g2"><label class="chk-item"><input type="checkbox" name="laao_nonvalvular"> Non-valvular atrial fibrillation</label><label class="chk-item"><input type="checkbox" name="laao_highBleed"> High bleeding risk</label><label class="chk-item"><input type="checkbox" name="laao_contraOAC"> Contraindication to long-term OAC</label><label class="chk-item"><input type="checkbox" name="laao_priorBleed"> Prior major bleeding on OAC</label></div></div><div class="card mb-3"><div class="g2"><div><label class="lbl">Device type</label><div class="flex gap-2 mt-1"><label class="radio-item"><input type="radio" name="laaoDeviceType" value="WATCHMAN 2.5"> WATCHMAN 2.5</label><label class="radio-item"><input type="radio" name="laaoDeviceType" value="WATCHMAN FLX"> WATCHMAN FLX</label></div></div><div><label class="lbl">Device size (mm)</label><input type="number" name="laaoDeviceSize" class="inp" step="0.5"></div><div><label class="lbl">PASS criteria met</label><select name="laaoPASS" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">Immediate Outcome</label><select name="laaoOutcome" class="inp"><option>Successful implantation</option><option>Device repositioned</option><option>Device retrieved/aborted</option></select></div></div></div></div>
 </div>
+
 <!-- STEP 6: COMPLICATIONS -->
+
 <div class="form-step" id="step-6">
   <div class="sec-title"><div class="icon-wrap bg-red-100"><i class="fas fa-exclamation-triangle text-red-600"></i></div>10. Events &amp; Complications</div>
   <div class="card mb-4"><div class="font-bold text-gray-800 text-sm mb-3">10.1 Procedures during hospital stay</div><div class="g4"><div><label class="lbl">CA</label><select name="comp_ca" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">PCI</label><select name="comp_pci" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">CABG</label><select name="comp_cabg" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">TAVR</label><select name="comp_tavr" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
   <div class="card card-red mb-3">
-    <div class="font-bold text-red-900 text-sm mb-3">10.2 Complications during hospital stay</div>
+    <div class="font-bold text-red-900 text-sm mb-3">10.2 Complications</div>
     <div class="g3 mb-3"><div><label class="lbl">10.2.1 Resuscitated cardiac arrest</label><select name="cx_cardArrest" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.2 Pulmonary edema/CHF</label><select name="cx_pulEdema" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.3 Cardiac tamponade</label><select name="cx_tamponade1" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.4 Renal impairment/failure</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'renal','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'renal','Yes')">Yes</button></div></div><input type="hidden" name="cx_renal" id="val_renal" value="No"><div id="sub_renal" class="sub-reveal"><label class="lbl">Dialysis required</label><select name="cx_dialysis" class="inp max-w-xs"><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
     <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.5 Stroke</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'stroke','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'stroke','Yes')">Yes</button></div></div><input type="hidden" name="cx_stroke" id="val_stroke" value="No"><div id="sub_stroke" class="sub-reveal"><label class="lbl">Type:</label><div class="flex gap-2 mt-1"><label class="radio-item"><input type="radio" name="strokeType" value="Hemorrhagic"> Hemorrhagic</label><label class="radio-item"><input type="radio" name="strokeType" value="Thrombotic"> Thrombotic</label><label class="radio-item"><input type="radio" name="strokeType" value="Unknown"> Unknown</label></div></div></div>
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.6 Access site vascular/bleeding complications</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'vascular','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'vascular','Yes')">Yes</button></div></div><input type="hidden" name="cx_vascular" id="val_vascular" value="No"><div id="sub_vascular" class="sub-reveal"><div class="g4 mb-3"><div><label class="lbl">Hematoma</label><select name="cx_hematoma" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">Occlusion</label><select name="cx_occlusion" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">AV fistula</label><select name="cx_avFistula" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">Pseudo aneurysm</label><select name="cx_pseudoAneurysm" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.7 Intervention Required</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'vasInt','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'vasInt','Yes')">Yes</button></div></div><input type="hidden" name="cx_vasIntervention" id="val_vasInt" value="No"><div id="sub_vasInt" class="sub-reveal"><label class="lbl">Intervention Type:</label><div class="flex gap-2 flex-wrap mt-1"><label class="radio-item"><input type="radio" name="vasInterventionType" value="Endovascular repair"> Endovascular repair</label><label class="radio-item"><input type="radio" name="vasInterventionType" value="Surgical repair"> Surgical repair</label><label class="radio-item"><input type="radio" name="vasInterventionType" value="Thrombin injection"> Thrombin injection</label></div></div></div></div>
-    <div class="g3 mb-3"><div><label class="lbl">10.2.8 Peripheral embolization</label><select name="cx_periEmbol" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.9 Pericarditis</label><select name="cx_pericarditis" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
     <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.10 Cardiogenic shock</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'cardShock','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'cardShock','Yes')">Yes</button></div></div><input type="hidden" name="cx_cardShock" id="val_cardShock" value="No"><div id="sub_cardShock" class="sub-reveal"><label class="lbl">SCAI stage:</label><div class="flex gap-2 flex-wrap mt-1"><label class="radio-item"><input type="radio" name="scaiStage" value="At risk"> At risk</label><label class="radio-item"><input type="radio" name="scaiStage" value="Beginning"> Beginning</label><label class="radio-item"><input type="radio" name="scaiStage" value="Classic"> Classic</label><label class="radio-item"><input type="radio" name="scaiStage" value="Deteriorating"> Deteriorating</label><label class="radio-item"><input type="radio" name="scaiStage" value="Extremis"> Extremis</label></div></div></div>
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.11 Ventilation</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'ventilation','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'ventilation','Yes')">Yes</button></div></div><input type="hidden" name="cx_ventilation" id="val_ventilation" value="No"><div id="sub_ventilation" class="sub-reveal"><label class="lbl">Type:</label><div class="flex gap-2 flex-wrap mt-1"><label class="radio-item"><input type="radio" name="ventType" value="Non-invasive only"> Non-invasive only</label><label class="radio-item"><input type="radio" name="ventType" value="Invasive only"> Invasive only</label><label class="radio-item"><input type="radio" name="ventType" value="Both"> Both</label></div></div></div>
-    <div class="g2 mb-3"><div><label class="lbl">10.2.12 Inotropes</label><select name="cx_inotropes" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.12a Mechanical complications</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'mechComp','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'mechComp','Yes')">Yes</button></div></div><input type="hidden" name="cx_mechComp" id="val_mechComp" value="No"><div id="sub_mechComp" class="sub-reveal"><label class="lbl">Type:</label><div class="flex gap-2 flex-wrap mt-1"><label class="radio-item"><input type="radio" name="mechCompType" value="Cardiac rupture"> Cardiac rupture</label><label class="radio-item"><input type="radio" name="mechCompType" value="VSD"> VSD</label><label class="radio-item"><input type="radio" name="mechCompType" value="Papillary muscle rupture/acute severe MR"> Papillary muscle rupture/acute severe MR</label></div></div></div>
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.13 Any bleeding</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'bleeding','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'bleeding','Yes')">Yes</button></div></div><input type="hidden" name="cx_bleeding" id="val_bleeding" value="No"><div id="sub_bleeding" class="sub-reveal"><label class="lbl">Bleeding type:</label><div class="space-y-1 mt-1 mb-3"><label class="radio-item"><input type="radio" name="bleedType" value="Type 1" onchange="onBleedT()"> Type 1 (Not actionable)</label><label class="radio-item"><input type="radio" name="bleedType" value="Type 2" onchange="onBleedT()"> Type 2 (Actionable, nonsurgical)</label><label class="radio-item"><input type="radio" name="bleedType" value="Type 3" onchange="onBleedT()"> Type 3 (Major/Overt bleeding)</label><label class="radio-item"><input type="radio" name="bleedType" value="Type 5" onchange="onBleedT()"> Type 5 (Fatal bleeding)</label></div><div id="bleedType3sub" class="sub-reveal mb-3"><label class="lbl">Major bleeding type:</label><div class="space-y-1 mt-1"><label class="radio-item"><input type="radio" name="bleedSubType" value="Type 3a"> Type 3a (Hb drop ≥3 to &lt;5 g/dL)</label><label class="radio-item"><input type="radio" name="bleedSubType" value="Type 3b"> Type 3b (Hb drop ≥5 g/dL)</label><label class="radio-item"><input type="radio" name="bleedSubType" value="Type 3c"> Type 3c (Intracranial)</label></div></div><label class="lbl">Bleeding site:</label><div class="g4 mb-3 mt-1"><div><label class="lbl">Gastrointestinal</label><select name="bleedSite_gi" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">Retroperitoneal</label><select name="bleedSite_retro" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">Genital-Urinary</label><select name="bleedSite_gu" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">Entry site</label><select name="bleedSite_entry" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.13c Transfusion</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'transfusion','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'transfusion','Yes')">Yes</button></div></div><input type="hidden" name="cx_transfusion" id="val_transfusion" value="No"><div id="sub_transfusion" class="sub-reveal"><label class="lbl">Total Number of units</label><input type="number" name="transfusionUnits" class="inp max-w-xs" min="0"></div></div></div>
-    <div class="g3 mb-3"><div><label class="lbl">10.2.14 Myocardial infarction</label><select name="cx_mi" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.15 Urgent cardiac surgery</label><select name="cx_urgentSurgery" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.16 Pericardial effusion</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'periEff','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'periEff','Yes')">Yes</button></div></div><input type="hidden" name="cx_periEff" id="val_periEff" value="No"><div id="sub_periEff" class="sub-reveal"><label class="lbl">Requiring intervention</label><select name="cx_periEffIntervention" class="inp max-w-xs"><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.17 Cardiac tamponade (post-procedure)</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'tamponade2','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'tamponade2','Yes')">Yes</button></div></div><input type="hidden" name="cx_tamponade2" id="val_tamponade2" value="No"><div id="sub_tamponade2" class="sub-reveal"><div class="g2"><div><label class="lbl">Open cardiac surgery</label><select name="cx_tamponadeOCS" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">Percutaneous drainage</label><select name="cx_tamponadeDrain" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div></div>
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.18 Hemothorax</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'hemothorax','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'hemothorax','Yes')">Yes</button></div></div><input type="hidden" name="cx_hemothorax" id="val_hemothorax" value="No"><div id="sub_hemothorax" class="sub-reveal"><label class="lbl">Requiring drainage</label><select name="cx_hemothoraxDrain" class="inp max-w-xs"><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.19 Pneumothorax</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'pneumothorax','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'pneumothorax','Yes')">Yes</button></div></div><input type="hidden" name="cx_pneumothorax" id="val_pneumothorax" value="No"><div id="sub_pneumothorax" class="sub-reveal"><label class="lbl">Requiring intervention</label><select name="cx_pneumothoraxIntervention" class="inp max-w-xs"><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
-    <div class="g3 mb-3"><div><label class="lbl">10.2.20 Device embolization</label><select name="cx_devEmbol" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.21 Phrenic nerve damage</label><select name="cx_phrenicDmg" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.22 Pleural effusion</label><select name="cx_pleuralEff" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.23 Infection requiring antibiotics</label><select name="cx_infection" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.25 Set Screw Problem</label><select name="cx_setScrew" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.26 Lead Dislodgement</label><select name="cx_leadDislodge" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
-    <div class="card"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.24 Bradycardia adverse events</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'bradyAdverse','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'bradyAdverse','Yes')">Yes</button></div></div><input type="hidden" name="cx_bradyAdverse" id="val_bradyAdverse" value="No"><div id="sub_bradyAdverse" class="sub-reveal"><label class="lbl">Requiring permanent pacemaker</label><select name="cx_bradyPPM" class="inp max-w-xs"><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
+    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.13 Any bleeding</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'bleeding','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'bleeding','Yes')">Yes</button></div></div><input type="hidden" name="cx_bleeding" id="val_bleeding" value="No"><div id="sub_bleeding" class="sub-reveal"><label class="lbl">Bleeding type:</label><div class="space-y-1 mt-1 mb-3"><label class="radio-item"><input type="radio" name="bleedType" value="Type 1" onchange="onBleedT()"> Type 1 (Not actionable)</label><label class="radio-item"><input type="radio" name="bleedType" value="Type 2" onchange="onBleedT()"> Type 2 (Actionable, nonsurgical)</label><label class="radio-item"><input type="radio" name="bleedType" value="Type 3" onchange="onBleedT()"> Type 3 (Major/Overt bleeding)</label><label class="radio-item"><input type="radio" name="bleedType" value="Type 5" onchange="onBleedT()"> Type 5 (Fatal bleeding)</label></div><div id="bleedType3sub" class="sub-reveal mb-3"><label class="lbl">Major bleeding type:</label><div class="space-y-1 mt-1"><label class="radio-item"><input type="radio" name="bleedSubType" value="Type 3a"> Type 3a</label><label class="radio-item"><input type="radio" name="bleedSubType" value="Type 3b"> Type 3b</label><label class="radio-item"><input type="radio" name="bleedSubType" value="Type 3c"> Type 3c (Intracranial)</label></div></div></div></div>
+    <div class="g3 mb-3"><div><label class="lbl">10.2.20 Device embolization</label><select name="cx_devEmbol" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.22 Pleural effusion</label><select name="cx_pleuralEff" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.26 Lead Dislodgement</label><select name="cx_leadDislodge" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
   </div>
 </div>
 
-<!-- STEP 7: OUTCOME & DISCHARGE -->
+<!-- STEP 7: OUTCOME -->
 
 <div class="form-step" id="step-7">
   <div class="sec-title"><div class="icon-wrap bg-orange-100"><i class="fas fa-door-open text-orange-600"></i></div>11–13. Outcome &amp; Discharge</div>
@@ -521,11 +530,8 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     <div class="font-bold text-gray-800 text-sm mb-3">11. Outcome</div>
     <div class="g2 mb-3">
       <div><label class="lbl">11.1 Immediate Procedure Success</label><div class="flex gap-2 mt-1"><label class="radio-item"><input type="radio" name="procSuccess" value="Yes"> Yes</label><label class="radio-item"><input type="radio" name="procSuccess" value="No"> No</label></div></div>
-      <div><label class="lbl">11.2 ECG rhythm post-procedure</label><div class="g2 mt-1"><label class="radio-item"><input type="radio" name="postECGrhythm" value="Sinus"> Sinus</label><label class="radio-item"><input type="radio" name="postECGrhythm" value="Paced rhythm"> Paced rhythm</label><label class="radio-item"><input type="radio" name="postECGrhythm" value="Atrial fibrillation"> Atrial fibrillation</label><label class="radio-item"><input type="radio" name="postECGrhythm" value="Atrial flutter"> Atrial flutter</label><label class="radio-item"><input type="radio" name="postECGrhythm" value="Sinus arrest"> Sinus arrest</label><label class="radio-item"><input type="radio" name="postECGrhythm" value="Other"> Other</label></div></div>
+      <div><label class="lbl">11.2 ECG rhythm post-procedure</label><div class="g2 mt-1"><label class="radio-item"><input type="radio" name="postECGrhythm" value="Sinus"> Sinus</label><label class="radio-item"><input type="radio" name="postECGrhythm" value="Paced rhythm"> Paced rhythm</label><label class="radio-item"><input type="radio" name="postECGrhythm" value="Atrial fibrillation"> Atrial fibrillation</label><label class="radio-item"><input type="radio" name="postECGrhythm" value="Other"> Other</label></div></div>
     </div>
-    <div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">11.3 Conduction system pacing (left bundle lead)</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'csp','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'csp','Yes')">Yes</button></div></div>
-    <input type="hidden" name="out_csp" id="val_csp" value="No">
-    <div id="sub_csp" class="sub-reveal"><label class="lbl">Final pace QRS duration (msec)</label><input type="number" name="cspQRS" class="inp max-w-xs" placeholder="msec"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="cspQRSna" class="w-3 h-3"> Not assessed</label></div>
   </div>
   <div class="card mb-4">
     <div class="font-bold text-gray-800 text-sm mb-3">12. Discharge</div>
@@ -537,11 +543,10 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 
 ```
   </div><!-- end formScrollArea -->
-  <!-- Step Footer -->
   <div class="step-footer">
     <div class="flex gap-2">
-      <button type="button" id="btnPrev" onclick="changeStep(-1)" class="btn btn-gray hidden"><i class="fas fa-arrow-left"></i> <span class="hidden md:inline">Prev</span></button>
-      <button type="button" id="btnNext" onclick="changeStep(1)" class="btn btn-primary"><span class="hidden md:inline">Next</span> <i class="fas fa-arrow-right"></i></button>
+      <button type="button" id="btnPrev" onclick="changeStep(-1)" class="btn btn-gray hidden"><i class="fas fa-arrow-left"></i> Prev</button>
+      <button type="button" id="btnNext" onclick="changeStep(1)" class="btn btn-primary">Next <i class="fas fa-arrow-right"></i></button>
     </div>
     <div class="text-sm text-gray-500 font-medium hidden md:block" id="stepLabel">Step 1 of 8</div>
     <div class="flex gap-2">
@@ -555,7 +560,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
   </div>
 </section>
 
-<!-- DASHBOARD -->
+<!-- ═══════════ DASHBOARD ═══════════ -->
 
 <section id="section-dashboard" class="hidden">
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;" class="mb-5">
@@ -579,43 +584,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
   <div id="dashGrid" class="space-y-3"></div>
 </section>
 
-<!-- ADMIN PANEL -->
-
-<section id="section-admin" class="hidden bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-gray-100 min-h-[80vh]">
-  <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b pb-4 gap-4">
-    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2"><i class="fas fa-database text-blue-600"></i> Admin Database</h2>
-    <div class="flex gap-2 flex-wrap">
-      <button onclick="exportToExcel()" class="btn btn-green text-sm"><i class="fas fa-file-excel"></i> Excel (4 sheets)</button>
-      <button onclick="exportSPSS()" class="btn btn-teal text-sm"><i class="fas fa-chart-bar"></i> SPSS Export</button>
-      <button onclick="exportToPDF()" class="btn btn-red text-sm"><i class="fas fa-file-pdf"></i> PDF Summary</button>
-    </div>
-  </div>
-  <div class="bg-gray-50 p-4 rounded-xl mb-5 border border-gray-200">
-    <div class="flex flex-wrap gap-3 mb-3">
-      <div class="flex-1 min-w-[140px]"><label class="lbl">Patient Name</label><input type="text" id="searchName" class="inp inp-sm"></div>
-      <div class="flex-1 min-w-[140px]"><label class="lbl">Civil ID</label><input type="text" id="searchCivilId" class="inp inp-sm"></div>
-      <div class="flex-1 min-w-[140px]"><label class="lbl">File Number</label><input type="text" id="searchFileNo" class="inp inp-sm"></div>
-    </div>
-    <div class="flex flex-wrap gap-3 items-end">
-      <div class="flex-1 min-w-[140px]"><label class="lbl">Admission From</label><input type="date" id="filterDateFrom" class="inp inp-sm"></div>
-      <div class="flex-1 min-w-[140px]"><label class="lbl">Admission To</label><input type="date" id="filterDateTo" class="inp inp-sm"></div>
-      <div class="flex-1 min-w-[140px]"><label class="lbl">EP Reason</label><select id="filterEpReason" class="inp inp-sm"><option value="">All</option><option>CRT/AICD</option><option>Pacemaker</option><option>EPS/Ablation</option><option>LAAO</option></select></div>
-      <div class="flex-1 min-w-[140px]"><label class="lbl">Status</label><select id="filterStatus" class="inp inp-sm"><option value="">All</option><option value="draft">Draft</option><option value="submitted">Submitted</option><option value="reviewed">Reviewed</option></select></div>
-      <div class="flex items-end gap-2">
-        <button onclick="fetchData()" class="btn btn-primary text-sm"><i class="fas fa-search"></i> Search</button>
-        <button onclick="clearAdminFilters()" class="btn btn-gray text-sm"><i class="fas fa-times"></i> Clear</button>
-      </div>
-    </div>
-  </div>
-  <div class="overflow-x-auto rounded-xl border border-gray-200">
-    <table class="min-w-full divide-y divide-gray-200 admin-table">
-      <thead><tr><th style="width:44px;">#</th><th>Patient Info</th><th>IDs</th><th>EP Reason</th><th>Admission</th><th>Status</th><th>Completion</th><th class="text-right">Actions</th></tr></thead>
-      <tbody id="tableBody" class="bg-white divide-y divide-gray-100"></tbody>
-    </table>
-  </div>
-</section>
-
-<!-- ANALYTICS -->
+<!-- ═══════════ ANALYTICS ═══════════ -->
 
 <section id="section-analytics" class="hidden bg-white rounded-2xl shadow-lg p-4 md:p-6 border border-gray-100 min-h-[80vh]">
   <div class="flex items-center justify-between mb-4 border-b pb-3">
@@ -633,30 +602,213 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
   <div class="analytic-panel"><div class="analytic-header" onclick="toggleAnalytic('discharge')"><span style="font-size:13px;font-weight:700;color:#1e293b;display:flex;align-items:center;gap:8px;"><i class="fas fa-door-open text-orange-500"></i> Discharge Outcomes</span><i class="fas fa-chevron-down analytic-chevron" id="chev_discharge"></i></div><div class="analytic-body" id="body_discharge"><div style="height:220px;position:relative;"><canvas id="dischargeChart"></canvas></div></div></div>
   <div class="analytic-panel"><div class="analytic-header" onclick="toggleAnalytic('comorb')"><span style="font-size:13px;font-weight:700;color:#1e293b;display:flex;align-items:center;gap:8px;"><i class="fas fa-heartbeat text-red-500"></i> Comorbidities</span><i class="fas fa-chevron-down analytic-chevron" id="chev_comorb"></i></div><div class="analytic-body" id="body_comorb"><div style="height:240px;position:relative;"><canvas id="comorbChart"></canvas></div></div></div>
   <div class="analytic-panel"><div class="analytic-header" onclick="toggleAnalytic('comp')"><span style="font-size:13px;font-weight:700;color:#1e293b;display:flex;align-items:center;gap:8px;"><i class="fas fa-exclamation-triangle text-amber-500"></i> Complications</span><i class="fas fa-chevron-down analytic-chevron" id="chev_comp"></i></div><div class="analytic-body" id="body_comp"><div style="height:240px;position:relative;"><canvas id="compChart"></canvas></div></div></div>
-  <div class="analytic-panel"><div class="analytic-header" onclick="toggleAnalytic('cied')"><span style="font-size:13px;font-weight:700;color:#1e293b;display:flex;align-items:center;gap:8px;"><i class="fas fa-microchip text-purple-500"></i> Prior CIED Types</span><i class="fas fa-chevron-down analytic-chevron" id="chev_cied"></i></div><div class="analytic-body" id="body_cied"><div style="height:220px;position:relative;"><canvas id="ciedChart"></canvas></div></div></div>
   <div class="analytic-panel"><div class="analytic-header" onclick="toggleAnalytic('meds')"><span style="font-size:13px;font-weight:700;color:#1e293b;display:flex;align-items:center;gap:8px;"><i class="fas fa-pills text-green-500"></i> Top Home Medications</span><i class="fas fa-chevron-down analytic-chevron" id="chev_meds"></i></div><div class="analytic-body" id="body_meds"><div style="height:240px;position:relative;"><canvas id="medsChart"></canvas></div></div></div>
+  <!-- Investigator Performance Chart (Admin/CSO only) -->
+  <div class="analytic-panel" id="panel_investigator" style="display:none;"><div class="analytic-header" onclick="toggleAnalytic('inv')"><span style="font-size:13px;font-weight:700;color:#1e293b;display:flex;align-items:center;gap:8px;"><i class="fas fa-user-md text-purple-500"></i> Cases by Investigator</span><i class="fas fa-chevron-down analytic-chevron" id="chev_inv"></i></div><div class="analytic-body" id="body_inv"><div style="height:240px;position:relative;"><canvas id="invChart"></canvas></div></div></div>
 </section>
-</main>
 
+<!-- ═══════════ DOWNLOADS TAB ═══════════ -->
+
+<section id="section-downloads" class="hidden bg-white rounded-2xl shadow-lg p-6 border border-gray-100 min-h-[60vh]">
+  <div class="flex items-center justify-between mb-6 border-b pb-4">
+    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+      <i class="fas fa-download text-blue-600"></i> Data Downloads & Exports
+    </h2>
+    <div class="text-sm text-gray-500">Admin access required for all exports</div>
+  </div>
+  <!-- Date Filter for exports -->
+  <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+    <div class="font-bold text-blue-800 text-sm mb-3"><i class="fas fa-filter mr-2"></i>Filter Export Range (optional)</div>
+    <div class="g2 mb-3">
+      <div><label class="lbl">From Date</label><input type="date" id="exportDateFrom" class="inp inp-sm"></div>
+      <div><label class="lbl">To Date</label><input type="date" id="exportDateTo" class="inp inp-sm"></div>
+    </div>
+    <div class="g2">
+      <div><label class="lbl">Investigator</label><select id="exportInvestigator" class="inp inp-sm"><option value="">All Investigators</option></select></div>
+      <div><label class="lbl">EP Reason</label><select id="exportEpReason" class="inp inp-sm"><option value="">All Procedures</option><option>CRT/AICD</option><option>Pacemaker</option><option>EPS/Ablation</option><option>LAAO</option></select></div>
+    </div>
+  </div>
+  <!-- Export Cards -->
+  <div class="g3 mb-4">
+    <!-- PDF -->
+    <div class="dl-card" onclick="exportToPDF()" style="border-left:4px solid #e11d48;">
+      <div style="width:48px;height:48px;background:#fff1f2;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
+        <i class="fas fa-file-pdf text-red-500 text-xl"></i>
+      </div>
+      <div style="font-weight:800;font-size:15px;color:#0f172a;margin-bottom:6px;">PDF Summary Report</div>
+      <div style="font-size:12px;color:#64748b;margin-bottom:16px;">Printable patient registry summary with completion rates, status and operator info. One row per patient.</div>
+      <div class="btn btn-red text-sm w-full" style="justify-content:center;">
+        <i class="fas fa-download"></i> Download PDF
+      </div>
+    </div>
+    <!-- Excel -->
+    <div class="dl-card" onclick="exportToExcel()" style="border-left:4px solid #059669;">
+      <div style="width:48px;height:48px;background:#f0fdf4;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
+        <i class="fas fa-file-excel text-green-600 text-xl"></i>
+      </div>
+      <div style="font-weight:800;font-size:15px;color:#0f172a;margin-bottom:6px;">Excel Workbook (4 Sheets)</div>
+      <div style="font-size:12px;color:#64748b;margin-bottom:16px;">Complete data export across 4 sheets: Demographics, History & Vitals, Investigations & Labs, Procedure & Outcome.</div>
+      <div class="btn btn-green text-sm w-full" style="justify-content:center;">
+        <i class="fas fa-download"></i> Download Excel
+      </div>
+    </div>
+    <!-- SPSS -->
+    <div class="dl-card" onclick="exportSPSS()" style="border-left:4px solid #7c3aed;">
+      <div style="width:48px;height:48px;background:#faf5ff;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
+        <i class="fas fa-chart-bar text-purple-600 text-xl"></i>
+      </div>
+      <div style="font-weight:800;font-size:15px;color:#0f172a;margin-bottom:6px;">SPSS Export</div>
+      <div style="font-size:12px;color:#64748b;margin-bottom:16px;">Statistical analysis-ready export with SPSS variable names (&lt;8 chars), binary coding, and full codebook sheet.</div>
+      <div class="btn btn-purple text-sm w-full" style="justify-content:center;">
+        <i class="fas fa-download"></i> Download SPSS
+      </div>
+    </div>
+  </div>
+  <!-- Single Patient PDF -->
+  <div class="bg-gray-50 border border-gray-200 rounded-xl p-5">
+    <div class="font-bold text-gray-800 mb-2"><i class="fas fa-user text-blue-600 mr-2"></i>Individual Patient Report</div>
+    <div class="text-sm text-gray-500 mb-3">Search for a patient and download their individual PDF case report.</div>
+    <div class="flex gap-2">
+      <input type="text" id="singlePatientSearch" class="inp flex-1" placeholder="Search by Civil ID or File Number...">
+      <button onclick="searchForSinglePDF()" class="btn btn-primary text-sm"><i class="fas fa-search"></i> Find</button>
+    </div>
+    <div id="singlePatientResult" class="mt-3"></div>
+  </div>
+</section>
+
+<!-- ═══════════ ADMIN PANEL ═══════════ -->
+
+<section id="section-admin" class="hidden bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-gray-100 min-h-[80vh]">
+  <div class="flex flex-col md:flex-row justify-between items-center mb-4 border-b pb-4 gap-4">
+    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2"><i class="fas fa-shield-alt text-blue-600"></i> Admin Panel</h2>
+    <div class="flex gap-2">
+      <span class="role-admin">ADMIN ACCESS</span>
+    </div>
+  </div>
+  <!-- Admin Sub-tabs -->
+  <div style="display:flex;gap:0;margin-bottom:0;border-bottom:2px solid #e2e8f0;">
+    <button class="admin-sub-tab active" id="aTab_records" onclick="adminSubTab('records')">
+      <i class="fas fa-database mr-1"></i> Patient Records
+    </button>
+    <button class="admin-sub-tab" id="aTab_users" onclick="adminSubTab('users')">
+      <i class="fas fa-users mr-1"></i> Manage Users
+    </button>
+  </div>
+
+  <!-- RECORDS PANEL -->
+
+  <div id="adminRecordsPanel" class="pt-4">
+    <div class="bg-gray-50 p-4 rounded-xl mb-5 border border-gray-200">
+      <div class="flex flex-wrap gap-3 mb-3">
+        <div class="flex-1 min-w-[140px]"><label class="lbl">Patient Name</label><input type="text" id="searchName" class="inp inp-sm"></div>
+        <div class="flex-1 min-w-[140px]"><label class="lbl">Civil ID</label><input type="text" id="searchCivilId" class="inp inp-sm"></div>
+        <div class="flex-1 min-w-[140px]"><label class="lbl">File Number</label><input type="text" id="searchFileNo" class="inp inp-sm"></div>
+        <div class="flex-1 min-w-[140px]"><label class="lbl">CRF Number</label><input type="text" id="searchCrfNo" class="inp inp-sm"></div>
+      </div>
+      <div class="flex flex-wrap gap-3 items-end">
+        <div class="flex-1 min-w-[140px]"><label class="lbl">Admission From</label><input type="date" id="filterDateFrom" class="inp inp-sm"></div>
+        <div class="flex-1 min-w-[140px]"><label class="lbl">Admission To</label><input type="date" id="filterDateTo" class="inp inp-sm"></div>
+        <div class="flex-1 min-w-[140px]"><label class="lbl">EP Reason</label><select id="filterEpReason" class="inp inp-sm"><option value="">All</option><option>CRT/AICD</option><option>Pacemaker</option><option>EPS/Ablation</option><option>LAAO</option></select></div>
+        <div class="flex-1 min-w-[140px]"><label class="lbl">Investigator</label><select id="filterInvestigatorAdmin" class="inp inp-sm"><option value="">All Investigators</option></select></div>
+        <div class="flex-1 min-w-[140px]"><label class="lbl">Status</label><select id="filterStatus" class="inp inp-sm"><option value="">All</option><option value="draft">Draft</option><option value="submitted">Submitted</option><option value="reviewed">Reviewed</option></select></div>
+        <div class="flex items-end gap-2">
+          <button onclick="fetchData()" class="btn btn-primary text-sm"><i class="fas fa-search"></i> Search</button>
+          <button onclick="clearAdminFilters()" class="btn btn-gray text-sm"><i class="fas fa-times"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="overflow-x-auto rounded-xl border border-gray-200">
+      <table class="min-w-full divide-y divide-gray-200 admin-table">
+        <thead><tr><th>#</th><th>Patient Info</th><th>IDs</th><th>EP Reason</th><th>Investigator</th><th>Admission</th><th>Status</th><th>Completion</th><th class="text-right">Actions</th></tr></thead>
+        <tbody id="tableBody" class="bg-white divide-y divide-gray-100"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- USERS PANEL -->
+
+  <div id="adminUsersPanel" style="display:none;" class="pt-4">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="font-bold text-gray-800 text-base">Registered Users</h3>
+      <button onclick="showAddUserForm()" class="btn btn-primary text-sm">
+        <i class="fas fa-user-plus"></i> Add New User
+      </button>
+    </div>
+    <!-- Add User Form -->
+    <div id="addUserForm" style="display:none;" class="bg-blue-50 border border-blue-200 rounded-xl p-5 mb-5">
+      <div class="font-bold text-blue-800 mb-3"><i class="fas fa-user-plus mr-2"></i>Add New Investigator / User</div>
+      <div class="g2 mb-3">
+        <div><label class="lbl">Display Name</label><input type="text" id="newUserName" class="inp" placeholder="Dr. John Smith"></div>
+        <div><label class="lbl">Email</label><input type="email" id="newUserEmail" class="inp" placeholder="dr.john@mkh-eps.com"></div>
+        <div><label class="lbl">Role</label>
+          <select id="newUserRole" class="inp">
+            <option value="investigator">Investigator</option>
+            <option value="cso">CSO (Chief Site Officer)</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        <div><label class="lbl">Firebase UID</label><input type="text" id="newUserUID" class="inp" placeholder="Paste UID from Firebase Auth"></div>
+      </div>
+      <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;font-size:12px;color:#92400e;margin-bottom:14px;">
+        <i class="fas fa-info-circle mr-1"></i>
+        First create the user in Firebase Authentication (Authentication → Users → Add user), then paste their UID here.
+      </div>
+      <div class="flex gap-2">
+        <button onclick="createUserDocument()" class="btn btn-primary text-sm"><i class="fas fa-save"></i> Create User</button>
+        <button onclick="document.getElementById('addUserForm').style.display='none'" class="btn btn-gray text-sm">Cancel</button>
+      </div>
+    </div>
+    <!-- Users Table -->
+    <div id="userListContainer" class="overflow-x-auto rounded-xl border border-gray-200">
+      <table class="min-w-full user-table">
+        <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Cases</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="userTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+</main>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, setDoc, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-const _app = initializeApp({apiKey:"AIzaSyBocWe4k3ljikv2D2a_f7RDlPRnAaH6Zxs",authDomain:"eps-registry-mkh.firebaseapp.com",projectId:"eps-registry-mkh",storageBucket:"eps-registry-mkh.firebasestorage.app",messagingSenderId:"893225906696",appId:"1:893225906696:web:d4c4324b4d9e3edecc57bd"});
+import { getFirestore, collection, addDoc, setDoc, getDocs, deleteDoc, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+const _app = initializeApp({apiKey:“AIzaSyBocWe4k3ljikv2D2a_f7RDlPRnAaH6Zxs”,authDomain:“eps-registry-mkh.firebaseapp.com”,projectId:“eps-registry-mkh”,storageBucket:“eps-registry-mkh.firebasestorage.app”,messagingSenderId:“893225906696”,appId:“1:893225906696:web:d4c4324b4d9e3edecc57bd”});
 const _db = getFirestore(_app);
+const _auth = getAuth(_app);
+
 window._db = _db;
-window._col = (...a) => collection(...a);
-window._addDoc = (...a) => addDoc(...a);
-window._setDoc = (...a) => setDoc(...a);
-window._getDocs = (...a) => getDocs(...a);
-window._deleteDoc = (...a) => deleteDoc(...a);
-window._doc = (...a) => doc(...a);
-window._updateDoc = (...a) => updateDoc(...a);
+window._auth = _auth;
+window._col = (…a) => collection(…a);
+window._addDoc = (…a) => addDoc(…a);
+window._setDoc = (…a) => setDoc(…a);
+window._getDocs = (…a) => getDocs(…a);
+window._deleteDoc = (…a) => deleteDoc(…a);
+window._doc = (…a) => doc(…a);
+window._updateDoc = (…a) => updateDoc(…a);
+window._getDoc = (…a) => getDoc(…a);
 window._getDb = () => _db;
-window.dispatchEvent(new Event('firebaseReady'));
+window._signIn = (e,p) => signInWithEmailAndPassword(_auth,e,p);
+window._signOut = () => signOut(_auth);
+window._onAuthStateChanged = (cb) => onAuthStateChanged(_auth, cb);
+
+// ONE-TIME SETUP — creates investigator docs
+window._setupUsers = async function() {
+const users = [
+{ uid: “qEv59O8pk3bu6cVQjWFExLuoVTb2”, email: “ahmadelsharkawi87@gmail.com”, displayName: “Dr. Ahmed Elsharkawy”, role: “investigator”, active: true }
+];
+for (const u of users) {
+await window._setDoc(window._doc(_db, “users”, u.uid), { email:u.email, displayName:u.displayName, role:u.role, active:u.active, createdAt:new Date() });
+console.log(“Created:”, u.displayName);
+}
+alert(“Users created! You can remove _setupUsers from the code now.”);
+};
+
+window.dispatchEvent(new Event(‘firebaseReady’));
 </script>
 
 <script>
-// Firestore wrappers - called after firebaseReady
 function collection(...a){return window._col(...a);}
 function addDoc(...a){return window._addDoc(...a);}
 function setDoc(...a){return window._setDoc(...a);}
@@ -665,15 +817,106 @@ function deleteDoc(...a){return window._deleteDoc(...a);}
 function doc(...a){return window._doc(...a);}
 function updateDoc(...a){return window._updateDoc(...a);}
 let db = null;
+let currentUser = null;
+let currentRole = null;
+let currentUserName = '';
 
-// ── ALL APP CODE INSIDE DOMContentLoaded ─────────────────────
 document.addEventListener('DOMContentLoaded', function() {
-
-// Wait for Firebase then start
 function initApp() {
-  db = window._getDb ? window._getDb() : window._db;
+  db = window._getDb();
 
-// ── STEPPER ────────────────────────────────────────────────
+// ── AUTH STATE ─────────────────────────────────────────────
+window._onAuthStateChanged(async (user) => {
+  if (!user) {
+    document.getElementById('loginOverlay').style.display = 'flex';
+    currentUser = null; currentRole = null;
+    return;
+  }
+  try {
+    const snap = await window._getDoc(window._doc(db, 'users', user.uid));
+    if (!snap.exists() || snap.data().active !== true) {
+      await window._signOut();
+      showLoginError('Account not active or not registered. Contact admin.');
+      return;
+    }
+    currentUser = user;
+    currentRole = snap.data().role;
+    currentUserName = snap.data().displayName || user.email;
+    document.getElementById('loginOverlay').style.display = 'none';
+    applyRoleUI(currentRole);
+    loadRecordsCache();
+    updateMyCasesCount();
+  } catch(e) {
+    console.error('Auth error:', e);
+    showLoginError('Login error. Try again.');
+  }
+});
+
+window.doLogin = async function() {
+  const e = document.getElementById('loginEmail').value.trim();
+  const p = document.getElementById('loginPassword').value;
+  if (!e || !p) { showLoginError('Enter email and password.'); return; }
+  const btn = document.getElementById('loginBtn');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Signing in…';
+  btn.disabled = true;
+  try {
+    await window._signIn(e, p);
+  } catch(err) {
+    showLoginError('Invalid email or password.');
+    btn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i> Sign In';
+    btn.disabled = false;
+  }
+};
+
+function showLoginError(msg) {
+  const el = document.getElementById('loginError');
+  el.textContent = msg; el.style.display = 'block';
+}
+
+window.doSignOut = async function() {
+  if (!confirm('Sign out?')) return;
+  await window._signOut();
+  location.reload();
+};
+
+function applyRoleUI(role) {
+  const tabAdmin = document.getElementById('tab-admin');
+  const tabDownloads = document.getElementById('tab-downloads');
+  const tabAnalytics = document.getElementById('tab-analytics');
+
+  if (role === 'admin') {
+    tabAdmin.style.display = '';
+    tabDownloads.style.display = '';
+    tabAnalytics.style.display = '';
+    document.getElementById('panel_investigator').style.display = 'block';
+  } else if (role === 'cso') {
+    tabAdmin.style.display = 'none';
+    tabDownloads.style.display = 'none';
+    tabAnalytics.style.display = '';
+    document.getElementById('panel_investigator').style.display = 'block';
+  } else {
+    // investigator
+    tabAdmin.style.display = 'none';
+    tabDownloads.style.display = 'none';
+    tabAnalytics.style.display = 'none';
+    document.getElementById('myCasesBox').classList.remove('hidden');
+  }
+
+  document.getElementById('userBadge').textContent = currentUserName;
+  const roleBadge = document.getElementById('roleBadge');
+  roleBadge.className = `role-${role}`;
+  roleBadge.textContent = role.toUpperCase();
+}
+
+async function updateMyCasesCount() {
+  if (currentRole !== 'investigator') return;
+  const snap = await getDocs(collection(db, 'patients_full'));
+  let count = 0;
+  snap.forEach(ds => { if (ds.data().enrolledBy === currentUser.uid) count++; });
+  document.getElementById('myCasesCount').textContent = count;
+}
+
+// ── STEPPER ─────────────────────────────────────────────────
 const STEPS=[
   {label:"Identification",icon:"fa-id-card"},
   {label:"EP Reason",icon:"fa-hospital-user"},
@@ -711,22 +954,26 @@ window.goToStep=function(idx){
 window.changeStep=function(dir){const n=currentStep+dir;if(n>=0&&n<STEPS.length)goToStep(n);};
 
 // ── NATIONALITY ─────────────────────────────────────────────
-const countries=["Afghan","Albanian","Algerian","American","Andorran","Angolan","Antiguan","Argentine","Armenian","Australian","Austrian","Azerbaijani","Bahamian","Bahraini","Bangladeshi","Barbadian","Belarusian","Belgian","Belizean","Beninese","Bhutanese","Bolivian","Bosnian","Botswanan","Brazilian","Bruneian","Bulgarian","Burkinabe","Burundian","Cabo Verdean","Cambodian","Cameroonian","Canadian","Central African","Chadian","Chilean","Chinese","Colombian","Comoran","Congolese","Costa Rican","Croatian","Cuban","Cypriot","Czech","Danish","Djiboutian","Dominican","Dutch","East Timorese","Ecuadorean","Egyptian","Emirati","Eritrean","Estonian","Ethiopian","Fijian","Filipino","Finnish","French","Gabonese","Gambian","Georgian","German","Ghanaian","Greek","Grenadian","Guatemalan","Guinean","Guyanese","Haitian","Honduran","Hungarian","Icelandic","Indian","Indonesian","Iranian","Iraqi","Irish","Israeli","Italian","Ivorian","Jamaican","Japanese","Jordanian","Kazakhstani","Kenyan","Korean","Kuwaiti","Kyrgyz","Laotian","Latvian","Lebanese","Liberian","Libyan","Lithuanian","Luxembourgish","Macedonian","Malagasy","Malawian","Malaysian","Maldivian","Malian","Maltese","Mauritanian","Mauritian","Mexican","Moldovan","Mongolian","Montenegrin","Moroccan","Mozambican","Namibian","Nepalese","New Zealander","Nicaraguan","Nigerian","Norwegian","Omani","Pakistani","Panamanian","Paraguayan","Peruvian","Polish","Portuguese","Qatari","Romanian","Russian","Rwandan","Saudi Arabian","Senegalese","Serbian","Sierra Leonean","Singaporean","Slovak","Slovenian","Somali","South African","South Sudanese","Spanish","Sri Lankan","Sudanese","Surinamese","Swedish","Swiss","Syrian","Taiwanese","Tajik","Tanzanian","Thai","Togolese","Trinidadian","Tunisian","Turkish","Turkmen","Ugandan","Ukrainian","Uruguayan","Uzbek","Venezuelan","Vietnamese","Yemeni","Zambian","Zimbabwean","Other"];
+const countries=["Afghan","Albanian","Algerian","American","Andorran","Angolan","Argentine","Armenian","Australian","Austrian","Azerbaijani","Bahraini","Bangladeshi","Belgian","Brazilian","British","Bulgarian","Cambodian","Canadian","Chilean","Chinese","Colombian","Croatian","Cuban","Czech","Danish","Dutch","Egyptian","Emirati","Ethiopian","Filipino","Finnish","French","German","Ghanaian","Greek","Guatemalan","Hungarian","Indian","Indonesian","Iranian","Iraqi","Irish","Israeli","Italian","Ivorian","Japanese","Jordanian","Kazakhstani","Kenyan","Korean","Kuwaiti","Lebanese","Libyan","Malaysian","Moroccan","Nepalese","Nigerian","Norwegian","Omani","Pakistani","Palestinian","Polish","Portuguese","Qatari","Romanian","Russian","Saudi Arabian","Senegalese","Serbian","Singaporean","Somali","South African","Spanish","Sri Lankan","Sudanese","Swedish","Swiss","Syrian","Taiwanese","Thai","Tunisian","Turkish","Ugandan","Ukrainian","Venezuelan","Vietnamese","Yemeni","Other"];
 document.getElementById('nationalitySelect').innerHTML=countries.map(c=>`<option value="${c}">${c}</option>`).join('');
 
-// ── RISK GRID ──────────────────────────────────────────────
+// ── RISK GRID ─────────────────────────────────────────────
 const riskItems=[
   {name:"hx_cad",label:"4.5 Coronary artery disease"},{name:"hx_mi",label:"4.6 Myocardial infarction"},
   {name:"hx_valve",label:"4.7 Valvular heart disease"},{name:"hx_cvd",label:"4.8 Cerebrovascular disease"},
   {name:"hx_lung",label:"4.9 Chronic lung disease"},{name:"hx_dialysis",label:"4.10 Currently on dialysis"},
   {name:"hx_dm",label:"4.11 Diabetes mellitus"},{name:"hx_htn",label:"4.12 Hypertension"},
-  {name:"hx_familialSyndrome",label:"4.13 Familial syndrome – risk of sudden death"},
+  {name:"hx_familialSyndrome",label:"4.13 Familial syndrome"},
 ];
 document.getElementById('simpleRiskGrid').innerHTML=riskItems.map(r=>`<div><label class="lbl">${r.label}</label><select name="${r.name}" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div>`).join('');
 
-// ── MEDS ────────────────────────────────────────────────────
+// ── MEDS ─────────────────────────────────────────────────
 const medsList=[
-  {name:"Amiodarone",f:"amiodarone"},{name:"Disopyramide",f:"disopyramide"},{name:"Flecainide",f:"flecainide"},{name:"Procainamide",f:"procainamide"},{name:"Propafenone",f:"propafenone"},{name:"Sotalol",f:"sotalol"},{name:"Verapamil",f:"verapamil"},{name:"Diltiazem",f:"diltiazem"},{name:"Warfarin",f:"warfarin"},{name:"Dabigatran",f:"dabigatran"},{name:"Apixaban",f:"apixaban"},{name:"Rivaroxaban",f:"rivaroxaban"},{name:"Edoxaban",f:"edoxaban"},{name:"LMWH",f:"lmwh"},{name:"Unfractionated Heparin",f:"ufheparin"},{name:"Aspirin",f:"aspirin"},{name:"Prasugrel",f:"prasugrel"},{name:"Clopidogrel",f:"clopidogrel"},{name:"Ticagrelor",f:"ticagrelor"},{name:"Cangrelor",f:"cangrelor"},{name:"ACE-I (Any)",f:"acei"},{name:"ARB (Any)",f:"arb"},{name:"ARNI",f:"arni"},{name:"SGLT inhibitor",f:"sglt"},{name:"Beta Blockers",f:"betablocker"},{name:"MRA",f:"mra"},{name:"Digoxin",f:"digoxin"},{name:"Loop diuretics",f:"loopdiuretic"},
+  {name:"Amiodarone",f:"amiodarone"},{name:"Disopyramide",f:"disopyramide"},{name:"Flecainide",f:"flecainide"},{name:"Propafenone",f:"propafenone"},{name:"Sotalol",f:"sotalol"},
+  {name:"Verapamil",f:"verapamil"},{name:"Diltiazem",f:"diltiazem"},{name:"Warfarin",f:"warfarin"},{name:"Dabigatran",f:"dabigatran"},{name:"Apixaban",f:"apixaban"},
+  {name:"Rivaroxaban",f:"rivaroxaban"},{name:"Edoxaban",f:"edoxaban"},{name:"LMWH",f:"lmwh"},{name:"Aspirin",f:"aspirin"},{name:"Clopidogrel",f:"clopidogrel"},
+  {name:"Ticagrelor",f:"ticagrelor"},{name:"ACE-I",f:"acei"},{name:"ARB",f:"arb"},{name:"ARNI",f:"arni"},{name:"SGLT inhibitor",f:"sglt"},
+  {name:"Beta Blockers",f:"betablocker"},{name:"MRA",f:"mra"},{name:"Digoxin",f:"digoxin"},{name:"Loop diuretics",f:"loopdiuretic"},
 ];
 const hMG=document.getElementById('homeMedsGrid'), dMG=document.getElementById('dischargeMedsGrid');
 medsList.forEach(m=>{
@@ -734,23 +981,23 @@ medsList.forEach(m=>{
   dMG.innerHTML+=`<label class="chk-item"><input type="checkbox" name="dcMed_${m.f}" class="w-4 h-4"> <span>${m.name}</span></label>`;
 });
 
-// ── CIVIL ID AUTO-AGE ───────────────────────────────────────
+// ── CIVIL ID AUTO-AGE ────────────────────────────────────
 document.getElementById('civilId').addEventListener('input',function(){
   const v=this.value;
   if(v.length===12&&/^\d+$/.test(v)){const c=parseInt(v[0]);const yr=parseInt(v.substring(1,3));let y=c===2?1900+yr:c===3?2000+yr:0;if(y>0){document.getElementById('yob').value=y;document.getElementById('estAge').value=new Date().getFullYear()-y;}}
   else{document.getElementById('yob').value='';document.getElementById('estAge').value='';}
 });
 
-// ── YES/NO ──────────────────────────────────────────────────
+// ── YES/NO ───────────────────────────────────────────────
 window.setYN=function(btn,key,val){
   btn.closest('.yn-group').querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('selected'));
   btn.classList.add('selected');
-  document.getElementById('val_'+key).value=val;
+  const hid=document.getElementById('val_'+key); if(hid)hid.value=val;
   const sub=document.getElementById('sub_'+key);
   if(sub){if(val==='Yes')sub.classList.add('show');else sub.classList.remove('show');}
 };
 
-// ── EP REASON ───────────────────────────────────────────────
+// ── EP REASON ────────────────────────────────────────────
 window.onEPR=function(){
   const v=document.querySelector('input[name="epReason"]:checked')?.value;
   const pm=document.querySelector('input[name="pacemakerType"]:checked')?.value;
@@ -768,46 +1015,20 @@ window.onEPR=function(){
   else if(v==='LAAO'){document.getElementById('proc_laao').classList.add('show');}
 };
 
-// ── PROC CONDITIONALS ───────────────────────────────────────
-window.onCrtGen=function(){const v=document.querySelector('input[name="crtGenerator"]:checked')?.value;['initial','replace','explant'].forEach(k=>document.getElementById(`crtGen_${k}`).classList.remove('show'));if(v==='Initial implant')document.getElementById('crtGen_initial').classList.add('show');else if(v==='Generator replacement')document.getElementById('crtGen_replace').classList.add('show');else if(v==='Generator explant')document.getElementById('crtGen_explant').classList.add('show');};
-window.onCrtDType=function(){const v=document.querySelector('input[name="crtDeviceType"]:checked')?.value;document.getElementById('crtDualSub').classList.toggle('show',v==='CRT-D'||v==='ICD-Dual chamber');};
-window.onCrtPMT=function(){document.getElementById('crtLBBBsub').classList.toggle('show',document.querySelector('input[name="crtPMType"]:checked')?.value==='LBBB PPM');};
-window.onCrtLd=function(){document.getElementById('crtLeadExistSub').classList.toggle('show',document.querySelector('input[name="crtLead"]:checked')?.value==='Existing lead');};
-window.onPpmGen=function(){const v=document.querySelector('input[name="ppmGenerator"]:checked')?.value;['initial','replace','explant'].forEach(k=>document.getElementById(`ppmGen_${k}`).classList.remove('show'));if(v==='Initial implant')document.getElementById('ppmGen_initial').classList.add('show');else if(v==='Generator replacement')document.getElementById('ppmGen_replace').classList.add('show');else if(v==='Generator explant')document.getElementById('ppmGen_explant').classList.add('show');};
-window.onPpmDType=function(){document.getElementById('ppmLBBBsub').classList.toggle('show',document.querySelector('input[name="ppmDeviceType"]:checked')?.value==='LBBB PPM');};
-window.onPpmLd=function(){document.getElementById('ppmLeadExistSub').classList.toggle('show',document.querySelector('input[name="ppmLead"]:checked')?.value==='Existing lead');};
-window.toggleTpmCause=function(){setTimeout(()=>{document.getElementById('drugDiv').classList.toggle('show',!!document.getElementById('tpm_drugChk')?.checked);document.getElementById('miDiv').classList.toggle('show',!!document.getElementById('tpm_miChk')?.checked);},0);};
-window.onCathManip=function(){document.getElementById('cathManipOther').classList.toggle('show',document.querySelector('input[name="epsCathManip"]:checked')?.value==='Other');};
-window.onMapSys=function(){document.getElementById('mappingOther').classList.toggle('show',document.querySelector('input[name="epsMappingSystem"]:checked')?.value==='Other');};
-window.onBleedT=function(){document.getElementById('bleedType3sub').classList.toggle('show',document.querySelector('input[name="bleedType"]:checked')?.value==='Type 3');};
-window.onDischSt=function(){const v=document.querySelector('input[name="dischargeStatus"]:checked')?.value;document.getElementById('dischDead').classList.toggle('show',v==='Dead');document.getElementById('dischAlive').classList.toggle('show',v==='Alive');};
-document.querySelector('input[name="crtInd_inherited"]')?.addEventListener('change',function(){document.getElementById('crtInhSub').classList.toggle('show',this.checked);});
+window.onCrtGen=function(){const v=document.querySelector('input[name="crtGenerator"]:checked')?.value;['initial','replace','explant'].forEach(k=>{const el=document.getElementById(`crtGen_${k}`);if(el)el.classList.remove('show');});const t=v==='Initial implant'?'initial':v==='Generator replacement'?'replace':v==='Generator explant'?'explant':null;if(t){const el=document.getElementById(`crtGen_${t}`);if(el)el.classList.add('show');}};
+window.onPpmGen=function(){const v=document.querySelector('input[name="ppmGenerator"]:checked')?.value;['initial','replace','explant'].forEach(k=>{const el=document.getElementById(`ppmGen_${k}`);if(el)el.classList.remove('show');});const t=v==='Initial implant'?'initial':v==='Generator replacement'?'replace':v==='Generator explant'?'explant':null;if(t){const el=document.getElementById(`ppmGen_${t}`);if(el)el.classList.add('show');}};
+window.onBleedT=function(){const el=document.getElementById('bleedType3sub');if(el)el.classList.toggle('show',document.querySelector('input[name="bleedType"]:checked')?.value==='Type 3');};
+window.onDischSt=function(){const v=document.querySelector('input[name="dischargeStatus"]:checked')?.value;const dd=document.getElementById('dischDead'),da=document.getElementById('dischAlive');if(dd)dd.classList.toggle('show',v==='Dead');if(da)da.classList.toggle('show',v==='Alive');};
 
-// ── VALIDATION ──────────────────────────────────────────────
-function shErr(el,msg){el.style.borderColor='#dc2626';el.style.boxShadow='0 0 0 3px rgba(220,38,38,.15)';let t=el.parentNode.querySelector('.vt');if(!t){t=document.createElement('div');t.className='vt';t.style.cssText='font-size:11px;color:#dc2626;font-weight:600;margin-top:3px;';el.parentNode.appendChild(t);}t.textContent='✖ '+msg;}
-function shWarn(el,msg){el.style.borderColor='#f59e0b';el.style.boxShadow='0 0 0 3px rgba(245,158,11,.15)';let t=el.parentNode.querySelector('.vt');if(!t){t=document.createElement('div');t.className='vt';t.style.cssText='font-size:11px;color:#b45309;font-weight:600;margin-top:3px;';el.parentNode.appendChild(t);}t.textContent='⚠ '+msg;}
-function clrV(el){el.style.borderColor='';el.style.boxShadow='';el.parentNode.querySelector('.vt')?.remove();}
-function rangeV(name,mn,mx,unit='',warn=false){const el=document.querySelector(`[name="${name}"]`);if(!el)return;el.addEventListener('blur',function(){if(!this.value){clrV(this);return;}const v=parseFloat(this.value);if(isNaN(v))return;if(v<mn||v>mx){warn?shWarn(this,`Expected ${mn}–${mx}${unit?' '+unit:''}`) :shErr(this,`Expected ${mn}–${mx}${unit?' '+unit:''}`);}else clrV(this);});}
+// ── VALIDATION ───────────────────────────────────────────
+function shErr(el,msg){if(!el)return;el.style.borderColor='#dc2626';el.style.boxShadow='0 0 0 3px rgba(220,38,38,.15)';let t=el.parentNode.querySelector('.vt');if(!t){t=document.createElement('div');t.className='vt';t.style.cssText='font-size:11px;color:#dc2626;font-weight:600;margin-top:3px;';el.parentNode.appendChild(t);}t.textContent='✖ '+msg;}
+function clrV(el){if(!el)return;el.style.borderColor='';el.style.boxShadow='';el.parentNode.querySelector('.vt')?.remove();}
+function rangeV(name,mn,mx,unit=''){const el=document.querySelector(`[name="${name}"]`);if(!el)return;el.addEventListener('blur',function(){if(!this.value){clrV(this);return;}const v=parseFloat(this.value);if(isNaN(v))return;if(v<mn||v>mx){shErr(this,`Expected ${mn}–${mx}${unit?' '+unit:''}`);}else clrV(this);});}
 rangeV('sysBp',50,300,'mmHg');rangeV('diaBp',20,200,'mmHg');rangeV('hr',20,300,'/min');rangeV('weight',1,300,'kg');rangeV('height',50,250,'cm');
-rangeV('creatInit',10,3000,'µmol/L');rangeV('creatPeak',10,3000,'µmol/L');rangeV('hgbInit',1,25,'g/dL');rangeV('hgbLowest',1,25,'g/dL');
-rangeV('sodium',100,170,'mEq/L');rangeV('potassium',1.5,9,'mEq/L');rangeV('magnesium',0.3,3,'mEq/L');rangeV('inr',0.5,15);
-rangeV('lvesd',1,100,'mm');rangeV('lvedd',1,100,'mm');rangeV('rvsp',5,150,'mmHg');rangeV('laaOstial',5,50,'mm');rangeV('laaDepth',5,50,'mm');
-rangeV('ecgQRS',60,800,'msec');rangeV('crtLBBBqrs',60,800,'msec');rangeV('ppmLBBBqrs',60,800,'msec');rangeV('cspQRS',60,800,'msec');
-rangeV('epsAblTime',1,600,'min');rangeV('epsFluoroTime',0,300,'min');rangeV('transfusionUnits',1,50,'units');
-rangeV('yob',1900,new Date().getFullYear(),'');rangeV('estimatedAge',0,120,'yrs');
-const lvefEl=document.querySelector('[name="lvef"]');
-if(lvefEl)lvefEl.addEventListener('blur',function(){if(!this.value){clrV(this);return;}const v=parseFloat(this.value);if(v<5||v>85)shErr(this,'Expected 5–85%');else if(v<10||v>80)shWarn(this,`LVEF ${v}% — unusual, confirm`);else clrV(this);});
-const sysBpEl=document.querySelector('[name="sysBp"]'),diaBpEl=document.querySelector('[name="diaBp"]');
-function chkBP(){const s=parseFloat(sysBpEl?.value),d=parseFloat(diaBpEl?.value);if(s&&d){if(s<=d){shErr(sysBpEl,'Systolic > Diastolic required');shErr(diaBpEl,'Diastolic < Systolic required');}else{clrV(sysBpEl);clrV(diaBpEl);}}}
-sysBpEl?.addEventListener('blur',chkBP);diaBpEl?.addEventListener('blur',chkBP);
-document.querySelector('[name="dischargeDate"]')?.addEventListener('change',function(){const a=document.getElementById('req_admDate')?.value;if(a&&this.value&&this.value<a)shErr(this,'Cannot be before admission date');else clrV(this);});
-document.querySelector('[name="procStartDate"]')?.addEventListener('change',function(){const a=document.getElementById('req_admDate')?.value;if(a&&this.value&&this.value<a)shErr(this,'Cannot be before admission date');else clrV(this);});
-document.getElementById('civilId')?.addEventListener('blur',function(){const v=this.value;if(v.length===12&&/^\d{12}$/.test(v)){const c=parseInt(v[0]);if(c!==2&&c!==3)shErr(this,'Must start with 2 or 3');else clrV(this);}});
-function chkYobAge(){const y=parseInt(document.getElementById('yob')?.value),a=parseInt(document.getElementById('estAge')?.value);if(y&&a){const c=new Date().getFullYear()-y;if(Math.abs(c-a)>2)shWarn(document.getElementById('estAge'),`Age (${a}) vs YOB ${y} — expected ~${c}`);else clrV(document.getElementById('estAge'));}}
-document.getElementById('yob')?.addEventListener('blur',chkYobAge);
-document.getElementById('estAge')?.addEventListener('blur',chkYobAge);
+rangeV('creatInit',10,3000,'µmol/L');rangeV('hgbInit',1,25,'g/dL');rangeV('sodium',100,170,'mEq/L');rangeV('potassium',1.5,9,'mEq/L');rangeV('inr',0.5,15);
+rangeV('lvef',5,85,'%');rangeV('ecgQRS',60,800,'msec');rangeV('yob',1900,new Date().getFullYear());
 
-// ── COMPLETION SCORING ──────────────────────────────────────
+// ── COMPLETION SCORING ────────────────────────────────────
 function calcCompletion(r){
   const checks=[
     !!(r.nameFirst&&r.nameLast),
@@ -828,22 +1049,37 @@ function statusBadge(s){
   return m[s]||m['draft'];
 }
 
-// ── TABS ─────────────────────────────────────────────────────
+// ── TABS ─────────────────────────────────────────────────
 window.switchTab=function(tab){
-  if(tab==='admin'){if(prompt('Enter Admin PIN:')!=='2468'){alert('Access Denied');return;}fetchData();}
+  if(tab==='admin' && currentRole!=='admin'){alert('Admin access only.');return;}
+  if(tab==='downloads' && currentRole!=='admin'){alert('Admin access only.');return;}
+  if(tab==='analytics' && currentRole==='investigator'){alert('Not available.');return;}
+  if(tab==='admin')fetchData();
   else if(tab==='analytics')fetchAnalytics();
   else if(tab==='dashboard')loadDashboard();
-  ['form','dashboard','admin','analytics'].forEach(t=>{
-    document.getElementById(`section-${t}`).classList.add('hidden');
-    document.getElementById(`tab-${t}`).className='pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition';
+  else if(tab==='downloads')loadExportFilters();
+  ['form','dashboard','admin','analytics','downloads'].forEach(t=>{
+    document.getElementById(`section-${t}`)?.classList.add('hidden');
+    const tb=document.getElementById(`tab-${t}`);
+    if(tb)tb.className='pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition';
   });
-  document.getElementById(`section-${tab}`).classList.remove('hidden');
-  document.getElementById(`tab-${tab}`).className='pb-1 tab-active text-sm transition';
+  document.getElementById(`section-${tab}`)?.classList.remove('hidden');
+  const activeTb=document.getElementById(`tab-${tab}`);
+  if(activeTb)activeTb.className='pb-1 tab-active text-sm transition';
 };
 
-// ── LOCK/UNLOCK ─────────────────────────────────────────────
+window.adminSubTab=function(tab){
+  document.getElementById('adminRecordsPanel').style.display=tab==='records'?'block':'none';
+  document.getElementById('adminUsersPanel').style.display=tab==='users'?'block':'none';
+  document.getElementById('aTab_records').className=`admin-sub-tab${tab==='records'?' active':''}`;
+  document.getElementById('aTab_users').className=`admin-sub-tab${tab==='users'?' active':''}`;
+  if(tab==='users')loadUserList();
+};
+
+// ── LOCK/UNLOCK ──────────────────────────────────────────
 window.adminUnlock=function(){
-  if(prompt('Admin PIN:')!=='2468'){alert('Access Denied');return;}
+  const pin=prompt('Admin PIN:');
+  if(pin!=='2468'){alert('Access Denied');return;}
   document.getElementById('lockedOverlay').classList.add('hidden');
   document.getElementById('recordStatus').value='draft';
   document.getElementById('editModeBanner').classList.remove('hidden');
@@ -855,11 +1091,10 @@ function applyLock(status){
   document.getElementById('btnSubmitFinal').disabled=locked;
 }
 
-// ── SUBMIT FINAL ─────────────────────────────────────────────
-// ── SHARED SAVE FUNCTION (used by both Save Draft and Submit) ─
+// ── SAVE RECORD ──────────────────────────────────────────
 async function saveRecord(targetStatus){
+  if(!currentUser){alert('Not logged in.');return false;}
   const form=document.getElementById('epsForm');
-  // Validation
   const mandatory=[
     {id:'req_nameFirst',label:'Patient First Name'},{id:'req_nameLast',label:'Patient Last Name'},
     {id:'civilId',label:'Civil ID'},{id:'req_crfNo',label:'CRF Number'},{id:'req_fileNo',label:'File Number'},
@@ -869,128 +1104,73 @@ async function saveRecord(targetStatus){
     if(!el||!el.value.trim()){goToStep(0);el?.focus();shErr(el,'Required');setTimeout(()=>clrV(el),3000);alert(`Required: "${f.label}"`);return false;}
   }
   if(!/^\d{12}$/.test(document.getElementById('civilId').value)){goToStep(0);alert('Civil ID must be 12 digits.');return false;}
-  const cf=parseInt(document.getElementById('civilId').value[0]);
-  if(cf!==2&&cf!==3){goToStep(0);alert('Civil ID must start with 2 or 3.');return false;}
   if(!/^\d{6}$/.test(document.getElementById('req_fileNo').value)){goToStep(0);alert('File Number must be 6 digits.');return false;}
-  const admDate=document.getElementById('req_admDate')?.value;
-  const procDate=document.querySelector('[name="procStartDate"]')?.value;
-  const dischDate=document.querySelector('[name="dischargeDate"]')?.value;
-  if(procDate&&admDate&&procDate<admDate){goToStep(5);alert('Procedure date before admission date.');return false;}
-  if(dischDate&&admDate&&dischDate<admDate){goToStep(7);alert('Discharge date before admission date.');return false;}
-  const sys=parseFloat(document.querySelector('[name="sysBp"]')?.value);
-  const dia=parseFloat(document.querySelector('[name="diaBp"]')?.value);
-  if(sys&&dia&&sys<=dia){if(!confirm(`Systolic (${sys}) ≤ Diastolic (${dia}). Save anyway?`))return false;}
-  const civilIdVal=document.getElementById('civilId').value;
-  const recordId=document.getElementById('editRecordId').value;
-  const dupSnap=await getDocs(collection(db,'patients_full'));
-  let dupFound=false;
-  dupSnap.forEach(ds=>{if(ds.id!==recordId&&ds.data().civilId===civilIdVal)dupFound=true;});
-  if(dupFound){if(!confirm(`⚠ Civil ID ${civilIdVal} already exists. Save anyway?`))return false;}
-  // Build data object
+
   const fd=new FormData(form);
   const dataObj=Object.fromEntries(fd.entries());
   form.querySelectorAll('input[type="checkbox"]').forEach(cb=>{dataObj[cb.name]=cb.checked;});
   form.querySelectorAll('input[type="radio"]:checked').forEach(r=>{dataObj[r.name]=r.value;});
   dataObj.timestamp=new Date();
   dataObj.recordStatus=targetStatus;
-  if(targetStatus==='submitted') dataObj.submittedAt=new Date();
+  dataObj.enrolledBy=currentUser.uid;
+  dataObj.enrolledByName=currentUserName;
+  if(targetStatus==='submitted')dataObj.submittedAt=new Date();
+
   const recId=dataObj.recordId; delete dataObj.recordId;
-  // Disable both buttons during save
   const btnDraft=document.getElementById('btnSubmit');
   const btnSubmit=document.getElementById('btnSubmitFinal');
-  btnDraft.disabled=true; btnSubmit.disabled=true;
-  btnDraft.innerHTML='<i class="fas fa-spinner fa-spin"></i> Saving…';
+  btnDraft.disabled=true;btnSubmit.disabled=true;
+  btnDraft.innerHTML='<i class="fas fa-spinner fa-spin"></i>';
   try{
-    if(recId){
-      await setDoc(doc(db,'patients_full',recId),dataObj);
-      alert(targetStatus==='submitted'?'Record submitted and locked!':'Record updated!');
-    } else {
-      const newDoc=await addDoc(collection(db,'patients_full'),dataObj);
-      document.getElementById('editRecordId').value=newDoc.id;
-      alert(targetStatus==='submitted'?'Record saved and submitted!':'Saved as draft!');
-    }
-    if(targetStatus==='submitted'){
-      document.getElementById('recordStatus').value='submitted';
-      applyLock('submitted');
-    } else {
-      document.getElementById('editModeBanner').classList.add('hidden');
-      resetFormUI(form);
-    }
-    loadRecordsCache();
+    if(recId){await setDoc(doc(db,'patients_full',recId),dataObj);alert(targetStatus==='submitted'?'Submitted!':'Updated!');}
+    else{const nd=await addDoc(collection(db,'patients_full'),dataObj);document.getElementById('editRecordId').value=nd.id;alert(targetStatus==='submitted'?'Submitted!':'Saved as draft!');}
+    if(targetStatus==='submitted'){document.getElementById('recordStatus').value='submitted';applyLock('submitted');}
+    else{document.getElementById('editModeBanner').classList.add('hidden');resetFormUI(form);}
+    loadRecordsCache();updateMyCasesCount();
     return true;
-  }catch(err){
-    console.error(err);
-    alert('Save failed — check connection.');
-    return false;
-  }finally{
-    btnDraft.disabled=false; btnSubmit.disabled=false;
-    btnDraft.innerHTML='<i class="fas fa-save"></i> Save Draft';
-    btnSubmit.innerHTML='<i class="fas fa-paper-plane"></i> Submit';
-  }
+  }catch(err){console.error(err);alert('Save failed.');return false;}
+  finally{btnDraft.disabled=false;btnSubmit.disabled=false;btnDraft.innerHTML='<i class="fas fa-save"></i> Save Draft';}
 }
 
-// ── SAVE DRAFT (form submit event) ───────────────────────────
-document.getElementById('epsForm').addEventListener('submit',async(e)=>{
-  e.preventDefault();
-  await saveRecord('draft');
-});
+document.getElementById('epsForm').addEventListener('submit',async(e)=>{e.preventDefault();await saveRecord('draft');});
+window.submitFinal=async function(){if(!confirm('Submit and lock this record?'))return;await saveRecord('submitted');};
+window.markReviewed=async function(id){if(!confirm('Mark as Reviewed?'))return;try{await updateDoc(doc(db,'patients_full',id),{recordStatus:'reviewed',reviewedAt:new Date()});fetchData();loadDashboard();}catch(e){alert('Failed.');}};
+window.markDraft=async function(id){if(!confirm('Revert to Draft?'))return;try{await updateDoc(doc(db,'patients_full',id),{recordStatus:'draft'});fetchData();loadDashboard();}catch(e){alert('Failed.');}};
 
-window.submitFinal=async function(){
-  if(!confirm('Submit this record? It will be locked until admin review.'))return;
-  await saveRecord('submitted');
-};
-window.markReviewed=async function(id){
-  if(!confirm('Mark as Reviewed?'))return;
-  try{await updateDoc(doc(db,'patients_full',id),{recordStatus:'reviewed',reviewedAt:new Date()});fetchData();loadDashboard();}
-  catch(e){alert('Failed.');}
-};
-window.markDraft=async function(id){
-  if(!confirm('Revert to Draft?'))return;
-  try{await updateDoc(doc(db,'patients_full',id),{recordStatus:'draft'});fetchData();loadDashboard();}
-  catch(e){alert('Failed.');}
-};
-
-// ── RESET FORM ───────────────────────────────────────────────
 function resetFormUI(f){
   f.reset();
   document.querySelectorAll('.sub-reveal').forEach(s=>s.classList.remove('show'));
   document.querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('selected'));
   document.querySelectorAll('.yn-btn.yn-no').forEach(b=>b.classList.add('selected'));
-  document.querySelectorAll('input[type="hidden"][id^="val_"]').forEach(h=>h.value='No');
+  document.querySelectorAll('input[type="hidden"][id^="val_"]').forEach(h=>{if(h)h.value='No';});
   document.querySelectorAll('.proc-section').forEach(s=>s.classList.remove('show'));
   document.querySelectorAll('.vt').forEach(t=>t.remove());
-  document.getElementById('proc_noReason').style.display='block';
+  const pnr=document.getElementById('proc_noReason');if(pnr)pnr.style.display='block';
   document.getElementById('lockedOverlay').classList.add('hidden');
   document.getElementById('editModeBanner').classList.add('hidden');
   document.getElementById('recordStatus').value='draft';
+  document.getElementById('editRecordId').value='';
   document.getElementById('btnSubmit').disabled=false;
   document.getElementById('btnSubmitFinal').disabled=false;
   goToStep(0);
 }
 
-
-
-// ── DASHBOARD ────────────────────────────────────────────────
+// ── DASHBOARD ────────────────────────────────────────────
 let _dashFilter='all',_dashData=[];
-window.setDashFilter=function(f,btn){
-  _dashFilter=f;
-  document.querySelectorAll('.dash-filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');renderDashboard();
-};
+window.setDashFilter=function(f,btn){_dashFilter=f;document.querySelectorAll('.dash-filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderDashboard();};
 window.loadDashboard=async function(){
   const snap=await getDocs(collection(db,'patients_full'));
   _dashData=[];const civIds={};
   snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();d._comp=calcCompletion(d);_dashData.push(d);civIds[d.civilId]=(civIds[d.civilId]||0)+1;});
+  // Role-based filter
+  if(currentRole==='investigator'){_dashData=_dashData.filter(d=>d.enrolledBy===currentUser.uid);}
   _dashData.forEach(d=>{d._isDup=(civIds[d.civilId]||0)>1;});
-  _dashData.sort((a,b)=>{const da=a.admissionDate||'',db=b.admissionDate||'';if(da&&db)return da.localeCompare(db);return(a.timestamp?.seconds||0)-(b.timestamp?.seconds||0);});
+  _dashData.sort((a,b)=>(a.admissionDate||'').localeCompare(b.admissionDate||''));
   _dashData.forEach((d,i)=>{d._no=i+1;});
-  const total=_dashData.length;
-  const complete=_dashData.filter(d=>d._comp.complete).length;
-  const reviewed=_dashData.filter(d=>d.recordStatus==='reviewed').length;
-  document.getElementById('dash_total').textContent=total;
-  document.getElementById('dash_complete').textContent=complete;
-  document.getElementById('dash_incomplete').textContent=total-complete;
-  document.getElementById('dash_reviewed').textContent=reviewed;
+  document.getElementById('dash_total').textContent=_dashData.length;
+  document.getElementById('dash_complete').textContent=_dashData.filter(d=>d._comp.complete).length;
+  document.getElementById('dash_incomplete').textContent=_dashData.filter(d=>!d._comp.complete).length;
+  document.getElementById('dash_reviewed').textContent=_dashData.filter(d=>d.recordStatus==='reviewed').length;
   renderDashboard();
 };
 function renderDashboard(){
@@ -1003,25 +1183,25 @@ function renderDashboard(){
   if(_dashFilter==='duplicate')data=data.filter(d=>d._isDup);
   const grid=document.getElementById('dashGrid');
   if(!data.length){grid.innerHTML='<div class="bg-white rounded-2xl border border-gray-200 p-12 text-center text-gray-400"><i class="fas fa-inbox text-4xl mb-3 block"></i>No records match this filter</div>';return;}
+  const canEdit = currentRole !== 'cso';
   grid.innerHTML=data.map(d=>{
     const c=d._comp,st=d.recordStatus||'draft';
-    const los=(d.admissionDate&&d.dischargeDate)?Math.round((new Date(d.dischargeDate)-new Date(d.admissionDate))/(1000*60*60*24))+'d':'—';
     const barCol=c.complete?'#059669':c.pct>=70?'#d97706':'#e11d48';
+    const invInfo = (currentRole==='admin'||currentRole==='cso') ? `<span><i class="fas fa-user-md fa-xs mr-1"></i>${d.enrolledByName||'—'}</span>` : '';
     return`<div class="dash-card" style="display:flex;align-items:center;gap:16px;padding:14px 18px;">
-      <div style="font-size:13px;font-weight:800;color:#94a3b8;min-width:32px;text-align:center;">#${d._no}</div>
+      <div style="font-size:13px;font-weight:800;color:#94a3b8;min-width:32px;">#${d._no}</div>
       <div style="flex:1;min-width:0;">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
-          <span style="font-weight:800;font-size:14px;color:#0f172a;">${d.fullName||'Anonymous'}</span>
+          <span style="font-weight:800;font-size:14px;">${d.fullName||'Anonymous'}</span>
           ${statusBadge(st)}
-          ${d._isDup?'<span class="dup-flag"><i class="fas fa-exclamation-circle"></i> Dup Civil ID</span>':''}
+          ${d._isDup?'<span class="dup-flag"><i class="fas fa-exclamation-circle"></i> Dup</span>':''}
         </div>
         <div style="font-size:12px;color:#64748b;display:flex;flex-wrap:wrap;gap:10px;">
-          <span><i class="fas fa-id-card fa-xs mr-1"></i>${d.civilId||'—'}</span>
-          <span><i class="fas fa-folder fa-xs mr-1"></i>${d.fileNumber||'—'}</span>
-          <span><i class="fas fa-calendar fa-xs mr-1"></i>${d.admissionDate||'—'}</span>
-          <span><i class="fas fa-procedures fa-xs mr-1"></i>${d.epReason||'—'}</span>
-          <span><i class="fas fa-clock fa-xs mr-1"></i>LOS: ${los}</span>
-          <span><i class="fas fa-user-md fa-xs mr-1"></i>${d.operatorName||'—'}</span>
+          <span>CID: <b>${d.civilId||'—'}</b></span>
+          <span>File: <b>${d.fileNumber||'—'}</b></span>
+          <span>${d.admissionDate||'—'}</span>
+          <span>${d.epReason||'—'}</span>
+          ${invInfo}
         </div>
         <div style="margin-top:8px;display:flex;align-items:center;gap:8px;">
           <div style="flex:1;height:5px;background:#e2e8f0;border-radius:3px;overflow:hidden;"><div style="height:100%;width:${c.pct}%;background:${barCol};border-radius:3px;"></div></div>
@@ -1029,69 +1209,72 @@ function renderDashboard(){
         </div>
       </div>
       <div style="display:flex;gap:6px;flex-shrink:0;">
-        <button onclick='editRecord(${JSON.stringify(d).replace(/'/g,"\\'")})'  class="btn btn-yellow text-xs px-3 py-1.5"><i class="fas fa-edit"></i> Edit</button>
+        ${canEdit ? `<button onclick='editRecord(${JSON.stringify(d).replace(/'/g,"\\'")})'  class="btn btn-yellow text-xs px-3 py-1.5"><i class="fas fa-edit"></i></button>` :
+          `<button onclick='viewRecord(${JSON.stringify(d).replace(/'/g,"\\'")})'  class="btn btn-gray text-xs px-3 py-1.5"><i class="fas fa-eye"></i></button>`}
       </div>
     </div>`;
   }).join('');
 }
 
-// ── ADMIN FETCH ──────────────────────────────────────────────
+// ── ADMIN FETCH ───────────────────────────────────────────
 let allData=[];
 window.fetchData=async function(){
-  const sN=document.getElementById('searchName').value.toLowerCase();
-  const sCID=document.getElementById('searchCivilId').value;
-  const sFN=document.getElementById('searchFileNo').value;
-  const sDF=document.getElementById('filterDateFrom').value;
-  const sDT=document.getElementById('filterDateTo').value;
-  const sEP=document.getElementById('filterEpReason').value;
-  const sST=document.getElementById('filterStatus').value;
+  const sN=document.getElementById('searchName')?.value.toLowerCase()||'';
+  const sCID=document.getElementById('searchCivilId')?.value||'';
+  const sFN=document.getElementById('searchFileNo')?.value||'';
+  const sCRF=document.getElementById('searchCrfNo')?.value||'';
+  const sDF=document.getElementById('filterDateFrom')?.value||'';
+  const sDT=document.getElementById('filterDateTo')?.value||'';
+  const sEP=document.getElementById('filterEpReason')?.value||'';
+  const sINV=document.getElementById('filterInvestigatorAdmin')?.value||'';
+  const sST=document.getElementById('filterStatus')?.value||'';
   const snap=await getDocs(collection(db,'patients_full'));
   const tbody=document.getElementById('tableBody');
   tbody.innerHTML='';allData=[];
   const all=[];const civIds={};
   snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();all.push(d);civIds[d.civilId]=(civIds[d.civilId]||0)+1;});
-  all.sort((a,b)=>{const da=a.admissionDate||'',db=b.admissionDate||'';if(da&&db)return da.localeCompare(db);return(a.timestamp?.seconds||0)-(b.timestamp?.seconds||0);});
+  all.sort((a,b)=>(a.admissionDate||'').localeCompare(b.admissionDate||''));
   all.forEach((data,idx)=>{
     data._no=idx+1;data._isDup=(civIds[data.civilId]||0)>1;
-    const fn=data.fullName;
-    if(sN&&!fn.toLowerCase().includes(sN))return;
+    if(sN&&!data.fullName.toLowerCase().includes(sN))return;
     if(sCID&&!data.civilId?.includes(sCID))return;
     if(sFN&&!data.fileNumber?.includes(sFN))return;
+    if(sCRF&&!data.crfNo?.includes(sCRF))return;
     if(sDF&&data.admissionDate&&data.admissionDate<sDF)return;
     if(sDT&&data.admissionDate&&data.admissionDate>sDT)return;
     if(sEP&&data.epReason!==sEP)return;
+    if(sINV&&data.enrolledBy!==sINV)return;
     if(sST&&(data.recordStatus||'draft')!==sST)return;
     allData.push(data);
-    const comp=calcCompletion(data);
-    const st=data.recordStatus||'draft';
+    const comp=calcCompletion(data);const st=data.recordStatus||'draft';
     const barCol=comp.complete?'#059669':comp.pct>=70?'#d97706':'#e11d48';
     const tr=document.createElement('tr');
     tr.innerHTML=`
       <td style="font-weight:800;color:#94a3b8;font-size:12px;">#${data._no}</td>
-      <td><div class="font-bold text-gray-800">${fn||'Anonymous'}</div><div class="text-xs text-gray-500">${data.gender||''} | Age: ${data.estimatedAge||'?'}</div>${data._isDup?'<span class="dup-flag mt-1"><i class="fas fa-exclamation-circle"></i> Dup CID</span>':''}</td>
+      <td><div class="font-bold text-gray-800">${data.fullName||'Anonymous'}</div><div class="text-xs text-gray-500">${data.gender||''} | Age: ${data.estimatedAge||'?'}</div>${data._isDup?'<span class="dup-flag mt-1"><i class="fas fa-exclamation-circle"></i> Dup</span>':''}</td>
       <td class="text-xs"><div>CID: ${data.civilId||'—'}</div><div>File: ${data.fileNumber||'—'}</div><div>CRF: ${data.crfNo||'—'}</div></td>
       <td><span class="badge badge-blue">${data.epReason||'—'}</span></td>
+      <td class="text-xs"><div class="font-semibold">${data.enrolledByName||'—'}</div></td>
       <td class="text-xs text-gray-600">${data.admissionDate||'—'}</td>
       <td>${statusBadge(st)}</td>
       <td><div style="display:flex;align-items:center;gap:6px;"><div style="flex:1;height:5px;background:#e2e8f0;border-radius:3px;overflow:hidden;min-width:60px;"><div style="height:100%;width:${comp.pct}%;background:${barCol};border-radius:3px;"></div></div><span style="font-size:10px;font-weight:700;color:${barCol};">${comp.pct}%</span></div></td>
       <td class="text-right" style="white-space:nowrap;">
         <button onclick='editRecord(${JSON.stringify(data).replace(/'/g,"\\'")})'  class="btn btn-yellow text-xs px-2 py-1 mr-1"><i class="fas fa-edit"></i></button>
-        ${st!=='reviewed'?`<button onclick="markReviewed('${data.id}')" class="btn btn-green text-xs px-2 py-1 mr-1" title="Mark Reviewed"><i class="fas fa-check-circle"></i></button>`:''}
-        ${st==='reviewed'?`<button onclick="markDraft('${data.id}')" class="btn btn-gray text-xs px-2 py-1 mr-1" title="Revert to Draft"><i class="fas fa-undo"></i></button>`:''}
-        <button onclick='exportSinglePDF(${JSON.stringify(data).replace(/'/g,"\\'")})'  class="btn btn-purple text-xs px-2 py-1 mr-1"><i class="fas fa-file-pdf"></i></button>
+        ${st!=='reviewed'?`<button onclick="markReviewed('${data.id}')" class="btn btn-green text-xs px-2 py-1 mr-1"><i class="fas fa-check-circle"></i></button>`:''}
+        ${st==='reviewed'?`<button onclick="markDraft('${data.id}')" class="btn btn-gray text-xs px-2 py-1 mr-1"><i class="fas fa-undo"></i></button>`:''}
         <button onclick="deleteRecord('${data.id}')" class="btn btn-red text-xs px-2 py-1"><i class="fas fa-trash"></i></button>
       </td>`;
     tbody.appendChild(tr);
   });
-  if(!allData.length)tbody.innerHTML='<tr><td colspan="8" class="text-center py-8 text-gray-400">No records found</td></tr>';
+  if(!allData.length)tbody.innerHTML='<tr><td colspan="9" class="text-center py-8 text-gray-400">No records found</td></tr>';
   _allRecordsCache=allData.slice();
 };
-window.clearAdminFilters=function(){['searchName','searchCivilId','searchFileNo','filterDateFrom','filterDateTo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('filterEpReason').value='';document.getElementById('filterStatus').value='';fetchData();};
+window.clearAdminFilters=function(){['searchName','searchCivilId','searchFileNo','searchCrfNo','filterDateFrom','filterDateTo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});['filterEpReason','filterStatus','filterInvestigatorAdmin'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});fetchData();};
 window.deleteRecord=async function(id){if(!confirm('Permanently delete?'))return;try{await deleteDoc(doc(db,'patients_full',id));fetchData();loadRecordsCache();}catch(e){alert('Delete failed.');}};
 
 window.editRecord=function(data){
   const st=data.recordStatus||'draft';
-  ['form','dashboard','admin','analytics'].forEach(t=>{document.getElementById(`section-${t}`).classList.add('hidden');document.getElementById(`tab-${t}`).className='pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition';});
+  ['form','dashboard','admin','analytics','downloads'].forEach(t=>{document.getElementById(`section-${t}`)?.classList.add('hidden');const tb=document.getElementById(`tab-${t}`);if(tb)tb.className='pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition';});
   document.getElementById('section-form').classList.remove('hidden');
   document.getElementById('tab-form').className='pb-1 tab-active text-sm transition';
   document.getElementById('epsForm').reset();
@@ -1108,36 +1291,39 @@ window.editRecord=function(data){
   applyLock(st);goToStep(0);
 };
 
-// ── QUICK SEARCH ─────────────────────────────────────────────
+window.viewRecord=function(data){
+  editRecord(data);
+  // Lock editing for CSO
+  document.getElementById('btnSubmit').disabled=true;
+  document.getElementById('btnSubmitFinal').disabled=true;
+  document.getElementById('editModeBanner').classList.add('hidden');
+};
+
+// ── QUICK SEARCH ──────────────────────────────────────────
 let _allRecordsCache=[];
 async function loadRecordsCache(){
   const snap=await getDocs(collection(db,'patients_full'));
   _allRecordsCache=[];const civIds={};
   snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();_allRecordsCache.push(d);civIds[d.civilId]=(civIds[d.civilId]||0)+1;});
-  _allRecordsCache.sort((a,b)=>{const da=a.admissionDate||'',db=b.admissionDate||'';if(da&&db)return da.localeCompare(db);return(a.timestamp?.seconds||0)-(b.timestamp?.seconds||0);});
+  _allRecordsCache.sort((a,b)=>(a.admissionDate||'').localeCompare(b.admissionDate||''));
   _allRecordsCache.forEach((d,i)=>{d._no=i+1;});
+  // Role filter
+  if(currentRole==='investigator'){_allRecordsCache=_allRecordsCache.filter(d=>d.enrolledBy===currentUser?.uid);}
 }
-loadRecordsCache();
-
 window.liveSearch=function(){
   const q=document.getElementById('qs_input').value.trim();
   if(!q){document.getElementById('qs_results').classList.add('hidden');return;}
   const results=_allRecordsCache.filter(d=>(d.civilId||'').includes(q)||(d.fileNumber||'').includes(q)||(d.crfNo||'').includes(q));
   const container=document.getElementById('qs_results');
-  const list=document.getElementById('qs_list');
   document.getElementById('qs_count').textContent=`${results.length} found`;
-  if(!results.length){list.innerHTML='<div class="px-4 py-6 text-center text-gray-400 text-sm">No matching records found</div>';}
+  const list=document.getElementById('qs_list');
+  if(!results.length){list.innerHTML='<div class="px-4 py-6 text-center text-gray-400 text-sm">No records found</div>';}
   else{
     list.innerHTML=results.slice(0,8).map(d=>{
       const comp=calcCompletion(d);
-      const pctCol=comp.complete?'#059669':comp.pct>=70?'#d97706':'#e11d48';
-      const pctBadge=comp.complete?'<span class="badge badge-green">✓ Complete</span>':`<span style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;border-radius:20px;font-size:11px;font-weight:700;padding:2px 9px;">${comp.pct}%</span>`;
       return`<div class="px-4 py-3 hover:bg-blue-50 cursor-pointer transition flex items-center justify-between gap-3" onclick='editFromSearch(${JSON.stringify(d).replace(/'/g,"\\'")})'>
-        <div>
-          <div class="font-bold text-gray-800 text-sm">#${d._no} — ${d.fullName||'Anonymous'}</div>
-          <div class="text-xs text-gray-500 mt-0.5"><span class="mr-3">CID: <b>${d.civilId||'—'}</b></span><span class="mr-3">File: <b>${d.fileNumber||'—'}</b></span><span>CRF: <b>${d.crfNo||'—'}</b></span></div>
-        </div>
-        <div class="flex items-center gap-2 shrink-0"><span class="badge badge-blue">${d.epReason||'—'}</span>${statusBadge(d.recordStatus||'draft')}${pctBadge}<button class="btn btn-yellow text-xs px-2 py-1"><i class="fas fa-edit"></i></button></div>
+        <div><div class="font-bold text-gray-800 text-sm">#${d._no} — ${d.fullName||'Anonymous'}</div><div class="text-xs text-gray-500 mt-0.5"><span class="mr-3">CID: <b>${d.civilId||'—'}</b></span><span>File: <b>${d.fileNumber||'—'}</b></span></div></div>
+        <div class="flex items-center gap-2 shrink-0"><span class="badge badge-blue">${d.epReason||'—'}</span>${statusBadge(d.recordStatus||'draft')}<button class="btn btn-yellow text-xs px-2 py-1"><i class="fas fa-edit"></i></button></div>
       </div>`;
     }).join('');
   }
@@ -1145,284 +1331,323 @@ window.liveSearch=function(){
 };
 window.clearQS=function(){document.getElementById('qs_input').value='';document.getElementById('qs_results').classList.add('hidden');};
 window.editFromSearch=function(data){clearQS();editRecord(data);};
-document.addEventListener('click',e=>{if(!document.getElementById('mainSearchBar').contains(e.target))document.getElementById('qs_results').classList.add('hidden');});
+document.addEventListener('click',e=>{if(!document.getElementById('mainSearchBar')?.contains(e.target))document.getElementById('qs_results')?.classList.add('hidden');});
 
-// ── FIELD MAP ────────────────────────────────────────────────
+// ── USER MANAGEMENT ──────────────────────────────────────
+window.loadUserList=async function(){
+  const snap=await getDocs(collection(db,'users'));
+  const rows=[];
+  snap.forEach(ds=>{const u=ds.data();u.id=ds.id;rows.push(u);});
+  // Count cases per user
+  const patSnap=await getDocs(collection(db,'patients_full'));
+  const counts={};
+  patSnap.forEach(ds=>{const uid=ds.data().enrolledBy;if(uid)counts[uid]=(counts[uid]||0)+1;});
+  // Populate investigator filter dropdowns
+  const invOpts=rows.filter(u=>u.role==='investigator'||u.role==='cso').map(u=>`<option value="${u.id}">${u.displayName||u.email}</option>`).join('');
+  ['filterInvestigatorAdmin','exportInvestigator'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){const base=el.id==='filterInvestigatorAdmin'?'<option value="">All Investigators</option>':'<option value="">All Investigators</option>';el.innerHTML=base+invOpts;}
+  });
+  const tbody=document.getElementById('userTableBody');
+  if(!tbody)return;
+  tbody.innerHTML=rows.map(u=>`
+    <tr>
+      <td class="font-bold">${u.displayName||'—'}</td>
+      <td class="text-xs text-gray-500">${u.email||'—'}</td>
+      <td><span class="role-${u.role||'investigator'}">${(u.role||'investigator').toUpperCase()}</span></td>
+      <td class="font-bold text-blue-700">${counts[u.id]||0}</td>
+      <td>${u.active?'<span class="badge badge-green">Active</span>':'<span class="badge badge-red">Disabled</span>'}</td>
+      <td>
+        <button onclick="toggleUserActive('${u.id}',${!u.active})" class="btn ${u.active?'btn-red':'btn-green'} text-xs px-2 py-1 mr-1">
+          ${u.active?'Disable':'Enable'}
+        </button>
+        <button onclick="deleteUserDoc('${u.id}','${u.displayName||u.email}')" class="btn btn-gray text-xs px-2 py-1">
+          <i class="fas fa-trash"></i>
+        </button>
+      </td>
+    </tr>`).join('');
+};
+
+window.showAddUserForm=function(){
+  const f=document.getElementById('addUserForm');
+  f.style.display=f.style.display==='none'?'block':'none';
+};
+
+window.createUserDocument=async function(){
+  const uid=document.getElementById('newUserUID').value.trim();
+  const name=document.getElementById('newUserName').value.trim();
+  const email=document.getElementById('newUserEmail').value.trim();
+  const role=document.getElementById('newUserRole').value;
+  if(!uid||!name||!email){alert('All fields required.');return;}
+  if(uid.length<20){alert('UID looks too short. Copy it directly from Firebase Auth.');return;}
+  try{
+    await setDoc(doc(db,'users',uid),{displayName:name,email,role,active:true,createdAt:new Date()});
+    alert(`User "${name}" created successfully!`);
+    document.getElementById('addUserForm').style.display='none';
+    ['newUserUID','newUserName','newUserEmail'].forEach(id=>{document.getElementById(id).value='';});
+    loadUserList();
+  }catch(e){console.error(e);alert('Failed to create user: '+e.message);}
+};
+
+window.toggleUserActive=async function(uid,newState){
+  if(!confirm(`${newState?'Enable':'Disable'} this user?`))return;
+  try{await updateDoc(doc(db,'users',uid),{active:newState});loadUserList();}catch(e){alert('Failed.');}
+};
+
+window.deleteUserDoc=async function(uid,name){
+  if(!confirm(`Remove "${name}" from users? (Does not delete their Firebase Auth account)`))return;
+  try{await deleteDoc(doc(db,'users',uid));loadUserList();}catch(e){alert('Failed.');}
+};
+
+// ── DOWNLOADS ────────────────────────────────────────────
+async function loadExportFilters(){
+  // Load investigator list
+  const snap=await getDocs(collection(db,'users'));
+  const opts=['<option value="">All Investigators</option>'];
+  snap.forEach(ds=>{const u=ds.data();if(u.role==='investigator'||u.role==='cso')opts.push(`<option value="${ds.id}">${u.displayName||u.email}</option>`);});
+  const el=document.getElementById('exportInvestigator');if(el)el.innerHTML=opts.join('');
+}
+
+async function getFilteredExportData(){
+  const snap=await getDocs(collection(db,'patients_full'));
+  const df=document.getElementById('exportDateFrom')?.value||'';
+  const dt=document.getElementById('exportDateTo')?.value||'';
+  const inv=document.getElementById('exportInvestigator')?.value||'';
+  const ep=document.getElementById('exportEpReason')?.value||'';
+  const all=[];
+  snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();all.push(d);});
+  all.sort((a,b)=>(a.admissionDate||'').localeCompare(b.admissionDate||''));
+  all.forEach((d,i)=>{d._no=i+1;});
+  return all.filter(d=>{
+    if(df&&d.admissionDate&&d.admissionDate<df)return false;
+    if(dt&&d.admissionDate&&d.admissionDate>dt)return false;
+    if(inv&&d.enrolledBy!==inv)return false;
+    if(ep&&d.epReason!==ep)return false;
+    return true;
+  });
+}
+
+window.searchForSinglePDF=async function(){
+  const q=document.getElementById('singlePatientSearch').value.trim();
+  if(!q){alert('Enter a Civil ID or File Number.');return;}
+  const snap=await getDocs(collection(db,'patients_full'));
+  const results=[];
+  snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();
+    if((d.civilId||'').includes(q)||(d.fileNumber||'').includes(q))results.push(d);
+  });
+  const div=document.getElementById('singlePatientResult');
+  if(!results.length){div.innerHTML='<div class="text-sm text-red-500 mt-2">No patient found.</div>';return;}
+  div.innerHTML=results.map(d=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;margin-top:8px;">
+      <div><div class="font-bold text-sm">${d.fullName||'Anonymous'}</div><div class="text-xs text-gray-500">CID: ${d.civilId||'—'} | File: ${d.fileNumber||'—'} | ${d.admissionDate||'—'}</div></div>
+      <button onclick='exportSinglePDF(${JSON.stringify(d).replace(/'/g,"\\'")})'  class="btn btn-red text-xs px-3 py-1.5"><i class="fas fa-file-pdf mr-1"></i>PDF</button>
+    </div>`).join('');
+};
+
+// ── FIELD MAP ─────────────────────────────────────────────
 const FIELD_MAP={
   nameFirst:'First Name',nameMiddle:'Middle Name',nameLast:'Last Name',civilId:'Civil ID',crfNo:'CRF Number',fileNumber:'File Number',
   gender:'Gender',nationality:'Nationality',yob:'Year of Birth',estimatedAge:'Age (yrs)',admissionDate:'Admission Date',
-  patientContact:'Patient Contact',relativeContact:'Relative Contact',epReason:'EP Lab Reason',pacemakerType:'Pacemaker Type',patientOrigin:'Patient Origin',
+  enrolledByName:'Enrolled By',epReason:'EP Lab Reason',pacemakerType:'Pacemaker Type',patientOrigin:'Patient Origin',
   sysBp:'Systolic BP',diaBp:'Diastolic BP',hr:'Heart Rate',weight:'Weight (kg)',height:'Height (cm)',
   hx_afib:'Atrial Fibrillation',afibClassification:'AFib Classification',afibChads:'CHA₂DS₂-VASc',afibHasBled:'HAS-BLED',
-  afibCardioversion:'Plans for Cardioversion',afibPriorAblation:'Prior Ablation',afibContraOAC:'Contra to OAC',afibMajorBleed:'Prior Major Bleed',
-  hx_cardiacArrest:'Cardiac Arrest',arrestBradycardia:'Brady Arrest',arrestVF:'VF Arrest',arrestVT:'VT Arrest',
-  hx_icm:'Ischemic CMP',icmTimeframe:'ICM Timeframe',icmGDMT:'GDMT Max Dose',
-  hx_hf:'Heart Failure',hfType:'HF Type',
-  hx_cad:'CAD',hx_mi:'Prior MI',hx_valve:'Valvular HD',hx_cvd:'Cerebrovascular Disease',hx_lung:'Chronic Lung Disease',
-  hx_dialysis:'On Dialysis',hx_dm:'Diabetes Mellitus',hx_htn:'Hypertension',hx_familialSyndrome:'Familial SCD Syndrome',
-  hx_ssd:'Sudden Death Syndrome',hx_struct:'Structural Abnormalities',hx_syncope:'Syncope',syncopeRecent:'Syncope <6m',
-  hx_svt:'Paroxysmal SVT',hx_vf:'VF',hx_vt:'VT',hx_avp:'Aortic Valve Procedure',avpType:'AVP Type',avpRecent:'AVP <6m',
-  hx_mvp:'Mitral Valve Procedure',mvpType:'MVP Type',mvpRecent:'MVP <6m',
-  hx_ca:'Coronary Angiography',caRecent:'CA <6m',caAfterArrest:'CA after Arrest',
-  hx_cabg:'Prior CABG',cabgRecent:'CABG <6m',hx_pci:'Prior PCI',pciRecent:'PCI <6m',hx_cied:'Prior CIED',
+  hx_cardiacArrest:'Cardiac Arrest',hx_icm:'Ischemic CMP',icmTimeframe:'ICM Timeframe',
+  hx_hf:'Heart Failure',hfType:'HF Type',hx_cad:'CAD',hx_mi:'Prior MI',hx_valve:'Valvular HD',hx_cvd:'Cerebrovascular Disease',
+  hx_lung:'Chronic Lung Disease',hx_dialysis:'On Dialysis',hx_dm:'Diabetes Mellitus',hx_htn:'Hypertension',
+  hx_ssd:'Sudden Death Syndrome',hx_struct:'Structural Abnormalities',hx_syncope:'Syncope',
+  hx_svt:'Paroxysmal SVT',hx_vf:'VF',hx_vt:'VT',hx_avp:'Aortic Valve Procedure',hx_mvp:'Mitral Valve Procedure',
+  hx_ca:'Coronary Angiography',hx_cabg:'Prior CABG',hx_pci:'Prior PCI',hx_cied:'Prior CIED',
   inv_ecg:'ECG',ecgAtrialRhythm:'ECG Atrial Rhythm',ecgVentRhythm:'ECG Vent Rhythm',ecgQRS:'QRS (msec)',
-  inv_holter:'Holter',holterAtrialRhythm:'Holter Atrial Rhythm',holterVentRhythm:'Holter Vent Rhythm',
-  inv_tte:'TTE',lvef:'LVEF (%)',lvesd:'LVESD (mm)',lvedd:'LVEDD (mm)',rvsp:'RVSP (mmHg)',
-  inv_sevValve:'Severe Valve Disease',sevMR:'Severe MR',sevAS:'Severe AS',sevAR:'Severe AR',sevTR:'Severe TR',intracardThrombus:'Intracardiac Thrombus',
-  inv_tee:'TEE',teeThrombus:'TEE Atrial Thrombus',inv_laa:'LAA Morphology',laaOstial:'LAA Ostial (mm)',laaDepth:'LAA Depth (mm)',
+  inv_holter:'Holter',inv_tte:'TTE',lvef:'LVEF (%)',lvesd:'LVESD (mm)',lvedd:'LVEDD (mm)',rvsp:'RVSP (mmHg)',
+  inv_sevValve:'Severe Valve Disease',sevMR:'Severe MR',sevAS:'Severe AS',sevAR:'Severe AR',sevTR:'Severe TR',
+  inv_tee:'TEE',teeThrombus:'TEE Atrial Thrombus',inv_laa:'LAA Morphology',
   inv_cardiacCT:'Cardiac CT',inv_cmr:'Cardiac MRI',
   creatInit:'Creatinine Initial',creatPeak:'Creatinine Peak',hgbInit:'Hgb Initial',hgbLowest:'Hgb Lowest',
   sodium:'Sodium',potassium:'Potassium',magnesium:'Magnesium',inr:'INR',
   procStartDate:'Procedure Date',procStartTime:'Proc Start Time',procEndTime:'Proc End Time',operatorName:'Operator',
-  crtGenerator:'CRT Generator',crt_implant:'CRT Implanted',crtDeviceType:'CRT Device Type',crtLead:'CRT Lead',crtLeadStatus:'CRT Lead Status',
-  ppmGenerator:'PPM Generator',ppm_implant:'PPM Implanted',ppmDeviceType:'PPM Device Type',ppmLead:'PPM Lead',ppmLeadStatus:'PPM Lead Status',
   eps_avnrt:'EPS: AVNRT',eps_wpw:'EPS: WPW',eps_aflutter:'EPS: AFl',eps_afib:'EPS: AFib',eps_vt:'EPS: VT',eps_pvcs:'EPS: PVCs',
-  epsSedation:'Sedation',epsTransseptal:'Transseptal',epsICE:'ICE',epsAblTime:'Ablation Time (min)',epsFluoroTime:'Fluoro Time (min)',
-  eps_anticoag:'Intraprocedural AC',epsMappingSystem:'Mapping System',epsCathManip:'Catheter Manipulation',
-  laaoDeviceType:'LAAO Device',laaoDeviceSize:'LAAO Size (mm)',laaoAttempts:'LAAO Attempts',laaoImaging:'LAAO Imaging',laaoPASS:'LAAO PASS',laaoLeak:'LAAO Leak',laaoOutcome:'LAAO Outcome',
-  cx_cardArrest:'CX: Cardiac Arrest',cx_pulEdema:'CX: Pulm Edema',cx_tamponade1:'CX: Tamponade (pre)',cx_renal:'CX: Renal',cx_dialysis:'CX: Dialysis',
-  cx_stroke:'CX: Stroke',strokeType:'CX: Stroke Type',cx_vascular:'CX: Vascular',cx_hematoma:'CX: Hematoma',cx_occlusion:'CX: Occlusion',
-  cx_avFistula:'CX: AV Fistula',cx_pseudoAneurysm:'CX: Pseudoaneurysm',cx_vasIntervention:'CX: Vasc Intervention',
-  cx_periEmbol:'CX: Peripheral Embolization',cx_pericarditis:'CX: Pericarditis',cx_cardShock:'CX: Cardiogenic Shock',scaiStage:'SCAI Stage',
-  cx_ventilation:'CX: Ventilation',ventType:'CX: Vent Type',cx_inotropes:'CX: Inotropes',cx_mechComp:'CX: Mechanical Comp',mechCompType:'CX: Mech Type',
-  cx_bleeding:'CX: Bleeding',bleedType:'CX: Bleed Type',bleedSubType:'CX: Bleed Subtype',
-  cx_transfusion:'CX: Transfusion',transfusionUnits:'CX: Transfusion Units',cx_mi:'CX: MI',cx_urgentSurgery:'CX: Urgent Surgery',
-  cx_periEff:'CX: Pericardial Effusion',cx_tamponade2:'CX: Tamponade (post)',cx_hemothorax:'CX: Hemothorax',cx_pneumothorax:'CX: Pneumothorax',
-  cx_devEmbol:'CX: Device Embolization',cx_phrenicDmg:'CX: Phrenic Damage',cx_pleuralEff:'CX: Pleural Effusion',
-  cx_infection:'CX: Infection',cx_setScrew:'CX: Set Screw',cx_leadDislodge:'CX: Lead Dislodge',cx_bradyAdverse:'CX: Brady Adverse',cx_bradyPPM:'CX: Brady PPM',
-  procSuccess:'Procedure Success',postECGrhythm:'Post-Proc ECG Rhythm',out_csp:'Conduction System Pacing',cspQRS:'CSP QRS (msec)',
-  dischargeDate:'Discharge Date',dischargeTime:'Discharge Time',dischargeStatus:'Discharge Status',causeOfDeath:'Cause of Death',dischargeType:'Discharge Type',
+  laaoDeviceType:'LAAO Device',laaoOutcome:'LAAO Outcome',
+  cx_cardArrest:'CX: Cardiac Arrest',cx_stroke:'CX: Stroke',strokeType:'CX: Stroke Type',
+  cx_cardShock:'CX: Cardiogenic Shock',scaiStage:'SCAI Stage',cx_bleeding:'CX: Bleeding',bleedType:'CX: Bleed Type',
+  cx_mi:'CX: MI',cx_devEmbol:'CX: Device Embolization',cx_leadDislodge:'CX: Lead Dislodge',
+  procSuccess:'Procedure Success',postECGrhythm:'Post-Proc ECG Rhythm',
+  dischargeDate:'Discharge Date',dischargeStatus:'Discharge Status',causeOfDeath:'Cause of Death',dischargeType:'Discharge Type',
   recordStatus:'Record Status',
 };
 
-// ── SPSS EXPORT ──────────────────────────────────────────────
+// ── SPSS ─────────────────────────────────────────────────
 const SPSS_VARS={
   _no:'CaseNo',nameFirst:'PtFirst',nameLast:'PtLast',civilId:'CivilID',crfNo:'CRFNo',fileNumber:'FileNo',
-  gender:'Gender',nationality:'Natl',yob:'YOB',estimatedAge:'Age',admissionDate:'AdmDate',recordStatus:'Status',
-  epReason:'EPReason',pacemakerType:'PMType',patientOrigin:'PtOrigin',
-  sysBp:'SysBP',diaBp:'DiaBP',hr:'HR',weight:'Weight',height:'Height',
-  hx_afib:'HxAFib',afibClassification:'AFibClass',afibChads:'CHADS',afibHasBled:'HASBLED',afibCardioversion:'AFibCV',
-  hx_cardiacArrest:'HxCA',arrestVF:'CAVF',arrestVT:'CAVT',hx_icm:'HxICM',icmTimeframe:'ICMTime',
+  enrolledByName:'Investigator',gender:'Gender',nationality:'Natl',yob:'YOB',estimatedAge:'Age',admissionDate:'AdmDate',recordStatus:'Status',
+  epReason:'EPReason',patientOrigin:'PtOrigin',sysBp:'SysBP',diaBp:'DiaBP',hr:'HR',weight:'Weight',height:'Height',
+  hx_afib:'HxAFib',afibChads:'CHADS',afibHasBled:'HASBLED',hx_cardiacArrest:'HxCA',hx_icm:'HxICM',
   hx_hf:'HxHF',hfType:'HFType',hx_cad:'HxCAD',hx_mi:'HxMI',hx_valve:'HxValve',hx_cvd:'HxCVD',
-  hx_lung:'HxLung',hx_dialysis:'HxDialys',hx_dm:'HxDM',hx_htn:'HxHTN',
-  hx_ssd:'HxSSD',hx_struct:'HxStruct',hx_syncope:'HxSyncop',hx_svt:'HxSVT',hx_vf:'HxVF',hx_vt:'HxVT',
-  hx_avp:'HxAVP',hx_mvp:'HxMVP',hx_ca:'HxCAng',hx_cabg:'HxCABG',hx_pci:'HxPCI',hx_cied:'HxCIED',
+  hx_lung:'HxLung',hx_dialysis:'HxDialys',hx_dm:'HxDM',hx_htn:'HxHTN',hx_ssd:'HxSSD',hx_struct:'HxStruct',
+  hx_syncope:'HxSyncop',hx_svt:'HxSVT',hx_vf:'HxVF',hx_vt:'HxVT',hx_cied:'HxCIED',
   inv_ecg:'InvECG',ecgAtrialRhythm:'ECGAtrR',ecgVentRhythm:'ECGVenR',ecgQRS:'ECGQRS',
   inv_holter:'InvHoltr',inv_tte:'InvTTE',lvef:'LVEF',lvesd:'LVESD',lvedd:'LVEDD',rvsp:'RVSP',
   inv_sevValve:'SevValv',sevMR:'SevMR',sevAS:'SevAS',sevAR:'SevAR',sevTR:'SevTR',
-  inv_tee:'InvTEE',teeThrombus:'TEEThrm',inv_cardiacCT:'InvCT',inv_cmr:'InvCMR',
+  inv_tee:'InvTEE',inv_cardiacCT:'InvCT',inv_cmr:'InvCMR',
   creatInit:'CrInit',creatPeak:'CrPeak',hgbInit:'HgbIn',hgbLowest:'HgbLow',sodium:'Na',potassium:'K',magnesium:'Mg',inr:'INR',
   procStartDate:'ProcDate',operatorName:'Operator',
-  crt_implant:'CRTImpl',crtDeviceType:'CRTDTyp',ppm_implant:'PPMImpl',ppmDeviceType:'PPMDTyp',
-  eps_avnrt:'EPSAVNRT',eps_wpw:'EPSWPW',eps_aflutter:'EPSAFl',eps_afib:'EPSAFib',eps_vt:'EPSVT',eps_pvcs:'EPSPVCs',
+  eps_avnrt:'EPSAVNRT',eps_wpw:'EPSWPW',eps_afib:'EPSAFib',eps_vt:'EPSVT',
   laaoDeviceType:'LADType',laaoOutcome:'LAOutcm',
-  cx_cardArrest:'CXCA',cx_stroke:'CXStroke',strokeType:'CXStrkT',cx_vascular:'CXVasc',
-  cx_cardShock:'CXShock',scaiStage:'SCAI',cx_ventilation:'CXVent',cx_inotropes:'CXInot',
-  cx_bleeding:'CXBleed',bleedType:'CXBlT',cx_transfusion:'CXTrans',transfusionUnits:'CXTrnU',
-  cx_mi:'CXMI',cx_urgentSurgery:'CXUrgSx',cx_periEff:'CXPEff',cx_tamponade2:'CXTamp2',
-  cx_hemothorax:'CXHemo',cx_pneumothorax:'CXPneum',cx_devEmbol:'CXDevEmb',cx_infection:'CXInfect',
-  cx_leadDislodge:'CXLeadDx',
+  cx_cardArrest:'CXCA',cx_stroke:'CXStroke',cx_cardShock:'CXShock',scaiStage:'SCAI',
+  cx_bleeding:'CXBleed',bleedType:'CXBlT',cx_mi:'CXMI',cx_leadDislodge:'CXLeadDx',
   procSuccess:'ProcSucc',postECGrhythm:'PostECG',dischargeStatus:'DischSt',causeOfDeath:'DthCause',dischargeType:'DischTyp',
   homeMed_amiodarone:'HMAmio',homeMed_flecainide:'HMFlec',homeMed_sotalol:'HMSotal',
-  homeMed_warfarin:'HMWarf',homeMed_dabigatran:'HMDabig',homeMed_apixaban:'HMApixa',homeMed_rivaroxaban:'HMRivar',
+  homeMed_warfarin:'HMWarf',homeMed_dabigatran:'HMDabig',homeMed_apixaban:'HMApixa',
   homeMed_aspirin:'HMAspir',homeMed_clopidogrel:'HMClopi',homeMed_acei:'HMACEI',homeMed_arb:'HMARB',
   homeMed_arni:'HMARNI',homeMed_sglt:'HMSGLT',homeMed_betablocker:'HMBB',homeMed_mra:'HMMRA',
   homeMed_digoxin:'HMDigox',homeMed_loopdiuretic:'HMLoop',
-  dcMed_warfarin:'DCWarf',dcMed_dabigatran:'DCDabig',dcMed_apixaban:'DCApixa',dcMed_aspirin:'DCAspir',
-  dcMed_clopidogrel:'DCClopi',dcMed_acei:'DCACEI',dcMed_arb:'DCARB',dcMed_arni:'DCARNI',
-  dcMed_sglt:'DCSGLT',dcMed_betablocker:'DCBB',dcMed_mra:'DCMRA',dcMed_digoxin:'DCDigox',dcMed_loopdiuretic:'DCLoop',
+  dcMed_warfarin:'DCWarf',dcMed_apixaban:'DCApixa',dcMed_aspirin:'DCAspir',
+  dcMed_clopidogrel:'DCClopi',dcMed_acei:'DCACEI',dcMed_betablocker:'DCBB',dcMed_mra:'DCMRA',dcMed_digoxin:'DCDigox',dcMed_loopdiuretic:'DCLoop',
 };
 
-window.exportSPSS=function(){
-  if(!allData||!allData.length){alert('No data. Run Search first.');return;}
+window.exportSPSS=async function(){
+  const data=await getFilteredExportData();
+  if(!data.length){alert('No data to export.');return;}
   const vars=Object.keys(SPSS_VARS);
-  // Sheet 1: data
   const dataRows=[vars.map(v=>SPSS_VARS[v])];
-  allData.forEach(r=>{
-    dataRows.push(vars.map(v=>{
-      let val=r[v];
-      if(val===true)return 1;if(val===false)return 0;
-      if(val===undefined||val===null||val==='')return '';
-      return val;
-    }));
-  });
-  // Sheet 2: codebook
+  data.forEach(r=>{dataRows.push(vars.map(v=>{let val=r[v];if(val===true)return 1;if(val===false)return 0;if(val===undefined||val===null||val==='')return '';return val;}));});
   const codebook=[['Variable','Label','Type','Notes']];
-  vars.forEach(v=>{
-    const label=FIELD_MAP[v]||v;
-    const sample=allData[0]?.[v];
-    const type=(sample===true||sample===false||sample==='Yes'||sample==='No')?'Binary (1=Yes, 0=No)':'String/Numeric';
-    codebook.push([SPSS_VARS[v],label,type,'']);
-  });
+  vars.forEach(v=>{const label=FIELD_MAP[v]||v;const sample=data[0]?.[v];const type=(sample===true||sample===false||sample==='Yes'||sample==='No')?'Binary (1=Yes, 0=No)':'String/Numeric';codebook.push([SPSS_VARS[v],label,type,'']);});
   const wb=XLSX.utils.book_new();
-  const ws1=XLSX.utils.aoa_to_sheet(dataRows);
-  const ws2=XLSX.utils.aoa_to_sheet(codebook);
-  XLSX.utils.book_append_sheet(wb,ws1,'SPSS_Data');
-  XLSX.utils.book_append_sheet(wb,ws2,'Codebook');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(dataRows),'SPSS_Data');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(codebook),'Codebook');
   XLSX.writeFile(wb,'EPS_SPSS_Export.xlsx');
 };
 
-// ── EXCEL EXPORT (4 sheets) ──────────────────────────────────
-window.exportToExcel=function(){
-  if(!allData||!allData.length){alert('No data. Run Search first.');return;}
+window.exportToExcel=async function(){
+  const data=await getFilteredExportData();
+  if(!data.length){alert('No data to export.');return;}
   const allFields=Object.keys(FIELD_MAP);
   const mkSheet=(fields)=>{
     const hdr=fields.map(f=>FIELD_MAP[f]||f);
-    const rows=allData.map(r=>fields.map(f=>{let v=r[f];if(v===true)return'Yes';if(v===false)return'No';return v??'';}));
+    const rows=data.map(r=>fields.map(f=>{let v=r[f];if(v===true)return'Yes';if(v===false)return'No';return v??'';}));
     return XLSX.utils.aoa_to_sheet([hdr,...rows]);
   };
-  const idFields=['_no','nameFirst','nameMiddle','nameLast','civilId','crfNo','fileNumber','gender','nationality','yob','estimatedAge','admissionDate','recordStatus','epReason','pacemakerType','patientOrigin'];
-  const hxFields=allFields.filter(f=>f.startsWith('hx_')||f.startsWith('arrest')||f.startsWith('icm')||f.startsWith('hf')||f.startsWith('afib')||f.startsWith('struct')||f.startsWith('ssd')||f.startsWith('cied')||f==='syncopeRecent'||f==='sysBp'||f==='diaBp'||f==='hr'||f==='weight'||f==='height');
-  const invFields=allFields.filter(f=>f.startsWith('inv_')||f.startsWith('lvef')||f.startsWith('lvedd')||f.startsWith('lvesd')||f.startsWith('rvsp')||f.startsWith('sev')||f.startsWith('intrac')||f.startsWith('tee')||f.startsWith('laa')||f.startsWith('creat')||f.startsWith('hgb')||['sodium','potassium','magnesium','inr','ecgAtrialRhythm','ecgVentRhythm','ecgQRS','holterAtrialRhythm','holterVentRhythm'].includes(f));
-  const procFields=allFields.filter(f=>['procStartDate','procStartTime','procEndTime','operatorName'].includes(f)||f.startsWith('crt')||f.startsWith('ppm')||f.startsWith('eps')||f.startsWith('laao')||f.startsWith('tpm'));
-  const outcFields=allFields.filter(f=>f.startsWith('cx_')||f.startsWith('comp_')||f.startsWith('bleed')||f.startsWith('stroke')||f.startsWith('vent')||f.startsWith('scai')||f.startsWith('mech')||['procSuccess','postECGrhythm','out_csp','cspQRS','dischargeDate','dischargeTime','dischargeStatus','causeOfDeath','dischargeType','transfusionUnits','vasInterventionType'].includes(f));
+  const idFields=['_no','nameFirst','nameMiddle','nameLast','civilId','crfNo','fileNumber','gender','nationality','yob','estimatedAge','admissionDate','recordStatus','epReason','enrolledByName','patientOrigin'];
+  const hxFields=allFields.filter(f=>f.startsWith('hx_')||f.startsWith('arrest')||f.startsWith('icm')||f.startsWith('hf')||f.startsWith('afib')||['sysBp','diaBp','hr','weight','height'].includes(f));
+  const invFields=allFields.filter(f=>f.startsWith('inv_')||['lvef','lvesd','lvedd','rvsp','ecgAtrialRhythm','ecgVentRhythm','ecgQRS','creatInit','creatPeak','hgbInit','hgbLowest','sodium','potassium','magnesium','inr'].includes(f));
+  const outcFields=allFields.filter(f=>f.startsWith('cx_')||f.startsWith('bleed')||['procStartDate','procStartTime','procEndTime','operatorName','procSuccess','postECGrhythm','dischargeDate','dischargeStatus','causeOfDeath','dischargeType'].includes(f));
   const wb=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb,mkSheet(idFields),'Demographics');
   XLSX.utils.book_append_sheet(wb,mkSheet(hxFields),'History & Vitals');
   XLSX.utils.book_append_sheet(wb,mkSheet(invFields),'Investigations & Labs');
-  XLSX.utils.book_append_sheet(wb,mkSheet([...procFields,...outcFields]),'Procedure & Outcome');
+  XLSX.utils.book_append_sheet(wb,mkSheet(outcFields),'Procedure & Outcome');
   XLSX.writeFile(wb,'EPS_Registry_Export.xlsx');
 };
 
-// ── PDF SUMMARY ─────────────────────────────────────────────
-window.exportToPDF=function(){
-  if(!allData||!allData.length){alert('No data. Run Search first.');return;}
-  const {jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
-  doc.setFontSize(14);doc.setFont('helvetica','bold');
-  doc.text('EPS Registry – Mubarak Alkabeer Hospital',14,14);
-  doc.setFontSize(9);doc.setFont('helvetica','normal');
-  doc.text(`Generated: ${new Date().toLocaleDateString()} | ${allData.length} records`,14,20);
-  const cols=['#','Patient','Civil ID','EP Reason','Admission','Status','Completion','Operator'];
-  const rows=allData.map(r=>{const c=calcCompletion(r);return[r._no||'',r.fullName||'Anonymous',r.civilId||'—',r.epReason||'—',r.admissionDate||'—',(r.recordStatus||'draft').toUpperCase(),`${c.pct}%`,r.operatorName||'—'];});
-  doc.autoTable({head:[cols],body:rows,startY:26,styles:{fontSize:8},headStyles:{fillColor:[30,64,175],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[248,250,252]}});
-  doc.save('EPS_Registry_Summary.pdf');
+window.exportToPDF=async function(){
+  const data=await getFilteredExportData();
+  if(!data.length){alert('No data to export.');return;}
+  const{jsPDF}=window.jspdf;const pdfdoc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+  pdfdoc.setFontSize(14);pdfdoc.setFont('helvetica','bold');
+  pdfdoc.text('EPS Registry – Mubarak Alkabeer Hospital',14,14);
+  pdfdoc.setFontSize(9);pdfdoc.setFont('helvetica','normal');
+  pdfdoc.text(`Generated: ${new Date().toLocaleDateString()} | ${data.length} records`,14,20);
+  const cols=['#','Patient','Civil ID','EP Reason','Investigator','Admission','Status','Completion'];
+  const rows=data.map(r=>{const c=calcCompletion(r);return[r._no||'',r.fullName||'Anonymous',r.civilId||'—',r.epReason||'—',r.enrolledByName||'—',r.admissionDate||'—',(r.recordStatus||'draft').toUpperCase(),`${c.pct}%`];});
+  pdfdoc.autoTable({head:[cols],body:rows,startY:26,styles:{fontSize:8},headStyles:{fillColor:[30,64,175],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[248,250,252]}});
+  pdfdoc.save('EPS_Registry_Summary.pdf');
 };
 
-// ── SINGLE PATIENT PDF ────────────────────────────────────────
 window.exportSinglePDF=function(data){
-  const{jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:'a4'});
+  const{jsPDF}=window.jspdf;const pdfdoc=new jsPDF({unit:'mm',format:'a4'});
   const comp=calcCompletion(data);
-  doc.setFillColor(30,64,175);doc.rect(0,0,210,22,'F');
-  doc.setTextColor(255,255,255);doc.setFontSize(13);doc.setFont('helvetica','bold');
-  doc.text('EPS Registry – Mubarak Alkabeer Hospital',14,10);
-  doc.setFontSize(9);doc.setFont('helvetica','normal');
-  doc.text('Advanced Electrophysiology Registry',14,16);
-  doc.setTextColor(30,30,30);
-  doc.setFontSize(14);doc.setFont('helvetica','bold');
-  doc.text(data.fullName||'Anonymous Patient',14,30);
-  doc.setFontSize(9);doc.setFont('helvetica','normal');
-  doc.text([
+  pdfdoc.setFillColor(30,64,175);pdfdoc.rect(0,0,210,22,'F');
+  pdfdoc.setTextColor(255,255,255);pdfdoc.setFontSize(13);pdfdoc.setFont('helvetica','bold');
+  pdfdoc.text('EPS Registry – Mubarak Alkabeer Hospital',14,10);
+  pdfdoc.setFontSize(9);pdfdoc.setFont('helvetica','normal');
+  pdfdoc.text('Advanced Electrophysiology Registry',14,16);
+  pdfdoc.setTextColor(30,30,30);
+  pdfdoc.setFontSize(14);pdfdoc.setFont('helvetica','bold');
+  pdfdoc.text(data.fullName||'Anonymous Patient',14,30);
+  pdfdoc.setFontSize(9);pdfdoc.setFont('helvetica','normal');
+  pdfdoc.text([
     `Civil ID: ${data.civilId||'—'}  |  File: ${data.fileNumber||'—'}  |  CRF: ${data.crfNo||'—'}`,
     `Gender: ${data.gender||'—'}  |  Age: ${data.estimatedAge||'—'}  |  Admission: ${data.admissionDate||'—'}`,
-    `EP Reason: ${data.epReason||'—'}  |  Operator: ${data.operatorName||'—'}  |  Status: ${(data.recordStatus||'draft').toUpperCase()}  |  Completion: ${comp.pct}%`,
+    `EP Reason: ${data.epReason||'—'}  |  Investigator: ${data.enrolledByName||'—'}  |  Status: ${(data.recordStatus||'draft').toUpperCase()}  |  Completion: ${comp.pct}%`,
   ],14,38);
   let y=52;
   const sections=[
     {title:'Procedure Details',keys:['procStartDate','procStartTime','procEndTime','operatorName','procSuccess']},
-    {title:'History Summary',keys:['hx_afib','hx_icm','hx_hf','hx_cad','hx_dm','hx_htn','hx_cied','hx_syncope']},
-    {title:'Investigations',keys:['inv_ecg','inv_tte','lvef','inv_holter','inv_tee','creatInit','hgbInit','sodium','potassium','inr']},
-    {title:'Complications',keys:['cx_stroke','cx_cardArrest','cx_bleeding','cx_tamponade2','cx_renal','cx_vascular','cx_mi','procSuccess']},
+    {title:'History Summary',keys:['hx_afib','hx_icm','hx_hf','hx_cad','hx_dm','hx_htn','hx_cied']},
+    {title:'Investigations',keys:['inv_ecg','inv_tte','lvef','creatInit','hgbInit','sodium','potassium','inr']},
+    {title:'Complications',keys:['cx_stroke','cx_cardArrest','cx_bleeding','cx_cardShock','cx_mi']},
     {title:'Discharge',keys:['dischargeDate','dischargeStatus','dischargeType','causeOfDeath']},
   ];
   sections.forEach(sec=>{
-    if(y>260){doc.addPage();y=20;}
-    doc.setFillColor(240,244,248);doc.rect(12,y-4,186,8,'F');
-    doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(30,64,175);
-    doc.text(sec.title,14,y+0.5);y+=7;
-    const pairs=sec.keys.map(k=>{let v=data[k];if(v===true||v==='true')v='Yes';else if(v===false||v==='false')v='No';return[FIELD_MAP[k]||k,v??'—'];}).filter(p=>p[1]!=='—'&&p[1]!==''&&p[1]!==null&&p[1]!==undefined);
-    if(!pairs.length){doc.setFont('helvetica','italic');doc.setFontSize(8);doc.setTextColor(150,150,150);doc.text('No data recorded',16,y);y+=5;return;}
-    doc.autoTable({head:[['Field','Value']],body:pairs,startY:y,margin:{left:14,right:14},styles:{fontSize:8},headStyles:{fillColor:[100,116,139],textColor:255},columnStyles:{0:{cellWidth:80},1:{cellWidth:100}},tableWidth:182});
-    y=doc.lastAutoTable.finalY+5;
+    if(y>260){pdfdoc.addPage();y=20;}
+    pdfdoc.setFillColor(240,244,248);pdfdoc.rect(12,y-4,186,8,'F');
+    pdfdoc.setFont('helvetica','bold');pdfdoc.setFontSize(9);pdfdoc.setTextColor(30,64,175);
+    pdfdoc.text(sec.title,14,y+0.5);y+=7;
+    const pairs=sec.keys.map(k=>{let v=data[k];if(v===true||v==='true')v='Yes';else if(v===false||v==='false')v='No';return[FIELD_MAP[k]||k,v??'—'];}).filter(p=>p[1]!=='—'&&p[1]!==''&&p[1]!==null);
+    if(!pairs.length){pdfdoc.setFont('helvetica','italic');pdfdoc.setFontSize(8);pdfdoc.setTextColor(150,150,150);pdfdoc.text('No data recorded',16,y);y+=5;return;}
+    pdfdoc.autoTable({head:[['Field','Value']],body:pairs,startY:y,margin:{left:14,right:14},styles:{fontSize:8},headStyles:{fillColor:[100,116,139],textColor:255},columnStyles:{0:{cellWidth:80},1:{cellWidth:100}},tableWidth:182});
+    y=pdfdoc.lastAutoTable.finalY+5;
   });
-  doc.save(`EPS_Patient_${data.civilId||data.fileNumber||'report'}.pdf`);
+  pdfdoc.save(`EPS_Patient_${data.civilId||data.fileNumber||'report'}.pdf`);
 };
 
-// ── ANALYTICS ────────────────────────────────────────────────
+// ── ANALYTICS ────────────────────────────────────────────
 const _charts={};
 window.fetchAnalytics=async function(){
   const snap=await getDocs(collection(db,'patients_full'));
   const recs=[];snap.forEach(ds=>{recs.push(ds.data());});
   const n=recs.length;if(!n){alert('No data.');return;}
-  document.getElementById('kpi_total').textContent=n;
-  const succ=recs.filter(r=>r.procSuccess==='Yes').length;
-  document.getElementById('kpi_success').textContent=n?`${Math.round(succ/n*100)}%`:'—';
-  const complic=recs.filter(r=>r.cx_stroke==='Yes'||r.cx_tamponade2==='Yes'||r.cx_bleeding==='Yes'||r.cx_cardArrest==='Yes'||r.cx_renal==='Yes').length;
-  document.getElementById('kpi_complications').textContent=n?`${Math.round(complic/n*100)}%`:'—';
-  const afib=recs.filter(r=>r.hx_afib==='Yes').length;
-  document.getElementById('kpi_afib').textContent=n?`${Math.round(afib/n*100)}%`:'—';
-  _buildAnalytics(recs,n);
+  // For investigators, only show their own data
+  const filtered=currentRole==='investigator'?recs.filter(r=>r.enrolledBy===currentUser?.uid):recs;
+  document.getElementById('kpi_total').textContent=filtered.length;
+  const succ=filtered.filter(r=>r.procSuccess==='Yes').length;
+  document.getElementById('kpi_success').textContent=filtered.length?`${Math.round(succ/filtered.length*100)}%`:'—';
+  const complic=filtered.filter(r=>r.cx_stroke==='Yes'||r.cx_cardShock==='Yes'||r.cx_bleeding==='Yes').length;
+  document.getElementById('kpi_complications').textContent=filtered.length?`${Math.round(complic/filtered.length*100)}%`:'—';
+  const afib=filtered.filter(r=>r.hx_afib==='Yes').length;
+  document.getElementById('kpi_afib').textContent=filtered.length?`${Math.round(afib/filtered.length*100)}%`:'—';
+  _buildAnalytics(filtered,recs);
 };
-function _buildAnalytics(recs,n){
+function _buildAnalytics(filtered,allRecs){
   const mk=(id,type,labels,data,colors)=>{
     const cv=document.getElementById(id);if(!cv)return;
     if(_charts[id]){_charts[id].destroy();}
     _charts[id]=new Chart(cv,{type,data:{labels,datasets:[{data,backgroundColor:colors,borderColor:colors.map(c=>c+'dd'),borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:type==='pie'||type==='doughnut'}}}});
   };
-  // Gender
-  const m=recs.filter(r=>r.gender==='Male').length,f=recs.filter(r=>r.gender==='Female').length;
+  const m=filtered.filter(r=>r.gender==='Male').length,f=filtered.filter(r=>r.gender==='Female').length;
   mk('genderChart','doughnut',['Male','Female'],[m,f],['#2563eb','#e11d48']);
-  // EP Reasons
-  const epMap={};recs.forEach(r=>{if(r.epReason){epMap[r.epReason]=(epMap[r.epReason]||0)+1;}});
+  const epMap={};filtered.forEach(r=>{if(r.epReason){epMap[r.epReason]=(epMap[r.epReason]||0)+1;}});
   mk('procChart','bar',Object.keys(epMap),Object.values(epMap),['#4f46e5','#2563eb','#0891b2','#059669','#d97706','#e11d48']);
-  // Discharge
-  const dMap={};recs.forEach(r=>{if(r.dischargeStatus){dMap[r.dischargeStatus]=(dMap[r.dischargeStatus]||0)+1;}});
+  const dMap={};filtered.forEach(r=>{if(r.dischargeStatus){dMap[r.dischargeStatus]=(dMap[r.dischargeStatus]||0)+1;}});
   mk('dischargeChart','pie',Object.keys(dMap),Object.values(dMap),['#059669','#e11d48','#d97706','#7c3aed']);
-  // Comorbidities
-  const cm=[
-    ['AFib',recs.filter(r=>r.hx_afib==='Yes').length],['HF',recs.filter(r=>r.hx_hf==='Yes').length],
-    ['ICM',recs.filter(r=>r.hx_icm==='Yes').length],['CAD',recs.filter(r=>r.hx_cad==='Yes').length],
-    ['HTN',recs.filter(r=>r.hx_htn==='Yes').length],['DM',recs.filter(r=>r.hx_dm==='Yes').length],
-    ['Prior CIED',recs.filter(r=>r.hx_cied==='Yes').length],['VT',recs.filter(r=>r.hx_vt==='Yes').length],
-  ].filter(c=>c[1]>0).sort((a,b)=>b[1]-a[1]);
-  mk('comorbChart','bar',cm.map(c=>c[0]),cm.map(c=>c[1]),['#e11d48','#f97316','#f59e0b','#84cc16','#06b6d4','#6366f1','#8b5cf6','#ec4899']);
-  // Complications
-  const cxp=[
-    ['Stroke',recs.filter(r=>r.cx_stroke==='Yes').length],['Tamponade',recs.filter(r=>r.cx_tamponade2==='Yes').length],
-    ['Bleeding',recs.filter(r=>r.cx_bleeding==='Yes').length],['Cardiogenic Shock',recs.filter(r=>r.cx_cardShock==='Yes').length],
-    ['Renal',recs.filter(r=>r.cx_renal==='Yes').length],['Pericardial Eff',recs.filter(r=>r.cx_periEff==='Yes').length],
-    ['Lead Dislodge',recs.filter(r=>r.cx_leadDislodge==='Yes').length],['Vascular',recs.filter(r=>r.cx_vascular==='Yes').length],
-  ].filter(c=>c[1]>0).sort((a,b)=>b[1]-a[1]);
-  if(cxp.length)mk('compChart','bar',cxp.map(c=>c[0]),cxp.map(c=>c[1]),['#dc2626','#e11d48','#f43f5e','#fb7185','#fda4af','#fecdd3','#fff1f2','#ffe4e6']);
-  else{const cv=document.getElementById('compChart');if(cv){const ctx=cv.getContext('2d');ctx.clearRect(0,0,cv.width,cv.height);ctx.fillStyle='#94a3b8';ctx.font='14px DM Sans';ctx.textAlign='center';ctx.fillText('No complications recorded',cv.width/2,cv.height/2);}}
-  // CIED
-  const cied=[
-    ['ICD Single',recs.filter(r=>r.cied_icdSingle===true||r.cied_icdSingle==='true').length],
-    ['ICD Dual',recs.filter(r=>r.cied_icdDual===true||r.cied_icdDual==='true').length],
-    ['CRT-D',recs.filter(r=>r.cied_crtd===true||r.cied_crtd==='true').length],
-    ['CRT-P',recs.filter(r=>r.cied_crtp===true||r.cied_crtp==='true').length],
-    ['PPM Dual',recs.filter(r=>r.cied_dual===true||r.cied_dual==='true').length],
-    ['PPM Single',recs.filter(r=>r.cied_single===true||r.cied_single==='true').length],
-    ['S-ICD',recs.filter(r=>r.cied_sicd===true||r.cied_sicd==='true').length],
-  ].filter(c=>c[1]>0);
-  if(cied.length)mk('ciedChart','bar',cied.map(c=>c[0]),cied.map(c=>c[1]),['#7c3aed','#6d28d9','#5b21b6','#4c1d95','#a78bfa','#c4b5fd','#ede9fe']);
-  // Meds
-  const meds=[
-    ['BB',recs.filter(r=>r.homeMed_betablocker===true||r.homeMed_betablocker==='true').length],
-    ['Amiodarone',recs.filter(r=>r.homeMed_amiodarone===true||r.homeMed_amiodarone==='true').length],
-    ['Warfarin',recs.filter(r=>r.homeMed_warfarin===true||r.homeMed_warfarin==='true').length],
-    ['Apixaban',recs.filter(r=>r.homeMed_apixaban===true||r.homeMed_apixaban==='true').length],
-    ['Digoxin',recs.filter(r=>r.homeMed_digoxin===true||r.homeMed_digoxin==='true').length],
-    ['Loop Diuretic',recs.filter(r=>r.homeMed_loopdiuretic===true||r.homeMed_loopdiuretic==='true').length],
-    ['ACE-I',recs.filter(r=>r.homeMed_acei===true||r.homeMed_acei==='true').length],
-    ['Aspirin',recs.filter(r=>r.homeMed_aspirin===true||r.homeMed_aspirin==='true').length],
-  ].filter(c=>c[1]>0).sort((a,b)=>b[1]-a[1]);
-  if(meds.length)mk('medsChart','bar',meds.map(c=>c[0]),meds.map(c=>c[1]),['#059669','#10b981','#34d399','#6ee7b7','#a7f3d0','#d1fae5','#ecfdf5','#f0fdf4']);
+  const cm=[['AFib',filtered.filter(r=>r.hx_afib==='Yes').length],['HF',filtered.filter(r=>r.hx_hf==='Yes').length],['ICM',filtered.filter(r=>r.hx_icm==='Yes').length],['CAD',filtered.filter(r=>r.hx_cad==='Yes').length],['HTN',filtered.filter(r=>r.hx_htn==='Yes').length],['DM',filtered.filter(r=>r.hx_dm==='Yes').length]].filter(c=>c[1]>0).sort((a,b)=>b[1]-a[1]);
+  mk('comorbChart','bar',cm.map(c=>c[0]),cm.map(c=>c[1]),['#e11d48','#f97316','#f59e0b','#84cc16','#06b6d4','#6366f1']);
+  const cxp=[['Stroke',filtered.filter(r=>r.cx_stroke==='Yes').length],['Shock',filtered.filter(r=>r.cx_cardShock==='Yes').length],['Bleeding',filtered.filter(r=>r.cx_bleeding==='Yes').length],['Lead Dislodge',filtered.filter(r=>r.cx_leadDislodge==='Yes').length]].filter(c=>c[1]>0);
+  if(cxp.length)mk('compChart','bar',cxp.map(c=>c[0]),cxp.map(c=>c[1]),['#dc2626','#e11d48','#f43f5e','#fb7185']);
+  const meds=[['BB',filtered.filter(r=>r.homeMed_betablocker===true||r.homeMed_betablocker==='true').length],['Amiodarone',filtered.filter(r=>r.homeMed_amiodarone===true||r.homeMed_amiodarone==='true').length],['Warfarin',filtered.filter(r=>r.homeMed_warfarin===true||r.homeMed_warfarin==='true').length],['Apixaban',filtered.filter(r=>r.homeMed_apixaban===true||r.homeMed_apixaban==='true').length],['ACE-I',filtered.filter(r=>r.homeMed_acei===true||r.homeMed_acei==='true').length]].filter(c=>c[1]>0).sort((a,b)=>b[1]-a[1]);
+  if(meds.length)mk('medsChart','bar',meds.map(c=>c[0]),meds.map(c=>c[1]),['#059669','#10b981','#34d399','#6ee7b7','#a7f3d0']);
+  // Investigator chart (admin/cso only)
+  if(currentRole==='admin'||currentRole==='cso'){
+    const invMap={};allRecs.forEach(r=>{if(r.enrolledByName){invMap[r.enrolledByName]=(invMap[r.enrolledByName]||0)+1;}});
+    const sorted=Object.entries(invMap).sort((a,b)=>b[1]-a[1]);
+    mk('invChart','bar',sorted.map(e=>e[0]),sorted.map(e=>e[1]),['#7c3aed','#6d28d9','#5b21b6','#4c1d95','#8b5cf6']);
+  }
 }
 window.toggleAnalytic=function(key){
   const body=document.getElementById(`body_${key}`);
   const chev=document.getElementById(`chev_${key}`);
+  if(!body||!chev)return;
   const isOpen=body.classList.contains('open');
   body.classList.toggle('open',!isOpen);
   chev.classList.toggle('open',!isOpen);
 };
 
-  // Boot
-  loadRecordsCache();
+// Boot
+loadRecordsCache();
 } // end initApp
 
-if(window._db) { initApp(); }
-else { window.addEventListener('firebaseReady', initApp, {once:true}); }
-
+if(window._db){initApp();}
+else{window.addEventListener('firebaseReady',initApp,{once:true});}
 }); // end DOMContentLoaded
 </script>
 
