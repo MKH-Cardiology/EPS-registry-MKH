@@ -769,53 +769,65 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </section>
 
 </main>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, setDoc, getDocs, deleteDoc, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+<!-- Firebase Compat SDKs — load synchronously, no ES module issues -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script>
+(function() {
+  const _app = firebase.initializeApp({
+    apiKey:"AIzaSyBocWe4k3ljikv2D2a_f7RDlPRnAaH6Zxs",
+    authDomain:"eps-registry-mkh.firebaseapp.com",
+    projectId:"eps-registry-mkh",
+    storageBucket:"eps-registry-mkh.firebasestorage.app",
+    messagingSenderId:"893225906696",
+    appId:"1:893225906696:web:d4c4324b4d9e3edecc57bd"
+  });
 
-const _app = initializeApp({apiKey:“AIzaSyBocWe4k3ljikv2D2a_f7RDlPRnAaH6Zxs”,authDomain:“eps-registry-mkh.firebaseapp.com”,projectId:“eps-registry-mkh”,storageBucket:“eps-registry-mkh.firebasestorage.app”,messagingSenderId:“893225906696”,appId:“1:893225906696:web:d4c4324b4d9e3edecc57bd”});
-const _db = getFirestore(_app);
-const _auth = getAuth(_app);
+const _db   = firebase.firestore();
+const _auth = firebase.auth();
 
-window._db = _db;
-window._auth = _auth;
-window._col = (…a) => collection(…a);
-window._addDoc = (…a) => addDoc(…a);
-window._setDoc = (…a) => setDoc(…a);
-window._getDocs = (…a) => getDocs(…a);
-window._deleteDoc = (…a) => deleteDoc(…a);
-window._doc = (…a) => doc(…a);
-window._updateDoc = (…a) => updateDoc(…a);
-window._getDoc = (…a) => getDoc(…a);
-window._getDb = () => _db;
-window._signIn = (e,p) => signInWithEmailAndPassword(_auth,e,p);
-window._signOut = () => signOut(_auth);
-window._onAuthStateChanged = (cb) => onAuthStateChanged(_auth, cb);
+// Expose Firestore helpers
+window._getDb  = () => _db;
+window._db     = _db;
+window._col    = (db, path) => db.collection(path);
+window._doc    = (db, path, id) => id ? db.collection(path).doc(id) : db.doc(path);
+window._addDoc = (ref, data) => ref.add(data);
+window._setDoc = (ref, data) => ref.set(data);
+window._getDocs= (ref) => ref.get();
+window._getDoc = (ref) => ref.get();
+window._deleteDoc = (ref) => ref.delete();
+window._updateDoc = (ref, data) => ref.update(data);
 
-// ONE-TIME SETUP — creates investigator docs
+// Auth helpers
+window._signIn  = (e,p) => _auth.signInWithEmailAndPassword(e,p);
+window._signOut = () => _auth.signOut();
+window._onAuthStateChanged = (cb) => _auth.onAuthStateChanged(cb);
+
+// One-time setup
 window._setupUsers = async function() {
 const users = [
-{ uid: “qEv59O8pk3bu6cVQjWFExLuoVTb2”, email: “ahmadelsharkawi87@gmail.com”, displayName: “Dr. Ahmed Elsharkawy”, role: “investigator”, active: true }
+{ uid:“qEv59O8pk3bu6cVQjWFExLuoVTb2”, email:“ahmadelsharkawi87@gmail.com”, displayName:“Dr. Ahmed Elsharkawy”, role:“investigator”, active:true }
 ];
 for (const u of users) {
-await window._setDoc(window._doc(_db, “users”, u.uid), { email:u.email, displayName:u.displayName, role:u.role, active:u.active, createdAt:new Date() });
+await _db.collection(“users”).doc(u.uid).set({ email:u.email, displayName:u.displayName, role:u.role, active:u.active, createdAt:new Date() });
 console.log(“Created:”, u.displayName);
 }
-alert(“Users created! You can remove _setupUsers from the code now.”);
+alert(“Users created!”);
 };
 
 window.dispatchEvent(new Event(‘firebaseReady’));
+})();
 </script>
 
 <script>
-function collection(...a){return window._col(...a);}
-function addDoc(...a){return window._addDoc(...a);}
-function setDoc(...a){return window._setDoc(...a);}
-function getDocs(...a){return window._getDocs(...a);}
-function deleteDoc(...a){return window._deleteDoc(...a);}
-function doc(...a){return window._doc(...a);}
-function updateDoc(...a){return window._updateDoc(...a);}
+function collection(db, path){ return db.collection(path); }
+function addDoc(ref, data){ return ref.add(data); }
+function setDoc(ref, data){ return ref.set(data); }
+function getDocs(ref){ return ref.get(); }
+function deleteDoc(ref){ return ref.delete(); }
+function doc(db, path, id){ return id ? db.collection(path).doc(id) : db.doc(path); }
+function updateDoc(ref, data){ return ref.update(data); }
 let db = null;
 let currentUser = null;
 let currentRole = null;
@@ -876,8 +888,8 @@ window._onAuthStateChanged(async (user) => {
     return;
   }
   try {
-    const snap = await window._getDoc(window._doc(db, 'users', user.uid));
-    if (!snap.exists() || snap.data().active !== true) {
+    const snap = await db.collection('users').doc(user.uid).get();
+    if (!snap.exists || snap.data().active !== true) {
       await window._signOut();
       showLoginError('Account not active or not registered. Contact admin.');
       return;
