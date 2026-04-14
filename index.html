@@ -71,7 +71,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
-@media(max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr!important;}}
+@media(max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr!important;}#idFields [style*="1fr 1fr 1fr"]{grid-template-columns:1fr!important;}#idFields [style*="1fr 1fr 1fr 1fr"]{grid-template-columns:1fr 2!important;}#idFields [style*="1fr 1fr"]{grid-template-columns:1fr!important;}}
 @media(max-width:768px){.g2,.g3,.g4{grid-template-columns:1fr;}}
 @media(max-width:1024px){.g3{grid-template-columns:1fr 1fr;}.g4{grid-template-columns:1fr 1fr;}}
 .proc-stack{display:flex!important;flex-direction:column!important;gap:14px!important;}
@@ -115,17 +115,14 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 /* ADMIN SUBTABS */
 .admin-sub-tab{padding:8px 18px;border-radius:8px 8px 0 0;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid #e2e8f0;border-bottom:none;background:#f8fafc;color:#64748b;transition:all .15s;}
 .admin-sub-tab.active{background:#fff;color:#1d4ed8;border-color:#bfdbfe;}
-@media(max-width:640px){#idFields [style*="1fr 1fr 1fr"]{grid-template-columns:1fr!important;}#idFields [style*="1fr 1fr 1fr 1fr"]{grid-template-columns:1fr 1fr!important;}#idFields [style*="1fr 1fr"]{grid-template-columns:1fr!important;}}
+/* Record counter styling */
+.record-counter{font-size:12px;font-weight:600;color:#64748b;background:#f1f5f9;padding:6px 12px;border-radius:8px;border:1px solid #e2e8f0;}
 </style>
+<base target="_blank">
 </head>
 <body class="min-h-screen">
 
-<!-- ═══════════════════════════════════════════════════════ -->
-
 <!-- LOGIN OVERLAY -->
-
-<!-- ═══════════════════════════════════════════════════════ -->
-
 <div id="loginOverlay">
   <div class="login-card">
     <svg class="login-logo" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -143,24 +140,15 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     <label class="lbl">Email Address</label>
     <input type="email" id="loginEmail" class="inp" style="margin-bottom:14px;" placeholder="your@email.com" autocomplete="username">
     <label class="lbl">Password</label>
-    <input type="password" id="loginPassword" class="inp" style="margin-bottom:22px;" placeholder="••••••••" autocomplete="current-password"
-      onkeydown="if(event.key==='Enter')doLogin()">
-    <button onclick="doLogin()" id="loginBtn"
-      style="width:100%;padding:13px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:12px;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.4);transition:all .2s;">
+    <input type="password" id="loginPassword" class="inp" style="margin-bottom:22px;" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button onclick="doLogin()" id="loginBtn" style="width:100%;padding:13px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:12px;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.4);transition:all .2s;">
       <i class="fas fa-sign-in-alt mr-2"></i> Sign In
     </button>
-    <div style="text-align:center;margin-top:16px;font-size:11px;color:#94a3b8;">
-      Contact admin to reset your password
-    </div>
+    <div style="text-align:center;margin-top:16px;font-size:11px;color:#94a3b8;">Contact admin to reset your password</div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════ -->
-
 <!-- HEADER -->
-
-<!-- ═══════════════════════════════════════════════════════ -->
-
 <header class="bg-white sticky top-0 z-50">
 <div class="max-w-screen-2xl mx-auto px-4 py-2.5 flex flex-wrap justify-between items-center gap-3">
   <div class="flex items-center gap-3">
@@ -180,21 +168,11 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     </div>
   </div>
   <nav class="flex gap-4 items-center flex-wrap">
-    <button onclick="switchTab('form')" id="tab-form" class="pb-1 tab-active text-sm transition">
-      <i class="fas fa-file-medical mr-1"></i>Registry Form
-    </button>
-    <button onclick="switchTab('dashboard')" id="tab-dashboard" class="pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition">
-      <i class="fas fa-th-large mr-1"></i>Dashboard
-    </button>
-    <button onclick="switchTab('analytics')" id="tab-analytics" class="pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition">
-      <i class="fas fa-chart-line mr-1"></i>Analytics
-    </button>
-    <button onclick="switchTab('downloads')" id="tab-downloads" class="pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition">
-      <i class="fas fa-download mr-1"></i>Downloads
-    </button>
-    <button onclick="switchTab('admin')" id="tab-admin" class="pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition">
-      <i class="fas fa-shield-alt mr-1"></i>Admin
-    </button>
+    <button onclick="switchTab('form')" id="tab-form" class="pb-1 tab-active text-sm transition"><i class="fas fa-file-medical mr-1"></i>Registry Form</button>
+    <button onclick="switchTab('dashboard')" id="tab-dashboard" class="pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition"><i class="fas fa-th-large mr-1"></i>Dashboard</button>
+    <button onclick="switchTab('analytics')" id="tab-analytics" class="pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition"><i class="fas fa-chart-line mr-1"></i>Analytics</button>
+    <button onclick="switchTab('downloads')" id="tab-downloads" class="pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition"><i class="fas fa-download mr-1"></i>Downloads</button>
+    <button onclick="switchTab('admin')" id="tab-admin" class="pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition"><i class="fas fa-shield-alt mr-1"></i>Admin</button>
     <div style="display:flex;align-items:center;gap:8px;border-left:1.5px solid #e2e8f0;padding-left:12px;">
       <div id="userBadge" style="font-size:11px;font-weight:700;color:#475569;"></div>
       <span id="roleBadge"></span>
@@ -206,7 +184,6 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </header>
 
 <!-- CHANGE PASSWORD MODAL -->
-
 <div id="changePwdModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9998;align-items:center;justify-content:center;">
   <div style="background:#fff;border-radius:20px;padding:32px;width:340px;max-width:95vw;box-shadow:0 24px 64px rgba(0,0,0,.3);">
     <div style="font-size:18px;font-weight:900;color:#0f172a;margin-bottom:6px;"><i class="fas fa-key text-blue-600 mr-2"></i>Change Password</div>
@@ -223,6 +200,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     </div>
   </div>
 </div>
+
 <main class="max-w-screen-2xl mx-auto px-4 py-6">
 <!-- SEARCH BAR -->
 <div id="mainSearchBar" class="mb-4">
@@ -241,15 +219,13 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
   </div>
 </div>
 
-<!-- ═══════════ FORM SECTION ═══════════ -->
-
+<!-- FORM SECTION -->
 <section id="section-form" class="bg-white rounded-2xl shadow-lg border border-gray-100 flex flex-col md:flex-row min-h-[80vh] overflow-hidden relative">
   <div class="w-full md:w-64 bg-gradient-to-b from-slate-50 to-slate-100 border-b md:border-b-0 md:border-r border-gray-200 p-4 shrink-0">
     <div class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Patient Journey</div>
     <div class="progress-bar mb-4"><div class="progress-fill" id="progressFill" style="width:12.5%"></div></div>
     <ul id="stepperList" class="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-1 md:pb-0"></ul>
     <div id="stepCounterLabel" class="mt-4 text-xs text-slate-500 font-medium hidden md:block">Step 1 of 8</div>
-    <!-- My Cases Counter for Investigators -->
     <div id="myCasesBox" class="hidden mt-4 p-3 bg-blue-50 border border-blue-200 rounded-xl">
       <div class="text-xs font-bold text-blue-600 uppercase tracking-wide">My Cases</div>
       <div id="myCasesCount" class="text-2xl font-black text-blue-700">0</div>
@@ -269,9 +245,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
       <input type="hidden" id="editRecordId" name="recordId" value="">
       <input type="hidden" id="recordStatus" name="recordStatus" value="draft">
       <div class="flex-1 overflow-y-auto p-6 md:p-8" id="formScrollArea">
-
 <!-- STEP 0: IDENTIFICATION -->
-
 <div class="form-step active" id="step-0">
   <div class="sec-title"><div class="icon-wrap bg-blue-100"><i class="fas fa-id-card text-blue-600"></i></div>1. Identification</div>
   <div id="idFields">
@@ -304,9 +278,8 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </div>
 
 <!-- STEP 1: EP REASON -->
-
 <div class="form-step" id="step-1">
-  <div class="sec-title"><div class="icon-wrap bg-indigo-100"><i class="fas fa-hospital-user text-indigo-600"></i></div>2–3. Reason for EP Lab &amp; Admission</div>
+  <div class="sec-title"><div class="icon-wrap bg-indigo-100"><i class="fas fa-hospital-user text-indigo-600"></i></div>2–3. Reason for EP Lab & Admission</div>
   <div class="card card-blue mb-5">
     <div class="font-bold text-blue-900 mb-3 text-sm">2. Patient is coming to EP Lab because of:</div>
     <div class="space-y-2" id="epReasonGroup">
@@ -338,9 +311,8 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </div>
 
 <!-- STEP 2: HISTORY -->
-
 <div class="form-step" id="step-2">
-  <div class="sec-title"><div class="icon-wrap bg-red-100"><i class="fas fa-heartbeat text-red-600"></i></div>4–5. History, Risk Factors &amp; Examination</div>
+  <div class="sec-title"><div class="icon-wrap bg-red-100"><i class="fas fa-heartbeat text-red-600"></i></div>4–5. History, Risk Factors & Examination</div>
   <div class="card card-gray mb-4">
     <div class="font-bold text-gray-700 text-sm mb-3">5. Examination Vitals</div>
     <div class="g4">
@@ -359,7 +331,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
       <div class="g2 mb-3">
         <div><label class="lbl">4.1b Plans for Cardioversion</label><select name="afibCardioversion" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div>
         <div><label class="lbl">4.1e Prior attempt of ablation</label><select name="afibPriorAblation" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div>
-        <div><label class="lbl">4.1c CHA&#x2082;DS&#x2082;-VASc score</label><select name="afibChads" class="inp"><option value="">Select</option><option>0</option><option>1</option><option>2</option><option>3</option><option>&gt;3</option></select></div>
+        <div><label class="lbl">4.1c CHA₂DS₂-VASc score</label><select name="afibChads" class="inp"><option value="">Select</option><option>0</option><option>1</option><option>2</option><option>3</option><option>&gt;3</option></select></div>
         <div><label class="lbl">4.1d HAS-BLED score</label><select name="afibHasBled" class="inp"><option value="">Select</option><option>0</option><option>1</option><option>2</option><option>3</option><option>&gt;3</option></select></div>
         <div><label class="lbl">4.1f Contraindication to long-term OAC</label><select name="afibContraOAC" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div>
         <div><label class="lbl">4.1g Prior major bleeding</label><select name="afibMajorBleed" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div>
@@ -374,7 +346,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
   <div class="card mb-3">
     <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.3 Cardiomyopathy - Ischemic</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'icm','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'icm','Yes')">Yes</button></div></div>
     <input type="hidden" name="hx_icm" id="val_icm" value="No">
-    <div id="sub_icm" class="sub-reveal"><div class="g2"><div><label class="lbl">4.3a Timeframe</label><select name="icmTimeframe" class="inp"><option value="">Select</option><option>&lt; 3 months</option><option>&#x2265; 3 months</option></select></div><div><label class="lbl">4.3b GDMT Max Dose</label><select name="icmGDMT" class="inp"><option value="">Select</option><option>Yes (for 3 months)</option><option>Not documented</option><option>Not attempted</option><option>Inability to complete</option></select></div></div></div>
+    <div id="sub_icm" class="sub-reveal"><div class="g2"><div><label class="lbl">4.3a Timeframe</label><select name="icmTimeframe" class="inp"><option value="">Select</option><option>&lt; 3 months</option><option>≥ 3 months</option></select></div><div><label class="lbl">4.3b GDMT Max Dose</label><select name="icmGDMT" class="inp"><option value="">Select</option><option>Yes (for 3 months)</option><option>Not documented</option><option>Not attempted</option><option>Inability to complete</option></select></div></div></div>
   </div>
   <div class="card mb-3">
     <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.4 Heart Failure</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'hf','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'hf','Yes')">Yes</button></div></div>
@@ -431,16 +403,14 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </div>
 
 <!-- STEP 3: HOME MEDICATIONS -->
-
 <div class="form-step" id="step-3">
   <div class="sec-title"><div class="icon-wrap bg-blue-100"><i class="fas fa-pills text-blue-600"></i></div>6. Home Medications (At Admission)</div>
   <div class="card card-gray"><div class="g3" id="homeMedsGrid"></div></div>
 </div>
 
 <!-- STEP 4: INVESTIGATIONS -->
-
 <div class="form-step" id="step-4">
-  <div class="sec-title"><div class="icon-wrap bg-purple-100"><i class="fas fa-microscope text-purple-600"></i></div>7–8. Pre-procedural Investigations &amp; Labs</div>
+  <div class="sec-title"><div class="icon-wrap bg-purple-100"><i class="fas fa-microscope text-purple-600"></i></div>7–8. Pre-procedural Investigations & Labs</div>
   <div class="card mb-4">
     <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">7.1 ECG</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'ecg','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'ecg','Yes')">Yes</button></div></div>
     <input type="hidden" name="inv_ecg" id="val_ecg" value="No">
@@ -503,9 +473,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     </div>
   </div>
 </div>
-
-<!-- STEP 5: PROCEDURE - keeping same as original for brevity -->
-
+<!-- STEP 5: PROCEDURE -->
 <div class="form-step" id="step-5">
   <div class="sec-title"><div class="icon-wrap bg-indigo-100"><i class="fas fa-procedures text-indigo-600"></i></div>9. Procedure Details</div>
   <div class="card mb-5">
@@ -526,9 +494,8 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </div>
 
 <!-- STEP 6: COMPLICATIONS -->
-
 <div class="form-step" id="step-6">
-  <div class="sec-title"><div class="icon-wrap bg-red-100"><i class="fas fa-exclamation-triangle text-red-600"></i></div>10. Events &amp; Complications</div>
+  <div class="sec-title"><div class="icon-wrap bg-red-100"><i class="fas fa-exclamation-triangle text-red-600"></i></div>10. Events & Complications</div>
   <div class="card mb-4"><div class="font-bold text-gray-800 text-sm mb-3">10.1 Procedures during hospital stay</div><div class="g4"><div><label class="lbl">CA</label><select name="comp_ca" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">PCI</label><select name="comp_pci" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">CABG</label><select name="comp_cabg" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">TAVR</label><select name="comp_tavr" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
   <div class="card card-red mb-3">
     <div class="font-bold text-red-900 text-sm mb-3">10.2 Complications</div>
@@ -541,9 +508,8 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </div>
 
 <!-- STEP 7: OUTCOME -->
-
 <div class="form-step" id="step-7">
-  <div class="sec-title"><div class="icon-wrap bg-orange-100"><i class="fas fa-door-open text-orange-600"></i></div>11–13. Outcome &amp; Discharge</div>
+  <div class="sec-title"><div class="icon-wrap bg-orange-100"><i class="fas fa-door-open text-orange-600"></i></div>11–13. Outcome & Discharge</div>
   <div class="card mb-4">
     <div class="font-bold text-gray-800 text-sm mb-3">11. Outcome</div>
     <div class="g2 mb-3">
@@ -559,27 +525,23 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
   <div class="card card-green"><div class="font-bold text-green-900 text-sm mb-3">13. Discharge Medications</div><div class="g3" id="dischargeMedsGrid"></div></div>
 </div>
 
-```
-  </div><!-- end formScrollArea -->
-  <div class="step-footer">
-    <div class="flex gap-2">
-      <button type="button" id="btnPrev" onclick="changeStep(-1)" class="btn btn-gray hidden"><i class="fas fa-arrow-left"></i> Prev</button>
-      <button type="button" id="btnNext" onclick="changeStep(1)" class="btn btn-primary">Next <i class="fas fa-arrow-right"></i></button>
-    </div>
-    <div class="text-sm text-gray-500 font-medium hidden md:block" id="stepLabel">Step 1 of 8</div>
-    <div class="flex gap-2">
-      <button type="submit" id="btnSubmit" class="btn btn-green text-sm"><i class="fas fa-save"></i> Save Draft</button>
-      <button type="button" id="btnSubmitFinal" onclick="submitFinal()" class="btn btn-primary text-sm"><i class="fas fa-paper-plane"></i> Submit</button>
-    </div>
-  </div>
-</form>
-```
-
+      </div><!-- end formScrollArea -->
+      <div class="step-footer">
+        <div class="flex gap-2">
+          <button type="button" id="btnPrev" onclick="changeStep(-1)" class="btn btn-gray hidden"><i class="fas fa-arrow-left"></i> Prev</button>
+          <button type="button" id="btnNext" onclick="changeStep(1)" class="btn btn-primary">Next <i class="fas fa-arrow-right"></i></button>
+        </div>
+        <div class="text-sm text-gray-500 font-medium hidden md:block" id="stepLabel">Step 1 of 8</div>
+        <div class="flex gap-2">
+          <button type="submit" id="btnSubmit" class="btn btn-green text-sm"><i class="fas fa-save"></i> Save Draft</button>
+          <button type="button" id="btnSubmitFinal" onclick="submitFinal()" class="btn btn-primary text-sm"><i class="fas fa-paper-plane"></i> Submit</button>
+        </div>
+      </div>
+    </form>
   </div>
 </section>
 
-<!-- ═══════════ DASHBOARD ═══════════ -->
-
+<!-- DASHBOARD -->
 <section id="section-dashboard" class="hidden">
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;" class="mb-5">
     <div class="dash-card" style="border-left:4px solid #1d4ed8;"><div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;">Total Cases</div><div style="font-size:32px;font-weight:900;color:#1d4ed8;" id="dash_total">—</div></div>
@@ -602,8 +564,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
   <div id="dashGrid" class="space-y-3"></div>
 </section>
 
-<!-- ═══════════ ANALYTICS ═══════════ -->
-
+<!-- ANALYTICS -->
 <section id="section-analytics" class="hidden bg-white rounded-2xl shadow-lg p-4 md:p-6 border border-gray-100 min-h-[80vh]">
   <div class="flex items-center justify-between mb-4 border-b pb-3">
     <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2"><i class="fas fa-chart-line text-blue-600"></i> Clinical Analytics</h2>
@@ -621,20 +582,14 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
   <div class="analytic-panel"><div class="analytic-header" onclick="toggleAnalytic('comorb')"><span style="font-size:13px;font-weight:700;color:#1e293b;display:flex;align-items:center;gap:8px;"><i class="fas fa-heartbeat text-red-500"></i> Comorbidities</span><i class="fas fa-chevron-down analytic-chevron" id="chev_comorb"></i></div><div class="analytic-body" id="body_comorb"><div style="height:240px;position:relative;"><canvas id="comorbChart"></canvas></div></div></div>
   <div class="analytic-panel"><div class="analytic-header" onclick="toggleAnalytic('comp')"><span style="font-size:13px;font-weight:700;color:#1e293b;display:flex;align-items:center;gap:8px;"><i class="fas fa-exclamation-triangle text-amber-500"></i> Complications</span><i class="fas fa-chevron-down analytic-chevron" id="chev_comp"></i></div><div class="analytic-body" id="body_comp"><div style="height:240px;position:relative;"><canvas id="compChart"></canvas></div></div></div>
   <div class="analytic-panel"><div class="analytic-header" onclick="toggleAnalytic('meds')"><span style="font-size:13px;font-weight:700;color:#1e293b;display:flex;align-items:center;gap:8px;"><i class="fas fa-pills text-green-500"></i> Top Home Medications</span><i class="fas fa-chevron-down analytic-chevron" id="chev_meds"></i></div><div class="analytic-body" id="body_meds"><div style="height:240px;position:relative;"><canvas id="medsChart"></canvas></div></div></div>
-  <!-- Investigator Performance Chart (Admin/CSO only) -->
   <div class="analytic-panel" id="panel_investigator" style="display:none;"><div class="analytic-header" onclick="toggleAnalytic('inv')"><span style="font-size:13px;font-weight:700;color:#1e293b;display:flex;align-items:center;gap:8px;"><i class="fas fa-user-md text-purple-500"></i> Cases by Investigator</span><i class="fas fa-chevron-down analytic-chevron" id="chev_inv"></i></div><div class="analytic-body" id="body_inv"><div style="height:240px;position:relative;"><canvas id="invChart"></canvas></div></div></div>
 </section>
-
-<!-- ═══════════ DOWNLOADS TAB ═══════════ -->
-
+<!-- DOWNLOADS TAB -->
 <section id="section-downloads" class="hidden bg-white rounded-2xl shadow-lg p-6 border border-gray-100 min-h-[60vh]">
   <div class="flex items-center justify-between mb-6 border-b pb-4">
-    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
-      <i class="fas fa-download text-blue-600"></i> Data Downloads & Exports
-    </h2>
+    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2"><i class="fas fa-download text-blue-600"></i> Data Downloads & Exports</h2>
     <div class="text-sm text-gray-500">Admin access required for all exports</div>
   </div>
-  <!-- Date Filter for exports -->
   <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
     <div class="font-bold text-blue-800 text-sm mb-3"><i class="fas fa-filter mr-2"></i>Filter Export Range (optional)</div>
     <div class="g2 mb-3">
@@ -646,43 +601,26 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
       <div><label class="lbl">EP Reason</label><select id="exportEpReason" class="inp inp-sm"><option value="">All Procedures</option><option>CRT/AICD</option><option>Pacemaker</option><option>EPS/Ablation</option><option>LAAO</option></select></div>
     </div>
   </div>
-  <!-- Export Cards -->
   <div class="g3 mb-4">
-    <!-- PDF -->
     <div class="dl-card" onclick="exportToPDF()" style="border-left:4px solid #e11d48;">
-      <div style="width:48px;height:48px;background:#fff1f2;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
-        <i class="fas fa-file-pdf text-red-500 text-xl"></i>
-      </div>
+      <div style="width:48px;height:48px;background:#fff1f2;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><i class="fas fa-file-pdf text-red-500 text-xl"></i></div>
       <div style="font-weight:800;font-size:15px;color:#0f172a;margin-bottom:6px;">PDF Summary Report</div>
       <div style="font-size:12px;color:#64748b;margin-bottom:16px;">Printable patient registry summary with completion rates, status and operator info. One row per patient.</div>
-      <div class="btn btn-red text-sm w-full" style="justify-content:center;">
-        <i class="fas fa-download"></i> Download PDF
-      </div>
+      <div class="btn btn-red text-sm w-full" style="justify-content:center;"><i class="fas fa-download"></i> Download PDF</div>
     </div>
-    <!-- Excel -->
     <div class="dl-card" onclick="exportToExcel()" style="border-left:4px solid #059669;">
-      <div style="width:48px;height:48px;background:#f0fdf4;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
-        <i class="fas fa-file-excel text-green-600 text-xl"></i>
-      </div>
+      <div style="width:48px;height:48px;background:#f0fdf4;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><i class="fas fa-file-excel text-green-600 text-xl"></i></div>
       <div style="font-weight:800;font-size:15px;color:#0f172a;margin-bottom:6px;">Excel Workbook (4 Sheets)</div>
       <div style="font-size:12px;color:#64748b;margin-bottom:16px;">Complete data export across 4 sheets: Demographics, History & Vitals, Investigations & Labs, Procedure & Outcome.</div>
-      <div class="btn btn-green text-sm w-full" style="justify-content:center;">
-        <i class="fas fa-download"></i> Download Excel
-      </div>
+      <div class="btn btn-green text-sm w-full" style="justify-content:center;"><i class="fas fa-download"></i> Download Excel</div>
     </div>
-    <!-- SPSS -->
     <div class="dl-card" onclick="exportSPSS()" style="border-left:4px solid #7c3aed;">
-      <div style="width:48px;height:48px;background:#faf5ff;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
-        <i class="fas fa-chart-bar text-purple-600 text-xl"></i>
-      </div>
+      <div style="width:48px;height:48px;background:#faf5ff;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><i class="fas fa-chart-bar text-purple-600 text-xl"></i></div>
       <div style="font-weight:800;font-size:15px;color:#0f172a;margin-bottom:6px;">SPSS Export</div>
-      <div style="font-size:12px;color:#64748b;margin-bottom:16px;">Statistical analysis-ready export with SPSS variable names (&lt;8 chars), binary coding, and full codebook sheet.</div>
-      <div class="btn btn-purple text-sm w-full" style="justify-content:center;">
-        <i class="fas fa-download"></i> Download SPSS
-      </div>
+      <div style="font-size:12px;color:#64748b;margin-bottom:16px;">Statistical analysis-ready export with SPSS variable names (&lt;8 chars), binary coding (1/0/blank), and full codebook sheet.</div>
+      <div class="btn btn-purple text-sm w-full" style="justify-content:center;"><i class="fas fa-download"></i> Download SPSS</div>
     </div>
   </div>
-  <!-- Single Patient PDF -->
   <div class="bg-gray-50 border border-gray-200 rounded-xl p-5">
     <div class="font-bold text-gray-800 mb-2"><i class="fas fa-user text-blue-600 mr-2"></i>Individual Patient Report</div>
     <div class="text-sm text-gray-500 mb-3">Search for a patient and download their individual PDF case report.</div>
@@ -694,27 +632,18 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
   </div>
 </section>
 
-<!-- ═══════════ ADMIN PANEL ═══════════ -->
-
+<!-- ADMIN PANEL -->
 <section id="section-admin" class="hidden bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-gray-100 min-h-[80vh]">
   <div class="flex flex-col md:flex-row justify-between items-center mb-4 border-b pb-4 gap-4">
     <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2"><i class="fas fa-shield-alt text-blue-600"></i> Admin Panel</h2>
-    <div class="flex gap-2">
-      <span class="role-admin">ADMIN ACCESS</span>
-    </div>
+    <div class="flex gap-2"><span class="role-admin">ADMIN ACCESS</span></div>
   </div>
-  <!-- Admin Sub-tabs -->
   <div style="display:flex;gap:0;margin-bottom:0;border-bottom:2px solid #e2e8f0;">
-    <button class="admin-sub-tab active" id="aTab_records" onclick="adminSubTab('records')">
-      <i class="fas fa-database mr-1"></i> Patient Records
-    </button>
-    <button class="admin-sub-tab" id="aTab_users" onclick="adminSubTab('users')">
-      <i class="fas fa-users mr-1"></i> Manage Users
-    </button>
+    <button class="admin-sub-tab active" id="aTab_records" onclick="adminSubTab('records')"><i class="fas fa-database mr-1"></i> Patient Records</button>
+    <button class="admin-sub-tab" id="aTab_users" onclick="adminSubTab('users')"><i class="fas fa-users mr-1"></i> Manage Users</button>
   </div>
 
   <!-- RECORDS PANEL -->
-
   <div id="adminRecordsPanel" class="pt-4">
     <div class="bg-gray-50 p-4 rounded-xl mb-5 border border-gray-200">
       <div class="flex flex-wrap gap-3 mb-3">
@@ -735,24 +664,24 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
         </div>
       </div>
     </div>
+    <!-- Record Counter -->
+    <div class="flex items-center justify-between mb-3">
+      <span id="recordCounter" class="record-counter">Showing 0 of 0 records</span>
+    </div>
     <div class="overflow-x-auto rounded-xl border border-gray-200">
       <table class="min-w-full divide-y divide-gray-200 admin-table">
-        <thead><tr><th>#</th><th>Patient Info</th><th>IDs</th><th>EP Reason</th><th>Investigator</th><th>Admission</th><th>Status</th><th>Completion</th><th class="text-right">Actions</th></tr></thead>
+        <thead><tr><th>#</th><th>Status</th><th>Patient Info</th><th>IDs</th><th>EP Reason</th><th>Investigator</th><th>Admission</th><th>Completion</th><th class="text-right">Actions</th></tr></thead>
         <tbody id="tableBody" class="bg-white divide-y divide-gray-100"></tbody>
       </table>
     </div>
   </div>
 
   <!-- USERS PANEL -->
-
   <div id="adminUsersPanel" style="display:none;" class="pt-4">
     <div class="flex justify-between items-center mb-4">
       <h3 class="font-bold text-gray-800 text-base">Registered Users</h3>
-      <button onclick="showAddUserForm()" class="btn btn-primary text-sm">
-        <i class="fas fa-user-plus"></i> Add New User
-      </button>
+      <button onclick="showAddUserForm()" class="btn btn-primary text-sm"><i class="fas fa-user-plus"></i> Add New User</button>
     </div>
-    <!-- Add User Form -->
     <div id="addUserForm" style="display:none;" class="bg-blue-50 border border-blue-200 rounded-xl p-5 mb-5">
       <div class="font-bold text-blue-800 mb-3"><i class="fas fa-user-plus mr-2"></i>Add New Investigator / User</div>
       <div class="g2 mb-3">
@@ -767,16 +696,12 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
         </div>
         <div><label class="lbl">Firebase UID</label><input type="text" id="newUserUID" class="inp" placeholder="Paste UID from Firebase Auth"></div>
       </div>
-      <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;font-size:12px;color:#92400e;margin-bottom:14px;">
-        <i class="fas fa-info-circle mr-1"></i>
-        First create the user in Firebase Authentication (Authentication → Users → Add user), then paste their UID here.
-      </div>
+      <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;font-size:12px;color:#92400e;margin-bottom:14px;"><i class="fas fa-info-circle mr-1"></i>First create the user in Firebase Authentication (Authentication → Users → Add user), then paste their UID here.</div>
       <div class="flex gap-2">
         <button onclick="createUserDocument()" class="btn btn-primary text-sm"><i class="fas fa-save"></i> Create User</button>
         <button onclick="document.getElementById('addUserForm').style.display='none'" class="btn btn-gray text-sm">Cancel</button>
       </div>
     </div>
-    <!-- Users Table -->
     <div id="userListContainer" class="overflow-x-auto rounded-xl border border-gray-200">
       <table class="min-w-full user-table">
         <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Cases</th><th>Status</th><th>Actions</th></tr></thead>
@@ -788,6 +713,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 
 </main>
 <script>
+// Firebase initialization
 (async function initFirebaseReliably() {
   const cdns = [
     "https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-app-compat.js",
@@ -820,13 +746,6 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     window._signIn = (e,p) => auth.signInWithEmailAndPassword(e,p);
     window._signOut = () => auth.signOut();
     window._onAuthStateChanged = (cb) => auth.onAuthStateChanged(cb);
-    window._setupUsers = async function() {
-      const users = [{uid:"qEv59O8pk3bu6cVQjWFExLuoVTb2",email:"ahmadelsharkawi87@gmail.com",displayName:"Dr. Ahmed Elsharkawy",role:"investigator",active:true}];
-      for(const u of users){
-        await db.collection("users").doc(u.uid).set({email:u.email,displayName:u.displayName,role:u.role,active:u.active,createdAt:new Date()});
-      }
-      alert("Users created successfully!");
-    };
     window._fbReady = true;
     window.dispatchEvent(new Event('firebaseReady'));
     console.log("Firebase initialized successfully via jsDelivr");
@@ -835,9 +754,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     document.getElementById('loginError').style.display = 'block';
   }
 })();
-</script>
 
-<script>
 function collection(db, path){ return db.collection(path); }
 function addDoc(ref, data){ return ref.add(data); }
 function setDoc(ref, data){ return ref.set(data); }
@@ -852,7 +769,7 @@ let currentUser = null;
 let currentRole = null;
 let currentUserName = '';
 
-// ── doLogin MUST be global so onclick works before Firebase loads ──
+// Login functions
 window.doLogin = async function() {
   const e = document.getElementById('loginEmail').value.trim();
   const p = document.getElementById('loginPassword').value;
@@ -860,7 +777,6 @@ window.doLogin = async function() {
   const btn = document.getElementById('loginBtn');
   btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Signing in…';
   btn.disabled = true;
-  // Wait up to 8 seconds for Firebase to be ready
   let waited = 0;
   while (!window._signIn && waited < 8000) {
     await new Promise(r => setTimeout(r, 200));
@@ -875,7 +791,6 @@ window.doLogin = async function() {
   try {
     await window._signIn(e, p);
   } catch(err) {
-    console.error('Login error:', err.code, err.message);
     const msg = (err.code==='auth/invalid-credential'||err.code==='auth/wrong-password'||err.code==='auth/user-not-found'||err.code==='auth/invalid-email')
       ? 'Invalid email or password.' : 'Login failed: ' + (err.code||err.message);
     showLoginError(msg);
@@ -909,11 +824,9 @@ window.doChangePwd = async function() {
   const okEl  = document.getElementById('changePwdSuccess');
   errEl.style.display = 'none';
   okEl.style.display  = 'none';
-
   if (!p1 || !p2) { errEl.textContent = 'Please fill both fields.'; errEl.style.display = 'block'; return; }
   if (p1.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; errEl.style.display = 'block'; return; }
   if (p1 !== p2) { errEl.textContent = 'Passwords do not match.'; errEl.style.display = 'block'; return; }
-
   try {
     const user = window._auth.currentUser;
     await user.updatePassword(p1);
@@ -938,834 +851,920 @@ function showLoginError(msg) {
 function initApp() {
   db = window._getDb();
 
-// ── AUTH STATE ─────────────────────────────────────────────
-window._onAuthStateChanged(async (user) => {
-  if (!user) {
-    document.getElementById('loginOverlay').style.display = 'flex';
-    currentUser = null; currentRole = null;
-    return;
-  }
-  try {
-    const snap = await db.collection('users').doc(user.uid).get();
-    if (!snap.exists || snap.data().active !== true) {
-      await window._signOut();
-      showLoginError('Account not active or not registered. Contact admin.');
+  window._onAuthStateChanged(async (user) => {
+    if (!user) {
+      document.getElementById('loginOverlay').style.display = 'flex';
+      currentUser = null; currentRole = null;
       return;
     }
-    currentUser = user;
-    currentRole = snap.data().role;
-    currentUserName = snap.data().displayName || user.email;
-    document.getElementById('loginOverlay').style.display = 'none';
-    applyRoleUI(currentRole);
-    loadRecordsCache();
-    updateMyCasesCount();
-  } catch(e) {
-    console.error('Auth error:', e);
-    showLoginError('Login error. Try again.');
+    try {
+      const snap = await db.collection('users').doc(user.uid).get();
+      if (!snap.exists || snap.data().active !== true) {
+        await window._signOut();
+        showLoginError('Account not active or not registered. Contact admin.');
+        return;
+      }
+      currentUser = user;
+      currentRole = snap.data().role;
+      currentUserName = snap.data().displayName || user.email;
+      document.getElementById('loginOverlay').style.display = 'none';
+      applyRoleUI(currentRole);
+      loadRecordsCache();
+      updateMyCasesCount();
+    } catch(e) {
+      console.error('Auth error:', e);
+      showLoginError('Login error. Try again.');
+    }
+  });
+
+  function applyRoleUI(role) {
+    const tabAdmin = document.getElementById('tab-admin');
+    const tabDownloads = document.getElementById('tab-downloads');
+    const tabAnalytics = document.getElementById('tab-analytics');
+    if (role === 'admin') {
+      tabAdmin.style.display = '';
+      tabDownloads.style.display = '';
+      tabAnalytics.style.display = '';
+      document.getElementById('panel_investigator').style.display = 'block';
+    } else if (role === 'cso') {
+      tabAdmin.style.display = 'none';
+      tabDownloads.style.display = 'none';
+      tabAnalytics.style.display = '';
+      document.getElementById('panel_investigator').style.display = 'block';
+    } else {
+      tabAdmin.style.display = 'none';
+      tabDownloads.style.display = 'none';
+      tabAnalytics.style.display = 'none';
+      document.getElementById('myCasesBox').classList.remove('hidden');
+    }
+    document.getElementById('userBadge').textContent = currentUserName;
+    const roleBadge = document.getElementById('roleBadge');
+    roleBadge.className = `role-${role}`;
+    roleBadge.textContent = role.toUpperCase();
   }
-});
 
-// doLogin, doSignOut, showLoginError defined globally above DOMContentLoaded
-
-function applyRoleUI(role) {
-  const tabAdmin = document.getElementById('tab-admin');
-  const tabDownloads = document.getElementById('tab-downloads');
-  const tabAnalytics = document.getElementById('tab-analytics');
-
-  if (role === 'admin') {
-    tabAdmin.style.display = '';
-    tabDownloads.style.display = '';
-    tabAnalytics.style.display = '';
-    document.getElementById('panel_investigator').style.display = 'block';
-  } else if (role === 'cso') {
-    tabAdmin.style.display = 'none';
-    tabDownloads.style.display = 'none';
-    tabAnalytics.style.display = '';
-    document.getElementById('panel_investigator').style.display = 'block';
-  } else {
-    // investigator
-    tabAdmin.style.display = 'none';
-    tabDownloads.style.display = 'none';
-    tabAnalytics.style.display = 'none';
-    document.getElementById('myCasesBox').classList.remove('hidden');
+  async function updateMyCasesCount() {
+    if (currentRole !== 'investigator') return;
+    const snap = await getDocs(collection(db, 'patients_full'));
+    let count = 0;
+    snap.forEach(ds => { if (ds.data().enrolledBy === currentUser.uid) count++; });
+    document.getElementById('myCasesCount').textContent = count;
   }
 
-  document.getElementById('userBadge').textContent = currentUserName;
-  const roleBadge = document.getElementById('roleBadge');
-  roleBadge.className = `role-${role}`;
-  roleBadge.textContent = role.toUpperCase();
-}
-
-async function updateMyCasesCount() {
-  if (currentRole !== 'investigator') return;
-  const snap = await getDocs(collection(db, 'patients_full'));
-  let count = 0;
-  snap.forEach(ds => { if (ds.data().enrolledBy === currentUser.uid) count++; });
-  document.getElementById('myCasesCount').textContent = count;
-}
-
-// ── STEPPER ─────────────────────────────────────────────────
-const STEPS=[
-  {label:"Identification",icon:"fa-id-card"},
-  {label:"EP Reason",icon:"fa-hospital-user"},
-  {label:"History & Exam",icon:"fa-heartbeat"},
-  {label:"Home Meds",icon:"fa-pills"},
-  {label:"Investigations",icon:"fa-microscope"},
-  {label:"Procedure",icon:"fa-procedures"},
-  {label:"Complications",icon:"fa-exclamation-triangle"},
-  {label:"Outcome & D/C",icon:"fa-door-open"},
-];
-let currentStep=0;
-const sl=document.getElementById('stepperList');
-STEPS.forEach((s,i)=>{
-  const li=document.createElement('li');
-  li.className='flex flex-col items-center cursor-pointer group';
-  li.innerHTML=`<div id="sdot-${i}" class="step-dot ${i===0?'active':''}"><i class="fas ${s.icon} text-xs"></i></div><div id="slbl-${i}" class="step-label ${i===0?'active':''}">${s.label}</div>`;
-  li.onclick=()=>goToStep(i);
-  sl.appendChild(li);
-  if(i<STEPS.length-1){const c=document.createElement('li');c.className='step-connector hidden md:block';sl.appendChild(c);}
-});
-window.goToStep=function(idx){
-  document.getElementById(`step-${currentStep}`).classList.remove('active');
-  document.getElementById(`sdot-${currentStep}`).classList.remove('active');
-  document.getElementById(`slbl-${currentStep}`).classList.remove('active');
-  currentStep=idx;
-  document.getElementById(`step-${currentStep}`).classList.add('active');
-  document.getElementById(`sdot-${currentStep}`).classList.add('active');
-  document.getElementById(`slbl-${currentStep}`).classList.add('active');
-  document.getElementById('btnPrev').classList.toggle('hidden',currentStep===0);
-  document.getElementById('btnNext').classList.toggle('hidden',currentStep===STEPS.length-1);
-  document.getElementById('stepLabel').textContent=`Step ${currentStep+1} of ${STEPS.length}`;
-  document.getElementById('progressFill').style.width=`${((currentStep+1)/STEPS.length)*100}%`;
-  document.getElementById('formScrollArea').scrollTop=0;
-};
-window.changeStep=function(dir){const n=currentStep+dir;if(n>=0&&n<STEPS.length)goToStep(n);};
-
-// ── NATIONALITY ─────────────────────────────────────────────
-const countries=["Afghan","Albanian","Algerian","American","Andorran","Angolan","Argentine","Armenian","Australian","Austrian","Azerbaijani","Bahraini","Bangladeshi","Belgian","Brazilian","British","Bulgarian","Cambodian","Canadian","Chilean","Chinese","Colombian","Croatian","Cuban","Czech","Danish","Dutch","Egyptian","Emirati","Ethiopian","Filipino","Finnish","French","German","Ghanaian","Greek","Guatemalan","Hungarian","Indian","Indonesian","Iranian","Iraqi","Irish","Israeli","Italian","Ivorian","Japanese","Jordanian","Kazakhstani","Kenyan","Korean","Kuwaiti","Lebanese","Libyan","Malaysian","Moroccan","Nepalese","Nigerian","Norwegian","Omani","Pakistani","Palestinian","Polish","Portuguese","Qatari","Romanian","Russian","Saudi Arabian","Senegalese","Serbian","Singaporean","Somali","South African","Spanish","Sri Lankan","Sudanese","Swedish","Swiss","Syrian","Taiwanese","Thai","Tunisian","Turkish","Ugandan","Ukrainian","Venezuelan","Vietnamese","Yemeni","Other"];
-document.getElementById('nationalitySelect').innerHTML=countries.map(c=>`<option value="${c}">${c}</option>`).join('');
-
-// ── RISK GRID ─────────────────────────────────────────────
-const riskItems=[
-  {name:"hx_cad",label:"4.5 Coronary artery disease"},{name:"hx_mi",label:"4.6 Myocardial infarction"},
-  {name:"hx_valve",label:"4.7 Valvular heart disease"},{name:"hx_cvd",label:"4.8 Cerebrovascular disease"},
-  {name:"hx_lung",label:"4.9 Chronic lung disease"},{name:"hx_dialysis",label:"4.10 Currently on dialysis"},
-  {name:"hx_dm",label:"4.11 Diabetes mellitus"},{name:"hx_htn",label:"4.12 Hypertension"},
-  {name:"hx_familialSyndrome",label:"4.13 Familial syndrome"},
-];
-document.getElementById('simpleRiskGrid').innerHTML=riskItems.map(r=>`<div><label class="lbl">${r.label}</label><select name="${r.name}" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div>`).join('');
-
-// ── MEDS ─────────────────────────────────────────────────
-const medsList=[
-  {name:"Amiodarone",f:"amiodarone"},{name:"Disopyramide",f:"disopyramide"},{name:"Flecainide",f:"flecainide"},{name:"Propafenone",f:"propafenone"},{name:"Sotalol",f:"sotalol"},
-  {name:"Verapamil",f:"verapamil"},{name:"Diltiazem",f:"diltiazem"},{name:"Warfarin",f:"warfarin"},{name:"Dabigatran",f:"dabigatran"},{name:"Apixaban",f:"apixaban"},
-  {name:"Rivaroxaban",f:"rivaroxaban"},{name:"Edoxaban",f:"edoxaban"},{name:"LMWH",f:"lmwh"},{name:"Aspirin",f:"aspirin"},{name:"Clopidogrel",f:"clopidogrel"},
-  {name:"Ticagrelor",f:"ticagrelor"},{name:"ACE-I",f:"acei"},{name:"ARB",f:"arb"},{name:"ARNI",f:"arni"},{name:"SGLT inhibitor",f:"sglt"},
-  {name:"Beta Blockers",f:"betablocker"},{name:"MRA",f:"mra"},{name:"Digoxin",f:"digoxin"},{name:"Loop diuretics",f:"loopdiuretic"},
-];
-const hMG=document.getElementById('homeMedsGrid'), dMG=document.getElementById('dischargeMedsGrid');
-medsList.forEach(m=>{
-  hMG.innerHTML+=`<label class="chk-item"><input type="checkbox" name="homeMed_${m.f}" class="w-4 h-4"> <span>${m.name}</span></label>`;
-  dMG.innerHTML+=`<label class="chk-item"><input type="checkbox" name="dcMed_${m.f}" class="w-4 h-4"> <span>${m.name}</span></label>`;
-});
-
-// ── CIVIL ID AUTO-AGE ────────────────────────────────────
-document.getElementById('civilId').addEventListener('input',function(){
-  const v=this.value;
-  if(v.length===12&&/^\d+$/.test(v)){const c=parseInt(v[0]);const yr=parseInt(v.substring(1,3));let y=c===2?1900+yr:c===3?2000+yr:0;if(y>0){document.getElementById('yob').value=y;document.getElementById('estAge').value=new Date().getFullYear()-y;}}
-  else{document.getElementById('yob').value='';document.getElementById('estAge').value='';}
-});
-
-// ── YES/NO ───────────────────────────────────────────────
-window.setYN=function(btn,key,val){
-  btn.closest('.yn-group').querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('selected'));
-  btn.classList.add('selected');
-  const hid=document.getElementById('val_'+key); if(hid)hid.value=val;
-  const sub=document.getElementById('sub_'+key);
-  if(sub){if(val==='Yes')sub.classList.add('show');else sub.classList.remove('show');}
-};
-
-// ── EP REASON ────────────────────────────────────────────
-window.onEPR=function(){
-  const v=document.querySelector('input[name="epReason"]:checked')?.value;
-  const pm=document.querySelector('input[name="pacemakerType"]:checked')?.value;
-  document.getElementById('pmTypeDiv').classList.toggle('hidden',v!=='Pacemaker');
-  document.querySelectorAll('.proc-section').forEach(s=>s.classList.remove('show'));
-  document.getElementById('proc_noReason').style.display='none';
-  if(!v){document.getElementById('proc_noReason').style.display='block';return;}
-  if(v==='CRT/AICD'){document.getElementById('proc_crtaicd').classList.add('show');}
-  else if(v==='Pacemaker'){
-    if(!pm){document.getElementById('proc_noReason').style.display='block';}
-    else if(pm==='Temporary pacemaker'){document.getElementById('proc_temppm').classList.add('show');}
-    else if(pm==='Permanent pacemaker'){document.getElementById('proc_permpm').classList.add('show');}
-    else{document.getElementById('proc_temppm').classList.add('show');document.getElementById('proc_permpm').classList.add('show');}
-  }else if(v==='EPS/Ablation'){document.getElementById('proc_eps').classList.add('show');}
-  else if(v==='LAAO'){document.getElementById('proc_laao').classList.add('show');}
-};
-
-window.onCrtGen=function(){const v=document.querySelector('input[name="crtGenerator"]:checked')?.value;['initial','replace','explant'].forEach(k=>{const el=document.getElementById(`crtGen_${k}`);if(el)el.classList.remove('show');});const t=v==='Initial implant'?'initial':v==='Generator replacement'?'replace':v==='Generator explant'?'explant':null;if(t){const el=document.getElementById(`crtGen_${t}`);if(el)el.classList.add('show');}};
-window.onPpmGen=function(){const v=document.querySelector('input[name="ppmGenerator"]:checked')?.value;['initial','replace','explant'].forEach(k=>{const el=document.getElementById(`ppmGen_${k}`);if(el)el.classList.remove('show');});const t=v==='Initial implant'?'initial':v==='Generator replacement'?'replace':v==='Generator explant'?'explant':null;if(t){const el=document.getElementById(`ppmGen_${t}`);if(el)el.classList.add('show');}};
-window.onBleedT=function(){const el=document.getElementById('bleedType3sub');if(el)el.classList.toggle('show',document.querySelector('input[name="bleedType"]:checked')?.value==='Type 3');};
-window.onDischSt=function(){const v=document.querySelector('input[name="dischargeStatus"]:checked')?.value;const dd=document.getElementById('dischDead'),da=document.getElementById('dischAlive');if(dd)dd.classList.toggle('show',v==='Dead');if(da)da.classList.toggle('show',v==='Alive');};
-
-// ── VALIDATION ───────────────────────────────────────────
-function shErr(el,msg){if(!el)return;el.style.borderColor='#dc2626';el.style.boxShadow='0 0 0 3px rgba(220,38,38,.15)';let t=el.parentNode.querySelector('.vt');if(!t){t=document.createElement('div');t.className='vt';t.style.cssText='font-size:11px;color:#dc2626;font-weight:600;margin-top:3px;';el.parentNode.appendChild(t);}t.textContent='✖ '+msg;}
-function clrV(el){if(!el)return;el.style.borderColor='';el.style.boxShadow='';el.parentNode.querySelector('.vt')?.remove();}
-function rangeV(name,mn,mx,unit=''){const el=document.querySelector(`[name="${name}"]`);if(!el)return;el.addEventListener('blur',function(){if(!this.value){clrV(this);return;}const v=parseFloat(this.value);if(isNaN(v))return;if(v<mn||v>mx){shErr(this,`Expected ${mn}–${mx}${unit?' '+unit:''}`);}else clrV(this);});}
-rangeV('sysBp',50,300,'mmHg');rangeV('diaBp',20,200,'mmHg');rangeV('hr',20,300,'/min');rangeV('weight',1,300,'kg');rangeV('height',50,250,'cm');
-rangeV('creatInit',10,3000,'µmol/L');rangeV('hgbInit',1,25,'g/dL');rangeV('sodium',100,170,'mEq/L');rangeV('potassium',1.5,9,'mEq/L');rangeV('inr',0.5,15);
-rangeV('lvef',5,85,'%');rangeV('ecgQRS',60,800,'msec');rangeV('yob',1900,new Date().getFullYear());
-
-// ── COMPLETION SCORING ────────────────────────────────────
-function calcCompletion(r){
-  const checks=[
-    !!(r.nameFirst&&r.nameLast),
-    !!(r.civilId&&r.civilId.length===12),
-    !!(r.crfNo),!!(r.fileNumber),!!(r.admissionDate),!!(r.gender),
-    !!(r.epReason),
-    !!(r.sysBp||r.sysBpUnrec)&&!!(r.hr||r.hrUnrec),
-    !!(r.inv_ecg==='Yes'||r.inv_tte==='Yes'||r.inv_holter==='Yes'||r.inv_tee==='Yes'),
-    !!(r.procStartDate),!!(r.operatorName),
-    !!(r.creatInit||r.creatInitNA),
-    !!(r.procSuccess),!!(r.dischargeStatus),!!(r.dischargeDate),
+  // Steppers
+  const STEPS=[
+    {label:"Identification",icon:"fa-id-card"},
+    {label:"EP Reason",icon:"fa-hospital-user"},
+    {label:"History & Exam",icon:"fa-heartbeat"},
+    {label:"Home Meds",icon:"fa-pills"},
+    {label:"Investigations",icon:"fa-microscope"},
+    {label:"Procedure",icon:"fa-procedures"},
+    {label:"Complications",icon:"fa-exclamation-triangle"},
+    {label:"Outcome & D/C",icon:"fa-door-open"},
   ];
-  const score=checks.filter(Boolean).length;
-  return{score,total:checks.length,pct:Math.round(score/checks.length*100),complete:score===checks.length};
-}
-function statusBadge(s){
-  const m={draft:'<span class="badge status-draft">Draft</span>',submitted:'<span class="badge status-submitted">Submitted</span>',reviewed:'<span class="badge status-reviewed">Reviewed</span>'};
-  return m[s]||m['draft'];
-}
-
-// ── TABS ─────────────────────────────────────────────────
-window.switchTab=function(tab){
-  if(tab==='admin' && currentRole!=='admin'){alert('Admin access only.');return;}
-  if(tab==='downloads' && currentRole!=='admin'){alert('Admin access only.');return;}
-  if(tab==='analytics' && currentRole==='investigator'){alert('Not available.');return;}
-  if(tab==='admin')fetchData();
-  else if(tab==='analytics')fetchAnalytics();
-  else if(tab==='dashboard')loadDashboard();
-  else if(tab==='downloads')loadExportFilters();
-  ['form','dashboard','admin','analytics','downloads'].forEach(t=>{
-    document.getElementById(`section-${t}`)?.classList.add('hidden');
-    const tb=document.getElementById(`tab-${t}`);
-    if(tb)tb.className='pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition';
+  let currentStep=0;
+  const sl=document.getElementById('stepperList');
+  STEPS.forEach((s,i)=>{
+    const li=document.createElement('li');
+    li.className='flex flex-col items-center cursor-pointer group';
+    li.innerHTML=`<div id="sdot-${i}" class="step-dot ${i===0?'active':''}"><i class="fas ${s.icon} text-xs"></i></div><div id="slbl-${i}" class="step-label ${i===0?'active':''}">${s.label}</div>`;
+    li.onclick=()=>goToStep(i);
+    sl.appendChild(li);
+    if(i<STEPS.length-1){const c=document.createElement('li');c.className='step-connector hidden md:block';sl.appendChild(c);}
   });
-  document.getElementById(`section-${tab}`)?.classList.remove('hidden');
-  const activeTb=document.getElementById(`tab-${tab}`);
-  if(activeTb)activeTb.className='pb-1 tab-active text-sm transition';
-};
+  window.goToStep=function(idx){
+    document.getElementById(`step-${currentStep}`).classList.remove('active');
+    document.getElementById(`sdot-${currentStep}`).classList.remove('active');
+    document.getElementById(`slbl-${currentStep}`).classList.remove('active');
+    currentStep=idx;
+    document.getElementById(`step-${currentStep}`).classList.add('active');
+    document.getElementById(`sdot-${currentStep}`).classList.add('active');
+    document.getElementById(`slbl-${currentStep}`).classList.add('active');
+    document.getElementById('btnPrev').classList.toggle('hidden',currentStep===0);
+    document.getElementById('btnNext').classList.toggle('hidden',currentStep===STEPS.length-1);
+    document.getElementById('stepLabel').textContent=`Step ${currentStep+1} of ${STEPS.length}`;
+    document.getElementById('progressFill').style.width=`${((currentStep+1)/STEPS.length)*100}%`;
+    document.getElementById('formScrollArea').scrollTop=0;
+  };
+  window.changeStep=function(dir){const n=currentStep+dir;if(n>=0&&n<STEPS.length)goToStep(n);};
 
-window.adminSubTab=function(tab){
-  document.getElementById('adminRecordsPanel').style.display=tab==='records'?'block':'none';
-  document.getElementById('adminUsersPanel').style.display=tab==='users'?'block':'none';
-  document.getElementById('aTab_records').className=`admin-sub-tab${tab==='records'?' active':''}`;
-  document.getElementById('aTab_users').className=`admin-sub-tab${tab==='users'?' active':''}`;
-  if(tab==='users')loadUserList();
-};
+  // Nationality
+  const countries=["Afghan","Albanian","Algerian","American","Andorran","Angolan","Argentine","Armenian","Australian","Austrian","Azerbaijani","Bahraini","Bangladeshi","Belgian","Brazilian","British","Bulgarian","Cambodian","Canadian","Chilean","Chinese","Colombian","Croatian","Cuban","Czech","Danish","Dutch","Egyptian","Emirati","Ethiopian","Filipino","Finnish","French","German","Ghanaian","Greek","Guatemalan","Hungarian","Indian","Indonesian","Iranian","Iraqi","Irish","Israeli","Italian","Ivorian","Japanese","Jordanian","Kazakhstani","Kenyan","Korean","Kuwaiti","Lebanese","Libyan","Malaysian","Moroccan","Nepalese","Nigerian","Norwegian","Omani","Pakistani","Palestinian","Polish","Portuguese","Qatari","Romanian","Russian","Saudi Arabian","Senegalese","Serbian","Singaporean","Somali","South African","Spanish","Sri Lankan","Sudanese","Swedish","Swiss","Syrian","Taiwanese","Thai","Tunisian","Turkish","Ugandan","Ukrainian","Venezuelan","Vietnamese","Yemeni","Other"];
+  document.getElementById('nationalitySelect').innerHTML=countries.map(c=>`<option value="${c}">${c}</option>`).join('');
 
-// ── LOCK/UNLOCK ──────────────────────────────────────────
-window.adminUnlock=function(){
-  const pin=prompt('Admin PIN:');
-  if(pin!=='2468'){alert('Access Denied');return;}
-  document.getElementById('lockedOverlay').classList.add('hidden');
-  document.getElementById('recordStatus').value='draft';
-  document.getElementById('editModeBanner').classList.remove('hidden');
-};
-function applyLock(status){
-  const locked=status==='submitted'||status==='reviewed';
-  document.getElementById('lockedOverlay').classList.toggle('hidden',!locked);
-  document.getElementById('btnSubmit').disabled=locked;
-  document.getElementById('btnSubmitFinal').disabled=locked;
-}
-
-// ── SAVE RECORD ──────────────────────────────────────────
-async function saveRecord(targetStatus){
-  if(!currentUser){alert('Not logged in.');return false;}
-  const form=document.getElementById('epsForm');
-  const mandatory=[
-    {id:'req_nameFirst',label:'Patient First Name'},{id:'req_nameLast',label:'Patient Last Name'},
-    {id:'civilId',label:'Civil ID'},{id:'req_crfNo',label:'CRF Number'},{id:'req_fileNo',label:'File Number'},
+  // Risk grid
+  const riskItems=[
+    {name:"hx_cad",label:"4.5 Coronary artery disease"},{name:"hx_mi",label:"4.6 Myocardial infarction"},
+    {name:"hx_valve",label:"4.7 Valvular heart disease"},{name:"hx_cvd",label:"4.8 Cerebrovascular disease"},
+    {name:"hx_lung",label:"4.9 Chronic lung disease"},{name:"hx_dialysis",label:"4.10 Currently on dialysis"},
+    {name:"hx_dm",label:"4.11 Diabetes mellitus"},{name:"hx_htn",label:"4.12 Hypertension"},
+    {name:"hx_familialSyndrome",label:"4.13 Familial syndrome"},
   ];
-  for(const f of mandatory){
-    const el=document.getElementById(f.id);
-    if(!el||!el.value.trim()){goToStep(0);el?.focus();shErr(el,'Required');setTimeout(()=>clrV(el),3000);alert(`Required: "${f.label}"`);return false;}
+  document.getElementById('simpleRiskGrid').innerHTML=riskItems.map(r=>`<div><label class="lbl">${r.label}</label><select name="${r.name}" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div>`).join('');
+
+  // Meds
+  const medsList=[
+    {name:"Amiodarone",f:"amiodarone"},{name:"Disopyramide",f:"disopyramide"},{name:"Flecainide",f:"flecainide"},{name:"Propafenone",f:"propafenone"},{name:"Sotalol",f:"sotalol"},
+    {name:"Verapamil",f:"verapamil"},{name:"Diltiazem",f:"diltiazem"},{name:"Warfarin",f:"warfarin"},{name:"Dabigatran",f:"dabigatran"},{name:"Apixaban",f:"apixaban"},
+    {name:"Rivaroxaban",f:"rivaroxaban"},{name:"Edoxaban",f:"edoxaban"},{name:"LMWH",f:"lmwh"},{name:"Aspirin",f:"aspirin"},{name:"Clopidogrel",f:"clopidogrel"},
+    {name:"Ticagrelor",f:"ticagrelor"},{name:"ACE-I",f:"acei"},{name:"ARB",f:"arb"},{name:"ARNI",f:"arni"},{name:"SGLT inhibitor",f:"sglt"},
+    {name:"Beta Blockers",f:"betablocker"},{name:"MRA",f:"mra"},{name:"Digoxin",f:"digoxin"},{name:"Loop diuretics",f:"loopdiuretic"},
+  ];
+  const hMG=document.getElementById('homeMedsGrid'), dMG=document.getElementById('dischargeMedsGrid');
+  medsList.forEach(m=>{
+    hMG.innerHTML+=`<label class="chk-item"><input type="checkbox" name="homeMed_${m.f}" class="w-4 h-4"> <span>${m.name}</span></label>`;
+    dMG.innerHTML+=`<label class="chk-item"><input type="checkbox" name="dcMed_${m.f}" class="w-4 h-4"> <span>${m.name}</span></label>`;
+  });
+
+  // Civil ID auto-age
+  document.getElementById('civilId').addEventListener('input',function(){
+    const v=this.value;
+    if(v.length===12&&/^\d+$/.test(v)){const c=parseInt(v[0]);const yr=parseInt(v.substring(1,3));let y=c===2?1900+yr:c===3?2000+yr:0;if(y>0){document.getElementById('yob').value=y;document.getElementById('estAge').value=new Date().getFullYear()-y;}}
+    else{document.getElementById('yob').value='';document.getElementById('estAge').value='';}
+  });
+
+  // Yes/No handlers
+  window.setYN=function(btn,key,val){
+    btn.closest('.yn-group').querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('selected'));
+    btn.classList.add('selected');
+    const hid=document.getElementById('val_'+key); if(hid)hid.value=val;
+    const sub=document.getElementById('sub_'+key);
+    if(sub){if(val==='Yes')sub.classList.add('show');else sub.classList.remove('show');}
+  };
+
+  // EP Reason
+  window.onEPR=function(){
+    const v=document.querySelector('input[name="epReason"]:checked')?.value;
+    const pm=document.querySelector('input[name="pacemakerType"]:checked')?.value;
+    document.getElementById('pmTypeDiv').classList.toggle('hidden',v!=='Pacemaker');
+    document.querySelectorAll('.proc-section').forEach(s=>s.classList.remove('show'));
+    document.getElementById('proc_noReason').style.display='none';
+    if(!v){document.getElementById('proc_noReason').style.display='block';return;}
+    if(v==='CRT/AICD'){document.getElementById('proc_crtaicd').classList.add('show');}
+    else if(v==='Pacemaker'){
+      if(!pm){document.getElementById('proc_noReason').style.display='block';}
+      else if(pm==='Temporary pacemaker'){document.getElementById('proc_temppm').classList.add('show');}
+      else if(pm==='Permanent pacemaker'){document.getElementById('proc_permpm').classList.add('show');}
+      else{document.getElementById('proc_temppm').classList.add('show');document.getElementById('proc_permpm').classList.add('show');}
+    }else if(v==='EPS/Ablation'){document.getElementById('proc_eps').classList.add('show');}
+    else if(v==='LAAO'){document.getElementById('proc_laao').classList.add('show');}
+  };
+
+  window.onCrtGen=function(){const v=document.querySelector('input[name="crtGenerator"]:checked')?.value;['initial','replace','explant'].forEach(k=>{const el=document.getElementById(`crtGen_${k}`);if(el)el.classList.remove('show');});const t=v==='Initial implant'?'initial':v==='Generator replacement'?'replace':v==='Generator explant'?'explant':null;if(t){const el=document.getElementById(`crtGen_${t}`);if(el)el.classList.add('show');}};
+  window.onPpmGen=function(){const v=document.querySelector('input[name="ppmGenerator"]:checked')?.value;['initial','replace','explant'].forEach(k=>{const el=document.getElementById(`ppmGen_${k}`);if(el)el.classList.remove('show');});const t=v==='Initial implant'?'initial':v==='Generator replacement'?'replace':v==='Generator explant'?'explant':null;if(t){const el=document.getElementById(`ppmGen_${t}`);if(el)el.classList.add('show');}};
+  window.onBleedT=function(){const el=document.getElementById('bleedType3sub');if(el)el.classList.toggle('show',document.querySelector('input[name="bleedType"]:checked')?.value==='Type 3');};
+  window.onDischSt=function(){const v=document.querySelector('input[name="dischargeStatus"]:checked')?.value;const dd=document.getElementById('dischDead'),da=document.getElementById('dischAlive');if(dd)dd.classList.toggle('show',v==='Dead');if(da)da.classList.toggle('show',v==='Alive');};
+
+  // Validation
+  function shErr(el,msg){if(!el)return;el.style.borderColor='#dc2626';el.style.boxShadow='0 0 0 3px rgba(220,38,38,.15)';let t=el.parentNode.querySelector('.vt');if(!t){t=document.createElement('div');t.className='vt';t.style.cssText='font-size:11px;color:#dc2626;font-weight:600;margin-top:3px;';el.parentNode.appendChild(t);}t.textContent='✖ '+msg;}
+  function clrV(el){if(!el)return;el.style.borderColor='';el.style.boxShadow='';el.parentNode.querySelector('.vt')?.remove();}
+  function rangeV(name,mn,mx,unit=''){const el=document.querySelector(`[name="${name}"]`);if(!el)return;el.addEventListener('blur',function(){if(!this.value){clrV(this);return;}const v=parseFloat(this.value);if(isNaN(v))return;if(v<mn||v>mx){shErr(this,`Expected ${mn}–${mx}${unit?' '+unit:''}`);}else clrV(this);});}
+  rangeV('sysBp',50,300,'mmHg');rangeV('diaBp',20,200,'mmHg');rangeV('hr',20,300,'/min');rangeV('weight',1,300,'kg');rangeV('height',50,250,'cm');
+  rangeV('creatInit',10,3000,'µmol/L');rangeV('hgbInit',1,25,'g/dL');rangeV('sodium',100,170,'mEq/L');rangeV('potassium',1.5,9,'mEq/L');rangeV('inr',0.5,15);
+  rangeV('lvef',5,85,'%');rangeV('ecgQRS',60,800,'msec');rangeV('yob',1900,new Date().getFullYear());
+
+  // Completion scoring
+  function calcCompletion(r){
+    const checks=[
+      !!(r.nameFirst&&r.nameLast),
+      !!(r.civilId&&r.civilId.length===12),
+      !!(r.crfNo),!!(r.fileNumber),!!(r.admissionDate),!!(r.gender),
+      !!(r.epReason),
+      !!(r.sysBp||r.sysBpUnrec)&&!!(r.hr||r.hrUnrec),
+      !!(r.inv_ecg==='Yes'||r.inv_tte==='Yes'||r.inv_holter==='Yes'||r.inv_tee==='Yes'),
+      !!(r.procStartDate),!!(r.operatorName),
+      !!(r.creatInit||r.creatInitNA),
+      !!(r.procSuccess),!!(r.dischargeStatus),!!(r.dischargeDate),
+    ];
+    const score=checks.filter(Boolean).length;
+    return{score,total:checks.length,pct:Math.round(score/checks.length*100),complete:score===checks.length};
   }
-  if(!/^\d{12}$/.test(document.getElementById('civilId').value)){goToStep(0);alert('Civil ID must be 12 digits.');return false;}
-  if(!/^\d{6}$/.test(document.getElementById('req_fileNo').value)){goToStep(0);alert('File Number must be 6 digits.');return false;}
-  if(!/^\d{6}$/.test(document.getElementById('req_crfNo').value)){goToStep(0);alert('CRF Number must be 6 digits.');return false;}
+  function statusBadge(s){
+    const m={draft:'<span class="badge status-draft">Draft</span>',submitted:'<span class="badge status-submitted">Submitted</span>',reviewed:'<span class="badge status-reviewed">Reviewed</span>'};
+    return m[s]||m['draft'];
+  }
 
-  const fd=new FormData(form);
-  const dataObj=Object.fromEntries(fd.entries());
-  form.querySelectorAll('input[type="checkbox"]').forEach(cb=>{dataObj[cb.name]=cb.checked;});
-  form.querySelectorAll('input[type="radio"]:checked').forEach(r=>{dataObj[r.name]=r.value;});
-  dataObj.timestamp=new Date();
-  dataObj.recordStatus=targetStatus;
-  dataObj.enrolledBy=currentUser.uid;
-  dataObj.enrolledByName=currentUserName;
-  if(targetStatus==='submitted')dataObj.submittedAt=new Date();
+  // Tabs
+  window.switchTab=function(tab){
+    if(tab==='admin' && currentRole!=='admin'){alert('Admin access only.');return;}
+    if(tab==='downloads' && currentRole!=='admin'){alert('Admin access only.');return;}
+    if(tab==='analytics' && currentRole==='investigator'){alert('Not available.');return;}
+    if(tab==='admin')fetchData();
+    else if(tab==='analytics')fetchAnalytics();
+    else if(tab==='dashboard')loadDashboard();
+    else if(tab==='downloads')loadExportFilters();
+    ['form','dashboard','admin','analytics','downloads'].forEach(t=>{
+      document.getElementById(`section-${t}`)?.classList.add('hidden');
+      const tb=document.getElementById(`tab-${t}`);
+      if(tb)tb.className='pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition';
+    });
+    document.getElementById(`section-${tab}`)?.classList.remove('hidden');
+    const activeTb=document.getElementById(`tab-${tab}`);
+    if(activeTb)activeTb.className='pb-1 tab-active text-sm transition';
+  };
 
-  const recId=dataObj.recordId; delete dataObj.recordId;
-  const btnDraft=document.getElementById('btnSubmit');
-  const btnSubmit=document.getElementById('btnSubmitFinal');
-  btnDraft.disabled=true;btnSubmit.disabled=true;
-  btnDraft.innerHTML='<i class="fas fa-spinner fa-spin"></i>';
-  try{
-    if(recId){await setDoc(doc(db,'patients_full',recId),dataObj);alert(targetStatus==='submitted'?'Submitted!':'Updated!');}
-    else{const nd=await addDoc(collection(db,'patients_full'),dataObj);document.getElementById('editRecordId').value=nd.id;alert(targetStatus==='submitted'?'Submitted!':'Saved as draft!');}
-    if(targetStatus==='submitted'){document.getElementById('recordStatus').value='submitted';applyLock('submitted');}
-    else{document.getElementById('editModeBanner').classList.add('hidden');resetFormUI(form);}
-    loadRecordsCache();updateMyCasesCount();
-    return true;
-  }catch(err){console.error(err);alert('Save failed.');return false;}
-  finally{btnDraft.disabled=false;btnSubmit.disabled=false;btnDraft.innerHTML='<i class="fas fa-save"></i> Save Draft';}
-}
+  window.adminSubTab=function(tab){
+    document.getElementById('adminRecordsPanel').style.display=tab==='records'?'block':'none';
+    document.getElementById('adminUsersPanel').style.display=tab==='users'?'block':'none';
+    document.getElementById('aTab_records').className=`admin-sub-tab${tab==='records'?' active':''}`;
+    document.getElementById('aTab_users').className=`admin-sub-tab${tab==='users'?' active':''}`;
+    if(tab==='users')loadUserList();
+  };
 
-document.getElementById('epsForm').addEventListener('submit',async(e)=>{e.preventDefault();await saveRecord('draft');});
-window.submitFinal=async function(){if(!confirm('Submit and lock this record?'))return;await saveRecord('submitted');};
-window.markReviewed=async function(id){if(!confirm('Mark as Reviewed?'))return;try{await updateDoc(doc(db,'patients_full',id),{recordStatus:'reviewed',reviewedAt:new Date()});fetchData();loadDashboard();}catch(e){alert('Failed.');}};
-window.markDraft=async function(id){if(!confirm('Revert to Draft?'))return;try{await updateDoc(doc(db,'patients_full',id),{recordStatus:'draft'});fetchData();loadDashboard();}catch(e){alert('Failed.');}};
+  // Lock/Unlock
+  window.adminUnlock=function(){
+    const pin=prompt('Admin PIN:');
+    if(pin!=='2468'){alert('Access Denied');return;}
+    document.getElementById('lockedOverlay').classList.add('hidden');
+    document.getElementById('recordStatus').value='draft';
+    document.getElementById('editModeBanner').classList.remove('hidden');
+  };
+  function applyLock(status){
+    const locked=status==='submitted'||status==='reviewed';
+    document.getElementById('lockedOverlay').classList.toggle('hidden',!locked);
+    document.getElementById('btnSubmit').disabled=locked;
+    document.getElementById('btnSubmitFinal').disabled=locked;
+  }
 
-function resetFormUI(f){
-  f.reset();
-  document.querySelectorAll('.sub-reveal').forEach(s=>s.classList.remove('show'));
-  document.querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('selected'));
-  document.querySelectorAll('.yn-btn.yn-no').forEach(b=>b.classList.add('selected'));
-  document.querySelectorAll('input[type="hidden"][id^="val_"]').forEach(h=>{if(h)h.value='No';});
-  document.querySelectorAll('.proc-section').forEach(s=>s.classList.remove('show'));
-  document.querySelectorAll('.vt').forEach(t=>t.remove());
-  const pnr=document.getElementById('proc_noReason');if(pnr)pnr.style.display='block';
-  document.getElementById('lockedOverlay').classList.add('hidden');
-  document.getElementById('editModeBanner').classList.add('hidden');
-  document.getElementById('recordStatus').value='draft';
-  document.getElementById('editRecordId').value='';
-  document.getElementById('btnSubmit').disabled=false;
-  document.getElementById('btnSubmitFinal').disabled=false;
-  goToStep(0);
-}
+  // Save Record
+  async function saveRecord(targetStatus){
+    if(!currentUser){alert('Not logged in.');return false;}
+    const form=document.getElementById('epsForm');
+    const mandatory=[
+      {id:'req_nameFirst',label:'Patient First Name'},{id:'req_nameLast',label:'Patient Last Name'},
+      {id:'civilId',label:'Civil ID'},{id:'req_crfNo',label:'CRF Number'},{id:'req_fileNo',label:'File Number'},
+    ];
+    for(const f of mandatory){
+      const el=document.getElementById(f.id);
+      if(!el||!el.value.trim()){goToStep(0);el?.focus();shErr(el,'Required');setTimeout(()=>clrV(el),3000);alert(`Required: "${f.label}"`);return false;}
+    }
+    if(!/^\d{12}$/.test(document.getElementById('civilId').value)){goToStep(0);alert('Civil ID must be 12 digits.');return false;}
+    if(!/^\d{6}$/.test(document.getElementById('req_fileNo').value)){goToStep(0);alert('File Number must be 6 digits.');return false;}
+    if(!/^\d{6}$/.test(document.getElementById('req_crfNo').value)){goToStep(0);alert('CRF Number must be 6 digits.');return false;}
 
-// ── DASHBOARD ────────────────────────────────────────────
-let _dashFilter='all',_dashData=[];
-window.setDashFilter=function(f,btn){_dashFilter=f;document.querySelectorAll('.dash-filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderDashboard();};
-window.loadDashboard=async function(){
-  const snap=await getDocs(collection(db,'patients_full'));
-  _dashData=[];const civIds={};
-  snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();d._comp=calcCompletion(d);_dashData.push(d);civIds[d.civilId]=(civIds[d.civilId]||0)+1;});
-  // Role-based filter
-  if(currentRole==='investigator'){_dashData=_dashData.filter(d=>d.enrolledBy===currentUser.uid);}
-  _dashData.forEach(d=>{d._isDup=(civIds[d.civilId]||0)>1;});
-  _dashData.sort((a,b)=>(a.admissionDate||'').localeCompare(b.admissionDate||''));
-  _dashData.forEach((d,i)=>{d._no=i+1;});
-  document.getElementById('dash_total').textContent=_dashData.length;
-  document.getElementById('dash_complete').textContent=_dashData.filter(d=>d._comp.complete).length;
-  document.getElementById('dash_incomplete').textContent=_dashData.filter(d=>!d._comp.complete).length;
-  document.getElementById('dash_reviewed').textContent=_dashData.filter(d=>d.recordStatus==='reviewed').length;
-  renderDashboard();
-};
-function renderDashboard(){
-  let data=_dashData;
-  if(_dashFilter==='draft')data=data.filter(d=>(!d.recordStatus||d.recordStatus==='draft'));
-  if(_dashFilter==='submitted')data=data.filter(d=>d.recordStatus==='submitted');
-  if(_dashFilter==='reviewed')data=data.filter(d=>d.recordStatus==='reviewed');
-  if(_dashFilter==='complete')data=data.filter(d=>d._comp.complete);
-  if(_dashFilter==='incomplete')data=data.filter(d=>!d._comp.complete);
-  if(_dashFilter==='duplicate')data=data.filter(d=>d._isDup);
-  const grid=document.getElementById('dashGrid');
-  if(!data.length){grid.innerHTML='<div class="bg-white rounded-2xl border border-gray-200 p-12 text-center text-gray-400"><i class="fas fa-inbox text-4xl mb-3 block"></i>No records match this filter</div>';return;}
-  const canEdit = currentRole !== 'cso';
-  grid.innerHTML=data.map(d=>{
-    const c=d._comp,st=d.recordStatus||'draft';
-    const barCol=c.complete?'#059669':c.pct>=70?'#d97706':'#e11d48';
-    const invInfo = (currentRole==='admin'||currentRole==='cso') ? `<span><i class="fas fa-user-md fa-xs mr-1"></i>${d.enrolledByName||'—'}</span>` : '';
-    return`<div class="dash-card" style="display:flex;align-items:center;gap:16px;padding:14px 18px;">
-      <div style="font-size:13px;font-weight:800;color:#94a3b8;min-width:32px;">#${d._no}</div>
-      <div style="flex:1;min-width:0;">
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
-          <span style="font-weight:800;font-size:14px;">${d.fullName||'Anonymous'}</span>
-          ${statusBadge(st)}
-          ${d._isDup?'<span class="dup-flag"><i class="fas fa-exclamation-circle"></i> Dup</span>':''}
+    const fd=new FormData(form);
+    const dataObj=Object.fromEntries(fd.entries());
+    form.querySelectorAll('input[type="checkbox"]').forEach(cb=>{dataObj[cb.name]=cb.checked;});
+    form.querySelectorAll('input[type="radio"]:checked').forEach(r=>{dataObj[r.name]=r.value;});
+    dataObj.timestamp=new Date();
+    dataObj.recordStatus=targetStatus;
+    dataObj.enrolledBy=currentUser.uid;
+    dataObj.enrolledByName=currentUserName;
+    if(targetStatus==='submitted')dataObj.submittedAt=new Date();
+
+    const recId=dataObj.recordId; delete dataObj.recordId;
+    const btnDraft=document.getElementById('btnSubmit');
+    const btnSubmit=document.getElementById('btnSubmitFinal');
+    btnDraft.disabled=true;btnSubmit.disabled=true;
+    btnDraft.innerHTML='<i class="fas fa-spinner fa-spin"></i>';
+    try{
+      if(recId){await setDoc(doc(db,'patients_full',recId),dataObj);alert(targetStatus==='submitted'?'Submitted!':'Updated!');}
+      else{const nd=await addDoc(collection(db,'patients_full'),dataObj);document.getElementById('editRecordId').value=nd.id;alert(targetStatus==='submitted'?'Submitted!':'Saved as draft!');}
+      if(targetStatus==='submitted'){document.getElementById('recordStatus').value='submitted';applyLock('submitted');}
+      else{document.getElementById('editModeBanner').classList.add('hidden');resetFormUI(form);}
+      loadRecordsCache();updateMyCasesCount();
+      return true;
+    }catch(err){console.error(err);alert('Save failed.');return false;}
+    finally{btnDraft.disabled=false;btnSubmit.disabled=false;btnDraft.innerHTML='<i class="fas fa-save"></i> Save Draft';}
+  }
+
+  document.getElementById('epsForm').addEventListener('submit',async(e)=>{e.preventDefault();await saveRecord('draft');});
+  window.submitFinal=async function(){if(!confirm('Submit and lock this record?'))return;await saveRecord('submitted');};
+  window.markReviewed=async function(id){if(!confirm('Mark as Reviewed?'))return;try{await updateDoc(doc(db,'patients_full',id),{recordStatus:'reviewed',reviewedAt:new Date()});fetchData();loadDashboard();}catch(e){alert('Failed.');}};
+  window.markDraft=async function(id){if(!confirm('Revert to Draft?'))return;try{await updateDoc(doc(db,'patients_full',id),{recordStatus:'draft'});fetchData();loadDashboard();}catch(e){alert('Failed.');}};
+
+  function resetFormUI(f){
+    f.reset();
+    document.querySelectorAll('.sub-reveal').forEach(s=>s.classList.remove('show'));
+    document.querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('selected'));
+    document.querySelectorAll('.yn-btn.yn-no').forEach(b=>b.classList.add('selected'));
+    document.querySelectorAll('input[type="hidden"][id^="val_"]').forEach(h=>{if(h)h.value='No';});
+    document.querySelectorAll('.proc-section').forEach(s=>s.classList.remove('show'));
+    document.querySelectorAll('.vt').forEach(t=>t.remove());
+    const pnr=document.getElementById('proc_noReason');if(pnr)pnr.style.display='block';
+    document.getElementById('lockedOverlay').classList.add('hidden');
+    document.getElementById('editModeBanner').classList.add('hidden');
+    document.getElementById('recordStatus').value='draft';
+    document.getElementById('editRecordId').value='';
+    document.getElementById('btnSubmit').disabled=false;
+    document.getElementById('btnSubmitFinal').disabled=false;
+    goToStep(0);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // UPDATED: loadDashboard() with where filter for investigators
+  // ═══════════════════════════════════════════════════════════════════════════
+  let _dashFilter='all',_dashData=[];
+  window.setDashFilter=function(f,btn){_dashFilter=f;document.querySelectorAll('.dash-filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderDashboard();};
+  
+  window.loadDashboard=async function(){
+    let query = db.collection('patients_full');
+    // Investigators can only fetch their own records
+    if (currentRole === 'investigator') {
+      query = query.where('enrolledBy', '==', currentUser.uid);
+    }
+    const snap = await query.get();
+    _dashData=[];const civIds={};
+    snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();d._comp=calcCompletion(d);_dashData.push(d);civIds[d.civilId]=(civIds[d.civilId]||0)+1;});
+    // Removed old client-side role filter - rules handle it now
+    _dashData.forEach(d=>{d._isDup=(civIds[d.civilId]||0)>1;});
+    _dashData.sort((a,b)=>(a.admissionDate||'').localeCompare(b.admissionDate||''));
+    _dashData.forEach((d,i)=>{d._no=i+1;});
+    document.getElementById('dash_total').textContent=_dashData.length;
+    document.getElementById('dash_complete').textContent=_dashData.filter(d=>d._comp.complete).length;
+    document.getElementById('dash_incomplete').textContent=_dashData.filter(d=>!d._comp.complete).length;
+    document.getElementById('dash_reviewed').textContent=_dashData.filter(d=>d.recordStatus==='reviewed').length;
+    renderDashboard();
+  };
+  
+  function renderDashboard(){
+    let data=_dashData;
+    if(_dashFilter==='draft')data=data.filter(d=>(!d.recordStatus||d.recordStatus==='draft'));
+    if(_dashFilter==='submitted')data=data.filter(d=>d.recordStatus==='submitted');
+    if(_dashFilter==='reviewed')data=data.filter(d=>d.recordStatus==='reviewed');
+    if(_dashFilter==='complete')data=data.filter(d=>d._comp.complete);
+    if(_dashFilter==='incomplete')data=data.filter(d=>!d._comp.complete);
+    if(_dashFilter==='duplicate')data=data.filter(d=>d._isDup);
+    const grid=document.getElementById('dashGrid');
+    if(!data.length){grid.innerHTML='<div class="bg-white rounded-2xl border border-gray-200 p-12 text-center text-gray-400"><i class="fas fa-inbox text-4xl mb-3 block"></i>No records match this filter</div>';return;}
+    const canEdit = currentRole !== 'cso';
+    grid.innerHTML=data.map(d=>{
+      const c=d._comp,st=d.recordStatus||'draft';
+      const barCol=c.complete?'#059669':c.pct>=70?'#d97706':'#e11d48';
+      const invInfo = (currentRole==='admin'||currentRole==='cso') ? `<span><i class="fas fa-user-md fa-xs mr-1"></i>${d.enrolledByName||'—'}</span>` : '';
+      return`<div class="dash-card" style="display:flex;align-items:center;gap:16px;padding:14px 18px;">
+        <div style="font-size:13px;font-weight:800;color:#94a3b8;min-width:32px;">#${d._no}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
+            <span style="font-weight:800;font-size:14px;">${d.fullName||'Anonymous'}</span>
+            ${statusBadge(st)}
+            ${d._isDup?'<span class="dup-flag"><i class="fas fa-exclamation-circle"></i> Dup</span>':''}
+          </div>
+          <div style="font-size:12px;color:#64748b;display:flex;flex-wrap:wrap;gap:10px;">
+            <span>CID: <b>${d.civilId||'—'}</b></span>
+            <span>File: <b>${d.fileNumber||'—'}</b></span>
+            <span>${d.admissionDate||'—'}</span>
+            <span>${d.epReason||'—'}</span>
+            ${invInfo}
+          </div>
+          <div style="margin-top:8px;display:flex;align-items:center;gap:8px;">
+            <div style="flex:1;height:5px;background:#e2e8f0;border-radius:3px;overflow:hidden;"><div style="height:100%;width:${c.pct}%;background:${barCol};border-radius:3px;"></div></div>
+            <span style="font-size:10px;font-weight:700;color:${barCol};min-width:32px;">${c.pct}%</span>
+          </div>
         </div>
-        <div style="font-size:12px;color:#64748b;display:flex;flex-wrap:wrap;gap:10px;">
-          <span>CID: <b>${d.civilId||'—'}</b></span>
-          <span>File: <b>${d.fileNumber||'—'}</b></span>
-          <span>${d.admissionDate||'—'}</span>
-          <span>${d.epReason||'—'}</span>
-          ${invInfo}
+        <div style="display:flex;gap:6px;flex-shrink:0;">
+          ${canEdit ? `<button onclick='editRecord(${JSON.stringify(d).replace(/'/g,"\\'")})' class="btn btn-yellow text-xs px-3 py-1.5"><i class="fas fa-edit"></i></button>` :
+            `<button onclick='viewRecord(${JSON.stringify(d).replace(/'/g,"\\'")})' class="btn btn-gray text-xs px-3 py-1.5"><i class="fas fa-eye"></i></button>`}
         </div>
-        <div style="margin-top:8px;display:flex;align-items:center;gap:8px;">
-          <div style="flex:1;height:5px;background:#e2e8f0;border-radius:3px;overflow:hidden;"><div style="height:100%;width:${c.pct}%;background:${barCol};border-radius:3px;"></div></div>
-          <span style="font-size:10px;font-weight:700;color:${barCol};min-width:32px;">${c.pct}%</span>
-        </div>
-      </div>
-      <div style="display:flex;gap:6px;flex-shrink:0;">
-        ${canEdit ? `<button onclick='editRecord(${JSON.stringify(d).replace(/'/g,"\\'")})'  class="btn btn-yellow text-xs px-3 py-1.5"><i class="fas fa-edit"></i></button>` :
-          `<button onclick='viewRecord(${JSON.stringify(d).replace(/'/g,"\\'")})'  class="btn btn-gray text-xs px-3 py-1.5"><i class="fas fa-eye"></i></button>`}
-      </div>
-    </div>`;
-  }).join('');
-}
-
-// ── ADMIN FETCH ───────────────────────────────────────────
-let allData=[];
-window.fetchData=async function(){
-  const sN=document.getElementById('searchName')?.value.toLowerCase()||'';
-  const sCID=document.getElementById('searchCivilId')?.value||'';
-  const sFN=document.getElementById('searchFileNo')?.value||'';
-  const sCRF=document.getElementById('searchCrfNo')?.value||'';
-  const sDF=document.getElementById('filterDateFrom')?.value||'';
-  const sDT=document.getElementById('filterDateTo')?.value||'';
-  const sEP=document.getElementById('filterEpReason')?.value||'';
-  const sINV=document.getElementById('filterInvestigatorAdmin')?.value||'';
-  const sST=document.getElementById('filterStatus')?.value||'';
-  const snap=await getDocs(collection(db,'patients_full'));
-  const tbody=document.getElementById('tableBody');
-  tbody.innerHTML='';allData=[];
-  const all=[];const civIds={};
-  snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();all.push(d);civIds[d.civilId]=(civIds[d.civilId]||0)+1;});
-  all.sort((a,b)=>(a.admissionDate||'').localeCompare(b.admissionDate||''));
-  all.forEach((data,idx)=>{
-    data._no=idx+1;data._isDup=(civIds[data.civilId]||0)>1;
-    if(sN&&!data.fullName.toLowerCase().includes(sN))return;
-    if(sCID&&!data.civilId?.includes(sCID))return;
-    if(sFN&&!data.fileNumber?.includes(sFN))return;
-    if(sCRF&&!data.crfNo?.includes(sCRF))return;
-    if(sDF&&data.admissionDate&&data.admissionDate<sDF)return;
-    if(sDT&&data.admissionDate&&data.admissionDate>sDT)return;
-    if(sEP&&data.epReason!==sEP)return;
-    if(sINV&&data.enrolledBy!==sINV)return;
-    if(sST&&(data.recordStatus||'draft')!==sST)return;
-    allData.push(data);
-    const comp=calcCompletion(data);const st=data.recordStatus||'draft';
-    const barCol=comp.complete?'#059669':comp.pct>=70?'#d97706':'#e11d48';
-    const tr=document.createElement('tr');
-    tr.innerHTML=`
-      <td style="font-weight:800;color:#94a3b8;font-size:12px;">#${data._no}</td>
-      <td><div class="font-bold text-gray-800">${data.fullName||'Anonymous'}</div><div class="text-xs text-gray-500">${data.gender||''} | Age: ${data.estimatedAge||'?'}</div>${data._isDup?'<span class="dup-flag mt-1"><i class="fas fa-exclamation-circle"></i> Dup</span>':''}</td>
-      <td class="text-xs"><div>CID: ${data.civilId||'—'}</div><div>File: ${data.fileNumber||'—'}</div><div>CRF: ${data.crfNo||'—'}</div></td>
-      <td><span class="badge badge-blue">${data.epReason||'—'}</span></td>
-      <td class="text-xs"><div class="font-semibold">${data.enrolledByName||'—'}</div></td>
-      <td class="text-xs text-gray-600">${data.admissionDate||'—'}</td>
-      <td>${statusBadge(st)}</td>
-      <td><div style="display:flex;align-items:center;gap:6px;"><div style="flex:1;height:5px;background:#e2e8f0;border-radius:3px;overflow:hidden;min-width:60px;"><div style="height:100%;width:${comp.pct}%;background:${barCol};border-radius:3px;"></div></div><span style="font-size:10px;font-weight:700;color:${barCol};">${comp.pct}%</span></div></td>
-      <td class="text-right" style="white-space:nowrap;">
-        <button onclick='editRecord(${JSON.stringify(data).replace(/'/g,"\\'")})'  class="btn btn-yellow text-xs px-2 py-1 mr-1"><i class="fas fa-edit"></i></button>
-        ${st!=='reviewed'?`<button onclick="markReviewed('${data.id}')" class="btn btn-green text-xs px-2 py-1 mr-1"><i class="fas fa-check-circle"></i></button>`:''}
-        ${st==='reviewed'?`<button onclick="markDraft('${data.id}')" class="btn btn-gray text-xs px-2 py-1 mr-1"><i class="fas fa-undo"></i></button>`:''}
-        <button onclick="deleteRecord('${data.id}')" class="btn btn-red text-xs px-2 py-1"><i class="fas fa-trash"></i></button>
-      </td>`;
-    tbody.appendChild(tr);
-  });
-  if(!allData.length)tbody.innerHTML='<tr><td colspan="9" class="text-center py-8 text-gray-400">No records found</td></tr>';
-  _allRecordsCache=allData.slice();
-};
-window.clearAdminFilters=function(){['searchName','searchCivilId','searchFileNo','searchCrfNo','filterDateFrom','filterDateTo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});['filterEpReason','filterStatus','filterInvestigatorAdmin'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});fetchData();};
-window.deleteRecord=async function(id){if(!confirm('Permanently delete?'))return;try{await deleteDoc(doc(db,'patients_full',id));fetchData();loadRecordsCache();}catch(e){alert('Delete failed.');}};
-
-window.editRecord=function(data){
-  const st=data.recordStatus||'draft';
-  ['form','dashboard','admin','analytics','downloads'].forEach(t=>{document.getElementById(`section-${t}`)?.classList.add('hidden');const tb=document.getElementById(`tab-${t}`);if(tb)tb.className='pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition';});
-  document.getElementById('section-form').classList.remove('hidden');
-  document.getElementById('tab-form').className='pb-1 tab-active text-sm transition';
-  document.getElementById('epsForm').reset();
-  document.getElementById('editRecordId').value=data.id;
-  document.getElementById('recordStatus').value=st;
-  document.getElementById('editModeBanner').classList.remove('hidden');
-  Object.keys(data).forEach(key=>{
-    const el=document.getElementsByName(key)[0];if(!el)return;
-    if(el.type==='checkbox')el.checked=!!data[key];
-    else if(el.type==='radio')document.getElementsByName(key).forEach(r=>{if(r.value===data[key])r.checked=true;});
-    else el.value=data[key]||'';
-  });
-  if(data.epReason)onEPR();
-  applyLock(st);goToStep(0);
-};
-
-window.viewRecord=function(data){
-  editRecord(data);
-  // Lock editing for CSO
-  document.getElementById('btnSubmit').disabled=true;
-  document.getElementById('btnSubmitFinal').disabled=true;
-  document.getElementById('editModeBanner').classList.add('hidden');
-};
-
-// ── QUICK SEARCH ──────────────────────────────────────────
-let _allRecordsCache=[];
-async function loadRecordsCache(){
-  const snap=await getDocs(collection(db,'patients_full'));
-  _allRecordsCache=[];const civIds={};
-  snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();_allRecordsCache.push(d);civIds[d.civilId]=(civIds[d.civilId]||0)+1;});
-  _allRecordsCache.sort((a,b)=>(a.admissionDate||'').localeCompare(b.admissionDate||''));
-  _allRecordsCache.forEach((d,i)=>{d._no=i+1;});
-  // Role filter
-  if(currentRole==='investigator'){_allRecordsCache=_allRecordsCache.filter(d=>d.enrolledBy===currentUser?.uid);}
-}
-window.liveSearch=function(){
-  const q=document.getElementById('qs_input').value.trim();
-  if(!q){document.getElementById('qs_results').classList.add('hidden');return;}
-  const results=_allRecordsCache.filter(d=>(d.civilId||'').includes(q)||(d.fileNumber||'').includes(q)||(d.crfNo||'').includes(q));
-  const container=document.getElementById('qs_results');
-  document.getElementById('qs_count').textContent=`${results.length} found`;
-  const list=document.getElementById('qs_list');
-  if(!results.length){list.innerHTML='<div class="px-4 py-6 text-center text-gray-400 text-sm">No records found</div>';}
-  else{
-    list.innerHTML=results.slice(0,8).map(d=>{
-      const comp=calcCompletion(d);
-      return`<div class="px-4 py-3 hover:bg-blue-50 cursor-pointer transition flex items-center justify-between gap-3" onclick='editFromSearch(${JSON.stringify(d).replace(/'/g,"\\'")})'>
-        <div><div class="font-bold text-gray-800 text-sm">#${d._no} — ${d.fullName||'Anonymous'}</div><div class="text-xs text-gray-500 mt-0.5"><span class="mr-3">CID: <b>${d.civilId||'—'}</b></span><span>File: <b>${d.fileNumber||'—'}</b></span></div></div>
-        <div class="flex items-center gap-2 shrink-0"><span class="badge badge-blue">${d.epReason||'—'}</span>${statusBadge(d.recordStatus||'draft')}<button class="btn btn-yellow text-xs px-2 py-1"><i class="fas fa-edit"></i></button></div>
       </div>`;
     }).join('');
   }
-  container.classList.remove('hidden');
-};
-window.clearQS=function(){document.getElementById('qs_input').value='';document.getElementById('qs_results').classList.add('hidden');};
-window.editFromSearch=function(data){clearQS();editRecord(data);};
-document.addEventListener('click',e=>{if(!document.getElementById('mainSearchBar')?.contains(e.target))document.getElementById('qs_results')?.classList.add('hidden');});
 
-// ── USER MANAGEMENT ──────────────────────────────────────
-window.loadUserList=async function(){
-  const tbody=document.getElementById('userTableBody');
-  if(!tbody)return;
-  tbody.innerHTML='<tr><td colspan="6" class="text-center py-6 text-gray-400"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</td></tr>';
-  try{
-    const snap=await db.collection('users').get();
-    const rows=[];
-    snap.forEach(ds=>{const u=ds.data();u.id=ds.id;rows.push(u);});
-    // Count cases per user
-    const patSnap=await db.collection('patients_full').get();
-    const counts={};
-    patSnap.forEach(ds=>{const uid=ds.data().enrolledBy;if(uid)counts[uid]=(counts[uid]||0)+1;});
-    // Populate investigator filter dropdowns
-    const invOpts=rows.filter(u=>u.role==='investigator'||u.role==='cso').map(u=>`<option value="${u.id}">${u.displayName||u.email}</option>`).join('');
-    ['filterInvestigatorAdmin','exportInvestigator'].forEach(id=>{
-      const el=document.getElementById(id);
-      if(el){el.innerHTML='<option value="">All Investigators</option>'+invOpts;}
+  // ═══════════════════════════════════════════════════════════════════════════
+  // UPDATED: Admin fetch with reordered columns, separated delete button, record counter
+  // ═══════════════════════════════════════════════════════════════════════════
+  let allData=[], _totalRecords=0;
+  window.fetchData=async function(){
+    const sN=document.getElementById('searchName')?.value.toLowerCase()||'';
+    const sCID=document.getElementById('searchCivilId')?.value||'';
+    const sFN=document.getElementById('searchFileNo')?.value||'';
+    const sCRF=document.getElementById('searchCrfNo')?.value||'';
+    const sDF=document.getElementById('filterDateFrom')?.value||'';
+    const sDT=document.getElementById('filterDateTo')?.value||'';
+    const sEP=document.getElementById('filterEpReason')?.value||'';
+    const sINV=document.getElementById('filterInvestigatorAdmin')?.value||'';
+    const sST=document.getElementById('filterStatus')?.value||'';
+    
+    // Use query with where filter for investigators
+    let query = db.collection('patients_full');
+    if (currentRole === 'investigator') {
+      query = query.where('enrolledBy', '==', currentUser.uid);
+    }
+    const snap = await query.get();
+    const tbody=document.getElementById('tableBody');
+    tbody.innerHTML='';allData=[];
+    const all=[];const civIds={};
+    snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();all.push(d);civIds[d.civilId]=(civIds[d.civilId]||0)+1;});
+    all.sort((a,b)=>(a.admissionDate||'').localeCompare(b.admissionDate||''));
+    _totalRecords = all.length;
+    let filteredCount = 0;
+    
+    all.forEach((data,idx)=>{
+      data._no=idx+1;data._isDup=(civIds[data.civilId]||0)>1;
+      if(sN&&!data.fullName.toLowerCase().includes(sN))return;
+      if(sCID&&!data.civilId?.includes(sCID))return;
+      if(sFN&&!data.fileNumber?.includes(sFN))return;
+      if(sCRF&&!data.crfNo?.includes(sCRF))return;
+      if(sDF&&data.admissionDate&&data.admissionDate<sDF)return;
+      if(sDT&&data.admissionDate&&data.admissionDate>sDT)return;
+      if(sEP&&data.epReason!==sEP)return;
+      if(sINV&&data.enrolledBy!==sINV)return;
+      if(sST&&(data.recordStatus||'draft')!==sST)return;
+      allData.push(data);
+      filteredCount++;
+      const comp=calcCompletion(data);const st=data.recordStatus||'draft';
+      const barCol=comp.complete?'#059669':comp.pct>=70?'#d97706':'#e11d48';
+      const tr=document.createElement('tr');
+      // UPDATED: Reordered columns - Status is now 2nd, separated delete button
+      tr.innerHTML=`
+        <td style="font-weight:800;color:#94a3b8;font-size:12px;">#${data._no}</td>
+        <td>${statusBadge(st)}</td>
+        <td><div class="font-bold text-gray-800">${data.fullName||'Anonymous'}</div><div class="text-xs text-gray-500">${data.gender||''} | Age: ${data.estimatedAge||'?'}</div>${data._isDup?'<span class="dup-flag mt-1"><i class="fas fa-exclamation-circle"></i> Dup</span>':''}</td>
+        <td class="text-xs"><div>CID: ${data.civilId||'—'}</div><div>File: ${data.fileNumber||'—'}</div><div>CRF: ${data.crfNo||'—'}</div></td>
+        <td><span class="badge badge-blue">${data.epReason||'—'}</span></td>
+        <td class="text-xs"><div class="font-semibold">${data.enrolledByName||'—'}</div></td>
+        <td class="text-xs text-gray-600">${data.admissionDate||'—'}</td>
+        <td><div style="display:flex;align-items:center;gap:6px;"><div style="flex:1;height:5px;background:#e2e8f0;border-radius:3px;overflow:hidden;min-width:60px;"><div style="height:100%;width:${comp.pct}%;background:${barCol};border-radius:3px;"></div></div><span style="font-size:10px;font-weight:700;color:${barCol};">${comp.pct}%</span></div></td>
+        <td class="text-right" style="white-space:nowrap;">
+          <button onclick='editRecord(${JSON.stringify(data).replace(/'/g,"\\'")})' class="btn btn-yellow text-xs px-2 py-1 mr-1" title="Edit"><i class="fas fa-edit"></i></button>
+          ${st!=='reviewed'?`<button onclick="markReviewed('${data.id}')" class="btn btn-green text-xs px-2 py-1 mr-1" title="Mark Reviewed"><i class="fas fa-check-circle"></i></button>`:''}
+          ${st==='reviewed'?`<button onclick="markDraft('${data.id}')" class="btn btn-gray text-xs px-2 py-1 mr-1" title="Revert to Draft"><i class="fas fa-undo"></i></button>`:''}
+          <button onclick="deleteRecord('${data.id}')" class="btn btn-red text-xs px-2 py-1" style="margin-left:8px;" title="Delete"><i class="fas fa-trash"></i></button>
+        </td>`;
+      tbody.appendChild(tr);
     });
-    if(!rows.length){tbody.innerHTML='<tr><td colspan="6" class="text-center py-6 text-gray-400">No users found</td></tr>';return;}
-    tbody.innerHTML=rows.map(u=>`
-      <tr>
-        <td><div class="font-bold text-gray-800">${u.displayName||'—'}</div></td>
-        <td class="text-xs text-gray-500">${u.email||'—'}</td>
-        <td><span class="role-${u.role||'investigator'}">${(u.role||'investigator').toUpperCase()}</span></td>
-        <td class="font-bold text-blue-700 text-center">${counts[u.id]||0}</td>
-        <td>${u.active?'<span class="badge badge-green">Active</span>':'<span class="badge badge-red">Disabled</span>'}</td>
-        <td style="white-space:nowrap;">
-          <button onclick="editUserDoc('${u.id}','${(u.displayName||'').replace(/'/g,"\'")}','${u.email||''}','${u.role||'investigator'}')" class="btn btn-yellow text-xs px-2 py-1 mr-1" title="Edit">
-            <i class="fas fa-edit"></i>
-          </button>
-          <button onclick="toggleUserActive('${u.id}',${!u.active})" class="btn ${u.active?'btn-red':'btn-green'} text-xs px-2 py-1 mr-1" title="${u.active?'Disable':'Enable'}">
-            ${u.active?'<i class="fas fa-ban"></i>':'<i class="fas fa-check"></i>'}
-          </button>
-          <button onclick="deleteUserDoc('${u.id}','${(u.displayName||u.email||'').replace(/'/g,"\'")}' )" class="btn btn-gray text-xs px-2 py-1" title="Delete">
-            <i class="fas fa-trash"></i>
-          </button>
-        </td>
-      </tr>`).join('');
-  }catch(e){
-    console.error('loadUserList error:',e);
-    tbody.innerHTML=`<tr><td colspan="6" class="text-center py-6 text-red-500">Error loading users: ${e.message}</td></tr>`;
-  }
-};
-
-window.showAddUserForm=function(){
-  const f=document.getElementById('addUserForm');
-  f.style.display=f.style.display==='none'?'block':'none';
-};
-
-window.createUserDocument=async function(){
-  const uid=document.getElementById('newUserUID').value.trim();
-  const name=document.getElementById('newUserName').value.trim();
-  const email=document.getElementById('newUserEmail').value.trim();
-  const role=document.getElementById('newUserRole').value;
-  if(!uid||!name||!email){alert('All fields required.');return;}
-  if(uid.length<20){alert('UID looks too short. Copy it directly from Firebase Auth.');return;}
-  try{
-    await setDoc(doc(db,'users',uid),{displayName:name,email,role,active:true,createdAt:new Date()});
-    alert(`User "${name}" created successfully!`);
-    document.getElementById('addUserForm').style.display='none';
-    ['newUserUID','newUserName','newUserEmail'].forEach(id=>{document.getElementById(id).value='';});
-    loadUserList();
-  }catch(e){console.error(e);alert('Failed to create user: '+e.message);}
-};
-
-window.toggleUserActive=async function(uid,newState){
-  if(!confirm(`${newState?'Enable':'Disable'} this user?`))return;
-  try{await db.collection('users').doc(uid).update({active:newState});loadUserList();}catch(e){alert('Failed: '+e.message);}
-};
-
-window.deleteUserDoc=async function(uid,name){
-  if(!confirm(`Remove "${name}" from users? (Does not delete their Firebase Auth account)`))return;
-  try{await db.collection('users').doc(uid).delete();loadUserList();}catch(e){alert('Failed: '+e.message);}
-};
-
-window.editUserDoc=function(uid,name,email,role){
-  const newName=prompt('Display Name:',name);
-  if(newName===null)return;
-  const newRole=prompt('Role (admin / cso / investigator):',role);
-  if(newRole===null)return;
-  if(!['admin','cso','investigator'].includes(newRole)){alert('Invalid role. Use: admin, cso, or investigator');return;}
-  db.collection('users').doc(uid).update({displayName:newName,role:newRole})
-    .then(()=>{alert('User updated!');loadUserList();})
-    .catch(e=>alert('Failed: '+e.message));
-};
-
-// ── DOWNLOADS ────────────────────────────────────────────
-async function loadExportFilters(){
-  // Load investigator list
-  const snap=await getDocs(collection(db,'users'));
-  const opts=['<option value="">All Investigators</option>'];
-  snap.forEach(ds=>{const u=ds.data();if(u.role==='investigator'||u.role==='cso')opts.push(`<option value="${ds.id}">${u.displayName||u.email}</option>`);});
-  const el=document.getElementById('exportInvestigator');if(el)el.innerHTML=opts.join('');
-}
-
-async function getFilteredExportData(){
-  const snap=await getDocs(collection(db,'patients_full'));
-  const df=document.getElementById('exportDateFrom')?.value||'';
-  const dt=document.getElementById('exportDateTo')?.value||'';
-  const inv=document.getElementById('exportInvestigator')?.value||'';
-  const ep=document.getElementById('exportEpReason')?.value||'';
-  const all=[];
-  snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();all.push(d);});
-  all.sort((a,b)=>(a.admissionDate||'').localeCompare(b.admissionDate||''));
-  all.forEach((d,i)=>{d._no=i+1;});
-  return all.filter(d=>{
-    if(df&&d.admissionDate&&d.admissionDate<df)return false;
-    if(dt&&d.admissionDate&&d.admissionDate>dt)return false;
-    if(inv&&d.enrolledBy!==inv)return false;
-    if(ep&&d.epReason!==ep)return false;
-    return true;
-  });
-}
-
-window.searchForSinglePDF=async function(){
-  const q=document.getElementById('singlePatientSearch').value.trim();
-  if(!q){alert('Enter a Civil ID or File Number.');return;}
-  const snap=await getDocs(collection(db,'patients_full'));
-  const results=[];
-  snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();
-    if((d.civilId||'').includes(q)||(d.fileNumber||'').includes(q))results.push(d);
-  });
-  const div=document.getElementById('singlePatientResult');
-  if(!results.length){div.innerHTML='<div class="text-sm text-red-500 mt-2">No patient found.</div>';return;}
-  div.innerHTML=results.map(d=>`
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;margin-top:8px;">
-      <div><div class="font-bold text-sm">${d.fullName||'Anonymous'}</div><div class="text-xs text-gray-500">CID: ${d.civilId||'—'} | File: ${d.fileNumber||'—'} | ${d.admissionDate||'—'}</div></div>
-      <button onclick='exportSinglePDF(${JSON.stringify(d).replace(/'/g,"\\'")})'  class="btn btn-red text-xs px-3 py-1.5"><i class="fas fa-file-pdf mr-1"></i>PDF</button>
-    </div>`).join('');
-};
-
-// ── FIELD MAP ─────────────────────────────────────────────
-const FIELD_MAP={
-  nameFirst:'First Name',nameMiddle:'Middle Name',nameLast:'Last Name',civilId:'Civil ID',crfNo:'CRF Number',fileNumber:'File Number',
-  gender:'Gender',nationality:'Nationality',yob:'Year of Birth',estimatedAge:'Age (yrs)',admissionDate:'Admission Date',
-  enrolledByName:'Enrolled By',epReason:'EP Lab Reason',pacemakerType:'Pacemaker Type',patientOrigin:'Patient Origin',
-  sysBp:'Systolic BP',diaBp:'Diastolic BP',hr:'Heart Rate',weight:'Weight (kg)',height:'Height (cm)',
-  hx_afib:'Atrial Fibrillation',afibClassification:'AFib Classification',afibChads:'CHA₂DS₂-VASc',afibHasBled:'HAS-BLED',
-  hx_cardiacArrest:'Cardiac Arrest',hx_icm:'Ischemic CMP',icmTimeframe:'ICM Timeframe',
-  hx_hf:'Heart Failure',hfType:'HF Type',hx_cad:'CAD',hx_mi:'Prior MI',hx_valve:'Valvular HD',hx_cvd:'Cerebrovascular Disease',
-  hx_lung:'Chronic Lung Disease',hx_dialysis:'On Dialysis',hx_dm:'Diabetes Mellitus',hx_htn:'Hypertension',
-  hx_ssd:'Sudden Death Syndrome',hx_struct:'Structural Abnormalities',hx_syncope:'Syncope',
-  hx_svt:'Paroxysmal SVT',hx_vf:'VF',hx_vt:'VT',hx_avp:'Aortic Valve Procedure',hx_mvp:'Mitral Valve Procedure',
-  hx_ca:'Coronary Angiography',hx_cabg:'Prior CABG',hx_pci:'Prior PCI',hx_cied:'Prior CIED',
-  inv_ecg:'ECG',ecgAtrialRhythm:'ECG Atrial Rhythm',ecgVentRhythm:'ECG Vent Rhythm',ecgQRS:'QRS (msec)',
-  inv_holter:'Holter',inv_tte:'TTE',lvef:'LVEF (%)',lvesd:'LVESD (mm)',lvedd:'LVEDD (mm)',rvsp:'RVSP (mmHg)',
-  inv_sevValve:'Severe Valve Disease',sevMR:'Severe MR',sevAS:'Severe AS',sevAR:'Severe AR',sevTR:'Severe TR',
-  inv_tee:'TEE',teeThrombus:'TEE Atrial Thrombus',inv_laa:'LAA Morphology',
-  inv_cardiacCT:'Cardiac CT',inv_cmr:'Cardiac MRI',
-  creatInit:'Creatinine Initial',creatPeak:'Creatinine Peak',hgbInit:'Hgb Initial',hgbLowest:'Hgb Lowest',
-  sodium:'Sodium',potassium:'Potassium',magnesium:'Magnesium',inr:'INR',
-  procStartDate:'Procedure Date',procStartTime:'Proc Start Time',procEndTime:'Proc End Time',operatorName:'Operator',
-  eps_avnrt:'EPS: AVNRT',eps_wpw:'EPS: WPW',eps_aflutter:'EPS: AFl',eps_afib:'EPS: AFib',eps_vt:'EPS: VT',eps_pvcs:'EPS: PVCs',
-  laaoDeviceType:'LAAO Device',laaoOutcome:'LAAO Outcome',
-  cx_cardArrest:'CX: Cardiac Arrest',cx_stroke:'CX: Stroke',strokeType:'CX: Stroke Type',
-  cx_cardShock:'CX: Cardiogenic Shock',scaiStage:'SCAI Stage',cx_bleeding:'CX: Bleeding',bleedType:'CX: Bleed Type',
-  cx_mi:'CX: MI',cx_devEmbol:'CX: Device Embolization',cx_leadDislodge:'CX: Lead Dislodge',
-  procSuccess:'Procedure Success',postECGrhythm:'Post-Proc ECG Rhythm',
-  dischargeDate:'Discharge Date',dischargeStatus:'Discharge Status',causeOfDeath:'Cause of Death',dischargeType:'Discharge Type',
-  recordStatus:'Record Status',
-};
-
-// ── SPSS ─────────────────────────────────────────────────
-const SPSS_VARS={
-  _no:'CaseNo',nameFirst:'PtFirst',nameLast:'PtLast',civilId:'CivilID',crfNo:'CRFNo',fileNumber:'FileNo',
-  enrolledByName:'Investigator',gender:'Gender',nationality:'Natl',yob:'YOB',estimatedAge:'Age',admissionDate:'AdmDate',recordStatus:'Status',
-  epReason:'EPReason',patientOrigin:'PtOrigin',sysBp:'SysBP',diaBp:'DiaBP',hr:'HR',weight:'Weight',height:'Height',
-  hx_afib:'HxAFib',afibChads:'CHADS',afibHasBled:'HASBLED',hx_cardiacArrest:'HxCA',hx_icm:'HxICM',
-  hx_hf:'HxHF',hfType:'HFType',hx_cad:'HxCAD',hx_mi:'HxMI',hx_valve:'HxValve',hx_cvd:'HxCVD',
-  hx_lung:'HxLung',hx_dialysis:'HxDialys',hx_dm:'HxDM',hx_htn:'HxHTN',hx_ssd:'HxSSD',hx_struct:'HxStruct',
-  hx_syncope:'HxSyncop',hx_svt:'HxSVT',hx_vf:'HxVF',hx_vt:'HxVT',hx_cied:'HxCIED',
-  inv_ecg:'InvECG',ecgAtrialRhythm:'ECGAtrR',ecgVentRhythm:'ECGVenR',ecgQRS:'ECGQRS',
-  inv_holter:'InvHoltr',inv_tte:'InvTTE',lvef:'LVEF',lvesd:'LVESD',lvedd:'LVEDD',rvsp:'RVSP',
-  inv_sevValve:'SevValv',sevMR:'SevMR',sevAS:'SevAS',sevAR:'SevAR',sevTR:'SevTR',
-  inv_tee:'InvTEE',inv_cardiacCT:'InvCT',inv_cmr:'InvCMR',
-  creatInit:'CrInit',creatPeak:'CrPeak',hgbInit:'HgbIn',hgbLowest:'HgbLow',sodium:'Na',potassium:'K',magnesium:'Mg',inr:'INR',
-  procStartDate:'ProcDate',operatorName:'Operator',
-  eps_avnrt:'EPSAVNRT',eps_wpw:'EPSWPW',eps_afib:'EPSAFib',eps_vt:'EPSVT',
-  laaoDeviceType:'LADType',laaoOutcome:'LAOutcm',
-  cx_cardArrest:'CXCA',cx_stroke:'CXStroke',cx_cardShock:'CXShock',scaiStage:'SCAI',
-  cx_bleeding:'CXBleed',bleedType:'CXBlT',cx_mi:'CXMI',cx_leadDislodge:'CXLeadDx',
-  procSuccess:'ProcSucc',postECGrhythm:'PostECG',dischargeStatus:'DischSt',causeOfDeath:'DthCause',dischargeType:'DischTyp',
-  homeMed_amiodarone:'HMAmio',homeMed_flecainide:'HMFlec',homeMed_sotalol:'HMSotal',
-  homeMed_warfarin:'HMWarf',homeMed_dabigatran:'HMDabig',homeMed_apixaban:'HMApixa',
-  homeMed_aspirin:'HMAspir',homeMed_clopidogrel:'HMClopi',homeMed_acei:'HMACEI',homeMed_arb:'HMARB',
-  homeMed_arni:'HMARNI',homeMed_sglt:'HMSGLT',homeMed_betablocker:'HMBB',homeMed_mra:'HMMRA',
-  homeMed_digoxin:'HMDigox',homeMed_loopdiuretic:'HMLoop',
-  dcMed_warfarin:'DCWarf',dcMed_apixaban:'DCApixa',dcMed_aspirin:'DCAspir',
-  dcMed_clopidogrel:'DCClopi',dcMed_acei:'DCACEI',dcMed_betablocker:'DCBB',dcMed_mra:'DCMRA',dcMed_digoxin:'DCDigox',dcMed_loopdiuretic:'DCLoop',
-};
-
-window.exportSPSS=async function(){
-  const data=await getFilteredExportData();
-  if(!data.length){alert('No data to export.');return;}
-  const vars=Object.keys(SPSS_VARS);
-  const dataRows=[vars.map(v=>SPSS_VARS[v])];
-  data.forEach(r=>{dataRows.push(vars.map(v=>{let val=r[v];if(val===true)return 1;if(val===false)return 0;if(val===undefined||val===null||val==='')return '';return val;}));});
-  const codebook=[['Variable','Label','Type','Notes']];
-  vars.forEach(v=>{const label=FIELD_MAP[v]||v;const sample=data[0]?.[v];const type=(sample===true||sample===false||sample==='Yes'||sample==='No')?'Binary (1=Yes, 0=No)':'String/Numeric';codebook.push([SPSS_VARS[v],label,type,'']);});
-  const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(dataRows),'SPSS_Data');
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(codebook),'Codebook');
-  XLSX.writeFile(wb,'EPS_SPSS_Export.xlsx');
-};
-
-window.exportToExcel=async function(){
-  const data=await getFilteredExportData();
-  if(!data.length){alert('No data to export.');return;}
-  const allFields=Object.keys(FIELD_MAP);
-  const mkSheet=(fields)=>{
-    const hdr=fields.map(f=>FIELD_MAP[f]||f);
-    const rows=data.map(r=>fields.map(f=>{let v=r[f];if(v===true)return'Yes';if(v===false)return'No';return v??'';}));
-    return XLSX.utils.aoa_to_sheet([hdr,...rows]);
+    if(!allData.length)tbody.innerHTML='<tr><td colspan="9" class="text-center py-8 text-gray-400">No records found</td></tr>';
+    // UPDATED: Record counter showing X of Y
+    document.getElementById('recordCounter').textContent = `Showing ${filteredCount} of ${_totalRecords} records`;
+    _allRecordsCache=allData.slice();
   };
-  const idFields=['_no','nameFirst','nameMiddle','nameLast','civilId','crfNo','fileNumber','gender','nationality','yob','estimatedAge','admissionDate','recordStatus','epReason','enrolledByName','patientOrigin'];
-  const hxFields=allFields.filter(f=>f.startsWith('hx_')||f.startsWith('arrest')||f.startsWith('icm')||f.startsWith('hf')||f.startsWith('afib')||['sysBp','diaBp','hr','weight','height'].includes(f));
-  const invFields=allFields.filter(f=>f.startsWith('inv_')||['lvef','lvesd','lvedd','rvsp','ecgAtrialRhythm','ecgVentRhythm','ecgQRS','creatInit','creatPeak','hgbInit','hgbLowest','sodium','potassium','magnesium','inr'].includes(f));
-  const outcFields=allFields.filter(f=>f.startsWith('cx_')||f.startsWith('bleed')||['procStartDate','procStartTime','procEndTime','operatorName','procSuccess','postECGrhythm','dischargeDate','dischargeStatus','causeOfDeath','dischargeType'].includes(f));
-  const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,mkSheet(idFields),'Demographics');
-  XLSX.utils.book_append_sheet(wb,mkSheet(hxFields),'History & Vitals');
-  XLSX.utils.book_append_sheet(wb,mkSheet(invFields),'Investigations & Labs');
-  XLSX.utils.book_append_sheet(wb,mkSheet(outcFields),'Procedure & Outcome');
-  XLSX.writeFile(wb,'EPS_Registry_Export.xlsx');
-};
+  
+  window.clearAdminFilters=function(){['searchName','searchCivilId','searchFileNo','searchCrfNo','filterDateFrom','filterDateTo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});['filterEpReason','filterStatus','filterInvestigatorAdmin'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});fetchData();};
+  window.deleteRecord=async function(id){if(!confirm('Permanently delete?'))return;try{await deleteDoc(doc(db,'patients_full',id));fetchData();loadRecordsCache();}catch(e){alert('Delete failed.');}};
 
-window.exportToPDF=async function(){
-  const data=await getFilteredExportData();
-  if(!data.length){alert('No data to export.');return;}
-  const{jsPDF}=window.jspdf;const pdfdoc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
-  pdfdoc.setFontSize(14);pdfdoc.setFont('helvetica','bold');
-  pdfdoc.text('EPS Registry – Mubarak Alkabeer Hospital',14,14);
-  pdfdoc.setFontSize(9);pdfdoc.setFont('helvetica','normal');
-  pdfdoc.text(`Generated: ${new Date().toLocaleDateString()} | ${data.length} records`,14,20);
-  const cols=['#','Patient','Civil ID','EP Reason','Investigator','Admission','Status','Completion'];
-  const rows=data.map(r=>{const c=calcCompletion(r);return[r._no||'',r.fullName||'Anonymous',r.civilId||'—',r.epReason||'—',r.enrolledByName||'—',r.admissionDate||'—',(r.recordStatus||'draft').toUpperCase(),`${c.pct}%`];});
-  pdfdoc.autoTable({head:[cols],body:rows,startY:26,styles:{fontSize:8},headStyles:{fillColor:[30,64,175],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[248,250,252]}});
-  pdfdoc.save('EPS_Registry_Summary.pdf');
-};
-
-window.exportSinglePDF=function(data){
-  const{jsPDF}=window.jspdf;const pdfdoc=new jsPDF({unit:'mm',format:'a4'});
-  const comp=calcCompletion(data);
-  pdfdoc.setFillColor(30,64,175);pdfdoc.rect(0,0,210,22,'F');
-  pdfdoc.setTextColor(255,255,255);pdfdoc.setFontSize(13);pdfdoc.setFont('helvetica','bold');
-  pdfdoc.text('EPS Registry – Mubarak Alkabeer Hospital',14,10);
-  pdfdoc.setFontSize(9);pdfdoc.setFont('helvetica','normal');
-  pdfdoc.text('Advanced Electrophysiology Registry',14,16);
-  pdfdoc.setTextColor(30,30,30);
-  pdfdoc.setFontSize(14);pdfdoc.setFont('helvetica','bold');
-  pdfdoc.text(data.fullName||'Anonymous Patient',14,30);
-  pdfdoc.setFontSize(9);pdfdoc.setFont('helvetica','normal');
-  pdfdoc.text([
-    `Civil ID: ${data.civilId||'—'}  |  File: ${data.fileNumber||'—'}  |  CRF: ${data.crfNo||'—'}`,
-    `Gender: ${data.gender||'—'}  |  Age: ${data.estimatedAge||'—'}  |  Admission: ${data.admissionDate||'—'}`,
-    `EP Reason: ${data.epReason||'—'}  |  Investigator: ${data.enrolledByName||'—'}  |  Status: ${(data.recordStatus||'draft').toUpperCase()}  |  Completion: ${comp.pct}%`,
-  ],14,38);
-  let y=52;
-  const sections=[
-    {title:'Procedure Details',keys:['procStartDate','procStartTime','procEndTime','operatorName','procSuccess']},
-    {title:'History Summary',keys:['hx_afib','hx_icm','hx_hf','hx_cad','hx_dm','hx_htn','hx_cied']},
-    {title:'Investigations',keys:['inv_ecg','inv_tte','lvef','creatInit','hgbInit','sodium','potassium','inr']},
-    {title:'Complications',keys:['cx_stroke','cx_cardArrest','cx_bleeding','cx_cardShock','cx_mi']},
-    {title:'Discharge',keys:['dischargeDate','dischargeStatus','dischargeType','causeOfDeath']},
-  ];
-  sections.forEach(sec=>{
-    if(y>260){pdfdoc.addPage();y=20;}
-    pdfdoc.setFillColor(240,244,248);pdfdoc.rect(12,y-4,186,8,'F');
-    pdfdoc.setFont('helvetica','bold');pdfdoc.setFontSize(9);pdfdoc.setTextColor(30,64,175);
-    pdfdoc.text(sec.title,14,y+0.5);y+=7;
-    const pairs=sec.keys.map(k=>{let v=data[k];if(v===true||v==='true')v='Yes';else if(v===false||v==='false')v='No';return[FIELD_MAP[k]||k,v??'—'];}).filter(p=>p[1]!=='—'&&p[1]!==''&&p[1]!==null);
-    if(!pairs.length){pdfdoc.setFont('helvetica','italic');pdfdoc.setFontSize(8);pdfdoc.setTextColor(150,150,150);pdfdoc.text('No data recorded',16,y);y+=5;return;}
-    pdfdoc.autoTable({head:[['Field','Value']],body:pairs,startY:y,margin:{left:14,right:14},styles:{fontSize:8},headStyles:{fillColor:[100,116,139],textColor:255},columnStyles:{0:{cellWidth:80},1:{cellWidth:100}},tableWidth:182});
-    y=pdfdoc.lastAutoTable.finalY+5;
-  });
-  pdfdoc.save(`EPS_Patient_${data.civilId||data.fileNumber||'report'}.pdf`);
-};
-
-// ── ANALYTICS ────────────────────────────────────────────
-const _charts={};
-window.fetchAnalytics=async function(){
-  const snap=await getDocs(collection(db,'patients_full'));
-  const recs=[];snap.forEach(ds=>{recs.push(ds.data());});
-  const n=recs.length;if(!n){alert('No data.');return;}
-  // For investigators, only show their own data
-  const filtered=currentRole==='investigator'?recs.filter(r=>r.enrolledBy===currentUser?.uid):recs;
-  document.getElementById('kpi_total').textContent=filtered.length;
-  const succ=filtered.filter(r=>r.procSuccess==='Yes').length;
-  document.getElementById('kpi_success').textContent=filtered.length?`${Math.round(succ/filtered.length*100)}%`:'—';
-  const complic=filtered.filter(r=>r.cx_stroke==='Yes'||r.cx_cardShock==='Yes'||r.cx_bleeding==='Yes').length;
-  document.getElementById('kpi_complications').textContent=filtered.length?`${Math.round(complic/filtered.length*100)}%`:'—';
-  const afib=filtered.filter(r=>r.hx_afib==='Yes').length;
-  document.getElementById('kpi_afib').textContent=filtered.length?`${Math.round(afib/filtered.length*100)}%`:'—';
-  _buildAnalytics(filtered,recs);
-};
-function _buildAnalytics(filtered,allRecs){
-  const mk=(id,type,labels,data,colors)=>{
-    const cv=document.getElementById(id);if(!cv)return;
-    if(_charts[id]){_charts[id].destroy();}
-    _charts[id]=new Chart(cv,{type,data:{labels,datasets:[{data,backgroundColor:colors,borderColor:colors.map(c=>c+'dd'),borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:type==='pie'||type==='doughnut'}}}});
+  window.editRecord=function(data){
+    const st=data.recordStatus||'draft';
+    ['form','dashboard','admin','analytics','downloads'].forEach(t=>{document.getElementById(`section-${t}`)?.classList.add('hidden');const tb=document.getElementById(`tab-${t}`);if(tb)tb.className='pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition';});
+    document.getElementById('section-form').classList.remove('hidden');
+    document.getElementById('tab-form').className='pb-1 tab-active text-sm transition';
+    document.getElementById('epsForm').reset();
+    document.getElementById('editRecordId').value=data.id;
+    document.getElementById('recordStatus').value=st;
+    document.getElementById('editModeBanner').classList.remove('hidden');
+    Object.keys(data).forEach(key=>{
+      const el=document.getElementsByName(key)[0];if(!el)return;
+      if(el.type==='checkbox')el.checked=!!data[key];
+      else if(el.type==='radio')document.getElementsByName(key).forEach(r=>{if(r.value===data[key])r.checked=true;});
+      else el.value=data[key]||'';
+    });
+    if(data.epReason)onEPR();
+    applyLock(st);goToStep(0);
   };
-  const m=filtered.filter(r=>r.gender==='Male').length,f=filtered.filter(r=>r.gender==='Female').length;
-  mk('genderChart','doughnut',['Male','Female'],[m,f],['#2563eb','#e11d48']);
-  const epMap={};filtered.forEach(r=>{if(r.epReason){epMap[r.epReason]=(epMap[r.epReason]||0)+1;}});
-  mk('procChart','bar',Object.keys(epMap),Object.values(epMap),['#4f46e5','#2563eb','#0891b2','#059669','#d97706','#e11d48']);
-  const dMap={};filtered.forEach(r=>{if(r.dischargeStatus){dMap[r.dischargeStatus]=(dMap[r.dischargeStatus]||0)+1;}});
-  mk('dischargeChart','pie',Object.keys(dMap),Object.values(dMap),['#059669','#e11d48','#d97706','#7c3aed']);
-  const cm=[['AFib',filtered.filter(r=>r.hx_afib==='Yes').length],['HF',filtered.filter(r=>r.hx_hf==='Yes').length],['ICM',filtered.filter(r=>r.hx_icm==='Yes').length],['CAD',filtered.filter(r=>r.hx_cad==='Yes').length],['HTN',filtered.filter(r=>r.hx_htn==='Yes').length],['DM',filtered.filter(r=>r.hx_dm==='Yes').length]].filter(c=>c[1]>0).sort((a,b)=>b[1]-a[1]);
-  mk('comorbChart','bar',cm.map(c=>c[0]),cm.map(c=>c[1]),['#e11d48','#f97316','#f59e0b','#84cc16','#06b6d4','#6366f1']);
-  const cxp=[['Stroke',filtered.filter(r=>r.cx_stroke==='Yes').length],['Shock',filtered.filter(r=>r.cx_cardShock==='Yes').length],['Bleeding',filtered.filter(r=>r.cx_bleeding==='Yes').length],['Lead Dislodge',filtered.filter(r=>r.cx_leadDislodge==='Yes').length]].filter(c=>c[1]>0);
-  if(cxp.length)mk('compChart','bar',cxp.map(c=>c[0]),cxp.map(c=>c[1]),['#dc2626','#e11d48','#f43f5e','#fb7185']);
-  const meds=[['BB',filtered.filter(r=>r.homeMed_betablocker===true||r.homeMed_betablocker==='true').length],['Amiodarone',filtered.filter(r=>r.homeMed_amiodarone===true||r.homeMed_amiodarone==='true').length],['Warfarin',filtered.filter(r=>r.homeMed_warfarin===true||r.homeMed_warfarin==='true').length],['Apixaban',filtered.filter(r=>r.homeMed_apixaban===true||r.homeMed_apixaban==='true').length],['ACE-I',filtered.filter(r=>r.homeMed_acei===true||r.homeMed_acei==='true').length]].filter(c=>c[1]>0).sort((a,b)=>b[1]-a[1]);
-  if(meds.length)mk('medsChart','bar',meds.map(c=>c[0]),meds.map(c=>c[1]),['#059669','#10b981','#34d399','#6ee7b7','#a7f3d0']);
-  // Investigator chart (admin/cso only)
-  if(currentRole==='admin'||currentRole==='cso'){
-    const invMap={};allRecs.forEach(r=>{if(r.enrolledByName){invMap[r.enrolledByName]=(invMap[r.enrolledByName]||0)+1;}});
-    const sorted=Object.entries(invMap).sort((a,b)=>b[1]-a[1]);
-    mk('invChart','bar',sorted.map(e=>e[0]),sorted.map(e=>e[1]),['#7c3aed','#6d28d9','#5b21b6','#4c1d95','#8b5cf6']);
+
+  window.viewRecord=function(data){
+    editRecord(data);
+    document.getElementById('btnSubmit').disabled=true;
+    document.getElementById('btnSubmitFinal').disabled=true;
+    document.getElementById('editModeBanner').classList.add('hidden');
+  };
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // UPDATED: loadRecordsCache() with where filter for investigators
+  // ═══════════════════════════════════════════════════════════════════════════
+  let _allRecordsCache=[];
+  async function loadRecordsCache(){
+    let query = db.collection('patients_full');
+    // Investigators can only fetch their own records
+    if (currentRole === 'investigator') {
+      query = query.where('enrolledBy', '==', currentUser.uid);
+    }
+    const snap = await query.get();
+    _allRecordsCache=[];const civIds={};
+    snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();_allRecordsCache.push(d);civIds[d.civilId]=(civIds[d.civilId]||0)+1;});
+    _allRecordsCache.sort((a,b)=>(a.admissionDate||'').localeCompare(b.admissionDate||''));
+    _allRecordsCache.forEach((d,i)=>{d._no=i+1;});
+    // Removed the old client-side role filter - rules handle it now
   }
-}
-window.toggleAnalytic=function(key){
-  const body=document.getElementById(`body_${key}`);
-  const chev=document.getElementById(`chev_${key}`);
-  if(!body||!chev)return;
-  const isOpen=body.classList.contains('open');
-  body.classList.toggle('open',!isOpen);
-  chev.classList.toggle('open',!isOpen);
-};
+  
+  window.liveSearch=function(){
+    const q=document.getElementById('qs_input').value.trim();
+    if(!q){document.getElementById('qs_results').classList.add('hidden');return;}
+    const results=_allRecordsCache.filter(d=>(d.civilId||'').includes(q)||(d.fileNumber||'').includes(q)||(d.crfNo||'').includes(q));
+    const container=document.getElementById('qs_results');
+    document.getElementById('qs_count').textContent=`${results.length} found`;
+    const list=document.getElementById('qs_list');
+    if(!results.length){list.innerHTML='<div class="px-4 py-6 text-center text-gray-400 text-sm">No records found</div>';}
+    else{
+      list.innerHTML=results.slice(0,8).map(d=>{
+        const comp=calcCompletion(d);
+        return`<div class="px-4 py-3 hover:bg-blue-50 cursor-pointer transition flex items-center justify-between gap-3" onclick='editFromSearch(${JSON.stringify(d).replace(/'/g,"\\'")})'>
+          <div><div class="font-bold text-gray-800 text-sm">#${d._no} — ${d.fullName||'Anonymous'}</div><div class="text-xs text-gray-500 mt-0.5"><span class="mr-3">CID: <b>${d.civilId||'—'}</b></span><span>File: <b>${d.fileNumber||'—'}</b></span></div></div>
+          <div class="flex items-center gap-2 shrink-0"><span class="badge badge-blue">${d.epReason||'—'}</span>${statusBadge(d.recordStatus||'draft')}<button class="btn btn-yellow text-xs px-2 py-1"><i class="fas fa-edit"></i></button></div>
+        </div>`;
+      }).join('');
+    }
+    container.classList.remove('hidden');
+  };
+  window.clearQS=function(){document.getElementById('qs_input').value='';document.getElementById('qs_results').classList.add('hidden');};
+  window.editFromSearch=function(data){clearQS();editRecord(data);};
+  document.addEventListener('click',e=>{if(!document.getElementById('mainSearchBar')?.contains(e.target))document.getElementById('qs_results')?.classList.add('hidden');});
 
-// Boot
-loadRecordsCache();
-} // end initApp
+  // User Management
+  window.loadUserList=async function(){
+    const tbody=document.getElementById('userTableBody');
+    if(!tbody)return;
+    tbody.innerHTML='<tr><td colspan="6" class="text-center py-6 text-gray-400"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</td></tr>';
+    try{
+      const snap=await db.collection('users').get();
+      const rows=[];
+      snap.forEach(ds=>{const u=ds.data();u.id=ds.id;rows.push(u);});
+      const patSnap=await db.collection('patients_full').get();
+      const counts={};
+      patSnap.forEach(ds=>{const uid=ds.data().enrolledBy;if(uid)counts[uid]=(counts[uid]||0)+1;});
+      const invOpts=rows.filter(u=>u.role==='investigator'||u.role==='cso').map(u=>`<option value="${u.id}">${u.displayName||u.email}</option>`).join('');
+      ['filterInvestigatorAdmin','exportInvestigator'].forEach(id=>{
+        const el=document.getElementById(id);
+        if(el){el.innerHTML='<option value="">All Investigators</option>'+invOpts;}
+      });
+      if(!rows.length){tbody.innerHTML='<tr><td colspan="6" class="text-center py-6 text-gray-400">No users found</td></tr>';return;}
+      tbody.innerHTML=rows.map(u=>`
+        <tr>
+          <td><div class="font-bold text-gray-800">${u.displayName||'—'}</div></td>
+          <td class="text-xs text-gray-500">${u.email||'—'}</td>
+          <td><span class="role-${u.role||'investigator'}">${(u.role||'investigator').toUpperCase()}</span></td>
+          <td class="font-bold text-blue-700 text-center">${counts[u.id]||0}</td>
+          <td>${u.active?'<span class="badge badge-green">Active</span>':'<span class="badge badge-red">Disabled</span>'}</td>
+          <td style="white-space:nowrap;">
+            <button onclick="editUserDoc('${u.id}','${(u.displayName||'').replace(/'/g,"\\'")}','${u.email||''}','${u.role||'investigator'}')" class="btn btn-yellow text-xs px-2 py-1 mr-1" title="Edit"><i class="fas fa-edit"></i></button>
+            <button onclick="toggleUserActive('${u.id}',${!u.active})" class="btn ${u.active?'btn-red':'btn-green'} text-xs px-2 py-1 mr-1" title="${u.active?'Disable':'Enable'}">${u.active?'<i class="fas fa-ban"></i>':'<i class="fas fa-check"></i>'}</button>
+            <button onclick="deleteUserDoc('${u.id}','${(u.displayName||u.email||'').replace(/'/g,"\\'")}')" class="btn btn-gray text-xs px-2 py-1" title="Delete"><i class="fas fa-trash"></i></button>
+          </td>
+        </tr>`).join('');
+    }catch(e){
+      console.error('loadUserList error:',e);
+      tbody.innerHTML=`<tr><td colspan="6" class="text-center py-6 text-red-500">Error loading users: ${e.message}</td></tr>`;
+    }
+  };
 
-// Boot: run initApp when both DOM and Firebase are ready
-function _tryBoot() {
-  if (window._fbReady && _domReady) initApp();
+  window.showAddUserForm=function(){
+    const f=document.getElementById('addUserForm');
+    f.style.display=f.style.display==='none'?'block':'none';
+  };
+
+  window.createUserDocument=async function(){
+    const uid=document.getElementById('newUserUID').value.trim();
+    const name=document.getElementById('newUserName').value.trim();
+    const email=document.getElementById('newUserEmail').value.trim();
+    const role=document.getElementById('newUserRole').value;
+    if(!uid||!name||!email){alert('All fields required.');return;}
+    if(uid.length<20){alert('UID looks too short. Copy it directly from Firebase Auth.');return;}
+    try{
+      await setDoc(doc(db,'users',uid),{displayName:name,email,role,active:true,createdAt:new Date()});
+      alert(`User "${name}" created successfully!`);
+      document.getElementById('addUserForm').style.display='none';
+      ['newUserUID','newUserName','newUserEmail'].forEach(id=>{document.getElementById(id).value='';});
+      loadUserList();
+    }catch(e){console.error(e);alert('Failed to create user: '+e.message);}
+  };
+
+  window.toggleUserActive=async function(uid,newState){
+    if(!confirm(`${newState?'Enable':'Disable'} this user?`))return;
+    try{await db.collection('users').doc(uid).update({active:newState});loadUserList();}catch(e){alert('Failed: '+e.message);}
+  };
+
+  window.deleteUserDoc=async function(uid,name){
+    if(!confirm(`Remove "${name}" from users? (Does not delete their Firebase Auth account)`))return;
+    try{await db.collection('users').doc(uid).delete();loadUserList();}catch(e){alert('Failed: '+e.message);}
+  };
+
+  window.editUserDoc=function(uid,name,email,role){
+    const newName=prompt('Display Name:',name);
+    if(newName===null)return;
+    const newRole=prompt('Role (admin / cso / investigator):',role);
+    if(newRole===null)return;
+    if(!['admin','cso','investigator'].includes(newRole)){alert('Invalid role. Use: admin, cso, or investigator');return;}
+    db.collection('users').doc(uid).update({displayName:newName,role:newRole})
+      .then(()=>{alert('User updated!');loadUserList();})
+      .catch(e=>alert('Failed: '+e.message));
+  };
+
+  // Downloads
+  async function loadExportFilters(){
+    const snap=await getDocs(collection(db,'users'));
+    const opts=['<option value="">All Investigators</option>'];
+    snap.forEach(ds=>{const u=ds.data();if(u.role==='investigator'||u.role==='cso')opts.push(`<option value="${ds.id}">${u.displayName||u.email}</option>`);});
+    const el=document.getElementById('exportInvestigator');if(el)el.innerHTML=opts.join('');
+  }
+
+  async function getFilteredExportData(){
+    const snap=await getDocs(collection(db,'patients_full'));
+    const df=document.getElementById('exportDateFrom')?.value||'';
+    const dt=document.getElementById('exportDateTo')?.value||'';
+    const inv=document.getElementById('exportInvestigator')?.value||'';
+    const ep=document.getElementById('exportEpReason')?.value||'';
+    const all=[];
+    snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();all.push(d);});
+    all.sort((a,b)=>(a.admissionDate||'').localeCompare(b.admissionDate||''));
+    all.forEach((d,i)=>{d._no=i+1;});
+    return all.filter(d=>{
+      if(df&&d.admissionDate&&d.admissionDate<df)return false;
+      if(dt&&d.admissionDate&&d.admissionDate>dt)return false;
+      if(inv&&d.enrolledBy!==inv)return false;
+      if(ep&&d.epReason!==ep)return false;
+      return true;
+    });
+  }
+
+  window.searchForSinglePDF=async function(){
+    const q=document.getElementById('singlePatientSearch').value.trim();
+    if(!q){alert('Enter a Civil ID or File Number.');return;}
+    const snap=await getDocs(collection(db,'patients_full'));
+    const results=[];
+    snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();
+      if((d.civilId||'').includes(q)||(d.fileNumber||'').includes(q))results.push(d);
+    });
+    const div=document.getElementById('singlePatientResult');
+    if(!results.length){div.innerHTML='<div class="text-sm text-red-500 mt-2">No patient found.</div>';return;}
+    div.innerHTML=results.map(d=>`
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;margin-top:8px;">
+        <div><div class="font-bold text-sm">${d.fullName||'Anonymous'}</div><div class="text-xs text-gray-500">CID: ${d.civilId||'—'} | File: ${d.fileNumber||'—'} | ${d.admissionDate||'—'}</div></div>
+        <button onclick='exportSinglePDF(${JSON.stringify(d).replace(/'/g,"\\'")})' class="btn btn-red text-xs px-3 py-1.5"><i class="fas fa-file-pdf mr-1"></i>PDF</button>
+      </div>`).join('');
+  };
+
+  // Field Map
+  const FIELD_MAP={
+    nameFirst:'First Name',nameMiddle:'Middle Name',nameLast:'Last Name',civilId:'Civil ID',crfNo:'CRF Number',fileNumber:'File Number',
+    gender:'Gender',nationality:'Nationality',yob:'Year of Birth',estimatedAge:'Age (yrs)',admissionDate:'Admission Date',
+    enrolledByName:'Enrolled By',epReason:'EP Lab Reason',pacemakerType:'Pacemaker Type',patientOrigin:'Patient Origin',
+    sysBp:'Systolic BP',diaBp:'Diastolic BP',hr:'Heart Rate',weight:'Weight (kg)',height:'Height (cm)',
+    hx_afib:'Atrial Fibrillation',afibClassification:'AFib Classification',afibChads:'CHA₂DS₂-VASc',afibHasBled:'HAS-BLED',
+    hx_cardiacArrest:'Cardiac Arrest',hx_icm:'Ischemic CMP',icmTimeframe:'ICM Timeframe',
+    hx_hf:'Heart Failure',hfType:'HF Type',hx_cad:'CAD',hx_mi:'Prior MI',hx_valve:'Valvular HD',hx_cvd:'Cerebrovascular Disease',
+    hx_lung:'Chronic Lung Disease',hx_dialysis:'On Dialysis',hx_dm:'Diabetes Mellitus',hx_htn:'Hypertension',
+    hx_ssd:'Sudden Death Syndrome',hx_struct:'Structural Abnormalities',hx_syncope:'Syncope',
+    hx_svt:'Paroxysmal SVT',hx_vf:'VF',hx_vt:'VT',hx_avp:'Aortic Valve Procedure',hx_mvp:'Mitral Valve Procedure',
+    hx_ca:'Coronary Angiography',hx_cabg:'Prior CABG',hx_pci:'Prior PCI',hx_cied:'Prior CIED',
+    inv_ecg:'ECG',ecgAtrialRhythm:'ECG Atrial Rhythm',ecgVentRhythm:'ECG Vent Rhythm',ecgQRS:'QRS (msec)',
+    inv_holter:'Holter',inv_tte:'TTE',lvef:'LVEF (%)',lvesd:'LVESD (mm)',lvedd:'LVEDD (mm)',rvsp:'RVSP (mmHg)',
+    inv_sevValve:'Severe Valve Disease',sevMR:'Severe MR',sevAS:'Severe AS',sevAR:'Severe AR',sevTR:'Severe TR',
+    inv_tee:'TEE',teeThrombus:'TEE Atrial Thrombus',inv_laa:'LAA Morphology',
+    inv_cardiacCT:'Cardiac CT',inv_cmr:'Cardiac MRI',
+    creatInit:'Creatinine Initial',creatPeak:'Creatinine Peak',hgbInit:'Hgb Initial',hgbLowest:'Hgb Lowest',
+    sodium:'Sodium',potassium:'Potassium',magnesium:'Magnesium',inr:'INR',
+    procStartDate:'Procedure Date',procStartTime:'Proc Start Time',procEndTime:'Proc End Time',operatorName:'Operator',
+    eps_avnrt:'EPS: AVNRT',eps_wpw:'EPS: WPW',eps_aflutter:'EPS: AFl',eps_afib:'EPS: AFib',eps_vt:'EPS: VT',eps_pvcs:'EPS: PVCs',
+    laaoDeviceType:'LAAO Device',laaoOutcome:'LAAO Outcome',
+    cx_cardArrest:'CX: Cardiac Arrest',cx_stroke:'CX: Stroke',strokeType:'CX: Stroke Type',
+    cx_cardShock:'CX: Cardiogenic Shock',scaiStage:'SCAI Stage',cx_bleeding:'CX: Bleeding',bleedType:'CX: Bleed Type',
+    cx_mi:'CX: MI',cx_devEmbol:'CX: Device Embolization',cx_leadDislodge:'CX: Lead Dislodge',
+    procSuccess:'Procedure Success',postECGrhythm:'Post-Proc ECG Rhythm',
+    dischargeDate:'Discharge Date',dischargeStatus:'Discharge Status',causeOfDeath:'Cause of Death',dischargeType:'Discharge Type',
+    recordStatus:'Record Status',
+  };
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // UPDATED: SPSS Export with binary 1/0/"" and full checkbox fields in codebook
+  // ═══════════════════════════════════════════════════════════════════════════
+  const SPSS_VARS={
+    // Core identifiers
+    _no:'CaseNo',nameFirst:'PtFirst',nameLast:'PtLast',civilId:'CivilID',crfNo:'CRFNo',fileNumber:'FileNo',
+    enrolledByName:'Investigator',gender:'Gender',nationality:'Natl',yob:'YOB',estimatedAge:'Age',admissionDate:'AdmDate',recordStatus:'Status',
+    epReason:'EPReason',patientOrigin:'PtOrigin',
+    // Vitals
+    sysBp:'SysBP',diaBp:'DiaBP',hr:'HR',weight:'Weight',height:'Height',
+    // History - binary fields
+    hx_afib:'HxAFib',afibChads:'CHADS',afibHasBled:'HASBLED',hx_cardiacArrest:'HxCA',hx_icm:'HxICM',
+    hx_hf:'HxHF',hfType:'HFType',hx_cad:'HxCAD',hx_mi:'HxMI',hx_valve:'HxValve',hx_cvd:'HxCVD',
+    hx_lung:'HxLung',hx_dialysis:'HxDialys',hx_dm:'HxDM',hx_htn:'HxHTN',hx_ssd:'HxSSD',hx_struct:'HxStruct',
+    hx_syncope:'HxSyncop',hx_svt:'HxSVT',hx_vf:'HxVF',hx_vt:'HxVT',hx_cied:'HxCIED',
+    // SSD Syndromes (checkboxes) - each gets own variable
+    ssd_brugada:'SSDBrug',ssd_cpvt:'SSDCPVT',ssd_idiopathic:'SSDIdio',ssd_longqt:'SSDLongQT',
+    ssd_shortqt:'SSDShortQT',ssd_unknown:'SSDUnkn',
+    // Structural abnormalities
+    struct_arvc:'StrARVC',struct_congenital:'StrCong',struct_hcm:'StrHCM',struct_infiltrative:'StrInfil',
+    struct_lv:'StrLV',
+    // Investigations
+    inv_ecg:'InvECG',ecgAtrialRhythm:'ECGAtrR',ecgVentRhythm:'ECGVenR',ecgQRS:'ECGQRS',
+    inv_holter:'InvHoltr',inv_tte:'InvTTE',lvef:'LVEF',lvesd:'LVESD',lvedd:'LVEDD',rvsp:'RVSP',
+    inv_sevValve:'SevValv',sevMR:'SevMR',sevAS:'SevAS',sevAR:'SevAR',sevTR:'SevTR',
+    inv_tee:'InvTEE',inv_cardiacCT:'InvCT',inv_cmr:'InvCMR',
+    // Labs
+    creatInit:'CrInit',creatPeak:'CrPeak',hgbInit:'HgbIn',hgbLowest:'HgbLow',sodium:'Na',potassium:'K',magnesium:'Mg',inr:'INR',
+    // Procedure
+    procStartDate:'ProcDate',operatorName:'Operator',
+    // CIED Types (checkboxes) - each gets own variable
+    cied_single:'CIEDSing',cied_dual:'CIEDDual',cied_crtp:'CIEDCRTP',cied_leadlessSingle:'CIEDLeadS',
+    cied_leadlessDual:'CIEDLeadD',cied_his:'CIEDHis',cied_lbbb:'CIEDLBBB',cied_icdSingle:'CIEDICDS',
+    cied_icdDual:'CIEDICDD',cied_crtd:'CIEDCRTD',cied_evicd:'CIEDEVICD',cied_sicd:'CIEDSICD',cied_unknown:'CIEDUnkn',
+    // EPS
+    eps_avnrt:'EPSAVNRT',eps_wpw:'EPSWPW',eps_afib:'EPSAFib',eps_vt:'EPSVT',eps_pvcs:'EPSPVCs',
+    eps_aflutter:'EPSAFl',epsTransseptal:'EPSTrans',epsICE:'EPSICE',epsAblTime:'EPSAblTm',epsFluoroTime:'EPSFluoro',
+    // LAAO
+    laaoDeviceType:'LADType',laaoDeviceSize:'LADSize',laaoPASS:'LADPass',laaoOutcome:'LAOutcm',
+    laao_nonvalvular:'LAANonVal',laao_highBleed:'LAAHighBl',laao_contraOAC:'LAAContra',laao_priorBleed:'LAAPrior',
+    // Complications
+    cx_cardArrest:'CXCA',cx_stroke:'CXStroke',cx_cardShock:'CXShock',scaiStage:'SCAI',
+    cx_bleeding:'CXBleed',bleedType:'CXBlT',cx_mi:'CXMI',cx_devEmbol:'CXDevEmb',cx_pleuralEff:'CXPleural',
+    cx_leadDislodge:'CXLeadDx',cx_tamponade1:'CXTamp',cx_pulEdema:'CXPulEd',
+    // Outcomes
+    procSuccess:'ProcSucc',postECGrhythm:'PostECG',dischargeStatus:'DischSt',causeOfDeath:'DthCause',dischargeType:'DischTyp',
+    // Home Medications (checkboxes) - each gets own variable
+    homeMed_amiodarone:'HMAmio',homeMed_disopyramide:'HMDisopy',homeMed_flecainide:'HMFlec',homeMed_propafenone:'HMPropaf',
+    homeMed_sotalol:'HMSotal',homeMed_verapamil:'HMVerap',homeMed_diltiazem:'HMDilti',homeMed_warfarin:'HMWarf',
+    homeMed_dabigatran:'HMDabig',homeMed_apixaban:'HMApixa',homeMed_rivaroxaban:'HMRivar',homeMed_edoxaban:'HMEdox',
+    homeMed_lmwh:'HMLMWH',homeMed_aspirin:'HMAspir',homeMed_clopidogrel:'HMClopi',homeMed_ticagrelor:'HMTicag',
+    homeMed_acei:'HMACEI',homeMed_arb:'HMARB',homeMed_arni:'HMARNI',homeMed_sglt:'HMSGLT',
+    homeMed_betablocker:'HMBB',homeMed_mra:'HMMRA',homeMed_digoxin:'HMDigox',homeMed_loopdiuretic:'HMLoop',
+    // Discharge Medications (checkboxes) - each gets own variable
+    dcMed_amiodarone:'DCAmio',dcMed_disopyramide:'DCDisopy',dcMed_flecainide:'DCFlec',dcMed_propafenone:'DCPropaf',
+    dcMed_sotalol:'DCSotal',dcMed_verapamil:'DCVerap',dcMed_diltiazem:'DCDilti',dcMed_warfarin:'DCWarf',
+    dcMed_dabigatran:'DCDabig',dcMed_apixaban:'DCApixa',dcMed_rivaroxaban:'DCRivar',dcMed_edoxaban:'DCEdox',
+    dcMed_lmwh:'DCLMWH',dcMed_aspirin:'DCAspir',dcMed_clopidogrel:'DCClopi',dcMed_ticagrelor:'DCTicag',
+    dcMed_acei:'DCACEI',dcMed_arb:'DCARB',dcMed_arni:'DCARNI',dcMed_sglt:'DCSGLT',
+    dcMed_betablocker:'DCBB',dcMed_mra:'DCMRA',dcMed_digoxin:'DCDigox',dcMed_loopdiuretic:'DCLoop',
+    // Procedure indications (checkboxes)
+    crtInd_surv:'CRTIndSurv',crtInd_eps:'CRTIndEPS',crtInd_icmEF:'CRTIndICM',crtInd_nicmEF:'CRTIndNICM',
+    tpm_chb:'TPMCHB',tpm_mobitz2:'TPMMobitz',tpm_altBBB:'TPMAltBBB',tpm_sss:'TPMSSS',
+    ppmInd_21block:'PPM21Blk',ppmInd_mobitz2:'PPMMobitz',ppmInd_chb:'PPMCHB',ppmInd_sss:'PPMSSS',
+  };
+
+  // Helper to convert value to SPSS binary format: 1 / 0 / "" (blank = system missing)
+  function toSpssBinary(val) {
+    if (val === true || val === 'true' || val === 'Yes' || val === 'yes' || val === 1) return 1;
+    if (val === false || val === 'false' || val === 'No' || val === 'no' || val === 0) return 0;
+    return ''; // blank = system missing in SPSS
+  }
+
+  // Helper to determine if a field is binary
+  function isBinaryField(fieldName) {
+    const binaryPatterns = [
+      'hx_', 'ssd_', 'struct_', 'cied_', 'inv_', 'sev', 'cx_', 'comp_',
+      'homeMed_', 'dcMed_', 'laao_', 'crtInd_', 'tpm_', 'ppmInd_',
+      'arrest', 'icm', 'hf', 'cabg', 'pci', 'ca', 'avp', 'mvp', 'syncope'
+    ];
+    return binaryPatterns.some(p => fieldName.includes(p));
+  }
+
+  window.exportSPSS=async function(){
+    const data=await getFilteredExportData();
+    if(!data.length){alert('No data to export.');return;}
+    
+    const vars=Object.keys(SPSS_VARS);
+    const dataRows=[vars.map(v=>SPSS_VARS[v])];
+    
+    data.forEach(r=>{
+      dataRows.push(vars.map(v=>{
+        let val=r[v];
+        // Binary fields export 1 / 0 / "" (blank = system missing)
+        if (isBinaryField(v) || typeof val === 'boolean') {
+          return toSpssBinary(val);
+        }
+        if(val===undefined||val===null)return '';
+        return val;
+      }));
+    });
+    
+    // Build comprehensive codebook with all checkbox fields
+    const codebook=[['Variable','Label','Type','Values','Notes']];
+    vars.forEach(v=>{
+      const label=FIELD_MAP[v]||v;
+      const sample=data[0]?.[v];
+      let type, values, notes='';
+      
+      if (isBinaryField(v) || typeof sample === 'boolean' || sample === true || sample === false) {
+        type = 'Numeric (Binary)';
+        values = '1=Yes, 0=No, (blank)=System Missing (never asked)';
+        if (v.startsWith('ssd_')) notes = 'SSD Syndrome checkbox';
+        if (v.startsWith('cied_')) notes = 'CIED Type checkbox';
+        if (v.startsWith('homeMed_')) notes = 'Home Medication checkbox';
+        if (v.startsWith('dcMed_')) notes = 'Discharge Medication checkbox';
+        if (v.startsWith('laao_')) notes = 'LAAO Indication checkbox';
+        if (v.startsWith('crtInd_')) notes = 'CRT Indication checkbox';
+        if (v.startsWith('tpm_')) notes = 'Temp PM Indication checkbox';
+        if (v.startsWith('ppmInd_')) notes = 'Perm PM Indication checkbox';
+      } else if (typeof sample === 'number') {
+        type = 'Numeric';
+        values = '';
+      } else {
+        type = 'String';
+        values = '';
+      }
+      codebook.push([SPSS_VARS[v],label,type,values,notes]);
+    });
+    
+    const wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(dataRows),'SPSS_Data');
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(codebook),'Codebook');
+    XLSX.writeFile(wb,'EPS_SPSS_Export.xlsx');
+  };
+
+  window.exportToExcel=async function(){
+    const data=await getFilteredExportData();
+    if(!data.length){alert('No data to export.');return;}
+    const allFields=Object.keys(FIELD_MAP);
+    const mkSheet=(fields)=>{
+      const hdr=fields.map(f=>FIELD_MAP[f]||f);
+      const rows=data.map(r=>fields.map(f=>{let v=r[f];if(v===true)return'Yes';if(v===false)return'No';return v??'';}));
+      return XLSX.utils.aoa_to_sheet([hdr,...rows]);
+    };
+    const idFields=['_no','nameFirst','nameMiddle','nameLast','civilId','crfNo','fileNumber','gender','nationality','yob','estimatedAge','admissionDate','recordStatus','epReason','enrolledByName','patientOrigin'];
+    const hxFields=allFields.filter(f=>f.startsWith('hx_')||f.startsWith('arrest')||f.startsWith('icm')||f.startsWith('hf')||f.startsWith('afib')||['sysBp','diaBp','hr','weight','height'].includes(f));
+    const invFields=allFields.filter(f=>f.startsWith('inv_')||['lvef','lvesd','lvedd','rvsp','ecgAtrialRhythm','ecgVentRhythm','ecgQRS','creatInit','creatPeak','hgbInit','hgbLowest','sodium','potassium','magnesium','inr'].includes(f));
+    const outcFields=allFields.filter(f=>f.startsWith('cx_')||f.startsWith('bleed')||['procStartDate','procStartTime','procEndTime','operatorName','procSuccess','postECGrhythm','dischargeDate','dischargeStatus','causeOfDeath','dischargeType'].includes(f));
+    const wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,mkSheet(idFields),'Demographics');
+    XLSX.utils.book_append_sheet(wb,mkSheet(hxFields),'History & Vitals');
+    XLSX.utils.book_append_sheet(wb,mkSheet(invFields),'Investigations & Labs');
+    XLSX.utils.book_append_sheet(wb,mkSheet(outcFields),'Procedure & Outcome');
+    XLSX.writeFile(wb,'EPS_Registry_Export.xlsx');
+  };
+
+  window.exportToPDF=async function(){
+    const data=await getFilteredExportData();
+    if(!data.length){alert('No data to export.');return;}
+    const{jsPDF}=window.jspdf;const pdfdoc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+    pdfdoc.setFontSize(14);pdfdoc.setFont('helvetica','bold');
+    pdfdoc.text('EPS Registry – Mubarak Alkabeer Hospital',14,14);
+    pdfdoc.setFontSize(9);pdfdoc.setFont('helvetica','normal');
+    pdfdoc.text(`Generated: ${new Date().toLocaleDateString()} | ${data.length} records`,14,20);
+    const cols=['#','Patient','Civil ID','EP Reason','Investigator','Admission','Status','Completion'];
+    const rows=data.map(r=>{const c=calcCompletion(r);return[r._no||'',r.fullName||'Anonymous',r.civilId||'—',r.epReason||'—',r.enrolledByName||'—',r.admissionDate||'—',(r.recordStatus||'draft').toUpperCase(),`${c.pct}%`];});
+    pdfdoc.autoTable({head:[cols],body:rows,startY:26,styles:{fontSize:8},headStyles:{fillColor:[30,64,175],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[248,250,252]}});
+    pdfdoc.save('EPS_Registry_Summary.pdf');
+  };
+
+  window.exportSinglePDF=function(data){
+    const{jsPDF}=window.jspdf;const pdfdoc=new jsPDF({unit:'mm',format:'a4'});
+    const comp=calcCompletion(data);
+    pdfdoc.setFillColor(30,64,175);pdfdoc.rect(0,0,210,22,'F');
+    pdfdoc.setTextColor(255,255,255);pdfdoc.setFontSize(13);pdfdoc.setFont('helvetica','bold');
+    pdfdoc.text('EPS Registry – Mubarak Alkabeer Hospital',14,10);
+    pdfdoc.setFontSize(9);pdfdoc.setFont('helvetica','normal');
+    pdfdoc.text('Advanced Electrophysiology Registry',14,16);
+    pdfdoc.setTextColor(30,30,30);
+    pdfdoc.setFontSize(14);pdfdoc.setFont('helvetica','bold');
+    pdfdoc.text(data.fullName||'Anonymous Patient',14,30);
+    pdfdoc.setFontSize(9);pdfdoc.setFont('helvetica','normal');
+    pdfdoc.text([
+      `Civil ID: ${data.civilId||'—'}  |  File: ${data.fileNumber||'—'}  |  CRF: ${data.crfNo||'—'}`,
+      `Gender: ${data.gender||'—'}  |  Age: ${data.estimatedAge||'—'}  |  Admission: ${data.admissionDate||'—'}`,
+      `EP Reason: ${data.epReason||'—'}  |  Investigator: ${data.enrolledByName||'—'}  |  Status: ${(data.recordStatus||'draft').toUpperCase()}  |  Completion: ${comp.pct}%`,
+    ],14,38);
+    let y=52;
+    const sections=[
+      {title:'Procedure Details',keys:['procStartDate','procStartTime','procEndTime','operatorName','procSuccess']},
+      {title:'History Summary',keys:['hx_afib','hx_icm','hx_hf','hx_cad','hx_dm','hx_htn','hx_cied']},
+      {title:'Investigations',keys:['inv_ecg','inv_tte','lvef','creatInit','hgbInit','sodium','potassium','inr']},
+      {title:'Complications',keys:['cx_stroke','cx_cardArrest','cx_bleeding','cx_cardShock','cx_mi']},
+      {title:'Discharge',keys:['dischargeDate','dischargeStatus','dischargeType','causeOfDeath']},
+    ];
+    sections.forEach(sec=>{
+      if(y>260){pdfdoc.addPage();y=20;}
+      pdfdoc.setFillColor(240,244,248);pdfdoc.rect(12,y-4,186,8,'F');
+      pdfdoc.setFont('helvetica','bold');pdfdoc.setFontSize(9);pdfdoc.setTextColor(30,64,175);
+      pdfdoc.text(sec.title,14,y+0.5);y+=7;
+      const pairs=sec.keys.map(k=>{let v=data[k];if(v===true||v==='true')v='Yes';else if(v===false||v==='false')v='No';return[FIELD_MAP[k]||k,v??'—'];}).filter(p=>p[1]!=='—'&&p[1]!==''&&p[1]!==null);
+      if(!pairs.length){pdfdoc.setFont('helvetica','italic');pdfdoc.setFontSize(8);pdfdoc.setTextColor(150,150,150);pdfdoc.text('No data recorded',16,y);y+=5;return;}
+      pdfdoc.autoTable({head:[['Field','Value']],body:pairs,startY:y,margin:{left:14,right:14},styles:{fontSize:8},headStyles:{fillColor:[100,116,139],textColor:255},columnStyles:{0:{cellWidth:80},1:{cellWidth:100}},tableWidth:182});
+      y=pdfdoc.lastAutoTable.finalY+5;
+    });
+    pdfdoc.save(`EPS_Patient_${data.civilId||data.fileNumber||'report'}.pdf`);
+  };
+
+  // Analytics
+  const charts={};
+  window.toggleAnalytic=function(id){const body=document.getElementById('body_'+id);const chev=document.getElementById('chev_'+id);body.classList.toggle('open');chev.classList.toggle('open');};
+  window.fetchAnalytics=async function(){
+    const snap=await getDocs(collection(db,'patients_full'));
+    const data=[];snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();data.push(d);});
+    if(!data.length){alert('No data available for analytics.');return;}
+    document.getElementById('kpi_total').textContent=data.length;
+    const successRate=data.filter(d=>d.procSuccess==='Yes').length/data.length*100;
+    document.getElementById('kpi_success').textContent=successRate.toFixed(0)+'%';
+    const cxRate=data.filter(d=>['cx_stroke','cx_cardArrest','cx_bleeding','cx_cardShock','cx_mi'].some(k=>d[k]==='Yes'||d[k]===true)).length/data.length*100;
+    document.getElementById('kpi_complications').textContent=cxRate.toFixed(0)+'%';
+    const afibRate=data.filter(d=>d.hx_afib==='Yes'||d.hx_afib===true).length/data.length*100;
+    document.getElementById('kpi_afib').textContent=afibRate.toFixed(0)+'%';
+    const gender={Male:0,Female:0,Unknown:0};data.forEach(d=>{if(d.gender==='Male')gender.Male++;else if(d.gender==='Female')gender.Female++;else gender.Unknown++;});
+    const epReason={};data.forEach(d=>{const r=d.epReason||'Not specified';epReason[r]=(epReason[r]||0)+1;});
+    const discharge={};data.forEach(d=>{const s=d.dischargeStatus||'Unknown';discharge[s]=(discharge[s]||0)+1;});
+    const comorb={};['hx_afib','hx_cad','hx_dm','hx_htn','hx_hf','hx_icm','hx_cied'].forEach(k=>{comorb[FIELD_MAP[k]||k]=data.filter(d=>d[k]==='Yes'||d[k]===true).length;});
+    const cx={};['cx_stroke','cx_cardArrest','cx_bleeding','cx_cardShock','cx_mi','cx_devEmbol','cx_leadDislodge','cx_tamponade1'].forEach(k=>{cx[FIELD_MAP[k]||k]=data.filter(d=>d[k]==='Yes'||d[k]===true).length;});
+    const meds={};const medFields=['homeMed_amiodarone','homeMed_warfarin','homeMed_apixaban','homeMed_aspirin','homeMed_betablocker','homeMed_acei','homeMed_arb'];
+    medFields.forEach(k=>{meds[FIELD_MAP[k]||k]=data.filter(d=>d[k]===true).length;});
+    const invCounts={};data.forEach(d=>{const n=d.enrolledByName||'Unknown';invCounts[n]=(invCounts[n]||0)+1;});
+    renderChart('genderChart','pie','Gender Distribution',Object.keys(gender),Object.values(gender),['#3b82f6','#ec4899','#94a3b8']);
+    renderChart('procChart','bar','EP Lab Reasons',Object.keys(epReason),Object.values(epReason),['#6366f1','#8b5cf6','#a855f7','#d946ef']);
+    renderChart('dischargeChart','bar','Discharge Outcomes',Object.keys(discharge),Object.values(discharge),['#22c55e','#eab308','#ef4444','#94a3b8']);
+    renderChart('comorbChart','bar','Comorbidities',Object.keys(comorb),Object.values(comorb),['#f59e0b','#ef4444','#3b82f6','#10b981','#8b5cf6','#ec4899','#06b6d4']);
+    renderChart('compChart','bar','Complications',Object.keys(cx),Object.values(cx),['#ef4444','#dc2626','#b91c1c','#991b1b','#7f1d1d','#f97316','#ea580c']);
+    renderChart('medsChart','bar','Home Medications',Object.keys(meds),Object.values(meds),['#10b981','#059669','#047857','#065f46','#0d9488','#0f766e','#115e59']);
+    renderChart('invChart','bar','Cases by Investigator',Object.keys(invCounts),Object.values(invCounts),['#8b5cf6','#7c3aed','#6d28d9','#5b21b6','#4c1d95']);
+    ['gender','proc','discharge','comorb','comp','meds','inv'].forEach(id=>{const b=document.getElementById('body_'+id);const c=document.getElementById('chev_'+id);if(b)b.classList.add('open');if(c)c.classList.add('open');});
+  };
+  function renderChart(id,type,title,labels,data,colors){
+    const ctx=document.getElementById(id);if(!ctx)return;const existing=charts[id];if(existing)existing.destroy();
+    const cfg={type:type==='pie'?'doughnut':'bar',data:{labels,datasets:[{data,backgroundColor:colors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:type==='pie'},title:{display:true,text:title,font:{size:13,weight:'bold'}}},scales:type==='pie'?{x:{display:false},y:{display:false}}:{x:{grid:{display:false}},y:{beginAtZero:true,grid:{color:'#f1f5f9'}}}}};
+    charts[id]=new Chart(ctx,cfg);
+  }
+
+  // Initialize
+  if(window._fbReady){initApp();}else{window.addEventListener('firebaseReady',initApp);}
 }
-let _domReady = false;
-window.addEventListener('firebaseReady', _tryBoot);
-document.addEventListener('DOMContentLoaded', function() {
-  _domReady = true;
-  _tryBoot();
-});
+
+// Initialize on load
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',()=>{if(window._fbReady)initApp();});}else{if(window._fbReady)initApp();}
 </script>
 
 </body>
