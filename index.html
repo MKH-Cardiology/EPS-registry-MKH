@@ -821,6 +821,38 @@ let currentUser = null;
 let currentRole = null;
 let currentUserName = '';
 
+// ── doLogin MUST be global so onclick works before Firebase loads ──
+window.doLogin = async function() {
+  const e = document.getElementById('loginEmail').value.trim();
+  const p = document.getElementById('loginPassword').value;
+  if (!e || !p) { showLoginError('Enter email and password.'); return; }
+  if (!window._signIn) { showLoginError('App still loading, please wait...'); return; }
+  const btn = document.getElementById('loginBtn');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Signing in…';
+  btn.disabled = true;
+  try {
+    await window._signIn(e, p);
+  } catch(err) {
+    console.error('Login error:', err);
+    const msg = err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found'
+      ? 'Invalid email or password.' : 'Login failed: ' + (err.message||err.code);
+    showLoginError(msg);
+    btn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i> Sign In';
+    btn.disabled = false;
+  }
+};
+
+window.doSignOut = async function() {
+  if (!confirm('Sign out?')) return;
+  await window._signOut();
+  location.reload();
+};
+
+function showLoginError(msg) {
+  const el = document.getElementById('loginError');
+  if(el){ el.textContent = msg; el.style.display = 'block'; }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
 function initApp() {
   db = window._getDb();
@@ -852,32 +884,7 @@ window._onAuthStateChanged(async (user) => {
   }
 });
 
-window.doLogin = async function() {
-  const e = document.getElementById('loginEmail').value.trim();
-  const p = document.getElementById('loginPassword').value;
-  if (!e || !p) { showLoginError('Enter email and password.'); return; }
-  const btn = document.getElementById('loginBtn');
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Signing in…';
-  btn.disabled = true;
-  try {
-    await window._signIn(e, p);
-  } catch(err) {
-    showLoginError('Invalid email or password.');
-    btn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i> Sign In';
-    btn.disabled = false;
-  }
-};
-
-function showLoginError(msg) {
-  const el = document.getElementById('loginError');
-  el.textContent = msg; el.style.display = 'block';
-}
-
-window.doSignOut = async function() {
-  if (!confirm('Sign out?')) return;
-  await window._signOut();
-  location.reload();
-};
+// doLogin, doSignOut, showLoginError defined globally above DOMContentLoaded
 
 function applyRoleUI(role) {
   const tabAdmin = document.getElementById('tab-admin');
