@@ -730,7 +730,6 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
   <div id="adminRecordsPanel" class="pt-4">
     <div class="bg-gray-50 p-4 rounded-xl mb-5 border border-gray-200">
       <div class="flex flex-wrap gap-3 mb-3">
-        <div class="flex-1 min-w-[140px]"><label class="lbl">Patient Name</label><input type="text" id="searchName" class="inp inp-sm"></div>
         <div class="flex-1 min-w-[140px]"><label class="lbl">Civil ID</label><input type="text" id="searchCivilId" class="inp inp-sm"></div>
         <div class="flex-1 min-w-[140px]"><label class="lbl">Doctor Code</label><input type="text" id="searchDoctorCode" class="inp inp-sm" maxlength="3" placeholder="e.g. 101"></div>
         <div class="flex-1 min-w-[140px]"><label class="lbl">CRF Number</label><input type="text" id="searchCrfNo" class="inp inp-sm"></div>
@@ -1486,7 +1485,7 @@ function renderDashboard(){
 // ── ADMIN FETCH ───────────────────────────────────────────
 let allData=[];
 window.fetchData=async function(){
-  const sN=document.getElementById('searchName')?.value.toLowerCase()||'';
+  const sN='';
   const sCID=document.getElementById('searchCivilId')?.value||'';
   const sDC=document.getElementById('searchDoctorCode')?.value||'';
   const sCRF=document.getElementById('searchCrfNo')?.value||'';
@@ -1528,7 +1527,7 @@ window.fetchData=async function(){
   if(!allData.length)tbody.innerHTML='<tr><td colspan="7" class="text-center py-8 text-gray-400">No records found</td></tr>';
   _allRecordsCache=allData.slice();
 };
-window.clearAdminFilters=function(){['searchName','searchCivilId','searchDoctorCode','searchCrfNo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});['filterStatus','filterInvestigatorAdmin'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});fetchData();};
+window.clearAdminFilters=function(){['searchCivilId','searchDoctorCode','searchCrfNo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});['filterStatus','filterInvestigatorAdmin'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});fetchData();};
 window.deleteRecord=async function(id){if(!confirm('Permanently delete?'))return;try{await deleteDoc(doc(db,'patients_full',id));fetchData();loadRecordsCache();}catch(e){alert('Delete failed.');}};
 
 window.editRecord=function(data){
