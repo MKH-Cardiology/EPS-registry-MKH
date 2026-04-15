@@ -1883,32 +1883,23 @@ console.log('[EPS Patch] ✓ All 9 patches applied');
 });
 
 })();
-(async function initFirebaseReliably() {
-  const cdns = [
-  "https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js",
-  "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js",
-  "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"
-];
+</script>
 
-  ];
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<script>
   try {
-    for (const src of cdns) {
-      await new Promise((resolve, reject) => {
-        const s = document.createElement('script');
-        s.src = src;
-        s.onload = resolve;
-        s.onerror = () => reject(new Error('Network Blocked: Failed to load Firebase from CDN.'));
-        document.head.appendChild(s);
-      });
-    }
     firebase.initializeApp({
-      apiKey:"AIzaSyBocWe4k3ljikv2D2a_f7RDlPRnAaH6Zxs",
-      authDomain:"eps-registry-mkh.firebaseapp.com",
-      projectId:"eps-registry-mkh",
-      storageBucket:"eps-registry-mkh.firebasestorage.app",
-      messagingSenderId:"893225906696",
-      appId:"1:893225906696:web:d4c4324b4d9e3edecc57bd"
+      apiKey: "AIzaSyBocWe4k3ljikv2D2a_f7RDlPRnAaH6Zxs",
+      authDomain: "eps-registry-mkh.firebaseapp.com",
+      projectId: "eps-registry-mkh",
+      storageBucket: "eps-registry-mkh.firebasestorage.app",
+      messagingSenderId: "893225906696",
+      appId: "1:893225906696:web:d4c4324b4d9e3edecc57bd"
     });
+    
     const db = firebase.firestore();
     const auth = firebase.auth();
     window._db = db;
@@ -1917,6 +1908,8 @@ console.log('[EPS Patch] ✓ All 9 patches applied');
     window._signIn = (e,p) => auth.signInWithEmailAndPassword(e,p);
     window._signOut = () => auth.signOut();
     window._onAuthStateChanged = (cb) => auth.onAuthStateChanged(cb);
+    
+    // Create users if needed function
     window._setupUsers = async function() {
       const users = [{uid:"qEv59O8pk3bu6cVQjWFExLuoVTb2",email:"ahmadelsharkawi87@gmail.com",displayName:"Dr. Ahmed Elsharkawy",role:"investigator",active:true}];
       for(const u of users){
@@ -1924,15 +1917,14 @@ console.log('[EPS Patch] ✓ All 9 patches applied');
       }
       alert("Users created successfully!");
     };
+
     window._fbReady = true;
     window.dispatchEvent(new Event('firebaseReady'));
-    console.log("Firebase initialized successfully via jsDelivr");
+    
   } catch (err) {
-    document.getElementById('loginError').textContent = err.message;
+    document.getElementById('loginError').textContent = "Database Error: " + err.message;
     document.getElementById('loginError').style.display = 'block';
   }
-})();
-</script>
 
 <script>
 function collection(db, path){ return db.collection(path); }
