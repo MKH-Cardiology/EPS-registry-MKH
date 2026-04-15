@@ -732,7 +732,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
       <div class="flex flex-wrap gap-3 mb-3">
         <div class="flex-1 min-w-[140px]"><label class="lbl">Patient Name</label><input type="text" id="searchName" class="inp inp-sm"></div>
         <div class="flex-1 min-w-[140px]"><label class="lbl">Civil ID</label><input type="text" id="searchCivilId" class="inp inp-sm"></div>
-        <div class="flex-1 min-w-[140px]"><label class="lbl">File Number</label><input type="text" id="searchFileNo" class="inp inp-sm"></div>
+        <div class="flex-1 min-w-[140px]"><label class="lbl">Doctor Code</label><input type="text" id="searchDoctorCode" class="inp inp-sm" maxlength="3" placeholder="e.g. 101"></div>
         <div class="flex-1 min-w-[140px]"><label class="lbl">CRF Number</label><input type="text" id="searchCrfNo" class="inp inp-sm"></div>
       </div>
       <div class="flex flex-wrap gap-3 items-end">
@@ -1213,10 +1213,17 @@ const DOCTOR_CODES={
   'Dr Mohamed Elhadad':'124',
   'Dr Ramy Gamal':'125',
 };
+// Fuzzy code lookup — strips dots/spaces/case for matching
+function getDoctorCode(name){
+  if(!name) return '—';
+  const norm = s => s.toLowerCase().replace(/[^a-z]/g,'');
+  const key = Object.keys(DOCTOR_CODES).find(k => norm(k) === norm(name));
+  return key ? DOCTOR_CODES[key] : (DOCTOR_CODES[name] || '—');
+}
 
 window.autoGenCRF=async function(){
   // Determine doctor code from current user
-  const userCode=DOCTOR_CODES[currentUserName]||'000';
+  const userCode=getDoctorCode(currentUserName)!=='—'?getDoctorCode(currentUserName):'000';
   const hospitalCode='01';
   // Count existing records to get next sequential number
   try{
@@ -1338,13 +1345,13 @@ async function saveRecord(targetStatus, closeAfter=false){
   if(recId){
     // Editing existing record — preserve original enrolledBy, track updater
     dataObj.updatedByName=currentUserName;
-    dataObj.updatedByCode=DOCTOR_CODES[currentUserName]||'000';
+    dataObj.updatedByCode=getDoctorCode(currentUserName);
     dataObj.updatedAt=new Date();
   } else {
     // New record
     dataObj.enrolledBy=currentUser.uid;
     dataObj.enrolledByName=currentUserName;
-    dataObj.enrolledByCode=DOCTOR_CODES[currentUserName]||'000';
+    dataObj.enrolledByCode=getDoctorCode(currentUserName);
   }
   if(targetStatus==='submitted')dataObj.submittedAt=new Date();
 
@@ -1481,7 +1488,7 @@ let allData=[];
 window.fetchData=async function(){
   const sN=document.getElementById('searchName')?.value.toLowerCase()||'';
   const sCID=document.getElementById('searchCivilId')?.value||'';
-  const sFN=document.getElementById('searchFileNo')?.value||'';
+  const sDC=document.getElementById('searchDoctorCode')?.value||'';
   const sCRF=document.getElementById('searchCrfNo')?.value||'';
   const sINV=document.getElementById('filterInvestigatorAdmin')?.value||'';
   const sST=document.getElementById('filterStatus')?.value||'';
@@ -1495,7 +1502,7 @@ window.fetchData=async function(){
     data._no=idx+1;data._isDup=(civIds[data.civilId]||0)>1;
     if(sN&&!data.fullName.toLowerCase().includes(sN))return;
     if(sCID&&!data.civilId?.includes(sCID))return;
-    if(sFN&&!data.fileNumber?.includes(sFN))return;
+    if(sDC&&!(data.enrolledByCode||getDoctorCode(data.enrolledByName)||'').includes(sDC))return;
     if(sCRF&&!data.crfNo?.includes(sCRF))return;
     if(sINV&&data.enrolledBy!==sINV)return;
     if(sST&&(data.recordStatus||'draft')!==sST)return;
@@ -1506,7 +1513,7 @@ window.fetchData=async function(){
     tr.innerHTML=`
       <td><span style="font-family:'DM Mono',monospace;font-weight:800;color:#1e40af;">${data.crfNo||'—'}</span></td>
       <td><span style="font-family:'DM Mono',monospace;">${data.civilId||'—'}</span></td>
-      <td class="text-center"><span style="font-family:'DM Mono',monospace;background:#dbeafe;color:#1e40af;border-radius:5px;padding:2px 7px;font-weight:700;">${data.enrolledByCode||DOCTOR_CODES[data.enrolledByName]||'—'}</span></td>
+      <td class="text-center"><span style="font-family:'DM Mono',monospace;background:#dbeafe;color:#1e40af;border-radius:5px;padding:2px 7px;font-weight:700;">${data.enrolledByCode||getDoctorCode(data.enrolledByName)}</span></td>
       <td>${statusBadge(st)}</td>
       <td class="text-xs"><div class="font-semibold">${data.enrolledByName||'—'}</div></td>
       <td class="text-xs">${data.updatedByName?`<div>${data.updatedByName}</div>`:'<span class="text-gray-400">—</span>'}</td>
@@ -1521,7 +1528,7 @@ window.fetchData=async function(){
   if(!allData.length)tbody.innerHTML='<tr><td colspan="7" class="text-center py-8 text-gray-400">No records found</td></tr>';
   _allRecordsCache=allData.slice();
 };
-window.clearAdminFilters=function(){['searchName','searchCivilId','searchFileNo','searchCrfNo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});['filterStatus','filterInvestigatorAdmin'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});fetchData();};
+window.clearAdminFilters=function(){['searchName','searchCivilId','searchDoctorCode','searchCrfNo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});['filterStatus','filterInvestigatorAdmin'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});fetchData();};
 window.deleteRecord=async function(id){if(!confirm('Permanently delete?'))return;try{await deleteDoc(doc(db,'patients_full',id));fetchData();loadRecordsCache();}catch(e){alert('Delete failed.');}};
 
 window.editRecord=function(data){
@@ -1609,7 +1616,7 @@ window.loadUserList=async function(){
         <td><div class="font-bold text-gray-800">${u.displayName||'—'}</div></td>
         <td class="text-xs text-gray-500">${u.email||'—'}</td>
         <td><span class="role-${u.role||'investigator'}">${(u.role||'investigator').toUpperCase()}</span></td>
-        <td class="text-center"><span style="font-family:'DM Mono',monospace;background:#dbeafe;color:#1e40af;border-radius:5px;padding:2px 8px;font-weight:700;font-size:12px;">${DOCTOR_CODES[u.displayName]||'—'}</span></td>
+        <td class="text-center"><span style="font-family:'DM Mono',monospace;background:#dbeafe;color:#1e40af;border-radius:5px;padding:2px 8px;font-weight:700;font-size:12px;">${getDoctorCode(u.displayName)}</span></td>
         <td class="font-bold text-blue-700 text-center">${counts[u.id]||0}</td>
         <td>${u.active?'<span class="badge badge-green">Active</span>':'<span class="badge badge-red">Disabled</span>'}</td>
         <td style="white-space:nowrap;">
@@ -2104,6 +2111,27 @@ window.toggleAnalytic=function(key){
   body.classList.toggle('open',!isOpen);
   chev.classList.toggle('open',!isOpen);
 };
+
+// ── AUTO-LOGOUT AFTER 30 MIN INACTIVITY ──────────────────
+(function(){
+  let _idleTimer;
+  const IDLE_MS = 30 * 60 * 1000; // 30 minutes
+  function resetIdle(){
+    clearTimeout(_idleTimer);
+    _idleTimer = setTimeout(async ()=>{
+      if(window._signOut && currentUser){
+        showToast('Session expired — signed out after 30 min inactivity.','#e11d48');
+        await new Promise(r=>setTimeout(r,1800));
+        await window._signOut();
+        location.reload();
+      }
+    }, IDLE_MS);
+  }
+  ['mousemove','keydown','mousedown','touchstart','scroll','click'].forEach(ev=>{
+    document.addEventListener(ev, resetIdle, {passive:true});
+  });
+  resetIdle();
+})();
 
 // Boot
 loadRecordsCache();
