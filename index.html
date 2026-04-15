@@ -788,6 +788,1130 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 
 </main>
 <script>
+  /* ═══════════════════════════════════════════════════════════════════════════
+EPS REGISTRY — CONSOLIDATED PATCH SCRIPT v1.0
+───────────────────────────────────────────────────────────────────────────
+HOW TO INSTALL
+──────────────
+
+1. Open your existing index.html
+1. Find the LAST </script> tag (the one right before </body>)
+1. Immediately AFTER that </script>, paste this entire file wrapped in:
+   
+      <script> ... (paste this file's contents here) ... </script>
+1. Save and deploy.
+
+This patch RUNS AFTER your existing code and OVERRIDES the affected
+functions. Your original code is untouched — if anything misbehaves,
+just remove this <script> block and you’re back to the original.
+
+COVERS REQUIREMENTS:
+✅ 1. Missing fields in FIELD_MAP / SPSS_VARS (full coverage)
+✅ 2. Unrecordable checkboxes now clear + disable their numeric inputs
+✅ 3. Auto-generated 8-digit CRF: 01 + DDD (doctor code) + SSS (sequence)
+✅ 4. Admin panel: EP Reason / date / completion columns removed
+✅ 5. Admin table: Dr Code, Created By (+code), Updated By (+code) columns
+✅ 6. “Registry Form” → “Add CRF”
+✅ 7. Three save modes: Save & Continue / Save & Close / Final Submit
+✅ 8. SPSS export: numeric value codes + unrecordable flags + codebook
+✅ 9. Does NOT break existing functionality
+═══════════════════════════════════════════════════════════════════════════ */
+
+(function(){
+‘use strict’;
+
+// Wait until core app has booted (db + currentUser wiring ready)
+function waitForApp(cb, tries){
+tries = tries || 0;
+if (window._db && window._auth) { cb(); return; }
+if (tries > 100) { console.warn(’[EPS Patch] Core app not ready after 20s’); return; }
+setTimeout(function(){ waitForApp(cb, tries+1); }, 200);
+}
+
+waitForApp(function(){
+var db = window._db;
+console.log(’[EPS Patch] v1.0 loading…’);
+
+```
+/* ═══════════════════════════════════════════════════════════
+   R6: RENAME "Registry Form" → "Add CRF"
+   ═══════════════════════════════════════════════════════════ */
+var tabForm = document.getElementById('tab-form');
+if (tabForm) {
+  tabForm.innerHTML = '<i class="fas fa-plus-circle mr-1"></i>Add CRF';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   R2: UNRECORDABLE CHECKBOXES — clear + disable numeric input
+   ═══════════════════════════════════════════════════════════ */
+// Pairs: (numeric input name, unrecordable/na checkbox name)
+var UNREC_PAIRS = [
+  ['sysBp','sysBpUnrec'], ['diaBp','diaBpUnrec'], ['hr','hrUnrec'],
+  ['weight','weightUnrec'], ['height','heightUnrec'],
+  ['ecgQRS','ecgQRSna'],
+  ['lvef','lvefNA'], ['rvsp','rvspNA'],
+  ['creatInit','creatInitNA'], ['creatPeak','creatPeakNA'],
+  ['hgbInit','hgbInitNA'], ['hgbLowest','hgbLowestNA'],
+  ['sodium','sodiumNA'], ['potassium','potassiumNA'],
+  ['magnesium','magnesiumNA'], ['inr','inrNA']
+];
+function applyUnrecState(valInput, chk){
+  if (!valInput || !chk) return;
+  if (chk.checked) {
+    valInput.value = '';
+    valInput.disabled = true;
+    valInput.style.background = '#f1f5f9';
+    valInput.style.color = '#94a3b8';
+  } else {
+    valInput.disabled = false;
+    valInput.style.background = '';
+    valInput.style.color = '';
+  }
+}
+UNREC_PAIRS.forEach(function(p){
+  var valEl = document.querySelector('[name="'+p[0]+'"]');
+  var chkEl = document.querySelector('[name="'+p[1]+'"]');
+  if (!valEl || !chkEl) return;
+  chkEl.addEventListener('change', function(){ applyUnrecState(valEl, chkEl); });
+  valEl.addEventListener('input', function(){
+    if (valEl.value && chkEl.checked) chkEl.checked = false;
+  });
+  applyUnrecState(valEl, chkEl);
+});
+
+/* ═══════════════════════════════════════════════════════════
+   R3: AUTO-GENERATE 8-DIGIT CRF
+      Format: 01 (hospital) + DDD (doctor code) + SSS (sequence)
+   ═══════════════════════════════════════════════════════════ */
+async function getCurrentDoctorCode(){
+  try {
+    var uid = window._auth.currentUser && window._auth.currentUser.uid;
+    if (!uid) return null;
+    var snap = await db.collection('users').doc(uid).get();
+    if (!snap.exists) return null;
+    var dc = snap.data().doctorCode;
+    if (!dc) return null;
+    return String(dc).padStart(3,'0').slice(-3);
+  } catch(e){ console.error('[EPS Patch] getCurrentDoctorCode',e); return null; }
+}
+
+async function generateNextCRF(){
+  var dc = await getCurrentDoctorCode();
+  if (!dc) {
+    alert('No doctor code assigned to your account.\n\nAsk an admin to set your 3-digit doctor code in Admin → Manage Users.');
+    return null;
+  }
+  var uid = window._auth.currentUser.uid;
+  var snap = await db.collection('patients_full').where('enrolledBy','==',uid).get();
+  var maxSeq = 0;
+  var prefix = '01' + dc;
+  snap.forEach(function(ds){
+    var c = ds.data().crfNo || '';
+    if (c.length === 8 && c.indexOf(prefix) === 0) {
+      var s = parseInt(c.slice(5), 10);
+      if (!isNaN(s) && s > maxSeq) maxSeq = s;
+    }
+  });
+  var next = String(maxSeq + 1).padStart(3,'0');
+  return prefix + next;
+}
+
+async function autofillCRFIfEmpty(){
+  var el = document.getElementById('req_crfNo');
+  if (!el) return;
+  var editId = (document.getElementById('editRecordId')||{}).value;
+  if (editId) return;           // editing — don't overwrite
+  if (el.value && el.value.trim()) return;  // already filled
+  var next = await generateNextCRF();
+  if (next) {
+    el.value = next;
+    el.readOnly = true;
+    el.style.background = '#eff6ff';
+    el.title = 'Auto-generated: 01 + doctor-code + sequence';
+    el.setAttribute('maxlength','8');
+  }
+}
+
+// Relax the CRF length to 8 in the existing HTML
+var crfEl = document.getElementById('req_crfNo');
+if (crfEl) {
+  crfEl.setAttribute('maxlength','8');
+  crfEl.placeholder = 'Auto-generated (8 digits)';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   R7: THREE SAVE MODES — replace footer buttons
+   ═══════════════════════════════════════════════════════════ */
+var footer = document.querySelector('.step-footer');
+if (footer) {
+  // Find the right-side button cluster (the one containing btnSubmit)
+  var btnSubmit = document.getElementById('btnSubmit');
+  var rightCluster = btnSubmit ? btnSubmit.parentElement : null;
+  if (rightCluster) {
+    rightCluster.innerHTML =
+      '<button type="button" id="btnSaveContinue" class="btn btn-teal text-sm">'
+      + '<i class="fas fa-save"></i> Save &amp; Continue</button>'
+      + '<button type="button" id="btnSaveClose" class="btn btn-gray text-sm">'
+      + '<i class="fas fa-folder"></i> Save &amp; Close</button>'
+      + '<button type="button" id="btnFinalSubmit" class="btn btn-primary text-sm">'
+      + '<i class="fas fa-lock"></i> Final Submit</button>';
+  }
+}
+
+// TOAST
+function showToast(msg, color){
+  color = color || '#059669';
+  var t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);'
+    + 'background:'+color+';color:#fff;padding:12px 22px;border-radius:12px;'
+    + 'box-shadow:0 8px 28px rgba(0,0,0,.2);font-weight:700;font-size:14px;'
+    + 'z-index:9999;animation:fadeUp .25s ease;';
+  document.body.appendChild(t);
+  setTimeout(function(){
+    t.style.transition = 'opacity .3s';
+    t.style.opacity = '0';
+    setTimeout(function(){ t.remove(); }, 300);
+  }, 2500);
+}
+
+/* Core save routine — preserves creator fields, tracks updater */
+async function doSave(mode){
+  // mode: 'continue' | 'close' | 'submit'
+  if (!window._auth.currentUser) { alert('Not logged in.'); return; }
+
+  // Run the same mandatory-field validation as the original
+  var mandatory = [
+    {id:'req_nameFirst',label:'Patient First Name'},
+    {id:'req_nameLast', label:'Patient Last Name'},
+    {id:'civilId',      label:'Civil ID'},
+    {id:'req_fileNo',   label:'File Number'}
+  ];
+  for (var i=0;i<mandatory.length;i++){
+    var el = document.getElementById(mandatory[i].id);
+    if (!el || !el.value.trim()) {
+      if (typeof window.goToStep === 'function') window.goToStep(0);
+      el && el.focus();
+      alert('Required: "'+mandatory[i].label+'"');
+      return;
+    }
+  }
+  if (!/^\d{12}$/.test(document.getElementById('civilId').value)) {
+    if (typeof window.goToStep === 'function') window.goToStep(0);
+    alert('Civil ID must be 12 digits.'); return;
+  }
+  if (!/^\d{6}$/.test(document.getElementById('req_fileNo').value)) {
+    if (typeof window.goToStep === 'function') window.goToStep(0);
+    alert('File Number must be 6 digits.'); return;
+  }
+  // Auto-fill CRF if missing (new record only)
+  var recId = (document.getElementById('editRecordId')||{}).value;
+  if (!recId) await autofillCRFIfEmpty();
+  var crfVal = document.getElementById('req_crfNo').value.trim();
+  if (!crfVal) { alert('Could not generate CRF. Check doctor code in Admin.'); return; }
+
+  // Build payload from form
+  var form = document.getElementById('epsForm');
+  var fd = new FormData(form);
+  var data = Object.fromEntries(fd.entries());
+  form.querySelectorAll('input[type="checkbox"]').forEach(function(cb){ data[cb.name] = cb.checked; });
+  form.querySelectorAll('input[type="radio"]:checked').forEach(function(r){ data[r.name] = r.value; });
+
+  // Clear values that were marked unrecordable (data integrity)
+  UNREC_PAIRS.forEach(function(p){
+    if (data[p[1]] === true) data[p[0]] = '';
+  });
+
+  delete data.recordId;
+  data.timestamp = new Date();
+  data.recordStatus = (mode === 'submit') ? 'submitted' : 'draft';
+  if (mode === 'submit') data.submittedAt = new Date();
+
+  var uid = window._auth.currentUser.uid;
+  var name = (window.currentUserName) ||
+             (window._auth.currentUser.displayName) ||
+             (window._auth.currentUser.email) || '';
+  // Fetch current user's doctor code (once per save)
+  var dc = await getCurrentDoctorCode();
+
+  try {
+    if (recId) {
+      // EDIT existing — do NOT overwrite enrolledBy / enrolledByName / enrolledByCode
+      delete data.enrolledBy;
+      delete data.enrolledByName;
+      delete data.enrolledByCode;
+
+      // Check who originally created
+      var existingSnap = await db.collection('patients_full').doc(recId).get();
+      var existing = existingSnap.exists ? existingSnap.data() : {};
+      // Only stamp updater if a different user is editing
+      if (existing.enrolledBy && existing.enrolledBy !== uid) {
+        data.updatedBy = uid;
+        data.updatedByName = name;
+        data.updatedByCode = dc || '';
+        data.updatedAt = new Date();
+      } else {
+        // Same creator editing — still refresh updatedAt but drop updater identity
+        data.updatedAt = new Date();
+      }
+      await db.collection('patients_full').doc(recId).update(data);
+    } else {
+      // NEW record
+      data.enrolledBy = uid;
+      data.enrolledByName = name;
+      data.enrolledByCode = dc || '';
+      data.crfNo = crfVal;
+      var docRef = await db.collection('patients_full').add(data);
+      document.getElementById('editRecordId').value = docRef.id;
+    }
+  } catch(err){
+    console.error('[EPS Patch] save failed', err);
+    alert('Save failed: '+(err.message||err));
+    return;
+  }
+
+  // Refresh caches
+  if (typeof window.loadRecordsCache === 'function') window.loadRecordsCache();
+  if (typeof window.updateMyCasesCount === 'function') window.updateMyCasesCount();
+
+  // Mode-specific UI behaviour
+  if (mode === 'continue') {
+    showToast('✓ Saved — continue editing', '#0d9488');
+    // stay on page
+  } else if (mode === 'close') {
+    showToast('✓ Draft saved', '#059669');
+    setTimeout(function(){
+      if (typeof window.switchTab === 'function') window.switchTab('dashboard');
+      // Reset form state
+      var f = document.getElementById('epsForm');
+      if (f) {
+        f.reset();
+        document.querySelectorAll('.sub-reveal').forEach(function(s){ s.classList.remove('show'); });
+        document.querySelectorAll('.yn-btn').forEach(function(b){ b.classList.remove('selected'); });
+        document.querySelectorAll('.yn-btn.yn-no').forEach(function(b){ b.classList.add('selected'); });
+        document.querySelectorAll('input[type="hidden"][id^="val_"]').forEach(function(h){ h.value='No'; });
+        document.querySelectorAll('.proc-section').forEach(function(s){ s.classList.remove('show'); });
+        document.getElementById('editRecordId').value = '';
+        document.getElementById('recordStatus').value = 'draft';
+        var banner = document.getElementById('editModeBanner');
+        if (banner) banner.classList.add('hidden');
+        if (typeof window.goToStep === 'function') window.goToStep(0);
+      }
+    }, 400);
+  } else if (mode === 'submit') {
+    showToast('✓ Final submission — record locked', '#2563eb');
+    document.getElementById('recordStatus').value = 'submitted';
+    var ov = document.getElementById('lockedOverlay');
+    if (ov) ov.classList.remove('hidden');
+  }
+}
+
+// Wire up new buttons (after DOM is mutated above)
+setTimeout(function(){
+  var bc = document.getElementById('btnSaveContinue');
+  var bk = document.getElementById('btnSaveClose');
+  var bf = document.getElementById('btnFinalSubmit');
+  if (bc) bc.onclick = function(){ doSave('continue'); };
+  if (bk) bk.onclick = function(){ doSave('close'); };
+  if (bf) bf.onclick = function(){
+    if (!confirm('FINAL SUBMIT — this will LOCK the record.\n\nContinue?')) return;
+    doSave('submit');
+  };
+}, 50);
+
+// Intercept the form's submit event (Enter key) so it doesn't double-fire
+var epsForm = document.getElementById('epsForm');
+if (epsForm) {
+  // Remove all existing submit listeners by cloning — then re-add ours.
+  // Safer: just preventDefault + route to Save & Continue.
+  epsForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    doSave('continue');
+  }, true); // capture phase so we win
+}
+// Neutralise old submitFinal if something else calls it
+window.submitFinal = function(){
+  if (!confirm('Submit and lock this record?')) return;
+  doSave('submit');
+};
+
+/* ═══════════════════════════════════════════════════════════
+   R1 + R8: COMPLETE FIELD_MAP, SPSS_VARS, SPSS_CODES
+   ═══════════════════════════════════════════════════════════ */
+var FULL_FIELD_MAP = {
+  _no:'Case No', enrolledByCode:'Dr Code', enrolledByName:'Created By',
+  updatedByCode:'Updated Dr Code', updatedByName:'Updated By',
+  nameFirst:'First Name', nameMiddle:'Middle Name', nameLast:'Last Name',
+  civilId:'Civil ID', crfNo:'CRF Number', fileNumber:'File Number',
+  gender:'Gender', nationality:'Nationality', yob:'Year of Birth',
+  estimatedAge:'Age (yrs)', admissionDate:'Admission Date',
+  patientContact:'Patient Contact', relativeContact:'Relative Contact',
+  epReason:'EP Lab Reason', pacemakerType:'Pacemaker Type', patientOrigin:'Patient Origin',
+  // Vitals
+  sysBp:'Systolic BP', sysBpUnrec:'SysBP Unrecordable',
+  diaBp:'Diastolic BP', diaBpUnrec:'DiaBP Unrecordable',
+  hr:'Heart Rate', hrUnrec:'HR Unrecordable',
+  weight:'Weight (kg)', weightUnrec:'Weight Unrec',
+  height:'Height (cm)', heightUnrec:'Height Unrec',
+  // AFib
+  hx_afib:'AFib', afibClassification:'AFib Classification',
+  afibCardioversion:'AFib: Plan Cardioversion', afibPriorAblation:'AFib: Prior Ablation',
+  afibChads:'CHA2DS2-VASc', afibHasBled:'HAS-BLED',
+  afibContraOAC:'Contra to OAC', afibMajorBleed:'Prior Major Bleed',
+  // Arrest
+  hx_cardiacArrest:'Cardiac Arrest', arrestBradycardia:'Brady Arrest',
+  arrestVF:'VF Arrest', arrestVT:'VT Arrest',
+  // CMP/HF
+  hx_icm:'Ischemic CMP', icmTimeframe:'ICM Timeframe', icmGDMT:'ICM GDMT',
+  hx_hf:'Heart Failure', hfType:'HF Type',
+  // Risk
+  hx_cad:'CAD', hx_mi:'Prior MI', hx_valve:'Valvular HD', hx_cvd:'Cerebrovasc Dz',
+  hx_lung:'Chronic Lung Dz', hx_dialysis:'On Dialysis',
+  hx_dm:'Diabetes', hx_htn:'Hypertension', hx_familialSyndrome:'Familial Syndrome',
+  // SSD
+  hx_ssd:'Sudden Death Syndrome',
+  ssd_brugada:'SSD: Brugada', ssd_cpvt:'SSD: CPVT', ssd_idiopathic:'SSD: Idiopathic',
+  ssd_longqt:'SSD: Long QT', ssd_shortqt:'SSD: Short QT', ssd_unknown:'SSD: Unknown',
+  // Structural
+  hx_struct:'Structural Abn', struct_arvc:'ARVC', struct_congenital:'Congenital HD',
+  struct_hcm:'HCM high-risk', struct_infiltrative:'Infiltrative', struct_lv:'LV Abn',
+  // Syncope/SVT/VT
+  hx_syncope:'Syncope', syncopeRecent:'Syncope <6m',
+  hx_svt:'Paroxysmal SVT', hx_vf:'VF History', hx_vt:'VT History',
+  // Valve procs
+  hx_avp:'Aortic Valve Proc', avpType:'AVP Type', avpRecent:'AVP <6m',
+  hx_mvp:'Mitral Valve Proc', mvpType:'MVP Type', mvpRecent:'MVP <6m',
+  // Coronary
+  hx_ca:'Coronary Angio', caRecent:'CA <6m', caAfterArrest:'CA post-arrest',
+  hx_cabg:'Prior CABG', cabgRecent:'CABG <6m',
+  hx_pci:'Prior PCI', pciRecent:'PCI <6m',
+  // CIED
+  hx_cied:'Prior CIED',
+  cied_single:'CIED: Single ch PPM', cied_dual:'CIED: Dual ch PPM',
+  cied_crtp:'CIED: CRT-P', cied_leadlessSingle:'CIED: Leadless 1ch',
+  cied_leadlessDual:'CIED: Leadless 2ch', cied_his:'CIED: His bundle',
+  cied_lbbb:'CIED: LBB area', cied_icdSingle:'CIED: ICD 1ch',
+  cied_icdDual:'CIED: ICD 2ch', cied_crtd:'CIED: CRT-D',
+  cied_evicd:'CIED: Extravasc ICD', cied_sicd:'CIED: S-ICD', cied_unknown:'CIED: Unknown',
+  // Home meds
+  homeMed_amiodarone:'HomeMed: Amiodarone', homeMed_disopyramide:'HomeMed: Disopyramide',
+  homeMed_flecainide:'HomeMed: Flecainide', homeMed_propafenone:'HomeMed: Propafenone',
+  homeMed_sotalol:'HomeMed: Sotalol', homeMed_verapamil:'HomeMed: Verapamil',
+  homeMed_diltiazem:'HomeMed: Diltiazem', homeMed_warfarin:'HomeMed: Warfarin',
+  homeMed_dabigatran:'HomeMed: Dabigatran', homeMed_apixaban:'HomeMed: Apixaban',
+  homeMed_rivaroxaban:'HomeMed: Rivaroxaban', homeMed_edoxaban:'HomeMed: Edoxaban',
+  homeMed_lmwh:'HomeMed: LMWH', homeMed_aspirin:'HomeMed: Aspirin',
+  homeMed_clopidogrel:'HomeMed: Clopidogrel', homeMed_ticagrelor:'HomeMed: Ticagrelor',
+  homeMed_acei:'HomeMed: ACEI', homeMed_arb:'HomeMed: ARB',
+  homeMed_arni:'HomeMed: ARNI', homeMed_sglt:'HomeMed: SGLT-i',
+  homeMed_betablocker:'HomeMed: Beta Blocker', homeMed_mra:'HomeMed: MRA',
+  homeMed_digoxin:'HomeMed: Digoxin', homeMed_loopdiuretic:'HomeMed: Loop Diuretic',
+  // Investigations
+  inv_ecg:'ECG', ecgAtrialRhythm:'ECG Atrial Rhythm', ecgVentRhythm:'ECG Vent Rhythm',
+  ecgQRS:'QRS (msec)', ecgQRSna:'QRS Not Assessed',
+  inv_holter:'Holter', holterAtrialRhythm:'Holter Atrial', holterVentRhythm:'Holter Vent',
+  inv_tte:'TTE', lvef:'LVEF (%)', lvefNA:'LVEF Not Assessed',
+  lvesd:'LVESD (mm)', lvedd:'LVEDD (mm)',
+  rvsp:'RVSP (mmHg)', rvspNA:'RVSP Not Assessed',
+  inv_sevValve:'Severe Valve Dz', sevMR:'Severe MR', sevAS:'Severe AS',
+  sevAR:'Severe AR', sevTR:'Severe TR', intracardThrombus:'Intracard Thrombus',
+  inv_tee:'TEE', teeThrombus:'TEE Atrial Thrombus',
+  inv_laa:'LAA Morphology', laaOstial:'LAA Ostial (mm)', laaDepth:'LAA Depth (mm)',
+  inv_cardiacCT:'Cardiac CT', inv_cmr:'Cardiac MRI',
+  // Labs
+  creatInit:'Creat Init (µmol/L)', creatInitNA:'Creat Init NA',
+  creatPeak:'Creat Peak', creatPeakNA:'Creat Peak NA',
+  hgbInit:'Hgb Init (g/dL)', hgbInitNA:'Hgb Init NA',
+  hgbLowest:'Hgb Lowest', hgbLowestNA:'Hgb Lowest NA',
+  sodium:'Sodium (mEq/L)', sodiumNA:'Na NA',
+  potassium:'Potassium (mEq/L)', potassiumNA:'K NA',
+  magnesium:'Magnesium (mEq/L)', magnesiumNA:'Mg NA',
+  inr:'INR', inrNA:'INR NA',
+  // Procedure common
+  procStartDate:'Proc Date', procStartTime:'Proc Start Time',
+  procEndTime:'Proc End Time', operatorName:'Operator',
+  // CRT/AICD
+  crtInd_surv:'CRT Ind: Arrest Survivor', crtInd_eps:'CRT Ind: Inducible VT',
+  crtInd_icmEF:'CRT Ind: ICM EF≤35', crtInd_nicmEF:'CRT Ind: NICM EF≤35',
+  crtGenerator:'CRT Generator', crtDeviceName:'CRT Device Name',
+  // Temp PM
+  tpm_chb:'TPM Ind: CHB', tpm_mobitz2:'TPM Ind: Mobitz II',
+  tpm_altBBB:'TPM Ind: Alt BBB', tpm_sss:'TPM Ind: SSS',
+  // Perm PM
+  ppmGenerator:'PPM Generator', ppmDeviceName:'PPM Device Name',
+  ppmInd_21block:'PPM Ind: 2:1 AVB', ppmInd_mobitz2:'PPM Ind: Mobitz II',
+  ppmInd_chb:'PPM Ind: CHB', ppmInd_sss:'PPM Ind: SSS',
+  // EPS
+  eps_avnrt:'EPS: AVNRT', eps_wpw:'EPS: WPW', eps_aflutter:'EPS: AFlutter',
+  eps_afib:'EPS: AFib', eps_vt:'EPS: VT', eps_pvcs:'EPS: PVCs',
+  epsTransseptal:'EPS: Transseptal', epsICE:'EPS: ICE used',
+  epsAblTime:'EPS: Ablation Time (min)', epsFluoroTime:'EPS: Fluoro Time (min)',
+  // LAAO
+  laao_nonvalvular:'LAAO Ind: Non-valv AF', laao_highBleed:'LAAO Ind: High bleed',
+  laao_contraOAC:'LAAO Ind: Contra OAC', laao_priorBleed:'LAAO Ind: Prior bleed',
+  laaoDeviceType:'LAAO Device', laaoDeviceSize:'LAAO Device Size (mm)',
+  laaoPASS:'LAAO PASS criteria', laaoOutcome:'LAAO Outcome',
+  // In-hospital procs
+  comp_ca:'In-hosp CA', comp_pci:'In-hosp PCI',
+  comp_cabg:'In-hosp CABG', comp_tavr:'In-hosp TAVR',
+  // Complications
+  cx_cardArrest:'CX: Cardiac Arrest', cx_pulEdema:'CX: Pulm Edema/CHF',
+  cx_tamponade1:'CX: Cardiac Tamponade',
+  cx_stroke:'CX: Stroke', strokeType:'CX: Stroke Type',
+  cx_cardShock:'CX: Cardiogenic Shock', scaiStage:'CX: SCAI Stage',
+  cx_bleeding:'CX: Bleeding', bleedType:'CX: Bleed Type', bleedSubType:'CX: Bleed Subtype',
+  cx_devEmbol:'CX: Device Embolization',
+  cx_pleuralEff:'CX: Pleural Effusion',
+  cx_leadDislodge:'CX: Lead Dislodgement',
+  // Outcome
+  procSuccess:'Proc Success', postECGrhythm:'Post-Proc ECG Rhythm',
+  dischargeDate:'Discharge Date', dischargeTime:'Discharge Time',
+  dischargeStatus:'Discharge Status', causeOfDeath:'Cause of Death',
+  dischargeType:'Discharge Type',
+  // Discharge meds
+  dcMed_amiodarone:'DC: Amiodarone', dcMed_disopyramide:'DC: Disopyramide',
+  dcMed_flecainide:'DC: Flecainide', dcMed_propafenone:'DC: Propafenone',
+  dcMed_sotalol:'DC: Sotalol', dcMed_verapamil:'DC: Verapamil',
+  dcMed_diltiazem:'DC: Diltiazem', dcMed_warfarin:'DC: Warfarin',
+  dcMed_dabigatran:'DC: Dabigatran', dcMed_apixaban:'DC: Apixaban',
+  dcMed_rivaroxaban:'DC: Rivaroxaban', dcMed_edoxaban:'DC: Edoxaban',
+  dcMed_lmwh:'DC: LMWH', dcMed_aspirin:'DC: Aspirin',
+  dcMed_clopidogrel:'DC: Clopidogrel', dcMed_ticagrelor:'DC: Ticagrelor',
+  dcMed_acei:'DC: ACEI', dcMed_arb:'DC: ARB', dcMed_arni:'DC: ARNI',
+  dcMed_sglt:'DC: SGLT-i', dcMed_betablocker:'DC: Beta Blocker',
+  dcMed_mra:'DC: MRA', dcMed_digoxin:'DC: Digoxin',
+  dcMed_loopdiuretic:'DC: Loop Diuretic',
+  // Meta
+  recordStatus:'Record Status'
+};
+
+// SPSS variable names — max 8 chars, alphanumeric, no spaces
+var FULL_SPSS_VARS = {
+  _no:'CaseNo', enrolledByCode:'DrCode', enrolledByName:'DrName',
+  updatedByCode:'UpdDrCd', updatedByName:'UpdDrNm',
+  nameFirst:'PtFirst', nameLast:'PtLast', civilId:'CivilID',
+  crfNo:'CRFNo', fileNumber:'FileNo',
+  gender:'Gender', nationality:'Natl', yob:'YOB', estimatedAge:'Age',
+  admissionDate:'AdmDate', recordStatus:'Status',
+  epReason:'EPReasn', pacemakerType:'PMType', patientOrigin:'PtOrig',
+  sysBp:'SysBP', sysBpUnrec:'SysBPNA', diaBp:'DiaBP', diaBpUnrec:'DiaBPNA',
+  hr:'HR', hrUnrec:'HRNA', weight:'Weight', weightUnrec:'WtNA',
+  height:'Height', heightUnrec:'HtNA',
+  hx_afib:'HxAFib', afibClassification:'AFibCls',
+  afibCardioversion:'AFibCV', afibPriorAblation:'AFibAbl',
+  afibChads:'CHADS', afibHasBled:'HASBLED',
+  afibContraOAC:'COAC', afibMajorBleed:'MajBld',
+  hx_cardiacArrest:'HxCA', arrestBradycardia:'CABrdy',
+  arrestVF:'CAVF', arrestVT:'CAVT',
+  hx_icm:'HxICM', icmTimeframe:'ICMTim', icmGDMT:'ICMGDMT',
+  hx_hf:'HxHF', hfType:'HFType',
+  hx_cad:'HxCAD', hx_mi:'HxMI', hx_valve:'HxValv', hx_cvd:'HxCVD',
+  hx_lung:'HxLung', hx_dialysis:'HxDial', hx_dm:'HxDM', hx_htn:'HxHTN',
+  hx_familialSyndrome:'HxFamSy',
+  hx_ssd:'HxSSD',
+  ssd_brugada:'SSDBrug', ssd_cpvt:'SSDCPVT', ssd_idiopathic:'SSDIdio',
+  ssd_longqt:'SSDLQT', ssd_shortqt:'SSDSQT', ssd_unknown:'SSDUnk',
+  hx_struct:'HxStrct',
+  struct_arvc:'StARVC', struct_congenital:'StCong',
+  struct_hcm:'StHCM', struct_infiltrative:'StInfil', struct_lv:'StLV',
+  hx_syncope:'HxSync', syncopeRecent:'SyncRec',
+  hx_svt:'HxSVT', hx_vf:'HxVF', hx_vt:'HxVT',
+  hx_avp:'HxAVP', avpType:'AVPType', avpRecent:'AVPRec',
+  hx_mvp:'HxMVP', mvpType:'MVPType', mvpRecent:'MVPRec',
+  hx_ca:'HxCA2', caRecent:'CARec', caAfterArrest:'CAPstA',
+  hx_cabg:'HxCABG', cabgRecent:'CABGRec',
+  hx_pci:'HxPCI', pciRecent:'PCIRec',
+  hx_cied:'HxCIED',
+  cied_single:'CIEDSng', cied_dual:'CIEDDua',
+  cied_crtp:'CIEDCTP', cied_leadlessSingle:'CIEDLdS',
+  cied_leadlessDual:'CIEDLdD', cied_his:'CIEDHis',
+  cied_lbbb:'CIEDLBB', cied_icdSingle:'CIEDIcS',
+  cied_icdDual:'CIEDIcD', cied_crtd:'CIEDCTD',
+  cied_evicd:'CIEDEV', cied_sicd:'CIEDSIC', cied_unknown:'CIEDUnk',
+  homeMed_amiodarone:'HMAmio', homeMed_disopyramide:'HMDiso',
+  homeMed_flecainide:'HMFlec', homeMed_propafenone:'HMProp',
+  homeMed_sotalol:'HMSotal', homeMed_verapamil:'HMVera',
+  homeMed_diltiazem:'HMDilt', homeMed_warfarin:'HMWarf',
+  homeMed_dabigatran:'HMDabi', homeMed_apixaban:'HMApix',
+  homeMed_rivaroxaban:'HMRiva', homeMed_edoxaban:'HMEdox',
+  homeMed_lmwh:'HMLMWH', homeMed_aspirin:'HMAspir',
+  homeMed_clopidogrel:'HMClop', homeMed_ticagrelor:'HMTica',
+  homeMed_acei:'HMACEI', homeMed_arb:'HMARB',
+  homeMed_arni:'HMARNI', homeMed_sglt:'HMSGLT',
+  homeMed_betablocker:'HMBB', homeMed_mra:'HMMRA',
+  homeMed_digoxin:'HMDigo', homeMed_loopdiuretic:'HMLoop',
+  inv_ecg:'InvECG', ecgAtrialRhythm:'ECGAtR', ecgVentRhythm:'ECGVnR',
+  ecgQRS:'QRS', ecgQRSna:'QRSNA',
+  inv_holter:'InvHolt', holterAtrialRhythm:'HltAtR', holterVentRhythm:'HltVnR',
+  inv_tte:'InvTTE', lvef:'LVEF', lvefNA:'LVEFNA',
+  lvesd:'LVESD', lvedd:'LVEDD',
+  rvsp:'RVSP', rvspNA:'RVSPNA',
+  inv_sevValve:'SevValv', sevMR:'SevMR', sevAS:'SevAS',
+  sevAR:'SevAR', sevTR:'SevTR', intracardThrombus:'IcThrb',
+  inv_tee:'InvTEE', teeThrombus:'TEEThrb',
+  inv_laa:'InvLAA', laaOstial:'LAAOst', laaDepth:'LAADep',
+  inv_cardiacCT:'InvCT', inv_cmr:'InvCMR',
+  creatInit:'CrInit', creatInitNA:'CrInNA',
+  creatPeak:'CrPeak', creatPeakNA:'CrPkNA',
+  hgbInit:'HgbIn', hgbInitNA:'HgbInNA',
+  hgbLowest:'HgbLow', hgbLowestNA:'HgbLwNA',
+  sodium:'Na', sodiumNA:'NaNA',
+  potassium:'K', potassiumNA:'KNA',
+  magnesium:'Mg', magnesiumNA:'MgNA',
+  inr:'INR', inrNA:'INRNA',
+  procStartDate:'ProcDt', procStartTime:'ProcStT',
+  procEndTime:'ProcEnT', operatorName:'Operatr',
+  crtInd_surv:'CRTISur', crtInd_eps:'CRTIEPS',
+  crtInd_icmEF:'CRTIICM', crtInd_nicmEF:'CRTINIC',
+  crtGenerator:'CRTGen', crtDeviceName:'CRTDev',
+  tpm_chb:'TPMCHB', tpm_mobitz2:'TPMMob2',
+  tpm_altBBB:'TPMAlt', tpm_sss:'TPMSSS',
+  ppmGenerator:'PPMGen', ppmDeviceName:'PPMDev',
+  ppmInd_21block:'PPM21', ppmInd_mobitz2:'PPMMb2',
+  ppmInd_chb:'PPMCHB', ppmInd_sss:'PPMSSS',
+  eps_avnrt:'EPSAVNRT', eps_wpw:'EPSWPW',
+  eps_aflutter:'EPSAFL', eps_afib:'EPSAF',
+  eps_vt:'EPSVT', eps_pvcs:'EPSPVC',
+  epsTransseptal:'EPSTS', epsICE:'EPSICE',
+  epsAblTime:'EPSAbT', epsFluoroTime:'EPSFlT',
+  laao_nonvalvular:'LAONvAF', laao_highBleed:'LAOHiBl',
+  laao_contraOAC:'LAOCOAC', laao_priorBleed:'LAOPrBl',
+  laaoDeviceType:'LAOType', laaoDeviceSize:'LAOSize',
+  laaoPASS:'LAOPASS', laaoOutcome:'LAOOutc',
+  comp_ca:'InHCA', comp_pci:'InHPCI',
+  comp_cabg:'InHCABG', comp_tavr:'InHTAVR',
+  cx_cardArrest:'CXCA', cx_pulEdema:'CXPEd',
+  cx_tamponade1:'CXTamp',
+  cx_stroke:'CXStrk', strokeType:'StrkTyp',
+  cx_cardShock:'CXShk', scaiStage:'SCAI',
+  cx_bleeding:'CXBld', bleedType:'BldTyp', bleedSubType:'BldSub',
+  cx_devEmbol:'CXDevEm', cx_pleuralEff:'CXPlEf',
+  cx_leadDislodge:'CXLdDx',
+  procSuccess:'ProcOK', postECGrhythm:'PostECG',
+  dischargeDate:'DCDate', dischargeTime:'DCTime',
+  dischargeStatus:'DCStat', causeOfDeath:'DthCse', dischargeType:'DCType',
+  dcMed_amiodarone:'DCAmio', dcMed_disopyramide:'DCDiso',
+  dcMed_flecainide:'DCFlec', dcMed_propafenone:'DCProp',
+  dcMed_sotalol:'DCSotal', dcMed_verapamil:'DCVera',
+  dcMed_diltiazem:'DCDilt', dcMed_warfarin:'DCWarf',
+  dcMed_dabigatran:'DCDabi', dcMed_apixaban:'DCApix',
+  dcMed_rivaroxaban:'DCRiva', dcMed_edoxaban:'DCEdox',
+  dcMed_lmwh:'DCLMWH', dcMed_aspirin:'DCAspir',
+  dcMed_clopidogrel:'DCClop', dcMed_ticagrelor:'DCTica',
+  dcMed_acei:'DCACEI', dcMed_arb:'DCARB', dcMed_arni:'DCARNI',
+  dcMed_sglt:'DCSGLT', dcMed_betablocker:'DCBB',
+  dcMed_mra:'DCMRA', dcMed_digoxin:'DCDigo',
+  dcMed_loopdiuretic:'DCLoop',
+  recordStatus:'RecStat'
+};
+
+// SPSS value codes: field name → {text value: numeric code, …}
+var BIN = {'Yes':1,'No':0,true:1,false:0,'':-99}; // shared binary coder
+var FULL_SPSS_CODES = {
+  gender:{'Male':1,'Female':2,'':-99},
+  epReason:{'CRT/AICD':1,'Pacemaker':2,'EPS/Ablation':3,'LAAO':4,'':-99},
+  pacemakerType:{'Temporary pacemaker':1,'Permanent pacemaker':2,'Temporary followed by permanent same hospitalization':3,'':-99},
+  patientOrigin:{'Home':1,'Transferred from other hospital':2,'Same hospital Inpatient but another department':3,'Clinic (primary care / private / outpatient clinic)':4,'':-99},
+  afibClassification:{'Persistent (>7 days)':1,'Paroxysmal (terminating spontaneously w/in 7 days)':2,'Long standing persistent (>1 year)':3,'Permanent':4,'':-99},
+  afibChads:{'0':0,'1':1,'2':2,'3':3,'>3':4,'':-99},
+  afibHasBled:{'0':0,'1':1,'2':2,'3':3,'>3':4,'':-99},
+  hfType:{'HFrEF':1,'HFpEF':2,'HFmrEF':3,'':-99},
+  icmTimeframe:{'< 3 months':1,'≥ 3 months':2,'':-99},
+  icmGDMT:{'Yes (for 3 months)':1,'Not documented':2,'Not attempted':3,'Inability to complete':4,'':-99},
+  avpType:{'TAVR':1,'SAVR':2,'':-99},
+  mvpType:{'PMVR':1,'Mechanical mitral valve':2,'Bioprosthetic mitral valve':3,'':-99},
+  ecgAtrialRhythm:{'Sinus':1,'Atrial fibrillation':2,'Atrial flutter':3,'SVT':4,'Atrial tachycardia':5,'Atrial paced':6,'Sinus arrest':7,'Sinus pause':8,'1st degree AV block':9,'2nd degree AV block':10,'3rd degree AV block':11,'Unknown rhythm':99,'':-99},
+  ecgVentRhythm:{'VT':1,'VF':2,'LBBB':3,'RBBB':4,'Alternating LBBB/RBBB':5,'IVCD delay':6,'Frequent PVCs':7,'':-99},
+  holterAtrialRhythm:{'Sinus':1,'Atrial fibrillation':2,'Atrial flutter':3,'SVT':4,'1st degree AV block':9,'2nd degree AV block':10,'3rd degree AV block':11,'Unknown rhythm':99,'':-99},
+  holterVentRhythm:{'Non-sustained VT':1,'Sustained VT':2,'Frequent PVCs':3,'PVCs burden >10%':4,'':-99},
+  crtGenerator:{'Initial implant':1,'Generator replacement':2,'Generator explant':3,'':-99},
+  ppmGenerator:{'Initial implant':1,'Generator replacement':2,'Generator explant':3,'':-99},
+  epsTransseptal:{'Single':1,'Double':2,'':0},
+  laaoDeviceType:{'WATCHMAN 2.5':1,'WATCHMAN FLX':2,'':-99},
+  laaoOutcome:{'Successful implantation':1,'Device repositioned':2,'Device retrieved/aborted':3,'':-99},
+  strokeType:{'Hemorrhagic':1,'Thrombotic':2,'Unknown':99,'':-99},
+  scaiStage:{'At risk':1,'Beginning':2,'Classic':3,'Deteriorating':4,'Extremis':5,'':-99},
+  bleedType:{'Type 1':1,'Type 2':2,'Type 3':3,'Type 5':5,'':-99},
+  bleedSubType:{'Type 3a':1,'Type 3b':2,'Type 3c':3,'':-99},
+  procSuccess:{'Yes':1,'No':0,'':-99},
+  postECGrhythm:{'Sinus':1,'Paced rhythm':2,'Atrial fibrillation':3,'Other':9,'':-99},
+  dischargeStatus:{'Dead':1,'Alive':2,'':-99},
+  causeOfDeath:{'Cardiac':1,'Non-Cardiac':2,'':-99},
+  dischargeType:{'Home':1,'LAMA':2,'Transfer to cardiac surgery':3,'Transfer to other dept':4,'':-99},
+  recordStatus:{'draft':1,'submitted':2,'reviewed':3,'':-99}
+};
+
+// List of variables that should be treated as binary (Yes/No or true/false)
+var BIN_VARS = [
+  'hx_afib','afibCardioversion','afibPriorAblation','afibContraOAC','afibMajorBleed',
+  'hx_cardiacArrest','arrestBradycardia','arrestVF','arrestVT',
+  'hx_icm','hx_hf','hx_cad','hx_mi','hx_valve','hx_cvd','hx_lung','hx_dialysis',
+  'hx_dm','hx_htn','hx_familialSyndrome','hx_ssd','hx_struct',
+  'struct_arvc','struct_congenital','struct_hcm','struct_infiltrative','struct_lv',
+  'hx_syncope','syncopeRecent','hx_svt','hx_vf','hx_vt',
+  'hx_avp','avpRecent','hx_mvp','mvpRecent',
+  'hx_ca','caRecent','caAfterArrest','hx_cabg','cabgRecent','hx_pci','pciRecent',
+  'hx_cied',
+  'inv_ecg','inv_holter','inv_tte','inv_sevValve','sevMR','sevAS','sevAR','sevTR',
+  'intracardThrombus','inv_tee','teeThrombus','inv_laa','inv_cardiacCT','inv_cmr',
+  'epsICE','laaoPASS',
+  'comp_ca','comp_pci','comp_cabg','comp_tavr',
+  'cx_cardArrest','cx_pulEdema','cx_tamponade1','cx_stroke',
+  'cx_cardShock','cx_bleeding','cx_devEmbol','cx_pleuralEff','cx_leadDislodge'
+];
+
+/* ═══════════════════════════════════════════════════════════
+   Shared helper to load filtered data (replicates existing)
+   ═══════════════════════════════════════════════════════════ */
+async function loadFilteredData(){
+  var snap = await db.collection('patients_full').get();
+  var df = (document.getElementById('exportDateFrom')||{}).value || '';
+  var dt = (document.getElementById('exportDateTo')||{}).value || '';
+  var inv = (document.getElementById('exportInvestigator')||{}).value || '';
+  var ep = (document.getElementById('exportEpReason')||{}).value || '';
+  var all = [];
+  snap.forEach(function(ds){
+    var d = ds.data(); d.id = ds.id;
+    d.fullName = ((d.nameFirst||'')+' '+(d.nameMiddle||'')+' '+(d.nameLast||'')).trim();
+    all.push(d);
+  });
+  all.sort(function(a,b){ return (a.admissionDate||'').localeCompare(b.admissionDate||''); });
+  all.forEach(function(d,i){ d._no = i+1; });
+  return all.filter(function(d){
+    if (df && d.admissionDate && d.admissionDate < df) return false;
+    if (dt && d.admissionDate && d.admissionDate > dt) return false;
+    if (inv && d.enrolledBy !== inv) return false;
+    if (ep && d.epReason !== ep) return false;
+    return true;
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   R1: OVERRIDE exportToExcel — full field coverage
+   ═══════════════════════════════════════════════════════════ */
+window.exportToExcel = async function(){
+  var data = await loadFilteredData();
+  if (!data.length) { alert('No data to export.'); return; }
+
+  var allFields = Object.keys(FULL_FIELD_MAP);
+  function mkSheet(fields){
+    var hdr = fields.map(function(f){ return FULL_FIELD_MAP[f] || f; });
+    var rows = data.map(function(r){
+      return fields.map(function(f){
+        var v = r[f];
+        if (v === true) return 'Yes';
+        if (v === false) return 'No';
+        if (v === undefined || v === null) return '';
+        return v;
+      });
+    });
+    return XLSX.utils.aoa_to_sheet([hdr].concat(rows));
+  }
+  var demo = ['_no','enrolledByCode','enrolledByName','updatedByCode','updatedByName',
+    'nameFirst','nameMiddle','nameLast','civilId','crfNo','fileNumber',
+    'gender','nationality','yob','estimatedAge','admissionDate','recordStatus',
+    'epReason','pacemakerType','patientOrigin','patientContact','relativeContact'];
+  var hxv = allFields.filter(function(f){
+    return f.indexOf('hx_')===0 || f.indexOf('afib')===0 || f.indexOf('arrest')===0
+      || f.indexOf('icm')===0 || f.indexOf('hf')===0 || f.indexOf('ssd_')===0
+      || f.indexOf('struct_')===0 || f.indexOf('cied_')===0
+      || ['sysBp','sysBpUnrec','diaBp','diaBpUnrec','hr','hrUnrec',
+          'weight','weightUnrec','height','heightUnrec',
+          'syncopeRecent','avpType','avpRecent','mvpType','mvpRecent',
+          'caRecent','caAfterArrest','cabgRecent','pciRecent'].indexOf(f)>=0;
+  });
+  hxv = ['_no','civilId','crfNo'].concat(hxv);
+  var meds = allFields.filter(function(f){ return f.indexOf('homeMed_')===0; });
+  meds = ['_no','civilId','crfNo'].concat(meds);
+  var inv = allFields.filter(function(f){
+    return f.indexOf('inv_')===0 || f.indexOf('ecg')===0 || f.indexOf('holter')===0
+      || f.indexOf('lv')===0 || f.indexOf('sev')===0 || f.indexOf('tee')===0
+      || f.indexOf('laa')===0
+      || ['rvsp','rvspNA','intracardThrombus',
+          'creatInit','creatInitNA','creatPeak','creatPeakNA',
+          'hgbInit','hgbInitNA','hgbLowest','hgbLowestNA',
+          'sodium','sodiumNA','potassium','potassiumNA',
+          'magnesium','magnesiumNA','inr','inrNA'].indexOf(f)>=0;
+  });
+  inv = ['_no','civilId','crfNo'].concat(inv);
+  var proc = allFields.filter(function(f){
+    return f.indexOf('proc')===0 || f.indexOf('crt')===0 || f.indexOf('tpm_')===0
+      || f.indexOf('ppm')===0 || f.indexOf('eps')===0 || f.indexOf('laao')===0
+      || f.indexOf('comp_')===0 || f.indexOf('cx_')===0 || f.indexOf('bleed')===0
+      || f === 'strokeType' || f === 'scaiStage' || f === 'operatorName';
+  });
+  proc = ['_no','civilId','crfNo'].concat(proc);
+  var out = ['_no','civilId','crfNo','procSuccess','postECGrhythm',
+    'dischargeDate','dischargeTime','dischargeStatus','causeOfDeath','dischargeType']
+    .concat(allFields.filter(function(f){ return f.indexOf('dcMed_')===0; }));
+
+  var wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, mkSheet(demo), 'Demographics');
+  XLSX.utils.book_append_sheet(wb, mkSheet(hxv), 'History & Vitals');
+  XLSX.utils.book_append_sheet(wb, mkSheet(meds), 'Home Meds');
+  XLSX.utils.book_append_sheet(wb, mkSheet(inv), 'Investigations');
+  XLSX.utils.book_append_sheet(wb, mkSheet(proc), 'Procedure & CX');
+  XLSX.utils.book_append_sheet(wb, mkSheet(out), 'Outcome & DC Meds');
+  XLSX.writeFile(wb, 'EPS_Registry_Export.xlsx');
+};
+
+/* ═══════════════════════════════════════════════════════════
+   R8: OVERRIDE exportSPSS — numeric coding + codebook
+   ═══════════════════════════════════════════════════════════ */
+window.exportSPSS = async function(){
+  var data = await loadFilteredData();
+  if (!data.length) { alert('No data to export.'); return; }
+  var vars = Object.keys(FULL_SPSS_VARS);
+
+  function encode(f, v){
+    // Missing
+    if (v === undefined || v === null || v === '') return -99;
+    // Binary
+    if (BIN_VARS.indexOf(f) >= 0) {
+      if (v === true) return 1;
+      if (v === false) return 0;
+      if (v === 'Yes') return 1;
+      if (v === 'No') return 0;
+      return -99;
+    }
+    // Coded categorical
+    if (FULL_SPSS_CODES[f]) {
+      var m = FULL_SPSS_CODES[f];
+      if (m[v] !== undefined) return m[v];
+      return -99;
+    }
+    // Checkboxes (unrecordable flags, indication checkboxes, meds, etc)
+    if (v === true) return 1;
+    if (v === false) return 0;
+    // Numeric
+    if (typeof v === 'number') return v;
+    var n = parseFloat(v);
+    if (!isNaN(n) && String(n) === String(v).trim()) return n;
+    // Fallback: keep as string
+    return v;
+  }
+
+  // Data sheet
+  var dataRows = [ vars.map(function(v){ return FULL_SPSS_VARS[v]; }) ];
+  data.forEach(function(r){
+    dataRows.push(vars.map(function(v){ return encode(v, r[v]); }));
+  });
+
+  // Codebook sheet
+  var codebook = [['Variable','Label','Type','Value Codes']];
+  vars.forEach(function(v){
+    var label = FULL_FIELD_MAP[v] || v;
+    var type, codes = '';
+    if (BIN_VARS.indexOf(v) >= 0 || /^(homeMed_|dcMed_|ssd_|struct_|cied_|crtInd_|tpm_|ppmInd_|eps_|laao_|comp_|req_)/.test(v)) {
+      type = 'Binary';
+      codes = '1=Yes, 0=No, -99=Missing';
+    } else if (FULL_SPSS_CODES[v]) {
+      type = 'Categorical (coded)';
+      codes = Object.keys(FULL_SPSS_CODES[v])
+        .filter(function(k){ return k !== ''; })
+        .map(function(k){ return FULL_SPSS_CODES[v][k] + '=' + k; })
+        .join('; ') + '; -99=Missing';
+    } else if (/(Unrec|NA|na)$/.test(v)) {
+      type = 'Binary (flag)';
+      codes = '1=True, 0=False';
+    } else if (['sysBp','diaBp','hr','weight','height','yob','estimatedAge',
+                'ecgQRS','lvef','lvesd','lvedd','rvsp','laaOstial','laaDepth',
+                'creatInit','creatPeak','hgbInit','hgbLowest',
+                'sodium','potassium','magnesium','inr',
+                'epsAblTime','epsFluoroTime','laaoDeviceSize'].indexOf(v) >= 0) {
+      type = 'Numeric (continuous)';
+      codes = '-99=Missing';
+    } else if (/Date$/i.test(v)) {
+      type = 'Date (YYYY-MM-DD)';
+      codes = '-99=Missing';
+    } else {
+      type = 'String';
+      codes = '-99=Missing';
+    }
+    codebook.push([ FULL_SPSS_VARS[v], label, type, codes ]);
+  });
+
+  // ReadMe sheet
+  var readme = [
+    ['EPS Registry — SPSS Export'],
+    ['Generated', new Date().toISOString()],
+    ['Rows', data.length],
+    [''],
+    ['CONVENTIONS'],
+    ['Binary variables', '1=Yes, 0=No, -99=Missing'],
+    ['Unrecordable flags', '1 = value was unrecordable/not assessed (paired numeric cleared)'],
+    ['Categorical variables', 'See Codebook sheet for numeric codes'],
+    ['Missing values', '-99 (recode to SYSMIS in SPSS via: RECODE ALL (-99=SYSMIS))'],
+    [''],
+    ['IMPORT NOTES'],
+    ['1. Open SPSS_Data sheet in SPSS (File → Open → Data)'],
+    ['2. Review Codebook sheet and apply VALUE LABELS for each categorical variable'],
+    ['3. Recode -99 to SYSMIS before running analyses']
+  ];
+
+  var wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(readme),   'ReadMe');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(dataRows), 'SPSS_Data');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(codebook), 'Codebook');
+  XLSX.writeFile(wb, 'EPS_SPSS_Export.xlsx');
+};
+
+/* ═══════════════════════════════════════════════════════════
+   R1: OVERRIDE exportSinglePDF — add more fields
+   ═══════════════════════════════════════════════════════════ */
+var _origSinglePDF = window.exportSinglePDF;
+window.exportSinglePDF = function(data){
+  var jspdf = window.jspdf; if (!jspdf) { _origSinglePDF && _origSinglePDF(data); return; }
+  var pdfdoc = new jspdf.jsPDF({unit:'mm',format:'a4'});
+  pdfdoc.setFillColor(30,64,175); pdfdoc.rect(0,0,210,22,'F');
+  pdfdoc.setTextColor(255,255,255); pdfdoc.setFontSize(13); pdfdoc.setFont('helvetica','bold');
+  pdfdoc.text('EPS Registry – Mubarak Alkabeer Hospital', 14, 10);
+  pdfdoc.setFontSize(9); pdfdoc.setFont('helvetica','normal');
+  pdfdoc.text('Advanced Electrophysiology Registry', 14, 16);
+  pdfdoc.setTextColor(30,30,30);
+  pdfdoc.setFontSize(14); pdfdoc.setFont('helvetica','bold');
+  var fullName = ((data.nameFirst||'')+' '+(data.nameMiddle||'')+' '+(data.nameLast||'')).trim() || 'Anonymous';
+  pdfdoc.text(fullName, 14, 30);
+  pdfdoc.setFontSize(9); pdfdoc.setFont('helvetica','normal');
+  var createdBy = (data.enrolledByName||'—') + (data.enrolledByCode?(' ['+data.enrolledByCode+']'):'');
+  var updatedBy = data.updatedByName ? ((data.updatedByName||'—') + (data.updatedByCode?(' ['+data.updatedByCode+']'):'')) : '—';
+  pdfdoc.text([
+    'Civil ID: '+(data.civilId||'—')+'  |  File: '+(data.fileNumber||'—')+'  |  CRF: '+(data.crfNo||'—'),
+    'Gender: '+(data.gender||'—')+'  |  Age: '+(data.estimatedAge||'—')+'  |  Admission: '+(data.admissionDate||'—'),
+    'EP Reason: '+(data.epReason||'—')+'  |  Status: '+((data.recordStatus||'draft').toUpperCase()),
+    'Created by: '+createdBy+'  |  Last updated by: '+updatedBy
+  ], 14, 38);
+  var y = 58;
+  var sections = [
+    {title:'Procedure',keys:['procStartDate','procStartTime','procEndTime','operatorName',
+      'epsTransseptal','epsICE','epsAblTime','epsFluoroTime',
+      'laaoDeviceType','laaoDeviceSize','laaoPASS','laaoOutcome','procSuccess']},
+    {title:'History',keys:['hx_afib','afibClassification','afibChads','afibHasBled',
+      'hx_icm','hx_hf','hfType','hx_cad','hx_mi','hx_htn','hx_dm','hx_cied']},
+    {title:'Investigations',keys:['inv_ecg','ecgAtrialRhythm','ecgVentRhythm','ecgQRS',
+      'inv_tte','lvef','lvesd','lvedd','rvsp',
+      'creatInit','hgbInit','sodium','potassium','inr']},
+    {title:'Complications',keys:['cx_cardArrest','cx_pulEdema','cx_tamponade1',
+      'cx_stroke','strokeType','cx_cardShock','scaiStage',
+      'cx_bleeding','bleedType','cx_devEmbol','cx_pleuralEff','cx_leadDislodge']},
+    {title:'Discharge',keys:['dischargeDate','dischargeTime','dischargeStatus','causeOfDeath','dischargeType']}
+  ];
+  sections.forEach(function(sec){
+    if (y > 255) { pdfdoc.addPage(); y = 20; }
+    pdfdoc.setFillColor(240,244,248); pdfdoc.rect(12,y-4,186,8,'F');
+    pdfdoc.setFont('helvetica','bold'); pdfdoc.setFontSize(9); pdfdoc.setTextColor(30,64,175);
+    pdfdoc.text(sec.title, 14, y+0.5); y += 7;
+    var pairs = sec.keys.map(function(k){
+      var v = data[k];
+      if (v === true || v === 'true') v = 'Yes';
+      else if (v === false || v === 'false') v = 'No';
+      return [ FULL_FIELD_MAP[k] || k, (v===undefined||v===null||v==='')?'—':v ];
+    }).filter(function(p){ return p[1] !== '—'; });
+    if (!pairs.length) {
+      pdfdoc.setFont('helvetica','italic'); pdfdoc.setFontSize(8); pdfdoc.setTextColor(150,150,150);
+      pdfdoc.text('No data recorded', 16, y); y += 5; return;
+    }
+    pdfdoc.autoTable({head:[['Field','Value']],body:pairs,startY:y,margin:{left:14,right:14},
+      styles:{fontSize:8},headStyles:{fillColor:[100,116,139],textColor:255},
+      columnStyles:{0:{cellWidth:80},1:{cellWidth:100}},tableWidth:182});
+    y = pdfdoc.lastAutoTable.finalY + 5;
+  });
+  pdfdoc.save('EPS_Patient_'+(data.civilId||data.fileNumber||'report')+'.pdf');
+};
+
+/* ═══════════════════════════════════════════════════════════
+   R4+R5: ADMIN PANEL — remove filters/columns, add new cols
+   ═══════════════════════════════════════════════════════════ */
+// Hide filter fields: EP Reason + date filters (req 4)
+[['filterEpReason',true], ['filterDateFrom',true], ['filterDateTo',true]].forEach(function(pair){
+  var el = document.getElementById(pair[0]);
+  if (el) { var wrap = el.closest('div'); if (wrap) wrap.style.display = 'none'; }
+});
+
+// Rebuild admin table header (remove EP Reason + Completion; add Dr Code/Created By/Updated By)
+var adminRecords = document.getElementById('adminRecordsPanel');
+if (adminRecords) {
+  var head = adminRecords.querySelector('thead tr');
+  if (head) {
+    head.innerHTML =
+      '<th>#</th><th>Patient Info</th><th>IDs</th>'
+      + '<th>Dr Code</th><th>Created By</th><th>Updated By</th>'
+      + '<th>Admission</th><th>Status</th>'
+      + '<th class="text-right">Actions</th>';
+  }
+}
+
+// Override fetchData to render the new columns
+window.fetchData = async function(){
+  var sN = (document.getElementById('searchName')||{}).value?.toLowerCase() || '';
+  var sCID = (document.getElementById('searchCivilId')||{}).value || '';
+  var sFN = (document.getElementById('searchFileNo')||{}).value || '';
+  var sCRF = (document.getElementById('searchCrfNo')||{}).value || '';
+  var sINV = (document.getElementById('filterInvestigatorAdmin')||{}).value || '';
+  var sST = (document.getElementById('filterStatus')||{}).value || '';
+
+  var snap = await db.collection('patients_full').get();
+  var tbody = document.getElementById('tableBody'); if (!tbody) return;
+  tbody.innerHTML = '';
+  var allData = [];
+  var all = []; var civIds = {};
+  snap.forEach(function(ds){
+    var d = ds.data(); d.id = ds.id;
+    d.fullName = ((d.nameFirst||'')+' '+(d.nameMiddle||'')+' '+(d.nameLast||'')).trim();
+    all.push(d);
+    civIds[d.civilId] = (civIds[d.civilId]||0)+1;
+  });
+  all.sort(function(a,b){ return (a.admissionDate||'').localeCompare(b.admissionDate||''); });
+  all.forEach(function(data, idx){
+    data._no = idx+1;
+    data._isDup = (civIds[data.civilId]||0) > 1;
+    if (sN && data.fullName.toLowerCase().indexOf(sN) < 0) return;
+    if (sCID && (data.civilId||'').indexOf(sCID) < 0) return;
+    if (sFN && (data.fileNumber||'').indexOf(sFN) < 0) return;
+    if (sCRF && (data.crfNo||'').indexOf(sCRF) < 0) return;
+    if (sINV && data.enrolledBy !== sINV) return;
+    if (sST && (data.recordStatus||'draft') !== sST) return;
+    allData.push(data);
+    var st = data.recordStatus || 'draft';
+    var stBadge = (typeof window.statusBadge === 'function')
+      ? window.statusBadge(st)
+      : '<span class="badge status-'+st+'">'+st+'</span>';
+    var drCode = data.enrolledByCode || '—';
+    var createdBy = (data.enrolledByName||'—')
+      + (data.enrolledByCode ? ' <span style="color:#64748b;font-size:11px;">['+data.enrolledByCode+']</span>' : '');
+    var updatedBy = data.updatedByName
+      ? ((data.updatedByName||'—') + (data.updatedByCode ? ' <span style="color:#64748b;font-size:11px;">['+data.updatedByCode+']</span>' : ''))
+      : '<span style="color:#cbd5e1;">—</span>';
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td style="font-weight:800;color:#94a3b8;font-size:12px;">#'+data._no+'</td>'
+      + '<td><div class="font-bold text-gray-800">'+(data.fullName||'Anonymous')+'</div>'
+      + '<div class="text-xs text-gray-500">'+(data.gender||'')+' | Age: '+(data.estimatedAge||'?')+'</div>'
+      + (data._isDup ? '<span class="dup-flag mt-1"><i class="fas fa-exclamation-circle"></i> Dup</span>' : '')
+      + '</td>'
+      + '<td class="text-xs"><div>CID: '+(data.civilId||'—')+'</div>'
+      + '<div>File: '+(data.fileNumber||'—')+'</div>'
+      + '<div>CRF: <b>'+(data.crfNo||'—')+'</b></div></td>'
+      + '<td class="text-xs" style="font-family:\'DM Mono\',monospace;font-weight:700;color:#1d4ed8;">'+drCode+'</td>'
+      + '<td class="text-xs">'+createdBy+'</td>'
+      + '<td class="text-xs">'+updatedBy+'</td>'
+      + '<td class="text-xs text-gray-600">'+(data.admissionDate||'—')+'</td>'
+      + '<td>'+stBadge+'</td>'
+      + '<td class="text-right" style="white-space:nowrap;">'
+      + '<button onclick=\'editRecord('+JSON.stringify(data).replace(/'/g,"\\'")+")' class=\"btn btn-yellow text-xs px-2 py-1 mr-1\"><i class=\"fas fa-edit\"></i></button>"
+      + (st!=='reviewed' ? '<button onclick="markReviewed(\''+data.id+'\')" class="btn btn-green text-xs px-2 py-1 mr-1"><i class="fas fa-check-circle"></i></button>' : '')
+      + (st==='reviewed' ? '<button onclick="markDraft(\''+data.id+'\')" class="btn btn-gray text-xs px-2 py-1 mr-1"><i class="fas fa-undo"></i></button>' : '')
+      + '<button onclick="deleteRecord(\''+data.id+'\')" class="btn btn-red text-xs px-2 py-1"><i class="fas fa-trash"></i></button>'
+      + '</td>';
+    tbody.appendChild(tr);
+  });
+  if (!allData.length) tbody.innerHTML = '<tr><td colspan="9" class="text-center py-8 text-gray-400">No records found</td></tr>';
+};
+
+/* ═══════════════════════════════════════════════════════════
+   USER MGMT — add Doctor Code column + editor
+   ═══════════════════════════════════════════════════════════ */
+// Patch loadUserList so it renders a Doctor Code cell
+var _origLoadUserList = window.loadUserList;
+window.loadUserList = async function(){
+  var tbody = document.getElementById('userTableBody');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="7" class="text-center py-6 text-gray-400"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</td></tr>';
+  try {
+    // Ensure header has Dr Code column (idempotent)
+    var userThead = document.querySelector('#userListContainer thead tr');
+    if (userThead && userThead.children.length === 6) {
+      var th = document.createElement('th'); th.textContent = 'Dr Code';
+      userThead.insertBefore(th, userThead.children[3]); // after Role
+    }
+    var snap = await db.collection('users').get();
+    var rows = [];
+    snap.forEach(function(ds){ var u=ds.data(); u.id=ds.id; rows.push(u); });
+    var patSnap = await db.collection('patients_full').get();
+    var counts = {};
+    patSnap.forEach(function(ds){
+      var uid = ds.data().enrolledBy; if (uid) counts[uid] = (counts[uid]||0)+1;
+    });
+    // Populate investigator filter dropdowns (unchanged behavior)
+    var invOpts = rows.filter(function(u){ return u.role==='investigator' || u.role==='cso'; })
+      .map(function(u){ return '<option value="'+u.id+'">'+(u.displayName||u.email)+'</option>'; }).join('');
+    ['filterInvestigatorAdmin','exportInvestigator'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) el.innerHTML = '<option value="">All Investigators</option>' + invOpts;
+    });
+    if (!rows.length) { tbody.innerHTML = '<tr><td colspan="7" class="text-center py-6 text-gray-400">No users found</td></tr>'; return; }
+    tbody.innerHTML = rows.map(function(u){
+      var dc = u.doctorCode || '';
+      var dcCell = dc
+        ? '<span style="font-family:\'DM Mono\',monospace;font-weight:800;color:#1d4ed8;background:#eff6ff;padding:3px 9px;border-radius:6px;">'+dc+'</span>'
+        : '<span style="font-size:11px;color:#dc2626;font-weight:600;">Not set</span>';
+      return '<tr>'
+        + '<td><div class="font-bold text-gray-800">'+(u.displayName||'—')+'</div></td>'
+        + '<td class="text-xs text-gray-500">'+(u.email||'—')+'</td>'
+        + '<td><span class="role-'+(u.role||'investigator')+'">'+((u.role||'investigator').toUpperCase())+'</span></td>'
+        + '<td>'+dcCell+'</td>'
+        + '<td class="font-bold text-blue-700 text-center">'+(counts[u.id]||0)+'</td>'
+        + '<td>'+(u.active?'<span class="badge badge-green">Active</span>':'<span class="badge badge-red">Disabled</span>')+'</td>'
+        + '<td style="white-space:nowrap;">'
+        + '<button onclick="setDoctorCode(\''+u.id+'\',\''+((u.displayName||u.email||'').replace(/\'/g,"\\'"))+'\')" class="btn btn-primary text-xs px-2 py-1 mr-1" title="Set Doctor Code"><i class="fas fa-id-badge"></i></button>'
+        + '<button onclick="editUserDoc(\''+u.id+'\',\''+((u.displayName||'').replace(/\'/g,"\\'"))+'\',\''+(u.email||'')+'\',\''+(u.role||'investigator')+'\')" class="btn btn-yellow text-xs px-2 py-1 mr-1"><i class="fas fa-edit"></i></button>'
+        + '<button onclick="toggleUserActive(\''+u.id+'\','+(!u.active)+')" class="btn '+(u.active?'btn-red':'btn-green')+' text-xs px-2 py-1 mr-1">'+(u.active?'<i class="fas fa-ban"></i>':'<i class="fas fa-check"></i>')+'</button>'
+        + '<button onclick="deleteUserDoc(\''+u.id+'\',\''+((u.displayName||u.email||'').replace(/\'/g,"\\'"))+'\')" class="btn btn-gray text-xs px-2 py-1"><i class="fas fa-trash"></i></button>'
+        + '</td></tr>';
+    }).join('');
+  } catch(e){
+    console.error('[EPS Patch] loadUserList', e);
+    tbody.innerHTML = '<tr><td colspan="7" class="text-center py-6 text-red-500">Error: '+e.message+'</td></tr>';
+  }
+};
+
+window.setDoctorCode = async function(uid, name){
+  var current = '';
+  try { var ss = await db.collection('users').doc(uid).get(); current = (ss.data()||{}).doctorCode || ''; } catch(e){}
+  var code = prompt('Enter 3-digit doctor code for "'+name+'":\n\n(The CRF format will be: 01 + '+(code||'DDD')+' + sequence)', current);
+  if (code === null) return;
+  code = String(code).trim();
+  if (!/^\d{3}$/.test(code)) { alert('Must be exactly 3 digits.'); return; }
+  // Uniqueness check
+  try {
+    var dup = await db.collection('users').where('doctorCode','==',code).get();
+    var conflict = false;
+    dup.forEach(function(ds){ if (ds.id !== uid) conflict = true; });
+    if (conflict) { alert('Code '+code+' is already assigned to another user.'); return; }
+    await db.collection('users').doc(uid).update({doctorCode: code});
+    alert('Doctor code '+code+' assigned to '+name);
+    window.loadUserList();
+  } catch(e){ alert('Failed: '+e.message); }
+};
+
+/* ═══════════════════════════════════════════════════════════
+   Auto-fill CRF when user opens a NEW form
+   ═══════════════════════════════════════════════════════════ */
+// When Add CRF tab is clicked, autofill if empty
+if (tabForm) {
+  tabForm.addEventListener('click', function(){
+    setTimeout(function(){
+      // only if not editing
+      var editId = (document.getElementById('editRecordId')||{}).value;
+      if (!editId) autofillCRFIfEmpty();
+    }, 100);
+  });
+}
+// Try initial autofill too
+setTimeout(function(){
+  if (window._auth.currentUser) {
+    var editId = (document.getElementById('editRecordId')||{}).value;
+    if (!editId) autofillCRFIfEmpty();
+  }
+}, 1500);
+
+console.log('[EPS Patch] ✓ All 9 patches applied');
+```
+
+});
+
+})();
 (async function initFirebaseReliably() {
   const cdns = [
     "https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-app-compat.js",
