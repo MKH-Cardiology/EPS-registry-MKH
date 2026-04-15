@@ -788,35 +788,6 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 
 </main>
 <script>
-  /* ═══════════════════════════════════════════════════════════════════════════
-EPS REGISTRY — CONSOLIDATED PATCH SCRIPT v1.0
-───────────────────────────────────────────────────────────────────────────
-HOW TO INSTALL
-──────────────
-
-1. Open your existing index.html
-1. Find the LAST </script> tag (the one right before </body>)
-1. Immediately AFTER that </script>, paste this entire file wrapped in:
-   
-      <script> ... (paste this file's contents here) ... </script>
-1. Save and deploy.
-
-This patch RUNS AFTER your existing code and OVERRIDES the affected
-functions. Your original code is untouched — if anything misbehaves,
-just remove this <script> block and you’re back to the original.
-
-COVERS REQUIREMENTS:
-✅ 1. Missing fields in FIELD_MAP / SPSS_VARS (full coverage)
-✅ 2. Unrecordable checkboxes now clear + disable their numeric inputs
-✅ 3. Auto-generated 8-digit CRF: 01 + DDD (doctor code) + SSS (sequence)
-✅ 4. Admin panel: EP Reason / date / completion columns removed
-✅ 5. Admin table: Dr Code, Created By (+code), Updated By (+code) columns
-✅ 6. “Registry Form” → “Add CRF”
-✅ 7. Three save modes: Save & Continue / Save & Close / Final Submit
-✅ 8. SPSS export: numeric value codes + unrecordable flags + codebook
-✅ 9. Does NOT break existing functionality
-═══════════════════════════════════════════════════════════════════════════ */
-
 (function(){
 ‘use strict’;
 
@@ -1914,9 +1885,11 @@ console.log('[EPS Patch] ✓ All 9 patches applied');
 })();
 (async function initFirebaseReliably() {
   const cdns = [
-    "https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-app-compat.js",
-    "https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-firestore-compat.js",
-    "https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-auth-compat.js"
+  "https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js",
+  "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js",
+  "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"
+];
+
   ];
   try {
     for (const src of cdns) {
