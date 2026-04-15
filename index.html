@@ -966,7 +966,7 @@ snap.forEach(ds=>{const d=ds.data();if(d.active!==false)_doctorCodes[d.name]=d.c
 const sel=document.getElementById(‘operatorSelect’);
 if(sel){
 sel.innerHTML=’<option value="">Select operator…</option>’;
-Object.keys(_doctorCodes).sort().forEach(name=>{sel.innerHTML+=`<option value="${name}">${name} (${_doctorCodes[name]})</option>`;});
+Object.keys(_doctorCodes).sort().forEach(name=>{sel.innerHTML+=’<option value="${name}">${name} (${_doctorCodes[name]})</option>’;});
 }
 }catch(e){console.error(‘loadDoctorCodes:’,e);}
 }
