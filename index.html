@@ -1009,18 +1009,25 @@ setTimeout(()=>{t.style.opacity=‘0’;setTimeout(()=>t.remove(),400);},2200);
 function initApp(){
 db=window._getDb();
 
+const ADMIN_EMAILS=[‘abdelshafie.ahmed@gmail.com’,‘ahmadelsharkawi87@gmail.com’];
+
 window._onAuthStateChanged(async(user)=>{
 if(!user){document.getElementById(‘loginOverlay’).style.display=‘flex’;currentUser=null;currentRole=null;return;}
 try{
-const snap=await db.collection(‘users’).doc(user.uid).get();
-if(!snap.exists||snap.data().active!==true){await window._signOut();showLoginError(‘Account not active. Contact admin.’);return;}
+let snap=await db.collection(‘users’).doc(user.uid).get();
+// Auto-bootstrap admin user doc if missing
+if(!snap.exists && ADMIN_EMAILS.includes(user.email)){
+await db.collection(‘users’).doc(user.uid).set({displayName:‘Dr. Ahmed’,email:user.email,role:‘admin’,active:true,createdAt:new Date()});
+snap=await db.collection(‘users’).doc(user.uid).get();
+}
+if(!snap.exists||snap.data().active!==true){await window._signOut();showLoginError(‘Account not active or not registered. Contact admin.’);return;}
 currentUser=user;currentRole=snap.data().role;currentUserName=snap.data().displayName||user.email;
 document.getElementById(‘loginOverlay’).style.display=‘none’;
 applyRoleUI(currentRole);
 await loadDoctorCodes();
 loadRecordsCache();
 updateMyCasesCount();
-}catch(e){console.error(‘Auth:’,e);showLoginError(‘Login error. Try again.’);}
+}catch(e){console.error(‘Auth:’,e);showLoginError(’Login error: ’+e.message);}
 });
 
 function applyRoleUI(role){
