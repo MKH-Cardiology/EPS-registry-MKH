@@ -277,19 +277,17 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
   <div id="idFields">
     <div class="mb-4"><label class="lbl">1.1 Patient Name (Initials) <span style="color:#dc2626">*</span></label>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
-        <input type="text" id="req_nameFirst" name="nameFirst" placeholder="First" class="inp">
-        <input type="text" name="nameMiddle" placeholder="Middle" class="inp">
-        <input type="text" id="req_nameLast" name="nameLast" placeholder="Last" class="inp">
+        <input type="text" id="req_nameFirst" name="nameFirst" placeholder="First" class="inp" maxlength="1" style="text-transform:uppercase;" oninput="this.value=this.value.toUpperCase();if(this.value.length===1){document.querySelector('[name=nameMiddle]').focus();}">
+        <input type="text" name="nameMiddle" placeholder="Middle" class="inp" maxlength="1" style="text-transform:uppercase;" oninput="this.value=this.value.toUpperCase();if(this.value.length===1){document.getElementById('req_nameLast').focus();}">
+        <input type="text" id="req_nameLast" name="nameLast" placeholder="Last" class="inp" maxlength="1" style="text-transform:uppercase;" oninput="this.value=this.value.toUpperCase();">
       </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" class="mb-4">
       <div><label class="lbl">1.2 Civil ID <span style="color:#dc2626">*</span></label><input type="text" id="civilId" name="civilId" inputmode="numeric" maxlength="12" placeholder="12 digits" class="inp" style="font-family:'DM Mono',monospace;"></div>
-      <div><label class="lbl">1.3 CRF Number <span style="color:#dc2626">*</span></label>
+      <div><label class="lbl">1.3 CRF Number</label>
         <div style="display:flex;gap:6px;align-items:center;">
-          <input type="text" id="req_crfNo" name="crfNo" inputmode="numeric" maxlength="8" placeholder="01-DDD-NNN" class="inp" style="font-family:'DM Mono',monospace;" readonly>
-          <button type="button" onclick="autoGenCRF()" class="btn btn-purple text-xs px-3 py-2 shrink-0" title="Auto-generate CRF"><i class="fas fa-magic"></i> Generate</button>
+          <input type="text" id="req_crfNo" name="crfNo" inputmode="numeric" maxlength="10" placeholder="Generating…" class="inp" style="font-family:'DM Mono',monospace;" readonly>
         </div>
-        <div style="font-size:10px;color:#94a3b8;margin-top:3px;">Format: 01 (hospital) – DDD (doctor code) – NNN (sequential)</div>
       </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;" class="mb-4">
@@ -520,7 +518,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
       <div><label class="lbl">9.1 Procedure Start Date</label><input type="date" name="procStartDate" class="inp"></div>
       <div><label class="lbl">9.2 Procedure Start Time (24h)</label><input type="time" name="procStartTime" class="inp"></div>
       <div><label class="lbl">9.3 Procedure Finishing Time (24h)</label><input type="time" name="procEndTime" class="inp"></div>
-      <div><label class="lbl">9.4 Operator Name</label><select name="operatorName" class="inp"><option value="">Select operator...</option><option>Dr. Samy</option><option>Dr. Hamdy</option><option>Dr. Abdulkarim</option><option>Dr. Metwally</option><option>Dr. Farouk</option></select></div>
+      <div><label class="lbl">9.4 Operator Name</label><select name="operatorName" class="inp"><option value="">Select operator...</option><option>Operator 1</option><option>Operator 2</option><option>Operator 3</option><option>Operator 4</option><option>Operator 5</option></select></div>
     </div>
   </div>
   <div id="proc_noReason" class="card card-yellow" style="text-align:center;padding:28px 20px;"><i class="fas fa-arrow-left" style="color:#d97706;font-size:20px;margin-bottom:10px;display:block;"></i><div style="font-weight:700;color:#92400e;font-size:15px;">No procedure selected yet</div><div style="font-size:13px;color:#a16207;margin-top:6px;">Go to <b>Step 2</b> and choose a procedure.</div></div>
@@ -748,7 +746,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     </div>
     <div class="overflow-x-auto rounded-xl border border-gray-200">
       <table class="min-w-full divide-y divide-gray-200 admin-table">
-        <thead><tr><th>#</th><th>Patient Info</th><th>IDs</th><th>EP Reason</th><th>Investigator</th><th>Doctor Code</th><th>Created By</th><th>Updated By</th><th>Admission</th><th>Status</th><th class="text-right">Actions</th></tr></thead>
+        <thead><tr><th>CRF Number</th><th>Civil ID</th><th>Doctor Code</th><th>Status</th><th>Created By</th><th>Last Updated By</th><th class="text-right">Actions</th></tr></thead>
         <tbody id="tableBody" class="bg-white divide-y divide-gray-100"></tbody>
       </table>
     </div>
@@ -1000,6 +998,8 @@ window._onAuthStateChanged(async (user) => {
     applyRoleUI(currentRole);
     loadRecordsCache();
     updateMyCasesCount();
+    // Auto-generate CRF for new form on first load
+    autoGenCRF();
     // Load saved doctor codes from Firebase
     try{
       const codeSnap=await db.collection('settings').doc('doctorCodes').get();
@@ -1187,11 +1187,19 @@ window.toggleUnrec=function(field){
 
 // ── DOCTOR CODES (Hospital 01) ───────────────────────────
 const DOCTOR_CODES={
-  'Dr. Samy':'101',
-  'Dr. Hamdy':'102',
-  'Dr. Abdulkarim':'103',
-  'Dr. Metwally':'104',
-  'Dr. Farouk':'105',
+  'Dr. Khaled Al-Fadhli':'101',
+  'Dr. Mohammed Al-Mutairi':'102',
+  'Dr. Abdullah Al-Rashidi':'103',
+  'Dr. Fahad Al-Enezi':'104',
+  'Dr. Nawaf Al-Azmi':'105',
+  'Dr. Bader Al-Shammari':'106',
+  'Dr. Saud Al-Harbi':'107',
+  'Dr. Jassim Al-Kandari':'108',
+  'Dr. Ahmed Abdelshafie':'109',
+  'Dr. Waleed Al-Hajri':'110',
+  'Dr. Tariq Al-Bloushi':'111',
+  'Dr. Reem Al-Sabah':'112',
+  'Dr. Sara Al-Fulaij':'113',
 };
 
 window.autoGenCRF=async function(){
@@ -1303,7 +1311,7 @@ async function saveRecord(targetStatus, closeAfter=false){
   }
   if(!/^\d{12}$/.test(document.getElementById('civilId').value)){goToStep(0);alert('Civil ID must be 12 digits.');return false;}
   if(!/^\d{6}$/.test(document.getElementById('req_fileNo').value)){goToStep(0);alert('File Number must be 6 digits.');return false;}
-  if(!/^\d{2}-\d{3}-\d{3}$/.test(document.getElementById('req_crfNo').value)){goToStep(0);alert('CRF Number must be auto-generated (format: 01-DDD-NNN). Click the Generate button.');return false;}
+  if(!/^\d{2}-\d{3}-\d{3}$/.test(document.getElementById('req_crfNo').value)){goToStep(0);alert('CRF Number was not generated. Please wait a moment and try again.');return false;}
 
   const fd=new FormData(form);
   const dataObj=Object.fromEntries(fd.entries());
@@ -1484,16 +1492,12 @@ window.fetchData=async function(){
     const barCol=comp.complete?'#059669':comp.pct>=70?'#d97706':'#e11d48';
     const tr=document.createElement('tr');
     tr.innerHTML=`
-      <td style="font-weight:800;color:#94a3b8;font-size:12px;">#${data._no}</td>
-      <td><div class="font-bold text-gray-800">${data.fullName||'Anonymous'}</div><div class="text-xs text-gray-500">${data.gender||''} | Age: ${data.estimatedAge||'?'}</div>${data._isDup?'<span class="dup-flag mt-1"><i class="fas fa-exclamation-circle"></i> Dup</span>':''}</td>
-      <td class="text-xs"><div>CID: ${data.civilId||'—'}</div><div>File: ${data.fileNumber||'—'}</div><div>CRF: ${data.crfNo||'—'}</div></td>
-      <td><span class="badge badge-blue">${data.epReason||'—'}</span></td>
-      <td class="text-xs"><div class="font-semibold">${data.enrolledByName||'—'}</div></td>
-      <td class="text-xs text-center"><span style="font-family:'DM Mono',monospace;background:#dbeafe;color:#1e40af;border-radius:5px;padding:2px 7px;font-weight:700;">${data.enrolledByCode||DOCTOR_CODES[data.enrolledByName]||'—'}</span></td>
-      <td class="text-xs"><div>${data.enrolledByName||'—'}</div><div style="color:#94a3b8;">${data.enrolledByCode||DOCTOR_CODES[data.enrolledByName]||'—'}</div></td>
-      <td class="text-xs">${data.updatedByName?`<div>${data.updatedByName}</div><div style="color:#94a3b8;">${data.updatedByCode||''}</div>`:'<span class="text-gray-400">—</span>'}</td>
-      <td class="text-xs text-gray-600">${data.admissionDate||'—'}</td>
+      <td><span style="font-family:'DM Mono',monospace;font-weight:800;color:#1e40af;">${data.crfNo||'—'}</span></td>
+      <td><span style="font-family:'DM Mono',monospace;">${data.civilId||'—'}</span></td>
+      <td class="text-center"><span style="font-family:'DM Mono',monospace;background:#dbeafe;color:#1e40af;border-radius:5px;padding:2px 7px;font-weight:700;">${data.enrolledByCode||DOCTOR_CODES[data.enrolledByName]||'—'}</span></td>
       <td>${statusBadge(st)}</td>
+      <td class="text-xs"><div class="font-semibold">${data.enrolledByName||'—'}</div></td>
+      <td class="text-xs">${data.updatedByName?`<div>${data.updatedByName}</div>`:'<span class="text-gray-400">—</span>'}</td>
       <td class="text-right" style="white-space:nowrap;">
         <button onclick='editRecord(${JSON.stringify(data).replace(/'/g,"\\'")})'  class="btn btn-yellow text-xs px-2 py-1 mr-1"><i class="fas fa-edit"></i></button>
         ${st!=='reviewed'?`<button onclick="markReviewed('${data.id}')" class="btn btn-green text-xs px-2 py-1 mr-1"><i class="fas fa-check-circle"></i></button>`:''}
@@ -1502,7 +1506,7 @@ window.fetchData=async function(){
       </td>`;
     tbody.appendChild(tr);
   });
-  if(!allData.length)tbody.innerHTML='<tr><td colspan="11" class="text-center py-8 text-gray-400">No records found</td></tr>';
+  if(!allData.length)tbody.innerHTML='<tr><td colspan="7" class="text-center py-8 text-gray-400">No records found</td></tr>';
   _allRecordsCache=allData.slice();
 };
 window.clearAdminFilters=function(){['searchName','searchCivilId','searchFileNo','searchCrfNo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});['filterStatus','filterInvestigatorAdmin'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});fetchData();};
