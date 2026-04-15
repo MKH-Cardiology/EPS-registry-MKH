@@ -113,10 +113,58 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 .user-table th{background:#f8fafc;padding:10px 14px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#64748b;text-align:left;border-bottom:1.5px solid #e2e8f0;}
 .user-table td{padding:10px 14px;font-size:13px;border-bottom:1px solid #f1f5f9;vertical-align:middle;}
 /* ADMIN SUBTABS */
-.admin-sub-tab{padding:8px 18px;border-radius:8px 8px 0 0;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid #e2e8f0;border-bottom:none;background:#f8fafc;color:#64748b;transition:all .15s;}
+.admin-sub-tab{padding:10px 16px;border-radius:8px 8px 0 0;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid #e2e8f0;border-bottom:none;background:#f8fafc;color:#64748b;transition:all .15s;white-space:nowrap;}
 .admin-sub-tab.active{background:#fff;color:#1d4ed8;border-color:#bfdbfe;}
-@media(max-width:640px){#idFields [style*="1fr 1fr 1fr"]{grid-template-columns:1fr!important;}#idFields [style*="1fr 1fr 1fr 1fr"]{grid-template-columns:1fr 1fr!important;}#idFields [style*="1fr 1fr"]{grid-template-columns:1fr!important;}}
+/* PROC STACK */
+.proc-stack{display:flex!important;flex-direction:column!important;gap:14px!important;}
+.proc-stack>div{width:100%!important;}
+
+/* ── RESPONSIVE GRIDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+
+/* Tablet (≤1024px) */
+@media(max-width:1024px){
+.g3{grid-template-columns:1fr 1fr;}
+.g4{grid-template-columns:1fr 1fr;}
+}
+/* Mobile (≤768px) */
+@media(max-width:768px){
+.g2,.g3,.g4{grid-template-columns:1fr;}
+main.max-w-screen-2xl{padding-left:10px!important;padding-right:10px!important;}
+#section-form>div:first-child{width:100%!important;max-width:none!important;}
+#stepperList{flex-direction:row!important;overflow-x:auto;padding-bottom:4px;gap:4px!important;}
+.step-connector{display:block;}
+.step-label{font-size:9px;max-width:56px;}
+.sec-title{font-size:14px;}
+.step-footer{padding:10px 12px;gap:6px;}
+.step-footer .btn{padding:8px 10px;font-size:12px;}
+.admin-sub-tab{padding:8px 12px;font-size:12px;}
+.card{padding:14px;}
+}
+/* Small mobile (≤640px) */
+@media(max-width:640px){
+header .max-w-screen-2xl{padding:8px 10px!important;}
+header nav{gap:10px;}
+header nav button{font-size:11px;}
+#idFields [style*=“1fr 1fr 1fr”]{grid-template-columns:1fr!important;}
+#idFields [style*=“1fr 1fr 1fr 1fr”]{grid-template-columns:1fr 1fr!important;}
+#idFields [style*=“1fr 1fr”]{grid-template-columns:1fr!important;}
+.login-card{padding:24px 18px;}
+.admin-table th,.admin-table td{padding:8px 6px;font-size:11px;}
+.step-footer>div:last-child{width:100%;}
+.step-footer>div:last-child .btn{flex:1;justify-content:center;font-size:11px;padding:8px 6px;}
+.step-label{display:none;}
+}
+/* PC wide (≥1280px) */
+@media(min-width:1280px){
+#section-form>div:first-child{width:272px!important;}
+}
+/* Disable button styles */
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
 </style>
+
 </head>
 <body class="min-h-screen">
 
@@ -520,7 +568,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
       <div><label class="lbl">9.1 Procedure Start Date</label><input type="date" name="procStartDate" class="inp"></div>
       <div><label class="lbl">9.2 Procedure Start Time (24h)</label><input type="time" name="procStartTime" class="inp"></div>
       <div><label class="lbl">9.3 Procedure Finishing Time (24h)</label><input type="time" name="procEndTime" class="inp"></div>
-      <div><label class="lbl">9.4 Operator Name</label><select name="operatorName" class="inp"><option value="">Select operator...</option><option>Dr. Samy</option><option>Dr. Hamdy</option><option>Dr. Abdulkarim</option><option>Dr. Metwally</option><option>Dr. Farouk</option></select></div>
+      <div><label class="lbl">9.4 Operator Name</label><select name="operatorName" class="inp"><option value="">Select operator...</option><option>Operator 1</option><option>Operator 2</option><option>Operator 3</option><option>Operator 4</option><option>Operator 5</option></select></div>
     </div>
   </div>
   <div id="proc_noReason" class="card card-yellow" style="text-align:center;padding:28px 20px;"><i class="fas fa-arrow-left" style="color:#d97706;font-size:20px;margin-bottom:10px;display:block;"></i><div style="font-weight:700;color:#92400e;font-size:15px;">No procedure selected yet</div><div style="font-size:13px;color:#a16207;margin-top:6px;">Go to <b>Step 2</b> and choose a procedure.</div></div>
@@ -748,7 +796,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     </div>
     <div class="overflow-x-auto rounded-xl border border-gray-200">
       <table class="min-w-full divide-y divide-gray-200 admin-table">
-        <thead><tr><th>#</th><th>Patient Info</th><th>IDs</th><th>EP Reason</th><th>Investigator</th><th>Doctor Code</th><th>Created By</th><th>Updated By</th><th>Admission</th><th>Status</th><th class="text-right">Actions</th></tr></thead>
+        <thead><tr><th>#</th><th>Patient</th><th>IDs / CRF</th><th>Investigator</th><th>Code</th><th>Updated By</th><th>Admission</th><th>Status</th><th class="text-right">Actions</th></tr></thead>
         <tbody id="tableBody" class="bg-white divide-y divide-gray-100"></tbody>
       </table>
     </div>
@@ -1000,7 +1048,8 @@ window._onAuthStateChanged(async (user) => {
     applyRoleUI(currentRole);
     loadRecordsCache();
     updateMyCasesCount();
-    // Load saved doctor codes from Firebase
+    // Auto-generate CRF for the initial blank form
+    setTimeout(()=>autoGenCRF(true),600);
     try{
       const codeSnap=await db.collection('settings').doc('doctorCodes').get();
       if(codeSnap.exists){
@@ -1185,23 +1234,22 @@ window.toggleUnrec=function(field){
   }
 };
 
-// ── DOCTOR CODES (Hospital 01) ───────────────────────────
+// ── DOCTOR CODES (Hospital 01 = MKH) ────────────────────
+// Keys must match the displayName stored in Firebase users collection
 const DOCTOR_CODES={
-  'Dr. Samy':'101',
-  'Dr. Hamdy':'102',
-  'Dr. Abdulkarim':'103',
-  'Dr. Metwally':'104',
-  'Dr. Farouk':'105',
+  'Dr. Samy Elhefnawy':'101',
+  'Dr. Hamdy Morsy':'102',
+  'Dr. Abdulkarim Al-Ali':'103',
+  'Dr. Metwally Mahfouz':'104',
+  'Dr. Farouk Khalil':'105',
+  'Dr. Ahmed Abdelshafie':'106',
 };
 
-window.autoGenCRF=async function(){
-  // Determine doctor code from current user
+window.autoGenCRF=async function(silent=false){
   const userCode=DOCTOR_CODES[currentUserName]||'000';
   const hospitalCode='01';
-  // Count existing records to get next sequential number
   try{
     const snap=await getDocs(collection(db,'patients_full'));
-    // Find max sequential number for this doctor code
     let maxSeq=0;
     const prefix=`${hospitalCode}-${userCode}-`;
     snap.forEach(ds=>{
@@ -1214,10 +1262,10 @@ window.autoGenCRF=async function(){
     const nextSeq=String(maxSeq+1).padStart(3,'0');
     const crf=`${hospitalCode}-${userCode}-${nextSeq}`;
     document.getElementById('req_crfNo').value=crf;
+    if(!silent)showToast(`CRF generated: ${crf}`,'#7c3aed');
   }catch(e){
-    // Fallback: use timestamp-based sequential
-    const ts=Date.now()%1000;
-    document.getElementById('req_crfNo').value=`${hospitalCode}-${userCode}-${String(ts).padStart(3,'0').slice(-3)}`;
+    const ts=String(Date.now()%1000).padStart(3,'0');
+    document.getElementById('req_crfNo').value=`${hospitalCode}-${userCode}-${ts}`;
   }
 };
 
@@ -1393,6 +1441,8 @@ function resetFormUI(f){
   document.getElementById('editRecordId').value='';
   ['btnSaveKeep','btnSaveClose','btnSubmitFinal'].forEach(id=>{const b=document.getElementById(id);if(b)b.disabled=false;});
   goToStep(0);
+  // Auto-generate a new CRF for the new record
+  setTimeout(()=>autoGenCRF(true),300);
 }
 
 // ── DASHBOARD ────────────────────────────────────────────
@@ -1480,29 +1530,43 @@ window.fetchData=async function(){
     if(sINV&&data.enrolledBy!==sINV)return;
     if(sST&&(data.recordStatus||'draft')!==sST)return;
     allData.push(data);
-    const comp=calcCompletion(data);const st=data.recordStatus||'draft';
-    const barCol=comp.complete?'#059669':comp.pct>=70?'#d97706':'#e11d48';
+    const st=data.recordStatus||'draft';
     const tr=document.createElement('tr');
+    const invCode=data.enrolledByCode||DOCTOR_CODES[data.enrolledByName]||'—';
     tr.innerHTML=`
-      <td style="font-weight:800;color:#94a3b8;font-size:12px;">#${data._no}</td>
-      <td><div class="font-bold text-gray-800">${data.fullName||'Anonymous'}</div><div class="text-xs text-gray-500">${data.gender||''} | Age: ${data.estimatedAge||'?'}</div>${data._isDup?'<span class="dup-flag mt-1"><i class="fas fa-exclamation-circle"></i> Dup</span>':''}</td>
-      <td class="text-xs"><div>CID: ${data.civilId||'—'}</div><div>File: ${data.fileNumber||'—'}</div><div>CRF: ${data.crfNo||'—'}</div></td>
-      <td><span class="badge badge-blue">${data.epReason||'—'}</span></td>
-      <td class="text-xs"><div class="font-semibold">${data.enrolledByName||'—'}</div></td>
-      <td class="text-xs text-center"><span style="font-family:'DM Mono',monospace;background:#dbeafe;color:#1e40af;border-radius:5px;padding:2px 7px;font-weight:700;">${data.enrolledByCode||DOCTOR_CODES[data.enrolledByName]||'—'}</span></td>
-      <td class="text-xs"><div>${data.enrolledByName||'—'}</div><div style="color:#94a3b8;">${data.enrolledByCode||DOCTOR_CODES[data.enrolledByName]||'—'}</div></td>
-      <td class="text-xs">${data.updatedByName?`<div>${data.updatedByName}</div><div style="color:#94a3b8;">${data.updatedByCode||''}</div>`:'<span class="text-gray-400">—</span>'}</td>
-      <td class="text-xs text-gray-600">${data.admissionDate||'—'}</td>
+      <td style="font-weight:800;color:#94a3b8;font-size:12px;text-align:center;">${data._no}</td>
+      <td>
+        <div style="font-weight:700;font-size:13px;color:#0f172a;">${data.fullName||'Anonymous'}</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px;">${data.gender||''}${data.gender&&data.estimatedAge?' · ':''}${data.estimatedAge?'Age '+data.estimatedAge:''}</div>
+        ${data._isDup?'<span class="dup-flag" style="margin-top:4px;"><i class="fas fa-exclamation-circle"></i> Duplicate</span>':''}
+      </td>
+      <td>
+        <div style="font-size:11px;line-height:1.8;">
+          <span style="color:#64748b;">CID:</span> <b>${data.civilId||'—'}</b><br>
+          <span style="color:#64748b;">File:</span> <b>${data.fileNumber||'—'}</b><br>
+          <span style="color:#64748b;">CRF:</span> <b style="font-family:'DM Mono',monospace;color:#2563eb;">${data.crfNo||'—'}</b>
+        </div>
+      </td>
+      <td>
+        <div style="font-size:12px;font-weight:600;">${data.enrolledByName||'—'}</div>
+      </td>
+      <td style="text-align:center;">
+        <span style="font-family:'DM Mono',monospace;background:#dbeafe;color:#1e40af;border-radius:6px;padding:3px 8px;font-weight:800;font-size:12px;">${invCode}</span>
+      </td>
+      <td style="font-size:11px;color:#475569;">
+        ${data.updatedByName?`<div style="font-weight:600;">${data.updatedByName}</div><div style="color:#94a3b8;">${data.updatedByCode||''}</div>`:'<span style="color:#cbd5e1;">—</span>'}
+      </td>
+      <td style="font-size:12px;color:#64748b;">${data.admissionDate||'—'}</td>
       <td>${statusBadge(st)}</td>
-      <td class="text-right" style="white-space:nowrap;">
-        <button onclick='editRecord(${JSON.stringify(data).replace(/'/g,"\\'")})'  class="btn btn-yellow text-xs px-2 py-1 mr-1"><i class="fas fa-edit"></i></button>
-        ${st!=='reviewed'?`<button onclick="markReviewed('${data.id}')" class="btn btn-green text-xs px-2 py-1 mr-1"><i class="fas fa-check-circle"></i></button>`:''}
-        ${st==='reviewed'?`<button onclick="markDraft('${data.id}')" class="btn btn-gray text-xs px-2 py-1 mr-1"><i class="fas fa-undo"></i></button>`:''}
-        <button onclick="deleteRecord('${data.id}')" class="btn btn-red text-xs px-2 py-1"><i class="fas fa-trash"></i></button>
+      <td style="text-align:right;white-space:nowrap;">
+        <button onclick='editRecord(${JSON.stringify(data).replace(/'/g,"\\'")})'  class="btn btn-yellow text-xs px-2 py-1" style="margin-right:4px;" title="Edit"><i class="fas fa-edit"></i></button>
+        ${st!=='reviewed'?`<button onclick="markReviewed('${data.id}')" class="btn btn-green text-xs px-2 py-1" style="margin-right:4px;" title="Mark Reviewed"><i class="fas fa-check-circle"></i></button>`:''}
+        ${st==='reviewed'?`<button onclick="markDraft('${data.id}')" class="btn btn-gray text-xs px-2 py-1" style="margin-right:4px;" title="Revert to Draft"><i class="fas fa-undo"></i></button>`:''}
+        <button onclick="deleteRecord('${data.id}')" class="btn btn-red text-xs px-2 py-1" title="Delete"><i class="fas fa-trash"></i></button>
       </td>`;
     tbody.appendChild(tr);
   });
-  if(!allData.length)tbody.innerHTML='<tr><td colspan="11" class="text-center py-8 text-gray-400">No records found</td></tr>';
+  if(!allData.length)tbody.innerHTML='<tr><td colspan="9" class="text-center py-8 text-gray-400"><i class="fas fa-inbox" style="font-size:24px;display:block;margin-bottom:8px;"></i>No records found</td></tr>';
   _allRecordsCache=allData.slice();
 };
 window.clearAdminFilters=function(){['searchName','searchCivilId','searchFileNo','searchCrfNo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});['filterStatus','filterInvestigatorAdmin'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});fetchData();};
