@@ -283,7 +283,10 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
       </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" class="mb-4">
-      <div><label class="lbl">1.2 Civil ID <span style="color:#dc2626">*</span></label><input type="text" id="civilId" name="civilId" inputmode="numeric" maxlength="12" placeholder="12 digits" class="inp" style="font-family:'DM Mono',monospace;"></div>
+      <div><label class="lbl">1.2 Civil ID <span style="color:#dc2626">*</span></label>
+        <input type="text" id="civilId" name="civilId" inputmode="numeric" maxlength="12" placeholder="12 digits" class="inp" style="font-family:'DM Mono',monospace;" oninput="onCivilIdInput()">
+        <div id="dupCivilIdBanner" style="display:none;margin-top:5px;background:#fff7ed;color:#c2410c;border:1.5px solid #fed7aa;border-radius:8px;padding:7px 11px;font-size:11px;font-weight:700;"><i class="fas fa-exclamation-triangle mr-1"></i><span id="dupCivilIdMsg"></span></div>
+      </div>
       <div><label class="lbl">1.3 CRF Number</label>
         <div style="display:flex;gap:6px;align-items:center;">
           <input type="text" id="req_crfNo" name="crfNo" inputmode="numeric" maxlength="10" placeholder="Generating…" class="inp" style="font-family:'DM Mono',monospace;" readonly>
@@ -599,7 +602,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
   <div class="bg-white rounded-2xl border border-gray-200 shadow-sm px-5 py-3 mb-4 flex flex-wrap gap-2 items-center justify-between">
     <div class="flex gap-2 flex-wrap">
       <button class="dash-filter-btn active" onclick="setDashFilter('all',this)">All</button>
-      <button class="dash-filter-btn" onclick="setDashFilter('draft',this)">Draft</button>
+      <button class="dash-filter-btn" onclick="setDashFilter('draft',this)">Enrolled</button>
       <button class="dash-filter-btn" onclick="setDashFilter('submitted',this)">Submitted</button>
       <button class="dash-filter-btn" onclick="setDashFilter('reviewed',this)">Reviewed</button>
       <button class="dash-filter-btn" onclick="setDashFilter('complete',this)">Complete</button>
@@ -736,7 +739,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
       </div>
       <div class="flex flex-wrap gap-3 items-end">
         <div class="flex-1 min-w-[140px]"><label class="lbl">Investigator</label><select id="filterInvestigatorAdmin" class="inp inp-sm"><option value="">All Investigators</option></select></div>
-        <div class="flex-1 min-w-[140px]"><label class="lbl">Status</label><select id="filterStatus" class="inp inp-sm"><option value="">All</option><option value="draft">Draft</option><option value="submitted">Submitted</option><option value="reviewed">Reviewed</option></select></div>
+        <div class="flex-1 min-w-[140px]"><label class="lbl">Status</label><select id="filterStatus" class="inp inp-sm"><option value="">All</option><option value="draft">Enrolled</option><option value="submitted">Submitted</option><option value="reviewed">Reviewed</option></select></div>
         <div class="flex items-end gap-2">
           <button onclick="fetchData()" class="btn btn-primary text-sm"><i class="fas fa-search"></i> Search</button>
           <button onclick="clearAdminFilters()" class="btn btn-gray text-sm"><i class="fas fa-times"></i></button>
@@ -745,7 +748,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     </div>
     <div class="overflow-x-auto rounded-xl border border-gray-200">
       <table class="min-w-full divide-y divide-gray-200 admin-table">
-        <thead><tr><th>CRF Number</th><th>Civil ID</th><th>Doctor Code</th><th>Status</th><th>Created By</th><th>Last Updated By</th><th class="text-right">Actions</th></tr></thead>
+        <thead><tr><th style="width:42px;">#</th><th>CRF Number</th><th>Civil ID</th><th>Doctor Code</th><th>Status</th><th>Created By</th><th>Created At</th><th>Last Updated By</th><th>Last Updated</th><th class="text-right">Actions</th></tr></thead>
         <tbody id="tableBody" class="bg-white divide-y divide-gray-100"></tbody>
       </table>
     </div>
@@ -1221,29 +1224,37 @@ function getDoctorCode(name){
 }
 
 window.autoGenCRF=async function(){
-  // Determine doctor code from current user
   const userCode=getDoctorCode(currentUserName)!=='—'?getDoctorCode(currentUserName):'000';
   const hospitalCode='01';
-  // Count existing records to get next sequential number
-  try{
-    const snap=await getDocs(collection(db,'patients_full'));
-    // Find max sequential number for this doctor code
+  const prefix=`${hospitalCode}-${userCode}-`;
+  // Use local cache if available for speed; fallback to Firestore
+  const src = _allRecordsCache.length > 0 ? _allRecordsCache : null;
+  if(src){
     let maxSeq=0;
-    const prefix=`${hospitalCode}-${userCode}-`;
-    snap.forEach(ds=>{
-      const crf=ds.data().crfNo||'';
-      if(crf.startsWith(prefix)){
-        const seq=parseInt(crf.slice(-3)||'0',10);
-        if(!isNaN(seq)&&seq>maxSeq)maxSeq=seq;
-      }
+    src.forEach(d=>{
+      const crf=d.crfNo||'';
+      if(crf.startsWith(prefix)){const seq=parseInt(crf.slice(-3)||'0',10);if(!isNaN(seq)&&seq>maxSeq)maxSeq=seq;}
     });
     const nextSeq=String(maxSeq+1).padStart(3,'0');
-    const crf=`${hospitalCode}-${userCode}-${nextSeq}`;
-    document.getElementById('req_crfNo').value=crf;
+    document.getElementById('req_crfNo').value=`${prefix}${nextSeq}`;
+    updateFieldIndicators();
+    return;
+  }
+  // Fallback: Firestore query
+  try{
+    const snap=await getDocs(collection(db,'patients_full'));
+    let maxSeq=0;
+    snap.forEach(ds=>{
+      const crf=ds.data().crfNo||'';
+      if(crf.startsWith(prefix)){const seq=parseInt(crf.slice(-3)||'0',10);if(!isNaN(seq)&&seq>maxSeq)maxSeq=seq;}
+    });
+    const nextSeq=String(maxSeq+1).padStart(3,'0');
+    document.getElementById('req_crfNo').value=`${prefix}${nextSeq}`;
+    updateFieldIndicators();
   }catch(e){
-    // Fallback: use timestamp-based sequential
     const ts=Date.now()%1000;
-    document.getElementById('req_crfNo').value=`${hospitalCode}-${userCode}-${String(ts).padStart(3,'0').slice(-3)}`;
+    document.getElementById('req_crfNo').value=`${prefix}${String(ts).padStart(3,'0').slice(-3)}`;
+    updateFieldIndicators();
   }
 };
 
@@ -1264,7 +1275,7 @@ function calcCompletion(r){
   return{score,total:checks.length,pct:Math.round(score/checks.length*100),complete:score===checks.length};
 }
 function statusBadge(s){
-  const m={draft:'<span class="badge status-draft">Draft</span>',submitted:'<span class="badge status-submitted">Submitted</span>',reviewed:'<span class="badge status-reviewed">Reviewed</span>'};
+  const m={draft:'<span class="badge status-draft">Enrolled</span>',submitted:'<span class="badge status-submitted">Submitted</span>',reviewed:'<span class="badge status-reviewed">Reviewed</span>'};
   return m[s]||m['draft'];
 }
 
@@ -1315,7 +1326,74 @@ function applyLock(status){
   });
 }
 
-// ── SAVE RECORD ──────────────────────────────────────────
+// ── REAL-TIME CIVIL ID DUPLICATE CHECK ───────────────────────
+window.onCivilIdInput=function(){
+  updateFieldIndicators();
+  const civilId=document.getElementById('civilId').value;
+  const banner=document.getElementById('dupCivilIdBanner');
+  const msg=document.getElementById('dupCivilIdMsg');
+  if(!banner||!msg)return;
+  if(!civilId||civilId.length!==12){banner.style.display='none';return;}
+  const currentRecId=document.getElementById('editRecordId')?.value||null;
+  const admDate=document.querySelector('[name="admissionDate"]')?.value||'';
+  const dups=_allRecordsCache.filter(r=>{
+    if(r.id===currentRecId)return false;
+    if(r.civilId!==civilId)return false;
+    if(admDate&&r.admissionDate&&r.admissionDate!==admDate)return false;
+    return true;
+  });
+  if(dups.length>0){
+    banner.style.display='block';
+    msg.textContent=`Duplicate Civil ID found! ${dups.length} existing record(s): ${dups.map(d=>d.crfNo||d.fileNumber||'—').join(', ')}`;
+  } else {
+    banner.style.display='none';
+  }
+};
+
+
+// Marks each key field with ✔ (green) or ✖ (red) based on whether it has a value
+function updateFieldIndicators(){
+  const keyFields=[
+    {id:'req_nameFirst',label:'First Name'},{id:'req_nameLast',label:'Last Name'},
+    {id:'civilId',label:'Civil ID'},{id:'req_crfNo',label:'CRF Number'},
+    {id:'req_fileNo',label:'File Number'},
+    {id:'req_admDate',label:'Admission Date'},
+  ];
+  keyFields.forEach(({id})=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    let ind=el.parentNode.querySelector('.fld-ind');
+    if(!ind){ind=document.createElement('span');ind.className='fld-ind';ind.style.cssText='position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:900;pointer-events:none;';el.parentNode.style.position='relative';el.parentNode.appendChild(ind);}
+    const filled=el.value&&el.value.trim().length>0;
+    ind.textContent=filled?'✔':'✖';
+    ind.style.color=filled?'#059669':'#dc2626';
+  });
+}
+// Attach live listeners to key fields
+document.addEventListener('DOMContentLoaded',()=>{
+  ['req_nameFirst','req_nameLast','civilId','req_crfNo','req_fileNo','req_admDate'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.addEventListener('input',updateFieldIndicators);el.addEventListener('change',updateFieldIndicators);}
+  });
+  updateFieldIndicators();
+});
+
+// ── DUPLICATE CIVIL ID CHECK ──────────────────────────────
+async function checkDuplicateCivilId(civilId, admissionDate, currentRecordId){
+  if(!civilId||civilId.length!==12)return false;
+  const records=_allRecordsCache.length>0?_allRecordsCache:[];
+  // Check for same civil ID with overlapping/same admission period (same admission date or no date)
+  const dups=records.filter(r=>{
+    if(r.id===currentRecordId)return false;// skip self
+    if(r.civilId!==civilId)return false;
+    // If both have admission dates, flag only if same date; if one is missing, still flag
+    if(admissionDate&&r.admissionDate&&r.admissionDate!==admissionDate)return false;
+    return true;
+  });
+  return dups.length>0?dups:false;
+}
+
+
 async function saveRecord(targetStatus, closeAfter=false){
   if(!currentUser){alert('Not logged in.');return false;}
   const form=document.getElementById('epsForm');
@@ -1330,6 +1408,17 @@ async function saveRecord(targetStatus, closeAfter=false){
   if(!/^\d{12}$/.test(document.getElementById('civilId').value)){goToStep(0);alert('Civil ID must be 12 digits.');return false;}
   if(!/^\d{6}$/.test(document.getElementById('req_fileNo').value)){goToStep(0);alert('File Number must be 6 digits.');return false;}
   if(!/^\d{2}-\d{3}-\d{3}$/.test(document.getElementById('req_crfNo').value)){goToStep(0);alert('CRF Number was not generated. Please wait a moment and try again.');return false;}
+
+  // ── DUPLICATE CIVIL ID ALARM ──
+  const civIdVal=document.getElementById('civilId').value;
+  const admDateVal=document.querySelector('[name="admissionDate"]')?.value||'';
+  const recIdForDupCheck=document.getElementById('editRecordId')?.value||null;
+  const dups=await checkDuplicateCivilId(civIdVal,admDateVal,recIdForDupCheck);
+  if(dups&&dups.length>0){
+    const dupNames=dups.map(d=>`• ${d.fullName||'Unknown'} | CRF: ${d.crfNo||'—'} | Admitted: ${d.admissionDate||'—'}`).join('\n');
+    const proceed=confirm(`⚠️ DUPLICATE CIVIL ID DETECTED!\n\nThis Civil ID (${civIdVal}) already exists for the same admission period:\n\n${dupNames}\n\nDo you want to save anyway?`);
+    if(!proceed)return false;
+  }
 
   const fd=new FormData(form);
   const dataObj=Object.fromEntries(fd.entries());
@@ -1419,8 +1508,9 @@ function resetFormUI(f){
   document.getElementById('editRecordId').value='';
   ['btnSaveKeep','btnSaveClose','btnSubmitFinal'].forEach(id=>{const b=document.getElementById(id);if(b)b.disabled=false;});
   goToStep(0);
+  updateFieldIndicators();
+  const banner=document.getElementById('dupCivilIdBanner');if(banner)banner.style.display='none';
 }
-
 // ── DASHBOARD ────────────────────────────────────────────
 let _dashFilter='all',_dashData=[];
 window.setDashFilter=function(f,btn){_dashFilter=f;document.querySelectorAll('.dash-filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderDashboard();};
@@ -1509,13 +1599,19 @@ window.fetchData=async function(){
     const comp=calcCompletion(data);const st=data.recordStatus||'draft';
     const barCol=comp.complete?'#059669':comp.pct>=70?'#d97706':'#e11d48';
     const tr=document.createElement('tr');
+    const createdAt=data.timestamp ? (data.timestamp.toDate ? data.timestamp.toDate() : new Date(data.timestamp)) : null;
+    const updatedAt=data.updatedAt ? (data.updatedAt.toDate ? data.updatedAt.toDate() : new Date(data.updatedAt)) : null;
+    const fmtDT=dt=>dt?dt.toLocaleString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:false}).replace(',',''):'—';
     tr.innerHTML=`
+      <td style="font-weight:800;color:#94a3b8;font-size:12px;text-align:center;">${data._no}</td>
       <td><span style="font-family:'DM Mono',monospace;font-weight:800;color:#1e40af;">${data.crfNo||'—'}</span></td>
       <td><span style="font-family:'DM Mono',monospace;">${data.civilId||'—'}</span></td>
       <td class="text-center"><span style="font-family:'DM Mono',monospace;background:#dbeafe;color:#1e40af;border-radius:5px;padding:2px 7px;font-weight:700;">${data.enrolledByCode||getDoctorCode(data.enrolledByName)}</span></td>
       <td>${statusBadge(st)}</td>
       <td class="text-xs"><div class="font-semibold">${data.enrolledByName||'—'}</div></td>
+      <td class="text-xs" style="white-space:nowrap;">${fmtDT(createdAt)}</td>
       <td class="text-xs">${data.updatedByName?`<div>${data.updatedByName}</div>`:'<span class="text-gray-400">—</span>'}</td>
+      <td class="text-xs" style="white-space:nowrap;">${updatedAt?fmtDT(updatedAt):'<span class="text-gray-400">—</span>'}</td>
       <td class="text-right" style="white-space:nowrap;">
         <button onclick='editRecord(${JSON.stringify(data).replace(/'/g,"\\'")})'  class="btn btn-yellow text-xs px-2 py-1 mr-1"><i class="fas fa-edit"></i></button>
         ${st!=='reviewed'?`<button onclick="markReviewed('${data.id}')" class="btn btn-green text-xs px-2 py-1 mr-1"><i class="fas fa-check-circle"></i></button>`:''}
@@ -1524,7 +1620,7 @@ window.fetchData=async function(){
       </td>`;
     tbody.appendChild(tr);
   });
-  if(!allData.length)tbody.innerHTML='<tr><td colspan="7" class="text-center py-8 text-gray-400">No records found</td></tr>';
+  if(!allData.length)tbody.innerHTML='<tr><td colspan="10" class="text-center py-8 text-gray-400">No records found</td></tr>';
   _allRecordsCache=allData.slice();
 };
 window.clearAdminFilters=function(){['searchCivilId','searchDoctorCode','searchCrfNo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});['filterStatus','filterInvestigatorAdmin'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});fetchData();};
@@ -1547,6 +1643,8 @@ window.editRecord=function(data){
   });
   if(data.epReason)onEPR();
   applyLock(st);goToStep(0);
+  updateFieldIndicators();
+  onCivilIdInput();
 };
 
 window.viewRecord=function(data){
