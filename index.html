@@ -1768,6 +1768,8 @@ function renderDashboard(){
 // ── ADMIN FETCH ───────────────────────────────────────────
 let allData=[];
 window.fetchData=async function(){
+  // Always populate investigator dropdown automatically — no need to visit Manage Users first
+  populateInvestigatorDropdowns();
   const sN='';
   const sCID=document.getElementById('searchCivilId')?.value||'';
   const sDC=document.getElementById('searchDoctorCode')?.value||'';
@@ -1881,6 +1883,21 @@ window.clearQS=function(){document.getElementById('qs_input').value='';document.
 window.editFromSearch=function(data){clearQS();editRecord(data);};
 document.addEventListener('click',e=>{if(!document.getElementById('mainSearchBar')?.contains(e.target))document.getElementById('qs_results')?.classList.add('hidden');});
 
+// ── POPULATE INVESTIGATOR FILTER DROPDOWNS ───────────────
+// Called automatically when admin panel loads, independent of Manage Users tab
+async function populateInvestigatorDropdowns(){
+  try{
+    const snap=await db.collection('users').get();
+    const rows=[];
+    snap.forEach(ds=>{const u=ds.data();u.id=ds.id;rows.push(u);});
+    const invOpts=rows.filter(u=>u.role==='investigator'||u.role==='cso').map(u=>`<option value="${u.id}">${u.displayName||u.email}</option>`).join('');
+    ['filterInvestigatorAdmin','exportInvestigator'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el&&el.options.length<=1){el.innerHTML='<option value="">All Investigators</option>'+invOpts;}
+    });
+  }catch(e){console.warn('Could not populate investigator dropdowns:',e);}
+}
+
 // ── USER MANAGEMENT ──────────────────────────────────────
 window.loadUserList=async function(){
   const tbody=document.getElementById('userTableBody');
@@ -1894,7 +1911,7 @@ window.loadUserList=async function(){
     const patSnap=await db.collection('patients_full').get();
     const counts={};
     patSnap.forEach(ds=>{const uid=ds.data().enrolledBy;if(uid)counts[uid]=(counts[uid]||0)+1;});
-    // Populate investigator filter dropdowns
+    // Populate investigator filter dropdowns (force refresh)
     const invOpts=rows.filter(u=>u.role==='investigator'||u.role==='cso').map(u=>`<option value="${u.id}">${u.displayName||u.email}</option>`).join('');
     ['filterInvestigatorAdmin','exportInvestigator'].forEach(id=>{
       const el=document.getElementById(id);
