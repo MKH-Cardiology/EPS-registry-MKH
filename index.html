@@ -268,6 +268,10 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     <form id="epsForm" class="flex-1 flex flex-col overflow-hidden">
       <input type="hidden" id="editRecordId" name="recordId" value="">
       <input type="hidden" id="recordStatus" name="recordStatus" value="draft">
+      <input type="hidden" id="hidEnrolledBy" name="_enrolledBy" value="">
+      <input type="hidden" id="hidEnrolledByName" name="_enrolledByName" value="">
+      <input type="hidden" id="hidEnrolledByCode" name="_enrolledByCode" value="">
+      <input type="hidden" id="hidOrigTimestamp" name="_origTimestamp" value="">
       <div class="flex-1 overflow-y-auto p-6 md:p-8" id="formScrollArea">
 
 <!-- STEP 0: IDENTIFICATION -->
@@ -593,6 +597,13 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 <!-- ═══════════ DASHBOARD ═══════════ -->
 
 <section id="section-dashboard" class="hidden">
+  <!-- Diagnostic banner: shown only when a save/dashboard mismatch is detected -->
+  <div id="dashDiagBanner" style="display:none;background:#fef3c7;border:2px solid #d97706;border-radius:10px;padding:12px 16px;margin-bottom:12px;color:#78350f;font-size:13px;line-height:1.5;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+      <div style="flex:1;"><strong><i class="fas fa-exclamation-triangle"></i> Diagnostic warning</strong><div id="dashDiagBannerMsg" style="margin-top:4px;"></div></div>
+      <button onclick="document.getElementById('dashDiagBanner').style.display='none';" class="btn btn-gray text-xs px-2 py-1"><i class="fas fa-times"></i></button>
+    </div>
+  </div>
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;" class="mb-5">
     <div class="dash-card" style="border-left:4px solid #1d4ed8;"><div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;">Total Cases</div><div style="font-size:32px;font-weight:900;color:#1d4ed8;" id="dash_total">—</div></div>
     <div class="dash-card" style="border-left:4px solid #059669;"><div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;">Complete</div><div style="font-size:32px;font-weight:900;color:#059669;" id="dash_complete">—</div></div>
@@ -610,6 +621,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
       <button class="dash-filter-btn" onclick="setDashFilter('duplicate',this)"><i class="fas fa-exclamation-circle mr-1"></i>Duplicates</button>
     </div>
     <button onclick="loadDashboard()" class="btn btn-primary text-sm px-4 py-2"><i class="fas fa-sync-alt"></i> Refresh</button>
+    <button onclick="showDebugInfo()" class="btn btn-gray text-sm px-3 py-2" title="Show diagnostic info (copy & share with admin if records are missing)"><i class="fas fa-bug"></i> Debug</button>
   </div>
   <div id="dashGrid" class="space-y-3"></div>
 </section>
@@ -1002,6 +1014,10 @@ window._onAuthStateChanged(async (user) => {
     updateMyCasesCount();
     // Auto-generate CRF for new form on first load
     autoGenCRF();
+    // For investigators: automatically load their dashboard so existing cases are visible immediately
+    if(currentRole === 'investigator'){
+      loadDashboard();
+    }
     // Load saved doctor codes from Firebase
     try{
       const codeSnap=await db.collection('settings').doc('doctorCodes').get();
@@ -1050,10 +1066,13 @@ function applyRoleUI(role) {
 
 async function updateMyCasesCount() {
   if (currentRole !== 'investigator') return;
-  const snap = await getDocs(collection(db, 'patients_full'));
-  let count = 0;
-  snap.forEach(ds => { if (ds.data().enrolledBy === currentUser.uid) count++; });
-  document.getElementById('myCasesCount').textContent = count;
+  try {
+    const snap = await getDocs(collection(db, 'patients_full').where('enrolledBy','==',currentUser.uid));
+    document.getElementById('myCasesCount').textContent = snap.size;
+  } catch(err) {
+    console.error('[MY-CASES] failed:', err);
+    document.getElementById('myCasesCount').textContent = '—';
+  }
 }
 
 // ── STEPPER ─────────────────────────────────────────────────
@@ -1248,7 +1267,11 @@ window.autoGenCRF=async function(){
   }
   // Fallback: Firestore query
   try{
-    const snap=await getDocs(collection(db,'patients_full'));
+    let ref = collection(db,'patients_full');
+    if(currentRole==='investigator'){
+      ref = ref.where('enrolledBy','==',currentUser.uid);
+    }
+    const snap=await getDocs(ref);
     let maxSeq=0;
     snap.forEach(ds=>{
       const crf=ds.data().crfNo||'';
@@ -1294,7 +1317,7 @@ window.switchTab=function(tab){
   if(tab==='analytics' && currentRole==='investigator'){alert('Not available.');return;}
   if(tab==='admin')fetchData();
   else if(tab==='analytics')fetchAnalytics();
-  else if(tab==='dashboard')loadDashboard();
+  else if(tab==='dashboard')loadDashboard();  // always fresh fetch when user explicitly clicks
   else if(tab==='downloads')loadExportFilters();
   ['form','dashboard','admin','analytics','downloads'].forEach(t=>{
     document.getElementById(`section-${t}`)?.classList.add('hidden');
@@ -1305,6 +1328,18 @@ window.switchTab=function(tab){
   const activeTb=document.getElementById(`tab-${tab}`);
   if(activeTb)activeTb.className='pb-1 tab-active text-sm transition';
 };
+
+// Internal: switch to dashboard tab without re-fetching (data already loaded)
+function _showDashboardTab(){
+  ['form','dashboard','admin','analytics','downloads'].forEach(t=>{
+    document.getElementById(`section-${t}`)?.classList.add('hidden');
+    const tb=document.getElementById(`tab-${t}`);
+    if(tb)tb.className='pb-1 text-gray-500 hover:text-blue-700 text-sm font-medium transition';
+  });
+  document.getElementById('section-dashboard')?.classList.remove('hidden');
+  const activeTb=document.getElementById('tab-dashboard');
+  if(activeTb)activeTb.className='pb-1 tab-active text-sm transition';
+}
 
 window.adminSubTab=function(tab){
   document.getElementById('adminRecordsPanel').style.display=tab==='records'?'block':'none';
@@ -1394,6 +1429,12 @@ const PAIRED_FIELDS = {
 // Also skip the companion checkboxes from being evaluated on their own
 const PAIRED_COMPANIONS = new Set(Object.values(PAIRED_FIELDS));
 
+// Returns true if element lives inside a sub-reveal (conditional subpart — only shown when parent Yes/No = Yes)
+// These should NOT show ✔/✖ because they are optional by definition
+function _isSubReveal(el){
+  return !!el.closest('.sub-reveal');
+}
+
 function _getIndicatorWrapper(el){
   // Returns the wrapper div (direct parent with a label) for an element
   // We place the indicator after the label, next to the field group
@@ -1479,7 +1520,7 @@ function updateFieldIndicators(){
   // 1. Handle all named inputs (text/number/date/time/tel/select/textarea)
   form.querySelectorAll('input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), select, textarea').forEach(el => {
     const name = el.name;
-    if(!name || IND_SKIP_NAMES.has(name) || _isMedField(name) || processed.has(name)) return;
+    if(!name || IND_SKIP_NAMES.has(name) || _isMedField(name) || _isSubReveal(el) || processed.has(name)) return;
     processed.add(name);
     let container = el.closest('div');
     let probe = el.parentNode;
@@ -1503,7 +1544,7 @@ function updateFieldIndicators(){
   // 2. Handle radio groups
   form.querySelectorAll('input[type="radio"]').forEach(el => {
     const name = el.name;
-    if(!name || IND_SKIP_NAMES.has(name) || _isMedField(name) || processed.has(name)) return;
+    if(!name || IND_SKIP_NAMES.has(name) || _isMedField(name) || _isSubReveal(el) || processed.has(name)) return;
     processed.add(name);
     // Find the first radio in this group's container
     let container = el.closest('div');
@@ -1521,7 +1562,7 @@ function updateFieldIndicators(){
   const cbNames = {};
   form.querySelectorAll('input[type="checkbox"]').forEach(cb => {
     const name = cb.name;
-    if(!name || IND_SKIP_NAMES.has(name) || _isMedField(name) || PAIRED_COMPANIONS.has(name)) return;
+    if(!name || IND_SKIP_NAMES.has(name) || _isMedField(name) || PAIRED_COMPANIONS.has(name) || _isSubReveal(cb)) return;
     if(!cbNames[name]) cbNames[name] = [];
     cbNames[name].push(cb);
   });
@@ -1552,6 +1593,8 @@ function updateFieldIndicators(){
     const key = hid.id.replace('val_','');
     const name = hid.name;
     if(!name || processed.has('yn_'+key)) return;
+    // Skip YN groups that are inside a sub-reveal (conditional subparts)
+    if(_isSubReveal(hid)) return;
     processed.add('yn_'+key);
     // The Yes/No group container: find closest card or div containing yn-group
     const ynGroup = form.querySelector(`.yn-group button[onclick*="'${key}'"]`);
@@ -1627,9 +1670,19 @@ async function saveRecord(targetStatus, closeAfter=false){
   dataObj.submissionType=closeAfter&&targetStatus==='draft'?'draft':targetStatus==='submitted'?'final':'in-progress';
 
   const recId=dataObj.recordId; delete dataObj.recordId;
+  // Remove internal helper fields from dataObj before saving
+  delete dataObj._enrolledBy; delete dataObj._enrolledByName; delete dataObj._enrolledByCode; delete dataObj._origTimestamp;
 
   if(recId){
-    // Editing existing record — preserve original enrolledBy, track updater
+    // Editing existing record — restore original enrollment metadata that isn't in form fields
+    const origEnrolledBy = document.getElementById('hidEnrolledBy').value;
+    const origEnrolledByName = document.getElementById('hidEnrolledByName').value;
+    const origEnrolledByCode = document.getElementById('hidEnrolledByCode').value;
+    const origTs = document.getElementById('hidOrigTimestamp').value;
+    if(origEnrolledBy) dataObj.enrolledBy = origEnrolledBy;
+    if(origEnrolledByName) dataObj.enrolledByName = origEnrolledByName;
+    if(origEnrolledByCode) dataObj.enrolledByCode = origEnrolledByCode;
+    if(origTs) dataObj.timestamp = new Date(origTs);
     dataObj.updatedByName=currentUserName;
     dataObj.updatedByCode=getDoctorCode(currentUserName);
     dataObj.updatedAt=new Date();
@@ -1639,6 +1692,20 @@ async function saveRecord(targetStatus, closeAfter=false){
     dataObj.enrolledByName=currentUserName;
     dataObj.enrolledByCode=getDoctorCode(currentUserName);
   }
+  // ── DIAGNOSTIC: remember what we wrote so we can verify it shows on the dashboard
+  window._lastSaveDiag = {
+    when: new Date().toISOString(),
+    recId: recId || '(new)',
+    targetStatus,
+    closeAfter,
+    enrolledBy_written: dataObj.enrolledBy,
+    enrolledByName_written: dataObj.enrolledByName,
+    currentUser_uid: currentUser?.uid,
+    currentUser_email: currentUser?.email,
+    currentRole,
+    match: dataObj.enrolledBy === currentUser?.uid
+  };
+  console.log('[SAVE-DIAG]', window._lastSaveDiag);
   if(targetStatus==='submitted')dataObj.submittedAt=new Date();
 
   const btnSaveKeep=document.getElementById('btnSaveKeep');
@@ -1652,6 +1719,11 @@ async function saveRecord(targetStatus, closeAfter=false){
     } else {
       const nd=await addDoc(collection(db,'patients_full'),dataObj);
       document.getElementById('editRecordId').value=nd.id;
+      // Populate hidden preservation fields so subsequent saves don't lose enrolledBy
+      document.getElementById('hidEnrolledBy').value=dataObj.enrolledBy||'';
+      document.getElementById('hidEnrolledByName').value=dataObj.enrolledByName||'';
+      document.getElementById('hidEnrolledByCode').value=dataObj.enrolledByCode||'';
+      document.getElementById('hidOrigTimestamp').value=dataObj.timestamp instanceof Date ? dataObj.timestamp.toISOString() : new Date(dataObj.timestamp).toISOString();
     }
     if(targetStatus==='submitted'){
       document.getElementById('recordStatus').value='submitted';
@@ -1675,12 +1747,20 @@ document.getElementById('epsForm').addEventListener('submit',async(e)=>{e.preven
 // Mode A: Save and keep form open (continue editing)
 window.saveKeepOpen=async function(){
   const ok=await saveRecord('draft',false);
-  if(ok){showToast('Saved — continue editing','#059669');}
+  if(ok){showToast('Saved — continue editing','#059669');loadDashboard();}
 };
 // Mode B: Save as draft and close
 window.saveDraftClose=async function(){
   const ok=await saveRecord('draft',true);
-  if(ok){showToast('Saved as draft','#d97706');}
+  if(ok){
+    showToast('Saved — view in Dashboard','#d97706');
+    try {
+      await loadDashboard();   // fresh fetch with new record included
+    } catch(err) {
+      console.error('[SAVE] loadDashboard failed after save:', err);
+    }
+    _showDashboardTab();     // reveal tab regardless
+  }
 };
 // Mode C: Final submit — lock the record
 window.submitFinal=async function(){
@@ -1704,6 +1784,7 @@ function resetFormUI(f){
   document.getElementById('editModeBanner').classList.add('hidden');
   document.getElementById('recordStatus').value='draft';
   document.getElementById('editRecordId').value='';
+  ['hidEnrolledBy','hidEnrolledByName','hidEnrolledByCode','hidOrigTimestamp'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   ['btnSaveKeep','btnSaveClose','btnSubmitFinal'].forEach(id=>{const b=document.getElementById(id);if(b)b.disabled=false;});
   goToStep(0);
   updateFieldIndicators();
@@ -1712,20 +1793,114 @@ function resetFormUI(f){
 // ── DASHBOARD ────────────────────────────────────────────
 let _dashFilter='all',_dashData=[];
 window.setDashFilter=function(f,btn){_dashFilter=f;document.querySelectorAll('.dash-filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderDashboard();};
+
+// ── DIAGNOSTIC HELPERS ───────────────────────────────────
+// Capture any uncaught errors so the Debug popup can report them
+window._capturedErrors = [];
+window.addEventListener('error', (e) => {
+  window._capturedErrors.push({ type:'error', when: new Date().toISOString(), message: e.message, source: e.filename+':'+e.lineno+':'+e.colno, stack: e.error && e.error.stack ? e.error.stack : null });
+  if(window._capturedErrors.length > 20) window._capturedErrors.shift();
+});
+window.addEventListener('unhandledrejection', (e) => {
+  const reason = e.reason;
+  window._capturedErrors.push({ type:'unhandledrejection', when: new Date().toISOString(), message: String(reason && reason.message || reason), stack: reason && reason.stack ? reason.stack : null });
+  if(window._capturedErrors.length > 20) window._capturedErrors.shift();
+});
+
+function showDashDiagBanner(msg){
+  const el=document.getElementById('dashDiagBanner');
+  const m=document.getElementById('dashDiagBannerMsg');
+  if(el&&m){ m.textContent=msg; el.style.display='block'; }
+}
+window.showDebugInfo=function(){
+  const info={
+    when: new Date().toISOString(),
+    currentUser_uid: currentUser?.uid || '(not logged in)',
+    currentUser_email: currentUser?.email || '(n/a)',
+    currentUserName,
+    currentRole,
+    dashboardData: window._lastDashDiag || '(dashboard not loaded yet — click Refresh first)',
+    lastSave: window._lastSaveDiag || '(no save in this session)',
+    capturedErrors: window._capturedErrors && window._capturedErrors.length ? window._capturedErrors : '(none)',
+  };
+  const txt=JSON.stringify(info,null,2);
+  const w=window.open('','_blank','width=700,height=600');
+  if(w){
+    w.document.write(`<html><head><title>Debug Info</title><style>body{font-family:monospace;padding:20px;background:#f8fafc;}pre{background:white;border:1px solid #cbd5e1;border-radius:8px;padding:16px;white-space:pre-wrap;word-break:break-all;font-size:12px;}button{background:#1d4ed8;color:white;border:0;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:700;margin-bottom:12px;}</style></head><body><h3>Diagnostic info — share this with your admin if records are missing</h3><button onclick="navigator.clipboard.writeText(document.getElementById('d').textContent).then(()=>alert('Copied!'))">Copy to clipboard</button><pre id="d">${txt.replace(/</g,'&lt;')}</pre></body></html>`);
+  } else {
+    alert(txt);
+  }
+};
 window.loadDashboard=async function(){
-  const snap=await getDocs(collection(db,'patients_full'));
-  _dashData=[];const civIds={};
-  snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();d._comp=calcCompletion(d);_dashData.push(d);civIds[d.civilId]=(civIds[d.civilId]||0)+1;});
-  // Role-based filter
-  if(currentRole==='investigator'){_dashData=_dashData.filter(d=>d.enrolledBy===currentUser.uid);}
-  _dashData.forEach(d=>{d._isDup=(civIds[d.civilId]||0)>1;});
-  _dashData.sort((a,b)=>(a.admissionDate||'').localeCompare(b.admissionDate||''));
-  _dashData.forEach((d,i)=>{d._no=i+1;});
-  document.getElementById('dash_total').textContent=_dashData.length;
-  document.getElementById('dash_complete').textContent=_dashData.filter(d=>d._comp.complete).length;
-  document.getElementById('dash_incomplete').textContent=_dashData.filter(d=>!d._comp.complete).length;
-  document.getElementById('dash_reviewed').textContent=_dashData.filter(d=>d.recordStatus==='reviewed').length;
-  renderDashboard();
+  console.log('[DASH-DIAG] loadDashboard called');
+  try {
+    // For investigators, scope the Firestore query to only their own records.
+    // This is required both for performance and for Firestore rules that only
+    // permit listing when the query itself filters by enrolledBy == auth.uid.
+    let ref = collection(db,'patients_full');
+    if(currentRole==='investigator'){
+      ref = ref.where('enrolledBy','==',currentUser.uid);
+    }
+    const snap=await getDocs(ref);
+    _dashData=[];const civIds={};
+    snap.forEach(ds=>{
+      const d=ds.data();d.id=ds.id;
+      d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();
+      try { d._comp=calcCompletion(d); } catch(e) { console.warn('calcCompletion failed for',d.id,e); d._comp={score:0,total:1,pct:0,complete:false}; }
+      // Normalise timestamp to a sortable number
+      try { d._ts = d.timestamp ? (d.timestamp.toDate ? d.timestamp.toDate().getTime() : new Date(d.timestamp).getTime()) : 0; }
+      catch(e) { console.warn('timestamp parse failed for',d.id,e); d._ts=0; }
+      _dashData.push(d);
+      civIds[d.civilId]=(civIds[d.civilId]||0)+1;
+    });
+    // ── DIAGNOSTIC: record pre-filter state
+    const _preFilterCount = _dashData.length;
+    const _uniqueEnrolledBy = [...new Set(_dashData.map(d=>d.enrolledBy).filter(Boolean))];
+    // Role-based filter
+    if(currentRole==='investigator'){_dashData=_dashData.filter(d=>d.enrolledBy===currentUser.uid);}
+    // ── DIAGNOSTIC: verify last-saved record actually made it through the filter
+    const diag = {
+      currentRole,
+      currentUser_uid: currentUser?.uid,
+      currentUser_email: currentUser?.email,
+      totalRecordsInDb: _preFilterCount,
+      afterInvestigatorFilter: _dashData.length,
+      uniqueEnrolledByValuesInDb: _uniqueEnrolledBy,
+      yourUidIsInDb: _uniqueEnrolledBy.includes(currentUser?.uid),
+    };
+    console.log('[DASH-DIAG]', diag);
+    window._lastDashDiag = diag;
+    // If user just saved and we can verify it didn't show up, raise a loud banner
+    if(currentRole==='investigator' && window._lastSaveDiag){
+      const justSavedUid = window._lastSaveDiag.enrolledBy_written;
+      const madeItThrough = _dashData.some(d=>d.enrolledBy===justSavedUid);
+      if(!madeItThrough && justSavedUid){
+        const mismatch = justSavedUid !== currentUser?.uid;
+        const msg = mismatch
+          ? `⚠️ Your just-saved record was written with enrolledBy="${justSavedUid}" but the dashboard is filtering for currentUser.uid="${currentUser?.uid}". These don't match — the record IS saved in the database but will not show here. This usually means the users/{uid} document in Firestore was created with the wrong document ID. Contact admin with this message.`
+          : `⚠️ Your just-saved record did not appear in the dashboard fetch. The record WAS saved. This may be a Firestore read-consistency delay — click Refresh in a few seconds.`;
+        console.warn('[DASH-DIAG] ' + msg);
+        try{ showDashDiagBanner(msg); }catch(e){}
+      }
+      // Clear after checking once
+      window._lastSaveDiag = null;
+    }
+    _dashData.forEach(d=>{d._isDup=(civIds[d.civilId]||0)>1;});
+    // Sort by enrollment timestamp ascending (oldest first = first enrolled = #1)
+    _dashData.sort((a,b)=>a._ts - b._ts);
+    _dashData.forEach((d,i)=>{d._no=i+1;});
+    document.getElementById('dash_total').textContent=_dashData.length;
+    document.getElementById('dash_complete').textContent=_dashData.filter(d=>d._comp.complete).length;
+    document.getElementById('dash_incomplete').textContent=_dashData.filter(d=>!d._comp.complete).length;
+    document.getElementById('dash_reviewed').textContent=_dashData.filter(d=>d.recordStatus==='reviewed').length;
+    renderDashboard();
+    console.log('[DASH-DIAG] loadDashboard completed successfully');
+  } catch(err) {
+    console.error('[DASH-DIAG] loadDashboard threw:', err);
+    window._lastDashDiag = { error: String(err && err.message || err), stack: String(err && err.stack || '') };
+    try{ showDashDiagBanner('⚠️ Dashboard failed to load: '+(err.message||err)+'. Click Debug to copy details.'); }catch(e){}
+    throw err;
+  }
 };
 function renderDashboard(){
   let data=_dashData;
@@ -1785,8 +1960,9 @@ window.fetchData=async function(){
   const tbody=document.getElementById('tableBody');
   tbody.innerHTML='';allData=[];
   const all=[];const civIds={};
-  snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();all.push(d);civIds[d.civilId]=(civIds[d.civilId]||0)+1;});
-  all.sort((a,b)=>(a.admissionDate||'').localeCompare(b.admissionDate||''));
+  snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();d._ts=d.timestamp?(d.timestamp.toDate?d.timestamp.toDate().getTime():new Date(d.timestamp).getTime()):0;all.push(d);civIds[d.civilId]=(civIds[d.civilId]||0)+1;});
+  // Sort by enrollment timestamp ascending — order of enrolment
+  all.sort((a,b)=>a._ts - b._ts);
   all.forEach((data,idx)=>{
     data._no=idx+1;data._isDup=(civIds[data.civilId]||0)>1;
     if(sN&&!data.fullName.toLowerCase().includes(sN))return;
@@ -1834,6 +2010,12 @@ window.editRecord=function(data){
   document.getElementById('epsForm').reset();
   document.getElementById('editRecordId').value=data.id;
   document.getElementById('recordStatus').value=st;
+  // Preserve original metadata that isn't in form fields
+  document.getElementById('hidEnrolledBy').value=data.enrolledBy||'';
+  document.getElementById('hidEnrolledByName').value=data.enrolledByName||'';
+  document.getElementById('hidEnrolledByCode').value=data.enrolledByCode||'';
+  const origTs=data.timestamp?(data.timestamp.toDate?data.timestamp.toDate().toISOString():new Date(data.timestamp).toISOString()):'';
+  document.getElementById('hidOrigTimestamp').value=origTs;
   document.getElementById('editModeBanner').classList.remove('hidden');
   Object.keys(data).forEach(key=>{
     const el=document.getElementsByName(key)[0];if(!el)return;
@@ -1857,13 +2039,20 @@ window.viewRecord=function(data){
 // ── QUICK SEARCH ──────────────────────────────────────────
 let _allRecordsCache=[];
 async function loadRecordsCache(){
-  const snap=await getDocs(collection(db,'patients_full'));
-  _allRecordsCache=[];const civIds={};
-  snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();_allRecordsCache.push(d);civIds[d.civilId]=(civIds[d.civilId]||0)+1;});
-  _allRecordsCache.sort((a,b)=>(a.admissionDate||'').localeCompare(b.admissionDate||''));
-  _allRecordsCache.forEach((d,i)=>{d._no=i+1;});
-  // Role filter
-  if(currentRole==='investigator'){_allRecordsCache=_allRecordsCache.filter(d=>d.enrolledBy===currentUser?.uid);}
+  try {
+    let ref = collection(db,'patients_full');
+    if(currentRole==='investigator'){
+      ref = ref.where('enrolledBy','==',currentUser.uid);
+    }
+    const snap=await getDocs(ref);
+    _allRecordsCache=[];const civIds={};
+    snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();d._ts=d.timestamp?(d.timestamp.toDate?d.timestamp.toDate().getTime():new Date(d.timestamp).getTime()):0;_allRecordsCache.push(d);civIds[d.civilId]=(civIds[d.civilId]||0)+1;});
+    _allRecordsCache.sort((a,b)=>a._ts - b._ts);
+    _allRecordsCache.forEach((d,i)=>{d._no=i+1;});
+  } catch(err) {
+    console.error('[RECORDS-CACHE] failed:', err);
+    _allRecordsCache=[];
+  }
 }
 window.liveSearch=function(){
   const q=document.getElementById('qs_input').value.trim();
