@@ -1230,13 +1230,16 @@ window.autoGenCRF=async function(){
   const userCode=getDoctorCode(currentUserName)!=='—'?getDoctorCode(currentUserName):'000';
   const hospitalCode='01';
   const prefix=`${hospitalCode}-${userCode}-`;
+  // NNN = global sequential number across ALL cases (regardless of doctor)
   // Use local cache if available for speed; fallback to Firestore
   const src = _allRecordsCache.length > 0 ? _allRecordsCache : null;
   if(src){
+    // Find the highest NNN across every CRF in the system
     let maxSeq=0;
     src.forEach(d=>{
       const crf=d.crfNo||'';
-      if(crf.startsWith(prefix)){const seq=parseInt(crf.slice(-3)||'0',10);if(!isNaN(seq)&&seq>maxSeq)maxSeq=seq;}
+      const parts=crf.split('-');
+      if(parts.length===3){const seq=parseInt(parts[2],10);if(!isNaN(seq)&&seq>maxSeq)maxSeq=seq;}
     });
     const nextSeq=String(maxSeq+1).padStart(3,'0');
     document.getElementById('req_crfNo').value=`${prefix}${nextSeq}`;
@@ -1249,14 +1252,16 @@ window.autoGenCRF=async function(){
     let maxSeq=0;
     snap.forEach(ds=>{
       const crf=ds.data().crfNo||'';
-      if(crf.startsWith(prefix)){const seq=parseInt(crf.slice(-3)||'0',10);if(!isNaN(seq)&&seq>maxSeq)maxSeq=seq;}
+      const parts=crf.split('-');
+      if(parts.length===3){const seq=parseInt(parts[2],10);if(!isNaN(seq)&&seq>maxSeq)maxSeq=seq;}
     });
     const nextSeq=String(maxSeq+1).padStart(3,'0');
     document.getElementById('req_crfNo').value=`${prefix}${nextSeq}`;
     updateFieldIndicators();
   }catch(e){
-    const ts=Date.now()%1000;
-    document.getElementById('req_crfNo').value=`${prefix}${String(ts).padStart(3,'0').slice(-3)}`;
+    // Last resort fallback: use total record count + 1
+    const nextSeq=String((_allRecordsCache.length||0)+1).padStart(3,'0');
+    document.getElementById('req_crfNo').value=`${prefix}${nextSeq}`;
     updateFieldIndicators();
   }
 };
