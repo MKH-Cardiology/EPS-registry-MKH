@@ -33,7 +33,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-bg);color:var(--text
 .inp-sm{padding:7px 10px;font-size:13px;}
 select.inp{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
 textarea.inp{resize:vertical;min-height:80px;}
-.lbl{display:block;font-size:12px;font-weight:600;color:var(--text-sub);margin-bottom:5px;letter-spacing:.025em;}
+.lbl{display:flex;align-items:center;font-size:12px;font-weight:600;color:var(--text-sub);margin-bottom:5px;letter-spacing:.025em;gap:4px;}
 .card{background:#fff;border:1.5px solid var(--card-border);border-radius:14px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.04);transition:box-shadow .2s;}
 .card:hover{box-shadow:0 4px 16px rgba(0,0,0,.07);}
 .card-blue{border-color:#bfdbfe;background:#f0f7ff;}.card-red{border-color:#fecdd3;background:#fff1f2;}.card-green{border-color:#a7f3d0;background:#f0fdf4;}.card-yellow{border-color:#fde68a;background:#fffbeb;}.card-purple{border-color:#ddd6fe;background:#faf5ff;}.card-gray{border-color:#e2e8f0;background:#f8fafc;}
@@ -1120,6 +1120,7 @@ medsList.forEach(m=>{
   hMG.innerHTML+=`<label class="chk-item"><input type="checkbox" name="homeMed_${m.f}" class="w-4 h-4"> <span>${m.name}</span></label>`;
   dMG.innerHTML+=`<label class="chk-item"><input type="checkbox" name="dcMed_${m.f}" class="w-4 h-4"> <span>${m.name}</span></label>`;
 });
+setTimeout(updateFieldIndicators, 100);
 
 // ── CIVIL ID AUTO-AGE ────────────────────────────────────
 document.getElementById('civilId').addEventListener('input',function(){
@@ -1135,6 +1136,7 @@ window.setYN=function(btn,key,val){
   const hid=document.getElementById('val_'+key); if(hid)hid.value=val;
   const sub=document.getElementById('sub_'+key);
   if(sub){if(val==='Yes')sub.classList.add('show');else sub.classList.remove('show');}
+  updateFieldIndicators();
 };
 
 // ── EP REASON ────────────────────────────────────────────
@@ -1185,6 +1187,7 @@ window.toggleUnrec=function(field){
     inp.style.color='';
     inp.placeholder='';
   }
+  updateFieldIndicators();
 };
 
 // ── DOCTOR CODES (Hospital 01) ───────────────────────────
@@ -1350,33 +1353,223 @@ window.onCivilIdInput=function(){
   }
 };
 
+// ═══════════════════════════════════════════════════════
+// UNIVERSAL ✔/✖ FIELD INDICATOR SYSTEM
+// Covers ALL fields: text/number/date/time, select, radio groups, checkbox groups, Yes/No buttons
+// ═══════════════════════════════════════════════════════
 
-// Marks each key field with ✔ (green) or ✖ (red) based on whether it has a value
+// Fields that always have a default value and should NOT be marked ✖
+// (selects pre-filled with "No"/"Yes" that aren't truly blank)
+const IND_SKIP_NAMES = new Set([
+  'recordStatus',   // hidden internal field
+]);
+
+// Medication field name prefixes to exclude from indicators
+function _isMedField(name){
+  return name.startsWith('homeMed_') || name.startsWith('dcMed_');
+}
+
+// Paired fields: value input → its "unrecordable/not collected" checkbox name
+// If either the input has a value OR the paired checkbox is ticked → ✔
+const PAIRED_FIELDS = {
+  'sysBp':     'sysBpUnrec',
+  'diaBp':     'diaBpUnrec',
+  'hr':        'hrUnrec',
+  'weight':    'weightUnrec',
+  'height':    'heightUnrec',
+  'creatInit': 'creatInitNA',
+  'creatPeak': 'creatPeakNA',
+  'hgbInit':   'hgbInitNA',
+  'hgbLowest': 'hgbLowestNA',
+  'sodium':    'sodiumNA',
+  'potassium': 'potassiumNA',
+  'magnesium': 'magnesiumNA',
+  'inr':       'inrNA',
+};
+// Also skip the companion checkboxes from being evaluated on their own
+const PAIRED_COMPANIONS = new Set(Object.values(PAIRED_FIELDS));
+
+function _getIndicatorWrapper(el){
+  // Returns the wrapper div (direct parent with a label) for an element
+  // We place the indicator after the label, next to the field group
+  return el.closest('div') || el.parentNode;
+}
+
+// Create or get the indicator badge for a given group key (unique name/id)
+function _getOrCreateBadge(container, key){
+  let badge = container.querySelector(`.fi-badge[data-key="${key}"]`);
+  if(!badge){
+    badge = document.createElement('span');
+    badge.className = 'fi-badge';
+    badge.dataset.key = key;
+    badge.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;font-size:11px;font-weight:900;margin-left:6px;vertical-align:middle;flex-shrink:0;line-height:1;';
+    // Insert after the label element inside container
+    const lbl = container.querySelector('.lbl, label.lbl');
+    if(lbl) lbl.appendChild(badge);
+    else container.prepend(badge);
+  }
+  return badge;
+}
+
+function _setBadge(badge, filled){
+  if(!badge) return;
+  if(filled){
+    badge.textContent = '✔';
+    badge.style.background = '#dcfce7';
+    badge.style.color = '#15803d';
+    badge.title = 'Field completed';
+  } else {
+    badge.textContent = '✖';
+    badge.style.background = '#fee2e2';
+    badge.style.color = '#dc2626';
+    badge.title = 'Field not completed';
+  }
+}
+
+// ── Core evaluator for a single field group ──
+function _evalFieldGroup(container, name){
+  if(!container || IND_SKIP_NAMES.has(name)) return;
+
+  // Skip hidden inputs and purely internal fields
+  const allInputs = container.querySelectorAll(`input[name="${name}"], select[name="${name}"], textarea[name="${name}"]`);
+  if(!allInputs.length) return;
+
+  const first = allInputs[0];
+  const type = first.type;
+  let filled = false;
+
+  if(type === 'radio'){
+    // Radio group: filled if any option is checked
+    filled = !!container.querySelector(`input[name="${name}"]:checked`) ||
+             !!document.querySelector(`input[name="${name}"]:checked`);
+  } else if(type === 'checkbox'){
+    // Checkbox group: if multiple, filled if at least one checked; if single, filled if checked
+    const allCbs = document.querySelectorAll(`input[type="checkbox"][name="${name}"]`);
+    if(allCbs.length === 1){
+      filled = allCbs[0].checked;
+    } else {
+      // Group of checkboxes with same name — check if any ticked
+      filled = Array.from(allCbs).some(cb => cb.checked);
+    }
+  } else if(first.tagName === 'SELECT'){
+    const val = first.value;
+    // Treat empty string as unfilled; "No" pre-fills ARE considered answered (doctor made a choice)
+    filled = val !== '' && val !== null && val !== undefined;
+  } else {
+    // text / number / date / time / tel / email
+    filled = !!(first.value && first.value.trim() !== '');
+  }
+
+  const badge = _getOrCreateBadge(container, name);
+  _setBadge(badge, filled);
+}
+
+// ── Main update: scan all field containers in the form ──
 function updateFieldIndicators(){
-  const keyFields=[
-    {id:'req_nameFirst',label:'First Name'},{id:'req_nameLast',label:'Last Name'},
-    {id:'civilId',label:'Civil ID'},{id:'req_crfNo',label:'CRF Number'},
-    {id:'req_fileNo',label:'File Number'},
-    {id:'req_admDate',label:'Admission Date'},
-  ];
-  keyFields.forEach(({id})=>{
-    const el=document.getElementById(id);
-    if(!el)return;
-    let ind=el.parentNode.querySelector('.fld-ind');
-    if(!ind){ind=document.createElement('span');ind.className='fld-ind';ind.style.cssText='position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:900;pointer-events:none;';el.parentNode.style.position='relative';el.parentNode.appendChild(ind);}
-    const filled=el.value&&el.value.trim().length>0;
-    ind.textContent=filled?'✔':'✖';
-    ind.style.color=filled?'#059669':'#dc2626';
+  const form = document.getElementById('epsForm');
+  if(!form) return;
+
+  const processed = new Set();
+
+  // 1. Handle all named inputs (text/number/date/time/tel/select/textarea)
+  form.querySelectorAll('input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), select, textarea').forEach(el => {
+    const name = el.name;
+    if(!name || IND_SKIP_NAMES.has(name) || _isMedField(name) || processed.has(name)) return;
+    processed.add(name);
+    let container = el.closest('div');
+    let probe = el.parentNode;
+    while(probe && probe !== form){
+      if(probe.tagName === 'DIV' && probe.querySelector(':scope > .lbl, :scope > label.lbl')){
+        container = probe; break;
+      }
+      probe = probe.parentNode;
+    }
+    // ── Paired field: value OR companion checkbox ticked = ✔ ──
+    if(PAIRED_FIELDS[name]){
+      const companionCb = form.querySelector(`input[type="checkbox"][name="${PAIRED_FIELDS[name]}"]`);
+      const filled = !!(el.value && el.value.trim() !== '') || !!(companionCb && companionCb.checked);
+      const badge = _getOrCreateBadge(container, name);
+      _setBadge(badge, filled);
+      return;
+    }
+    _evalFieldGroup(container, name);
+  });
+
+  // 2. Handle radio groups
+  form.querySelectorAll('input[type="radio"]').forEach(el => {
+    const name = el.name;
+    if(!name || IND_SKIP_NAMES.has(name) || _isMedField(name) || processed.has(name)) return;
+    processed.add(name);
+    // Find the first radio in this group's container
+    let container = el.closest('div');
+    let probe = el.parentNode;
+    while(probe && probe !== form){
+      if(probe.tagName === 'DIV' && probe.querySelector(':scope > .lbl, :scope > label.lbl')){
+        container = probe; break;
+      }
+      probe = probe.parentNode;
+    }
+    _evalFieldGroup(container, name);
+  });
+
+  // 3. Handle checkbox groups (same name = group; unique name = single checkbox)
+  const cbNames = {};
+  form.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    const name = cb.name;
+    if(!name || IND_SKIP_NAMES.has(name) || _isMedField(name) || PAIRED_COMPANIONS.has(name)) return;
+    if(!cbNames[name]) cbNames[name] = [];
+    cbNames[name].push(cb);
+  });
+  Object.entries(cbNames).forEach(([name, cbs]) => {
+    if(processed.has(name)) return;
+    processed.add(name);
+    // For grouped checkboxes (e.g. indications) — find the shared parent card/div with .lbl
+    let container;
+    if(cbs.length > 1){
+      // Walk up from first checkbox to find nearest shared ancestor with a .lbl
+      let probe = cbs[0].closest('.card') || cbs[0].closest('div');
+      while(probe && probe !== form){
+        if(probe.querySelector(':scope > .lbl, :scope > label.lbl')){
+          container = probe; break;
+        }
+        probe = probe.parentNode;
+      }
+      if(!container) container = cbs[0].closest('.card') || cbs[0].parentNode;
+    } else {
+      // Single checkbox — use its label wrapper
+      container = cbs[0].closest('label') || cbs[0].parentNode;
+    }
+    _evalFieldGroup(container, name);
+  });
+
+  // 4. Handle Yes/No button groups (val_ hidden inputs)
+  form.querySelectorAll('input[type="hidden"][id^="val_"]').forEach(hid => {
+    const key = hid.id.replace('val_','');
+    const name = hid.name;
+    if(!name || processed.has('yn_'+key)) return;
+    processed.add('yn_'+key);
+    // The Yes/No group container: find closest card or div containing yn-group
+    const ynGroup = form.querySelector(`.yn-group button[onclick*="'${key}'"]`);
+    let container = ynGroup ? (ynGroup.closest('.card') || ynGroup.parentNode) : null;
+    if(!container) return;
+    // A YN field is always "answered" (it defaults to No, which is a valid answer)
+    // Only mark ✖ if hidden value is empty string
+    const filled = hid.value !== '' && hid.value !== null;
+    const badge = _getOrCreateBadge(container, 'yn_'+key);
+    _setBadge(badge, filled);
   });
 }
-// Attach live listeners to key fields
-document.addEventListener('DOMContentLoaded',()=>{
-  ['req_nameFirst','req_nameLast','civilId','req_crfNo','req_fileNo','req_admDate'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el){el.addEventListener('input',updateFieldIndicators);el.addEventListener('change',updateFieldIndicators);}
-  });
-  updateFieldIndicators();
-});
+
+// ── Attach live listeners to every field in the form ──
+function attachFieldIndicatorListeners(){
+  const form = document.getElementById('epsForm');
+  if(!form) return;
+  form.addEventListener('input', updateFieldIndicators);
+  form.addEventListener('change', updateFieldIndicators);
+}
+attachFieldIndicatorListeners();
+// Initial run after DOM settles
+setTimeout(updateFieldIndicators, 300);
 
 // ── DUPLICATE CIVIL ID CHECK ──────────────────────────────
 async function checkDuplicateCivilId(civilId, admissionDate, currentRecordId){
