@@ -88,6 +88,14 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 .badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;}
 .badge-blue{background:#dbeafe;color:#1d4ed8;}.badge-green{background:#d1fae5;color:#065f46;}.badge-red{background:#ffe4e6;color:#9f1239;}.badge-gray{background:#f1f5f9;color:#475569;}.badge-amber{background:#fef3c7;color:#92400e;}
 .step-footer{position:sticky;bottom:0;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-top:1.5px solid #e2e8f0;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;gap:12px;z-index:30;}
+/* Sticky sidebar on desktop: follows page scroll on long forms */
+@media (min-width: 768px){
+  .sticky-sidebar{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow-y:auto;z-index:20;}
+}
+/* Field indicator badges: emphasize ✖ so incomplete fields are obvious */
+.fi-badge{border:1.5px solid transparent;}
+/* Yes/No group spacing consistency */
+.yn-group{display:inline-flex;gap:4px;flex-shrink:0;}
 .dash-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;padding:16px;transition:box-shadow .2s,transform .15s;}
 .dash-card:hover{box-shadow:0 6px 20px rgba(0,0,0,.08);transform:translateY(-1px);}
 .status-draft{background:#fef3c7;color:#92400e;border:1px solid #fde68a;}
@@ -243,8 +251,8 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 
 <!-- ═══════════ FORM SECTION ═══════════ -->
 
-<section id="section-form" class="bg-white rounded-2xl shadow-lg border border-gray-100 flex flex-col md:flex-row min-h-[80vh] overflow-hidden relative">
-  <div class="w-full md:w-64 bg-gradient-to-b from-slate-50 to-slate-100 border-b md:border-b-0 md:border-r border-gray-200 p-4 shrink-0">
+<section id="section-form" class="bg-white rounded-2xl shadow-lg border border-gray-100 flex flex-col md:flex-row min-h-[80vh] relative" style="overflow:visible;">
+  <div class="sticky-sidebar w-full md:w-64 bg-gradient-to-b from-slate-50 to-slate-100 border-b md:border-b-0 md:border-r border-gray-200 p-4 shrink-0" style="align-self:flex-start;">
     <div class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Patient Journey</div>
     <div class="progress-bar mb-4"><div class="progress-fill" id="progressFill" style="width:12.5%"></div></div>
     <ul id="stepperList" class="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-1 md:pb-0"></ul>
@@ -255,7 +263,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
       <div id="myCasesCount" class="text-2xl font-black text-blue-700">0</div>
     </div>
   </div>
-  <div class="flex-1 flex flex-col relative overflow-hidden">
+  <div class="flex-1 flex flex-col relative" style="overflow:visible;">
     <div id="editModeBanner" class="hidden">⚠ EDIT MODE — Save when finished</div>
     <div id="lockedOverlay" class="locked-overlay hidden">
       <div class="locked-overlay-inner">
@@ -265,14 +273,14 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
         <button onclick="adminUnlock()" class="btn btn-primary text-sm"><i class="fas fa-unlock"></i> Admin Unlock</button>
       </div>
     </div>
-    <form id="epsForm" class="flex-1 flex flex-col overflow-hidden">
+    <form id="epsForm" class="flex-1 flex flex-col" style="overflow:visible;">
       <input type="hidden" id="editRecordId" name="recordId" value="">
       <input type="hidden" id="recordStatus" name="recordStatus" value="draft">
       <input type="hidden" id="hidEnrolledBy" name="_enrolledBy" value="">
       <input type="hidden" id="hidEnrolledByName" name="_enrolledByName" value="">
       <input type="hidden" id="hidEnrolledByCode" name="_enrolledByCode" value="">
       <input type="hidden" id="hidOrigTimestamp" name="_origTimestamp" value="">
-      <div class="flex-1 overflow-y-auto p-6 md:p-8" id="formScrollArea">
+      <div class="flex-1 p-6 md:p-8" id="formScrollArea" style="overflow:visible;">
 
 <!-- STEP 0: IDENTIFICATION -->
 
@@ -363,80 +371,80 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     </div>
   </div>
   <div class="card card-red mb-3">
-    <div class="flex items-center justify-between mb-2"><span class="font-bold text-red-900 text-sm">4.1 Atrial Fibrillation</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'afib','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'afib','Yes')">Yes</button></div></div>
-    <input type="hidden" name="hx_afib" id="val_afib" value="No">
+    <div class="flex items-center justify-between mb-2"><span class="font-bold text-red-900 text-sm">4.1 Atrial Fibrillation</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'afib','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'afib','Yes')">Yes</button></div></div>
+    <input type="hidden" name="hx_afib" id="val_afib" value="">
     <div id="sub_afib" class="sub-reveal">
       <div class="g2 mb-3"><div style="grid-column:1/-1"><label class="lbl">4.1a AFib Classification:</label><select name="afibClassification" class="inp"><option value="">Select...</option><option>Persistent (&gt;7 days)</option><option>Paroxysmal (terminating spontaneously w/in 7 days)</option><option>Long standing persistent (&gt;1 year)</option><option>Permanent</option></select></div></div>
       <div class="g2 mb-3">
-        <div><label class="lbl">4.1b Plans for Cardioversion</label><select name="afibCardioversion" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div>
-        <div><label class="lbl">4.1e Prior attempt of ablation</label><select name="afibPriorAblation" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div>
+        <div><label class="lbl">4.1b Plans for Cardioversion</label><select name="afibCardioversion" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+        <div><label class="lbl">4.1e Prior attempt of ablation</label><select name="afibPriorAblation" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
         <div><label class="lbl">4.1c CHA&#x2082;DS&#x2082;-VASc score</label><select name="afibChads" class="inp"><option value="">Select</option><option>0</option><option>1</option><option>2</option><option>3</option><option>&gt;3</option></select></div>
         <div><label class="lbl">4.1d HAS-BLED score</label><select name="afibHasBled" class="inp"><option value="">Select</option><option>0</option><option>1</option><option>2</option><option>3</option><option>&gt;3</option></select></div>
-        <div><label class="lbl">4.1f Contraindication to long-term OAC</label><select name="afibContraOAC" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div>
-        <div><label class="lbl">4.1g Prior major bleeding</label><select name="afibMajorBleed" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div>
+        <div><label class="lbl">4.1f Contraindication to long-term OAC</label><select name="afibContraOAC" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+        <div><label class="lbl">4.1g Prior major bleeding</label><select name="afibMajorBleed" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
       </div>
     </div>
   </div>
   <div class="card mb-3">
-    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.2 Cardiac Arrest</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'cardArrest','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'cardArrest','Yes')">Yes</button></div></div>
-    <input type="hidden" name="hx_cardiacArrest" id="val_cardArrest" value="No">
-    <div id="sub_cardArrest" class="sub-reveal"><div class="g3"><div><label class="lbl">4.2a Bradycardia Arrest</label><select name="arrestBradycardia" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.2b VF Arrest</label><select name="arrestVF" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.2c VT Arrest</label><select name="arrestVT" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
+    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.2 Cardiac Arrest</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'cardArrest','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'cardArrest','Yes')">Yes</button></div></div>
+    <input type="hidden" name="hx_cardiacArrest" id="val_cardArrest" value="">
+    <div id="sub_cardArrest" class="sub-reveal"><div class="g3"><div><label class="lbl">4.2a Bradycardia Arrest</label><select name="arrestBradycardia" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.2b VF Arrest</label><select name="arrestVF" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.2c VT Arrest</label><select name="arrestVT" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
   </div>
   <div class="card mb-3">
-    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.3 Cardiomyopathy - Ischemic</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'icm','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'icm','Yes')">Yes</button></div></div>
-    <input type="hidden" name="hx_icm" id="val_icm" value="No">
+    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.3 Cardiomyopathy - Ischemic</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'icm','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'icm','Yes')">Yes</button></div></div>
+    <input type="hidden" name="hx_icm" id="val_icm" value="">
     <div id="sub_icm" class="sub-reveal"><div class="g2"><div><label class="lbl">4.3a Timeframe</label><select name="icmTimeframe" class="inp"><option value="">Select</option><option>&lt; 3 months</option><option>&#x2265; 3 months</option></select></div><div><label class="lbl">4.3b GDMT Max Dose</label><select name="icmGDMT" class="inp"><option value="">Select</option><option>Yes (for 3 months)</option><option>Not documented</option><option>Not attempted</option><option>Inability to complete</option></select></div></div></div>
   </div>
   <div class="card mb-3">
-    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.4 Heart Failure</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'hf','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'hf','Yes')">Yes</button></div></div>
-    <input type="hidden" name="hx_hf" id="val_hf" value="No">
+    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.4 Heart Failure</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'hf','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'hf','Yes')">Yes</button></div></div>
+    <input type="hidden" name="hx_hf" id="val_hf" value="">
     <div id="sub_hf" class="sub-reveal"><div class="flex gap-2 flex-wrap"><label class="radio-item"><input type="radio" name="hfType" value="HFrEF"> HFrEF</label><label class="radio-item"><input type="radio" name="hfType" value="HFpEF"> HFpEF</label><label class="radio-item"><input type="radio" name="hfType" value="HFmrEF"> HFmrEF</label></div></div>
   </div>
   <div class="card mb-3"><div class="font-bold text-gray-700 text-sm mb-3">4.5–4.13 Other Risk Factors</div><div class="g3" id="simpleRiskGrid"></div></div>
   <div class="card mb-3">
-    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.14 Syndromes of Sudden Death</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'ssd','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'ssd','Yes')">Yes</button></div></div>
-    <input type="hidden" name="hx_ssd" id="val_ssd" value="No">
+    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.14 Syndromes of Sudden Death</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'ssd','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'ssd','Yes')">Yes</button></div></div>
+    <input type="hidden" name="hx_ssd" id="val_ssd" value="">
     <div id="sub_ssd" class="sub-reveal"><label class="lbl">4.14a Syndrome type:</label><div class="g3 mt-1"><label class="chk-item"><input type="checkbox" name="ssd_brugada"> Brugada</label><label class="chk-item"><input type="checkbox" name="ssd_cpvt"> Catecholaminergic polymorphic VT</label><label class="chk-item"><input type="checkbox" name="ssd_idiopathic"> Idiopathic/Primary VT/VF</label><label class="chk-item"><input type="checkbox" name="ssd_longqt"> Long QT</label><label class="chk-item"><input type="checkbox" name="ssd_shortqt"> Short QT</label><label class="chk-item"><input type="checkbox" name="ssd_unknown"> Unknown</label></div></div>
   </div>
   <div class="card mb-3">
-    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.15 Structural Abnormalities</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'struct','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'struct','Yes')">Yes</button></div></div>
-    <input type="hidden" name="hx_struct" id="val_struct" value="No">
-    <div id="sub_struct" class="sub-reveal"><div class="g2"><div><label class="lbl">4.15a ARVC</label><select name="struct_arvc" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.15b Congenital HD</label><select name="struct_congenital" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.15c HCM with high-risk features</label><select name="struct_hcm" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.15d Infiltrative</label><select name="struct_infiltrative" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div style="grid-column:1/-1"><label class="lbl">4.15e LV structural abnormality</label><select name="struct_lv" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
+    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.15 Structural Abnormalities</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'struct','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'struct','Yes')">Yes</button></div></div>
+    <input type="hidden" name="hx_struct" id="val_struct" value="">
+    <div id="sub_struct" class="sub-reveal"><div class="g2"><div><label class="lbl">4.15a ARVC</label><select name="struct_arvc" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.15b Congenital HD</label><select name="struct_congenital" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.15c HCM with high-risk features</label><select name="struct_hcm" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.15d Infiltrative</label><select name="struct_infiltrative" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div style="grid-column:1/-1"><label class="lbl">4.15e LV structural abnormality</label><select name="struct_lv" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
   </div>
   <div class="card mb-3">
-    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.16 Syncope</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'syncope','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'syncope','Yes')">Yes</button></div></div>
-    <input type="hidden" name="hx_syncope" id="val_syncope" value="No">
-    <div id="sub_syncope" class="sub-reveal"><label class="lbl">4.16a Syncope within last 6 months</label><select name="syncopeRecent" class="inp max-w-xs"><option value="No">No</option><option value="Yes">Yes</option></select></div>
+    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.16 Syncope</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'syncope','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'syncope','Yes')">Yes</button></div></div>
+    <input type="hidden" name="hx_syncope" id="val_syncope" value="">
+    <div id="sub_syncope" class="sub-reveal"><label class="lbl">4.16a Syncope within last 6 months</label><select name="syncopeRecent" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
   </div>
-  <div class="card mb-3"><div class="g3"><div><label class="lbl">4.17 Paroxysmal SVT history</label><select name="hx_svt" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.18 Ventricular fibrillation</label><select name="hx_vf" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.19 Ventricular Tachycardia</label><select name="hx_vt" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
+  <div class="card mb-3"><div class="g3"><div><label class="lbl">4.17 Paroxysmal SVT history</label><select name="hx_svt" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.18 Ventricular fibrillation</label><select name="hx_vf" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.19 Ventricular Tachycardia</label><select name="hx_vt" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
   <div class="card mb-3">
-    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.20 Aortic Valve Procedure</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'avp','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'avp','Yes')">Yes</button></div></div>
-    <input type="hidden" name="hx_avp" id="val_avp" value="No">
-    <div id="sub_avp" class="sub-reveal"><div class="g2"><div><label class="lbl">4.20a Type</label><div class="flex gap-2"><label class="radio-item"><input type="radio" name="avpType" value="TAVR"> TAVR</label><label class="radio-item"><input type="radio" name="avpType" value="SAVR"> SAVR</label></div></div><div><label class="lbl">4.20b Within last 6 months</label><select name="avpRecent" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
-  </div>
-  <div class="card mb-3">
-    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.21 Mitral Valve Procedure</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'mvp','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'mvp','Yes')">Yes</button></div></div>
-    <input type="hidden" name="hx_mvp" id="val_mvp" value="No">
-    <div id="sub_mvp" class="sub-reveal"><div class="g2"><div><label class="lbl">4.21a Type</label><div class="flex gap-2 flex-wrap"><label class="radio-item"><input type="radio" name="mvpType" value="PMVR"> PMVR</label><label class="radio-item"><input type="radio" name="mvpType" value="Mechanical mitral valve"> Mechanical MV</label><label class="radio-item"><input type="radio" name="mvpType" value="Bioprosthetic mitral valve"> Bioprosthetic MV</label></div></div><div><label class="lbl">4.21b Within last 6 months</label><select name="mvpRecent" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
+    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.20 Aortic Valve Procedure</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'avp','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'avp','Yes')">Yes</button></div></div>
+    <input type="hidden" name="hx_avp" id="val_avp" value="">
+    <div id="sub_avp" class="sub-reveal"><div class="g2"><div><label class="lbl">4.20a Type</label><div class="flex gap-2"><label class="radio-item"><input type="radio" name="avpType" value="TAVR"> TAVR</label><label class="radio-item"><input type="radio" name="avpType" value="SAVR"> SAVR</label></div></div><div><label class="lbl">4.20b Within last 6 months</label><select name="avpRecent" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
   </div>
   <div class="card mb-3">
-    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.22 Coronary Angiography</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'ca','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'ca','Yes')">Yes</button></div></div>
-    <input type="hidden" name="hx_ca" id="val_ca" value="No">
-    <div id="sub_ca" class="sub-reveal"><div class="g2"><div><label class="lbl">4.22a CA within last 6 months</label><select name="caRecent" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.22b After most recent cardiac arrest</label><select name="caAfterArrest" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
+    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.21 Mitral Valve Procedure</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'mvp','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'mvp','Yes')">Yes</button></div></div>
+    <input type="hidden" name="hx_mvp" id="val_mvp" value="">
+    <div id="sub_mvp" class="sub-reveal"><div class="g2"><div><label class="lbl">4.21a Type</label><div class="flex gap-2 flex-wrap"><label class="radio-item"><input type="radio" name="mvpType" value="PMVR"> PMVR</label><label class="radio-item"><input type="radio" name="mvpType" value="Mechanical mitral valve"> Mechanical MV</label><label class="radio-item"><input type="radio" name="mvpType" value="Bioprosthetic mitral valve"> Bioprosthetic MV</label></div></div><div><label class="lbl">4.21b Within last 6 months</label><select name="mvpRecent" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
   </div>
   <div class="card mb-3">
-    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.23 Prior CABG</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'cabg','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'cabg','Yes')">Yes</button></div></div>
-    <input type="hidden" name="hx_cabg" id="val_cabg" value="No">
-    <div id="sub_cabg" class="sub-reveal"><label class="lbl">4.23a CABG within last 6 months</label><select name="cabgRecent" class="inp max-w-xs"><option value="No">No</option><option value="Yes">Yes</option></select></div>
+    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.22 Coronary Angiography</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'ca','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'ca','Yes')">Yes</button></div></div>
+    <input type="hidden" name="hx_ca" id="val_ca" value="">
+    <div id="sub_ca" class="sub-reveal"><div class="g2"><div><label class="lbl">4.22a CA within last 6 months</label><select name="caRecent" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.22b After most recent cardiac arrest</label><select name="caAfterArrest" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
   </div>
   <div class="card mb-3">
-    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.24 Prior PCI</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'pci','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'pci','Yes')">Yes</button></div></div>
-    <input type="hidden" name="hx_pci" id="val_pci" value="No">
-    <div id="sub_pci" class="sub-reveal"><label class="lbl">4.24a PCI done within last 6 months</label><select name="pciRecent" class="inp max-w-xs"><option value="No">No</option><option value="Yes">Yes</option></select></div>
+    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.23 Prior CABG</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'cabg','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'cabg','Yes')">Yes</button></div></div>
+    <input type="hidden" name="hx_cabg" id="val_cabg" value="">
+    <div id="sub_cabg" class="sub-reveal"><label class="lbl">4.23a CABG within last 6 months</label><select name="cabgRecent" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+  </div>
+  <div class="card mb-3">
+    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.24 Prior PCI</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'pci','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'pci','Yes')">Yes</button></div></div>
+    <input type="hidden" name="hx_pci" id="val_pci" value="">
+    <div id="sub_pci" class="sub-reveal"><label class="lbl">4.24a PCI done within last 6 months</label><select name="pciRecent" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
   </div>
   <div class="card">
-    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.25 Prior CV Implantable Electronic Device (CIED)</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'cied','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'cied','Yes')">Yes</button></div></div>
-    <input type="hidden" name="hx_cied" id="val_cied" value="No">
+    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.25 Prior CV Implantable Electronic Device (CIED)</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'cied','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'cied','Yes')">Yes</button></div></div>
+    <input type="hidden" name="hx_cied" id="val_cied" value="">
     <div id="sub_cied" class="sub-reveal"><label class="lbl">4.25a Prior CIED device type:</label><div class="g3 mt-1"><label class="chk-item"><input type="checkbox" name="cied_single"> Single chamber transvenous PPM</label><label class="chk-item"><input type="checkbox" name="cied_dual"> Dual chamber transvenous PPM</label><label class="chk-item"><input type="checkbox" name="cied_crtp"> CRT-P</label><label class="chk-item"><input type="checkbox" name="cied_leadlessSingle"> Leadless single chamber PPM</label><label class="chk-item"><input type="checkbox" name="cied_leadlessDual"> Leadless dual chamber PPM</label><label class="chk-item"><input type="checkbox" name="cied_his"> His bundle PPM</label><label class="chk-item"><input type="checkbox" name="cied_lbbb"> Left bundle area PPM</label><label class="chk-item"><input type="checkbox" name="cied_icdSingle"> ICD single chamber</label><label class="chk-item"><input type="checkbox" name="cied_icdDual"> ICD dual chamber</label><label class="chk-item"><input type="checkbox" name="cied_crtd"> CRT-D</label><label class="chk-item"><input type="checkbox" name="cied_evicd"> Extravascular ICD</label><label class="chk-item"><input type="checkbox" name="cied_sicd"> S-ICD (Sub Q)</label><label class="chk-item"><input type="checkbox" name="cied_unknown"> Unknown</label></div></div>
   </div>
 </div>
@@ -445,7 +453,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 
 <div class="form-step" id="step-3">
   <div class="sec-title"><div class="icon-wrap bg-blue-100"><i class="fas fa-pills text-blue-600"></i></div>6. Home Medications (At Admission)</div>
-  <div class="card card-gray"><div class="g3" id="homeMedsGrid"></div></div>
+  <div class="card card-gray"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;" id="homeMedsGrid"></div></div>
 </div>
 
 <!-- STEP 4: INVESTIGATIONS -->
@@ -453,8 +461,8 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 <div class="form-step" id="step-4">
   <div class="sec-title"><div class="icon-wrap bg-purple-100"><i class="fas fa-microscope text-purple-600"></i></div>7–8. Pre-procedural Investigations &amp; Labs</div>
   <div class="card mb-4">
-    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">7.1 ECG</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'ecg','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'ecg','Yes')">Yes</button></div></div>
-    <input type="hidden" name="inv_ecg" id="val_ecg" value="No">
+    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">7.1 ECG</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'ecg','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'ecg','Yes')">Yes</button></div></div>
+    <input type="hidden" name="inv_ecg" id="val_ecg" value="">
     <div id="sub_ecg" class="sub-reveal">
       <div class="g2 mb-3">
         <div style="grid-column:1/-1"><label class="lbl">7.1a Atrial Rhythm:</label><div class="g3 mt-1"><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Sinus"> Sinus</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Atrial fibrillation"> Atrial fibrillation</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Atrial flutter"> Atrial flutter</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="SVT"> SVT</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Atrial tachycardia"> Atrial tachycardia</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Atrial paced"> Atrial paced</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Sinus arrest"> Sinus arrest</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Sinus pause"> Sinus pause</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="1st degree AV block"> 1st degree AV block</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="2nd degree AV block"> 2nd degree AV block</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="3rd degree AV block"> 3rd degree AV block</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Unknown rhythm"> Unknown rhythm</label></div></div>
@@ -464,16 +472,16 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     </div>
   </div>
   <div class="card mb-4">
-    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">7.2 Holter / Event Monitor</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'holter','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'holter','Yes')">Yes</button></div></div>
-    <input type="hidden" name="inv_holter" id="val_holter" value="No">
+    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">7.2 Holter / Event Monitor</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'holter','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'holter','Yes')">Yes</button></div></div>
+    <input type="hidden" name="inv_holter" id="val_holter" value="">
     <div id="sub_holter" class="sub-reveal">
       <label class="lbl">7.2a Atrial Rhythm:</label><div class="g3 mt-1 mb-3"><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="Sinus"> Sinus</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="Atrial fibrillation"> Atrial fibrillation</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="Atrial flutter"> Atrial flutter</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="SVT"> SVT</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="1st degree AV block"> 1st degree AV block</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="2nd degree AV block"> 2nd degree AV block</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="3rd degree AV block"> 3rd degree AV block</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="Unknown rhythm"> Unknown rhythm</label></div>
       <label class="lbl">7.2b Ventricular Rhythm:</label><div class="g3 mt-1"><label class="radio-item"><input type="radio" name="holterVentRhythm" value="Non-sustained VT"> Non-sustained VT</label><label class="radio-item"><input type="radio" name="holterVentRhythm" value="Sustained VT"> Sustained VT</label><label class="radio-item"><input type="radio" name="holterVentRhythm" value="Frequent PVCs"> Frequent PVCs</label><label class="radio-item"><input type="radio" name="holterVentRhythm" value="PVCs burden >10%"> PVCs burden &gt;10%</label></div>
     </div>
   </div>
   <div class="card mb-4">
-    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">7.3 Trans-Thoracic Echocardiogram (TTE)</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'tte','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'tte','Yes')">Yes</button></div></div>
-    <input type="hidden" name="inv_tte" id="val_tte" value="No">
+    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">7.3 Trans-Thoracic Echocardiogram (TTE)</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'tte','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'tte','Yes')">Yes</button></div></div>
+    <input type="hidden" name="inv_tte" id="val_tte" value="">
     <div id="sub_tte" class="sub-reveal">
       <div class="g4 mb-3">
         <div><label class="lbl">7.3a LVEF (%)</label><input type="number" name="lvef" class="inp" placeholder="%"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="lvefNA" class="w-3 h-3"> Not assessed</label></div>
@@ -482,24 +490,24 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
         <div><label class="lbl">7.3d RVSP (mmHg)</label><input type="number" name="rvsp" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="rvspNA" class="w-3 h-3"> Not assessed</label></div>
       </div>
       <div class="mb-3">
-        <div class="flex items-center justify-between mb-2"><span class="lbl mb-0">7.3e Severe valve disease</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'sevValve','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'sevValve','Yes')">Yes</button></div></div>
-        <input type="hidden" name="inv_sevValve" id="val_sevValve" value="No">
-        <div id="sub_sevValve" class="sub-reveal"><div class="g4"><div><label class="lbl">Severe MR</label><select name="sevMR" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">Severe AS</label><select name="sevAS" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">Severe AR</label><select name="sevAR" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">Severe TR</label><select name="sevTR" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
+        <div class="flex items-center justify-between mb-2"><span class="lbl mb-0">7.3e Severe valve disease</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'sevValve','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'sevValve','Yes')">Yes</button></div></div>
+        <input type="hidden" name="inv_sevValve" id="val_sevValve" value="">
+        <div id="sub_sevValve" class="sub-reveal"><div class="g4"><div><label class="lbl">Severe MR</label><select name="sevMR" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">Severe AS</label><select name="sevAS" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">Severe AR</label><select name="sevAR" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">Severe TR</label><select name="sevTR" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
       </div>
-      <div><label class="lbl">7.3f Intracardiac thrombus</label><select name="intracardThrombus" class="inp max-w-xs"><option value="No">No</option><option value="Yes">Yes</option></select></div>
+      <div><label class="lbl">7.3f Intracardiac thrombus</label><select name="intracardThrombus" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
     </div>
   </div>
   <div class="card mb-4">
-    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">7.4 Trans-Esophageal Echocardiogram (TEE)</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'tee','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'tee','Yes')">Yes</button></div></div>
-    <input type="hidden" name="inv_tee" id="val_tee" value="No">
+    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">7.4 Trans-Esophageal Echocardiogram (TEE)</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'tee','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'tee','Yes')">Yes</button></div></div>
+    <input type="hidden" name="inv_tee" id="val_tee" value="">
     <div id="sub_tee" class="sub-reveal">
-      <div class="g2 mb-3"><div><label class="lbl">7.4a Atrial thrombus detected</label><select name="teeThrombus" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
-      <div class="flex items-center justify-between mb-2"><span class="lbl mb-0">7.4b LAA morphology assessment</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'laa','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'laa','Yes')">Yes</button></div></div>
-      <input type="hidden" name="inv_laa" id="val_laa" value="No">
+      <div class="g2 mb-3"><div><label class="lbl">7.4a Atrial thrombus detected</label><select name="teeThrombus" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
+      <div class="flex items-center justify-between mb-2"><span class="lbl mb-0">7.4b LAA morphology assessment</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'laa','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'laa','Yes')">Yes</button></div></div>
+      <input type="hidden" name="inv_laa" id="val_laa" value="">
       <div id="sub_laa" class="sub-reveal"><div class="g2"><div><label class="lbl">7.4b.1 LAA ostial diameter (mm)</label><input type="number" name="laaOstial" class="inp" step="0.1"></div><div><label class="lbl">7.4b.2 LAA depth (mm)</label><input type="number" name="laaDepth" class="inp" step="0.1"></div></div></div>
     </div>
   </div>
-  <div class="card mb-4"><div class="g2"><div><label class="lbl">7.5 Cardiac CT Angiography</label><select name="inv_cardiacCT" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">7.6 Cardiac MRI (CMR)</label><select name="inv_cmr" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
+  <div class="card mb-4"><div class="g2"><div><label class="lbl">7.5 Cardiac CT Angiography</label><select name="inv_cardiacCT" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">7.6 Cardiac MRI (CMR)</label><select name="inv_cmr" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
   <div class="card card-purple">
     <div class="font-bold text-purple-900 mb-3 text-sm">8. Laboratory Results</div>
     <div class="g4">
@@ -532,22 +540,22 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
   <div class="proc-section" id="proc_crtaicd"><div class="card card-blue mb-3" style="border-left:4px solid #2563eb;"><div style="font-weight:800;color:#1e3a8a;font-size:14px;">9.5 — CRT / AICD</div></div><div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.5a Indications:</label><div class="g2"><label class="chk-item"><input type="checkbox" name="crtInd_surv"> Survivors of cardiac arrest with VT/VF</label><label class="chk-item"><input type="checkbox" name="crtInd_eps"> Inducible VT by EPS</label><label class="chk-item"><input type="checkbox" name="crtInd_icmEF"> ICM with EF ≤ 35%</label><label class="chk-item"><input type="checkbox" name="crtInd_nicmEF"> Non-ICM with EF ≤ 35%</label></div></div><div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.5b Generator:</label><div class="flex gap-2 flex-wrap"><label class="radio-item"><input type="radio" name="crtGenerator" value="Initial implant" onchange="onCrtGen()"> Initial implant</label><label class="radio-item"><input type="radio" name="crtGenerator" value="Generator replacement" onchange="onCrtGen()"> Generator replacement</label><label class="radio-item"><input type="radio" name="crtGenerator" value="Generator explant" onchange="onCrtGen()"> Generator explant</label></div><div id="crtGen_initial" class="sub-reveal mt-2"><label class="lbl">Device Name</label><input type="text" name="crtDeviceName" class="inp"></div></div></div>
   <div class="proc-section" id="proc_temppm"><div class="card card-gray mb-3" style="border-left:4px solid #64748b;"><div style="font-weight:800;color:#334155;font-size:14px;">9.6 — Temporary Pacemaker</div></div><div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.6a Indication:</label><div class="g2"><label class="chk-item"><input type="checkbox" name="tpm_chb"> CHB (3° AV block)</label><label class="chk-item"><input type="checkbox" name="tpm_mobitz2"> Mobitz type II AV block</label><label class="chk-item"><input type="checkbox" name="tpm_altBBB"> Alternating RBBB and LBBB</label><label class="chk-item"><input type="checkbox" name="tpm_sss"> Symptomatic sinus-node dysfunction</label></div></div></div>
   <div class="proc-section" id="proc_permpm"><div class="card card-gray mb-3" style="border-left:4px solid #475569;"><div style="font-weight:800;color:#1e293b;font-size:14px;">9.7 — Permanent Pacemaker</div></div><div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.7a Generator:</label><div class="flex gap-2 flex-wrap"><label class="radio-item"><input type="radio" name="ppmGenerator" value="Initial implant" onchange="onPpmGen()"> Initial implant</label><label class="radio-item"><input type="radio" name="ppmGenerator" value="Generator replacement" onchange="onPpmGen()"> Generator replacement</label><label class="radio-item"><input type="radio" name="ppmGenerator" value="Generator explant" onchange="onPpmGen()"> Generator explant</label></div><div id="ppmGen_initial" class="sub-reveal mt-2"><label class="lbl">Device Name</label><input type="text" name="ppmDeviceName" class="inp"></div></div><div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.7c Indications:</label><div class="g2"><label class="chk-item"><input type="checkbox" name="ppmInd_21block"> 2:1 AV block</label><label class="chk-item"><input type="checkbox" name="ppmInd_mobitz2"> 2° AV block, Mobitz II</label><label class="chk-item"><input type="checkbox" name="ppmInd_chb"> CHB</label><label class="chk-item"><input type="checkbox" name="ppmInd_sss"> SSS</label></div></div></div>
-  <div class="proc-section" id="proc_eps"><div class="card card-purple mb-3" style="border-left:4px solid #7c3aed;"><div style="font-weight:800;color:#4c1d95;font-size:14px;">9.8 — EPS / Ablation</div></div><div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.8a Reason:</label><div class="g2"><label class="chk-item"><input type="checkbox" name="eps_avnrt"> AVNRT</label><label class="chk-item"><input type="checkbox" name="eps_wpw"> WPW</label><label class="chk-item"><input type="checkbox" name="eps_aflutter"> Atrial flutter</label><label class="chk-item"><input type="checkbox" name="eps_afib"> Atrial fibrillation</label><label class="chk-item"><input type="checkbox" name="eps_vt"> VT</label><label class="chk-item"><input type="checkbox" name="eps_pvcs"> PVCs</label></div></div><div class="card mb-3"><div class="g2 mb-3"><div><label class="lbl">9.8c Transseptal</label><select name="epsTransseptal" class="inp"><option value="">N/A</option><option>Single</option><option>Double</option></select></div><div><label class="lbl">9.8d ICE</label><select name="epsICE" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">9.8e Ablation Time (min)</label><input type="number" name="epsAblTime" class="inp"></div><div><label class="lbl">9.8f Fluoro Time (min)</label><input type="number" name="epsFluoroTime" class="inp"></div></div></div></div>
-  <div class="proc-section" id="proc_laao"><div class="card card-green mb-3" style="border-left:4px solid #059669;"><div style="font-weight:800;color:#065f46;font-size:14px;">9.9 — LAAO (WATCHMAN)</div></div><div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.9a Indication:</label><div class="g2"><label class="chk-item"><input type="checkbox" name="laao_nonvalvular"> Non-valvular atrial fibrillation</label><label class="chk-item"><input type="checkbox" name="laao_highBleed"> High bleeding risk</label><label class="chk-item"><input type="checkbox" name="laao_contraOAC"> Contraindication to long-term OAC</label><label class="chk-item"><input type="checkbox" name="laao_priorBleed"> Prior major bleeding on OAC</label></div></div><div class="card mb-3"><div class="g2"><div><label class="lbl">Device type</label><div class="flex gap-2 mt-1"><label class="radio-item"><input type="radio" name="laaoDeviceType" value="WATCHMAN 2.5"> WATCHMAN 2.5</label><label class="radio-item"><input type="radio" name="laaoDeviceType" value="WATCHMAN FLX"> WATCHMAN FLX</label></div></div><div><label class="lbl">Device size (mm)</label><input type="number" name="laaoDeviceSize" class="inp" step="0.5"></div><div><label class="lbl">PASS criteria met</label><select name="laaoPASS" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">Immediate Outcome</label><select name="laaoOutcome" class="inp"><option>Successful implantation</option><option>Device repositioned</option><option>Device retrieved/aborted</option></select></div></div></div></div>
+  <div class="proc-section" id="proc_eps"><div class="card card-purple mb-3" style="border-left:4px solid #7c3aed;"><div style="font-weight:800;color:#4c1d95;font-size:14px;">9.8 — EPS / Ablation</div></div><div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.8a Reason:</label><div class="g2"><label class="chk-item"><input type="checkbox" name="eps_avnrt"> AVNRT</label><label class="chk-item"><input type="checkbox" name="eps_wpw"> WPW</label><label class="chk-item"><input type="checkbox" name="eps_aflutter"> Atrial flutter</label><label class="chk-item"><input type="checkbox" name="eps_afib"> Atrial fibrillation</label><label class="chk-item"><input type="checkbox" name="eps_vt"> VT</label><label class="chk-item"><input type="checkbox" name="eps_pvcs"> PVCs</label></div></div><div class="card mb-3"><div class="g2 mb-3"><div><label class="lbl">9.8c Transseptal</label><select name="epsTransseptal" class="inp"><option value="">N/A</option><option>Single</option><option>Double</option></select></div><div><label class="lbl">9.8d ICE</label><select name="epsICE" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">9.8e Ablation Time (min)</label><input type="number" name="epsAblTime" class="inp"></div><div><label class="lbl">9.8f Fluoro Time (min)</label><input type="number" name="epsFluoroTime" class="inp"></div></div></div></div>
+  <div class="proc-section" id="proc_laao"><div class="card card-green mb-3" style="border-left:4px solid #059669;"><div style="font-weight:800;color:#065f46;font-size:14px;">9.9 — LAAO (WATCHMAN)</div></div><div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.9a Indication:</label><div class="g2"><label class="chk-item"><input type="checkbox" name="laao_nonvalvular"> Non-valvular atrial fibrillation</label><label class="chk-item"><input type="checkbox" name="laao_highBleed"> High bleeding risk</label><label class="chk-item"><input type="checkbox" name="laao_contraOAC"> Contraindication to long-term OAC</label><label class="chk-item"><input type="checkbox" name="laao_priorBleed"> Prior major bleeding on OAC</label></div></div><div class="card mb-3"><div class="g2"><div><label class="lbl">Device type</label><div class="flex gap-2 mt-1"><label class="radio-item"><input type="radio" name="laaoDeviceType" value="WATCHMAN 2.5"> WATCHMAN 2.5</label><label class="radio-item"><input type="radio" name="laaoDeviceType" value="WATCHMAN FLX"> WATCHMAN FLX</label></div></div><div><label class="lbl">Device size (mm)</label><input type="number" name="laaoDeviceSize" class="inp" step="0.5"></div><div><label class="lbl">PASS criteria met</label><select name="laaoPASS" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">Immediate Outcome</label><select name="laaoOutcome" class="inp"><option value="">Select…</option><option>Successful implantation</option><option>Device repositioned</option><option>Device retrieved/aborted</option></select></div></div></div></div>
 </div>
 
 <!-- STEP 6: COMPLICATIONS -->
 
 <div class="form-step" id="step-6">
   <div class="sec-title"><div class="icon-wrap bg-red-100"><i class="fas fa-exclamation-triangle text-red-600"></i></div>10. Events &amp; Complications</div>
-  <div class="card mb-4"><div class="font-bold text-gray-800 text-sm mb-3">10.1 Procedures during hospital stay</div><div class="g4"><div><label class="lbl">CA</label><select name="comp_ca" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">PCI</label><select name="comp_pci" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">CABG</label><select name="comp_cabg" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">TAVR</label><select name="comp_tavr" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
+  <div class="card mb-4"><div class="font-bold text-gray-800 text-sm mb-3">10.1 Procedures during hospital stay</div><div class="g4"><div><label class="lbl">CA</label><select name="comp_ca" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">PCI</label><select name="comp_pci" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">CABG</label><select name="comp_cabg" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">TAVR</label><select name="comp_tavr" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
   <div class="card card-red mb-3">
     <div class="font-bold text-red-900 text-sm mb-3">10.2 Complications</div>
-    <div class="g3 mb-3"><div><label class="lbl">10.2.1 Resuscitated cardiac arrest</label><select name="cx_cardArrest" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.2 Pulmonary edema/CHF</label><select name="cx_pulEdema" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.3 Cardiac tamponade</label><select name="cx_tamponade1" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.5 Stroke</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'stroke','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'stroke','Yes')">Yes</button></div></div><input type="hidden" name="cx_stroke" id="val_stroke" value="No"><div id="sub_stroke" class="sub-reveal"><label class="lbl">Type:</label><div class="flex gap-2 mt-1"><label class="radio-item"><input type="radio" name="strokeType" value="Hemorrhagic"> Hemorrhagic</label><label class="radio-item"><input type="radio" name="strokeType" value="Thrombotic"> Thrombotic</label><label class="radio-item"><input type="radio" name="strokeType" value="Unknown"> Unknown</label></div></div></div>
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.10 Cardiogenic shock</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'cardShock','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'cardShock','Yes')">Yes</button></div></div><input type="hidden" name="cx_cardShock" id="val_cardShock" value="No"><div id="sub_cardShock" class="sub-reveal"><label class="lbl">SCAI stage:</label><div class="flex gap-2 flex-wrap mt-1"><label class="radio-item"><input type="radio" name="scaiStage" value="At risk"> At risk</label><label class="radio-item"><input type="radio" name="scaiStage" value="Beginning"> Beginning</label><label class="radio-item"><input type="radio" name="scaiStage" value="Classic"> Classic</label><label class="radio-item"><input type="radio" name="scaiStage" value="Deteriorating"> Deteriorating</label><label class="radio-item"><input type="radio" name="scaiStage" value="Extremis"> Extremis</label></div></div></div>
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.13 Any bleeding</span><div class="yn-group"><button type="button" class="yn-btn yn-no selected" onclick="setYN(this,'bleeding','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'bleeding','Yes')">Yes</button></div></div><input type="hidden" name="cx_bleeding" id="val_bleeding" value="No"><div id="sub_bleeding" class="sub-reveal"><label class="lbl">Bleeding type:</label><div class="space-y-1 mt-1 mb-3"><label class="radio-item"><input type="radio" name="bleedType" value="Type 1" onchange="onBleedT()"> Type 1 (Not actionable)</label><label class="radio-item"><input type="radio" name="bleedType" value="Type 2" onchange="onBleedT()"> Type 2 (Actionable, nonsurgical)</label><label class="radio-item"><input type="radio" name="bleedType" value="Type 3" onchange="onBleedT()"> Type 3 (Major/Overt bleeding)</label><label class="radio-item"><input type="radio" name="bleedType" value="Type 5" onchange="onBleedT()"> Type 5 (Fatal bleeding)</label></div><div id="bleedType3sub" class="sub-reveal mb-3"><label class="lbl">Major bleeding type:</label><div class="space-y-1 mt-1"><label class="radio-item"><input type="radio" name="bleedSubType" value="Type 3a"> Type 3a</label><label class="radio-item"><input type="radio" name="bleedSubType" value="Type 3b"> Type 3b</label><label class="radio-item"><input type="radio" name="bleedSubType" value="Type 3c"> Type 3c (Intracranial)</label></div></div></div></div>
-    <div class="g3 mb-3"><div><label class="lbl">10.2.20 Device embolization</label><select name="cx_devEmbol" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.22 Pleural effusion</label><select name="cx_pleuralEff" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.26 Lead Dislodgement</label><select name="cx_leadDislodge" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
+    <div class="g3 mb-3"><div><label class="lbl">10.2.1 Resuscitated cardiac arrest</label><select name="cx_cardArrest" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.2 Pulmonary edema/CHF</label><select name="cx_pulEdema" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.3 Cardiac tamponade</label><select name="cx_tamponade1" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
+    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.5 Stroke</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'stroke','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'stroke','Yes')">Yes</button></div></div><input type="hidden" name="cx_stroke" id="val_stroke" value=""><div id="sub_stroke" class="sub-reveal"><label class="lbl">Type:</label><div class="flex gap-2 mt-1"><label class="radio-item"><input type="radio" name="strokeType" value="Hemorrhagic"> Hemorrhagic</label><label class="radio-item"><input type="radio" name="strokeType" value="Thrombotic"> Thrombotic</label><label class="radio-item"><input type="radio" name="strokeType" value="Unknown"> Unknown</label></div></div></div>
+    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.10 Cardiogenic shock</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'cardShock','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'cardShock','Yes')">Yes</button></div></div><input type="hidden" name="cx_cardShock" id="val_cardShock" value=""><div id="sub_cardShock" class="sub-reveal"><label class="lbl">SCAI stage:</label><div class="flex gap-2 flex-wrap mt-1"><label class="radio-item"><input type="radio" name="scaiStage" value="At risk"> At risk</label><label class="radio-item"><input type="radio" name="scaiStage" value="Beginning"> Beginning</label><label class="radio-item"><input type="radio" name="scaiStage" value="Classic"> Classic</label><label class="radio-item"><input type="radio" name="scaiStage" value="Deteriorating"> Deteriorating</label><label class="radio-item"><input type="radio" name="scaiStage" value="Extremis"> Extremis</label></div></div></div>
+    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.13 Any bleeding</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'bleeding','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'bleeding','Yes')">Yes</button></div></div><input type="hidden" name="cx_bleeding" id="val_bleeding" value=""><div id="sub_bleeding" class="sub-reveal"><label class="lbl">Bleeding type:</label><div class="space-y-1 mt-1 mb-3"><label class="radio-item"><input type="radio" name="bleedType" value="Type 1" onchange="onBleedT()"> Type 1 (Not actionable)</label><label class="radio-item"><input type="radio" name="bleedType" value="Type 2" onchange="onBleedT()"> Type 2 (Actionable, nonsurgical)</label><label class="radio-item"><input type="radio" name="bleedType" value="Type 3" onchange="onBleedT()"> Type 3 (Major/Overt bleeding)</label><label class="radio-item"><input type="radio" name="bleedType" value="Type 5" onchange="onBleedT()"> Type 5 (Fatal bleeding)</label></div><div id="bleedType3sub" class="sub-reveal mb-3"><label class="lbl">Major bleeding type:</label><div class="space-y-1 mt-1"><label class="radio-item"><input type="radio" name="bleedSubType" value="Type 3a"> Type 3a</label><label class="radio-item"><input type="radio" name="bleedSubType" value="Type 3b"> Type 3b</label><label class="radio-item"><input type="radio" name="bleedSubType" value="Type 3c"> Type 3c (Intracranial)</label></div></div></div></div>
+    <div class="g3 mb-3"><div><label class="lbl">10.2.20 Device embolization</label><select name="cx_devEmbol" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.22 Pleural effusion</label><select name="cx_pleuralEff" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.26 Lead Dislodgement</label><select name="cx_leadDislodge" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
   </div>
 </div>
 
@@ -567,7 +575,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     <div class="g4 mb-3"><div><label class="lbl">12.1 Date of discharge/death</label><input type="date" name="dischargeDate" class="inp"></div><div><label class="lbl">12.2 Time (24h)</label><input type="time" name="dischargeTime" class="inp"></div></div>
     <div><label class="lbl">12.3 Discharge status</label><div class="flex gap-2 flex-wrap mt-1"><label class="radio-item"><input type="radio" name="dischargeStatus" value="Dead" onchange="onDischSt()"> Dead</label><label class="radio-item"><input type="radio" name="dischargeStatus" value="Alive" onchange="onDischSt()"> Alive</label></div><div id="dischDead" class="sub-reveal mt-2"><label class="lbl">12.3a Cause of death</label><div class="flex gap-2 mt-1"><label class="radio-item"><input type="radio" name="causeOfDeath" value="Non-Cardiac"> Non-Cardiac</label><label class="radio-item"><input type="radio" name="causeOfDeath" value="Cardiac"> Cardiac</label></div></div><div id="dischAlive" class="sub-reveal mt-2"><label class="lbl">12.3b Discharge type</label><div class="g2 mt-1"><label class="radio-item"><input type="radio" name="dischargeType" value="Home"> Home</label><label class="radio-item"><input type="radio" name="dischargeType" value="LAMA"> LAMA</label><label class="radio-item"><input type="radio" name="dischargeType" value="Transfer to cardiac surgery"> Transfer to cardiac surgery</label><label class="radio-item"><input type="radio" name="dischargeType" value="Transfer to other dept"> Transfer to other dept</label></div></div></div>
   </div>
-  <div class="card card-green"><div class="font-bold text-green-900 text-sm mb-3">13. Discharge Medications</div><div class="g3" id="dischargeMedsGrid"></div></div>
+  <div class="card card-green"><div class="font-bold text-green-900 text-sm mb-3">13. Discharge Medications</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;" id="dischargeMedsGrid"></div></div>
 </div>
 
   </div><!-- end formScrollArea -->
@@ -1108,13 +1116,15 @@ window.goToStep=function(idx){
   document.getElementById('btnNext').classList.toggle('hidden',currentStep===STEPS.length-1);
   document.getElementById('stepLabel').textContent=`Step ${currentStep+1} of ${STEPS.length}`;
   document.getElementById('progressFill').style.width=`${((currentStep+1)/STEPS.length)*100}%`;
-  document.getElementById('formScrollArea').scrollTop=0;
+  // Scroll to top of form section (page scroll, since form no longer scrolls internally)
+  const sec=document.getElementById('section-form');
+  if(sec) sec.scrollIntoView({behavior:'smooth',block:'start'});
 };
 window.changeStep=function(dir){const n=currentStep+dir;if(n>=0&&n<STEPS.length)goToStep(n);};
 
 // ── NATIONALITY ─────────────────────────────────────────────
 const countries=["Afghan","Albanian","Algerian","American","Andorran","Angolan","Argentine","Armenian","Australian","Austrian","Azerbaijani","Bahraini","Bangladeshi","Belgian","Brazilian","British","Bulgarian","Cambodian","Canadian","Chilean","Chinese","Colombian","Croatian","Cuban","Czech","Danish","Dutch","Egyptian","Emirati","Ethiopian","Filipino","Finnish","French","German","Ghanaian","Greek","Guatemalan","Hungarian","Indian","Indonesian","Iranian","Iraqi","Irish","Israeli","Italian","Ivorian","Japanese","Jordanian","Kazakhstani","Kenyan","Korean","Kuwaiti","Lebanese","Libyan","Malaysian","Moroccan","Nepalese","Nigerian","Norwegian","Omani","Pakistani","Palestinian","Polish","Portuguese","Qatari","Romanian","Russian","Saudi Arabian","Senegalese","Serbian","Singaporean","Somali","South African","Spanish","Sri Lankan","Sudanese","Swedish","Swiss","Syrian","Taiwanese","Thai","Tunisian","Turkish","Ugandan","Ukrainian","Venezuelan","Vietnamese","Yemeni","Other"];
-document.getElementById('nationalitySelect').innerHTML=countries.map(c=>`<option value="${c}">${c}</option>`).join('');
+document.getElementById('nationalitySelect').innerHTML='<option value="">Select…</option>'+countries.map(c=>`<option value="${c}">${c}</option>`).join('');
 
 // ── RISK GRID ─────────────────────────────────────────────
 const riskItems=[
@@ -1124,7 +1134,15 @@ const riskItems=[
   {name:"hx_dm",label:"4.11 Diabetes mellitus"},{name:"hx_htn",label:"4.12 Hypertension"},
   {name:"hx_familialSyndrome",label:"4.13 Familial syndrome"},
 ];
-document.getElementById('simpleRiskGrid').innerHTML=riskItems.map(r=>`<div><label class="lbl">${r.label}</label><select name="${r.name}" class="inp"><option value="No">No</option><option value="Yes">Yes</option></select></div>`).join('');
+document.getElementById('simpleRiskGrid').innerHTML=riskItems.map(r=>`<div><label class="lbl">${r.label}</label><select name="${r.name}" class="inp"><option value="" selected>Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>`).join('');
+// Force every risk grid select to start empty (no default)
+document.querySelectorAll('#simpleRiskGrid select').forEach(s => { s.value = ''; s.selectedIndex = 0; });
+// Force every select in the entire form with an empty-value first option to actually select that first option
+// (defends against browser restoring form state on back-button or cache)
+document.querySelectorAll('#epsForm select').forEach(s => {
+  const firstOpt = s.options[0];
+  if(firstOpt && firstOpt.value === '') { s.selectedIndex = 0; }
+});
 
 // ── MEDS ─────────────────────────────────────────────────
 const medsList=[
@@ -1136,9 +1154,19 @@ const medsList=[
 ];
 const hMG=document.getElementById('homeMedsGrid'), dMG=document.getElementById('dischargeMedsGrid');
 medsList.forEach(m=>{
-  hMG.innerHTML+=`<label class="chk-item"><input type="checkbox" name="homeMed_${m.f}" class="w-4 h-4"> <span>${m.name}</span></label>`;
-  dMG.innerHTML+=`<label class="chk-item"><input type="checkbox" name="dcMed_${m.f}" class="w-4 h-4"> <span>${m.name}</span></label>`;
+  hMG.innerHTML+=`<div class="med-row" data-med-key="homeMed_${m.f}" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;"><span class="text-sm font-semibold text-gray-800 med-label">${m.name}</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setMedYN(this,'homeMed_${m.f}','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setMedYN(this,'homeMed_${m.f}','Yes')">Yes</button></div><input type="hidden" name="homeMed_${m.f}" value=""></div>`;
+  dMG.innerHTML+=`<div class="med-row" data-med-key="dcMed_${m.f}" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;"><span class="text-sm font-semibold text-gray-800 med-label">${m.name}</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setMedYN(this,'dcMed_${m.f}','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setMedYN(this,'dcMed_${m.f}','Yes')">Yes</button></div><input type="hidden" name="dcMed_${m.f}" value=""></div>`;
 });
+// Yes/No handler for medications — stores value on the hidden input paired with buttons
+window.setMedYN=function(btn,medName,val){
+  const row=btn.closest('.med-row');
+  if(!row)return;
+  row.querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  const hid=row.querySelector(`input[type="hidden"][name="${medName}"]`);
+  if(hid)hid.value=val;
+  updateFieldIndicators();
+};
 setTimeout(updateFieldIndicators, 100);
 
 // ── CIVIL ID AUTO-AGE ────────────────────────────────────
@@ -1154,7 +1182,16 @@ window.setYN=function(btn,key,val){
   btn.classList.add('selected');
   const hid=document.getElementById('val_'+key); if(hid)hid.value=val;
   const sub=document.getElementById('sub_'+key);
-  if(sub){if(val==='Yes')sub.classList.add('show');else sub.classList.remove('show');}
+  if(sub){
+    if(val==='Yes'){
+      sub.classList.add('show');
+    } else {
+      sub.classList.remove('show');
+      // Clear any answers inside — they were for a subquestion that's no longer being asked
+      sub.querySelectorAll('input[type="radio"],input[type="checkbox"]').forEach(i=>{i.checked=false;});
+      sub.querySelectorAll('input[type="text"],input[type="number"],input[type="date"],input[type="time"],input[type="tel"],input[type="email"],textarea,select').forEach(i=>{i.value='';});
+    }
+  }
   updateFieldIndicators();
 };
 
@@ -1404,7 +1441,7 @@ const IND_SKIP_NAMES = new Set([
   'recordStatus',   // hidden internal field
 ]);
 
-// Medication field name prefixes to exclude from indicators
+// Medication field name prefixes — now handled by dedicated med-row branch (no longer skipped)
 function _isMedField(name){
   return name.startsWith('homeMed_') || name.startsWith('dcMed_');
 }
@@ -1425,14 +1462,46 @@ const PAIRED_FIELDS = {
   'potassium': 'potassiumNA',
   'magnesium': 'magnesiumNA',
   'inr':       'inrNA',
+  'ecgQRS':    'ecgQRSna',
+  'lvef':      'lvefNA',
+  'rvsp':      'rvspNA',
 };
 // Also skip the companion checkboxes from being evaluated on their own
 const PAIRED_COMPANIONS = new Set(Object.values(PAIRED_FIELDS));
 
-// Returns true if element lives inside a sub-reveal (conditional subpart — only shown when parent Yes/No = Yes)
-// These should NOT show ✔/✖ because they are optional by definition
+// "Either-or" groups: answering ANY member satisfies all members.
+// Used for pairs like (atrial rhythm OR ventricular rhythm) where one answer is enough.
+const EITHER_OR_GROUPS = [
+  new Set(['ecgAtrialRhythm','ecgVentRhythm']),          // 7.1a / 7.1b (ECG)
+  new Set(['holterAtrialRhythm','holterVentRhythm']),    // 7.2a / 7.2b (Holter)
+];
+function _eitherOrSatisfied(name){
+  const g = EITHER_OR_GROUPS.find(s => s.has(name));
+  if(!g) return null;
+  // Group found — check if ANY member has a value
+  for(const member of g){
+    // radio
+    if(document.querySelector(`input[type="radio"][name="${member}"]:checked`)) return true;
+    // select/input with value
+    const el = document.querySelector(`[name="${member}"]`);
+    if(el && el.value && String(el.value).trim() !== '') return true;
+    // checkbox group
+    const cbs = document.querySelectorAll(`input[type="checkbox"][name="${member}"]`);
+    if(Array.from(cbs).some(cb => cb.checked)) return true;
+  }
+  return false;
+}
+
+// Returns true if element lives inside a CURRENTLY HIDDEN conditional container
+// - .sub-reveal (shown only when parent Yes/No = Yes, via class 'show')
+// - .proc-section (shown only when a specific procedure is picked, via class 'show')
+// When visible, their fields ARE required and should show ✔/✖
 function _isSubReveal(el){
-  return !!el.closest('.sub-reveal');
+  const sub = el.closest('.sub-reveal');
+  if(sub && !sub.classList.contains('show')) return true;
+  const proc = el.closest('.proc-section');
+  if(proc && !proc.classList.contains('show')) return true;
+  return false;
 }
 
 function _getIndicatorWrapper(el){
@@ -1508,12 +1577,30 @@ function _evalFieldGroup(container, name){
 
   const badge = _getOrCreateBadge(container, name);
   _setBadge(badge, filled);
+  // Also tint the immediate field wrapper — gives consistent red/clear treatment
+  // Only apply to real field wrappers (one with a .lbl), not huge cards with many fields
+  if(container && container.querySelector(':scope > .lbl, :scope > label.lbl')){
+    if(filled){
+      container.style.background = '';
+      container.style.borderColor = '';
+      container.style.borderRadius = '';
+      container.style.padding = '';
+    } else {
+      container.style.background = '#fef2f2';
+      container.style.border = '1px solid #fca5a5';
+      container.style.borderRadius = '8px';
+      container.style.padding = '8px';
+    }
+  }
 }
 
 // ── Main update: scan all field containers in the form ──
 function updateFieldIndicators(){
   const form = document.getElementById('epsForm');
   if(!form) return;
+
+  // Clean up stale badges in containers that are now hidden (sub-reveal / proc-section closed)
+  form.querySelectorAll('.sub-reveal:not(.show) .fi-badge, .proc-section:not(.show) .fi-badge').forEach(b=>b.remove());
 
   const processed = new Set();
 
@@ -1555,6 +1642,13 @@ function updateFieldIndicators(){
       }
       probe = probe.parentNode;
     }
+    // Either-or group: if ANY member of the group is answered, this one is also ✔
+    const eoResult = _eitherOrSatisfied(name);
+    if(eoResult !== null){
+      const badge = _getOrCreateBadge(container, name);
+      _setBadge(badge, eoResult);
+      return;
+    }
     _evalFieldGroup(container, name);
   });
 
@@ -1588,23 +1682,78 @@ function updateFieldIndicators(){
     _evalFieldGroup(container, name);
   });
 
-  // 4. Handle Yes/No button groups (val_ hidden inputs)
+  // 5. Handle medication rows (Yes/No pairs — each medicine its own ✔/✖)
+  document.querySelectorAll('.med-row').forEach(row => {
+    const hid = row.querySelector('input[type="hidden"]');
+    if(!hid) return;
+    const key = 'med_' + (hid.name || '');
+    const filled = hid.value === 'Yes' || hid.value === 'No';
+    let badge = row.querySelector('.fi-badge');
+    if(!badge){
+      badge = document.createElement('span');
+      badge.className = 'fi-badge';
+      badge.dataset.key = key;
+      badge.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;font-size:11px;font-weight:900;margin-left:4px;vertical-align:middle;flex-shrink:0;line-height:1;';
+      const label = row.querySelector('.med-label');
+      if(label) label.appendChild(badge);
+      else row.prepend(badge);
+    }
+    _setBadge(badge, filled);
+    // Color the med row itself red (unanswered) or green (answered)
+    row.style.borderColor = filled ? '#86efac' : '#fecaca';
+    row.style.background = filled ? '#f0fdf4' : '#fef2f2';
+  });
+
+  // 6. Handle main Yes/No cards (val_* hidden inputs): put badge next to card title
   form.querySelectorAll('input[type="hidden"][id^="val_"]').forEach(hid => {
     const key = hid.id.replace('val_','');
-    const name = hid.name;
-    if(!name || processed.has('yn_'+key)) return;
-    // Skip YN groups that are inside a sub-reveal (conditional subparts)
+    // Skip if YN is inside a sub-reveal that's hidden
     if(_isSubReveal(hid)) return;
-    processed.add('yn_'+key);
-    // The Yes/No group container: find closest card or div containing yn-group
-    const ynGroup = form.querySelector(`.yn-group button[onclick*="'${key}'"]`);
-    let container = ynGroup ? (ynGroup.closest('.card') || ynGroup.parentNode) : null;
-    if(!container) return;
-    // A YN field is always "answered" (it defaults to No, which is a valid answer)
-    // Only mark ✖ if hidden value is empty string
-    const filled = hid.value !== '' && hid.value !== null;
-    const badge = _getOrCreateBadge(container, 'yn_'+key);
+    const ynVal = hid.value;
+    const ynAnswered = ynVal === 'Yes' || ynVal === 'No';
+    // Find the card containing this YN group
+    const btn = form.querySelector(`.yn-btn[onclick*="'${key}'"]`);
+    if(!btn) return;
+    const card = btn.closest('.card');
+    if(!card) return;
+    // Rule: "No" = green ✔ immediately. "Yes" = green ✔ only after AT LEAST ONE
+    // answer is given anywhere inside the revealed sub-section.
+    let filled = false;
+    if(ynVal === 'No') filled = true;
+    else if(ynVal === 'Yes'){
+      const sub = document.getElementById('sub_' + key);
+      if(!sub){
+        filled = true; // Yes with no sub-reveal — treat as answered
+      } else {
+        // At least one field answered?
+        const anyRadio = sub.querySelector('input[type="radio"]:checked');
+        const anyChecked = sub.querySelector('input[type="checkbox"]:checked');
+        let anyText = false, anySelect = false;
+        sub.querySelectorAll('input[type="text"],input[type="number"],input[type="date"],input[type="time"],input[type="tel"],input[type="email"],textarea').forEach(i=>{ if(i.value && i.value.trim() !== '') anyText = true; });
+        sub.querySelectorAll('select').forEach(s=>{ if(s.value !== '' && s.value != null) anySelect = true; });
+        filled = !!(anyRadio || anyChecked || anyText || anySelect);
+      }
+    }
+    // Find the title span (the left side of the Yes/No header row)
+    const title = card.querySelector('span.font-bold');
+    if(!title) return;
+    let badge = title.querySelector('.fi-badge-yn');
+    if(!badge){
+      badge = document.createElement('span');
+      badge.className = 'fi-badge fi-badge-yn';
+      badge.dataset.key = 'yn_' + key;
+      badge.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:12px;font-weight:900;margin-left:8px;vertical-align:middle;flex-shrink:0;line-height:1;';
+      title.appendChild(badge);
+    }
     _setBadge(badge, filled);
+    // Visually tint the card border too so it's obvious
+    if(filled){
+      card.style.borderColor = '';
+      card.style.background = '';
+    } else {
+      card.style.borderColor = '#fca5a5';
+      card.style.background = '#fef2f2';
+    }
   });
 }
 
@@ -1764,6 +1913,41 @@ window.saveDraftClose=async function(){
 };
 // Mode C: Final submit — lock the record
 window.submitFinal=async function(){
+  // Re-run indicators to catch any last-second changes
+  updateFieldIndicators();
+  // Count all visible ✖ badges in the form (ignore stale badges in hidden sub-reveals / proc-sections)
+  const form=document.getElementById('epsForm');
+  const incomplete=Array.from(form.querySelectorAll('.fi-badge')).filter(b=>{
+    if(b.textContent!=='✖') return false;
+    // Is this badge inside a hidden sub-reveal or hidden proc-section? Skip it.
+    const hiddenSub=b.closest('.sub-reveal');
+    if(hiddenSub && !hiddenSub.classList.contains('show')) return false;
+    const hiddenProc=b.closest('.proc-section');
+    if(hiddenProc && !hiddenProc.classList.contains('show')) return false;
+    // Also ignore if the element is not visible (display:none on any ancestor)
+    if(b.offsetParent===null) return false;
+    return true;
+  });
+  if(incomplete.length>0){
+    const first=incomplete[0];
+    // Find which step contains the first incomplete field
+    const step=first.closest('.form-step');
+    if(step){
+      const idx=parseInt(step.id.replace('step-',''),10);
+      if(!isNaN(idx)) goToStep(idx);
+    }
+    // Scroll to the incomplete field inside its step
+    setTimeout(()=>{
+      first.scrollIntoView({behavior:'smooth',block:'center'});
+      // Briefly highlight
+      first.style.transition='transform .2s,box-shadow .2s';
+      first.style.transform='scale(1.6)';
+      first.style.boxShadow='0 0 0 4px rgba(220,38,38,.25)';
+      setTimeout(()=>{first.style.transform='';first.style.boxShadow='';},900);
+    },150);
+    alert(`⚠️ Cannot submit: ${incomplete.length} field${incomplete.length===1?'':'s'} still incomplete.\n\nFinal Submit requires EVERY field to be answered (Yes or No for all questions, all values entered).\n\nYou have been taken to the first incomplete field.`);
+    return;
+  }
   if(!confirm('Final Submit will lock this record. Are you sure?'))return;
   const ok=await saveRecord('submitted',true);
   if(ok){showToast('Record submitted & locked','#2563eb');}
@@ -1775,8 +1959,8 @@ function resetFormUI(f){
   f.reset();
   document.querySelectorAll('.sub-reveal').forEach(s=>s.classList.remove('show'));
   document.querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('selected'));
-  document.querySelectorAll('.yn-btn.yn-no').forEach(b=>b.classList.add('selected'));
-  document.querySelectorAll('input[type="hidden"][id^="val_"]').forEach(h=>{if(h)h.value='No';});
+  // Yes/No groups start with neither selected (no default)
+  document.querySelectorAll('input[type="hidden"][id^="val_"]').forEach(h=>{if(h)h.value='';});
   document.querySelectorAll('.proc-section').forEach(s=>s.classList.remove('show'));
   document.querySelectorAll('.vt').forEach(t=>t.remove());
   const pnr=document.getElementById('proc_noReason');if(pnr)pnr.style.display='block';
@@ -2019,6 +2203,39 @@ window.editRecord=function(data){
   document.getElementById('editModeBanner').classList.remove('hidden');
   Object.keys(data).forEach(key=>{
     const el=document.getElementsByName(key)[0];if(!el)return;
+    // Medication fields: new format is hidden input with value "Yes"/"No";
+    // legacy format is boolean from old checkbox. Normalize both into the Yes/No UI.
+    if((key.startsWith('homeMed_')||key.startsWith('dcMed_')) && el.type==='hidden'){
+      let v=data[key];
+      if(v===true||v==='Yes') v='Yes';
+      else if(v===false||v==='No') v='No';
+      else v='';
+      el.value=v;
+      // Also update the visual Yes/No button selection inside the row
+      const row=el.closest('.med-row');
+      if(row){
+        row.querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('selected'));
+        if(v==='Yes') row.querySelector('.yn-btn.yn-yes')?.classList.add('selected');
+        else if(v==='No') row.querySelector('.yn-btn.yn-no')?.classList.add('selected');
+      }
+      return;
+    }
+    // Yes/No main groups (val_* hidden inputs): restore selection visually
+    if(el.type==='hidden' && el.id && el.id.startsWith('val_')){
+      const v=data[key];
+      el.value=(v==='Yes'||v==='No')?v:'';
+      const ynKey=el.id.replace('val_','');
+      // Find the matching yn-group buttons
+      const btns=document.querySelectorAll(`.yn-btn[onclick*="'${ynKey}'"]`);
+      btns.forEach(b=>b.classList.remove('selected'));
+      if(v==='Yes'||v==='No'){
+        btns.forEach(b=>{ if(b.onclick && b.getAttribute('onclick').includes(`'${v}'`)) b.classList.add('selected'); });
+      }
+      // If Yes, reveal any sub-reveal for this key
+      const sub=document.getElementById('sub_'+ynKey);
+      if(sub){ if(v==='Yes') sub.classList.add('show'); else sub.classList.remove('show'); }
+      return;
+    }
     if(el.type==='checkbox')el.checked=!!data[key];
     else if(el.type==='radio')document.getElementsByName(key).forEach(r=>{if(r.value===data[key])r.checked=true;});
     else el.value=data[key]||'';
