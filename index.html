@@ -130,6 +130,27 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 
 <!-- ═══════════════════════════════════════════════════════ -->
 
+<!-- EARLY DOLOGIN STUB - Defined immediately so the Sign In button -->
+
+<!-- always has a function to call, even if a later script fails.  -->
+
+<!-- The real doLogin is defined in the main script and overrides this. -->
+
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<script>
+window.doLogin = window.doLogin || function() {
+  var err = document.getElementById('loginError');
+  if (err) {
+    err.textContent = 'App is still loading. Please wait a moment and try again.';
+    err.style.display = 'block';
+  }
+  console.warn('[doLogin stub] called before main script loaded');
+};
+</script>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+
 <!-- LOGIN OVERLAY -->
 
 <!-- ═══════════════════════════════════════════════════════ -->
