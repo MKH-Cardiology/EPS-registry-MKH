@@ -157,9 +157,6 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
       style="width:100%;padding:13px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:12px;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.4);transition:all .2s;">
       <i class="fas fa-sign-in-alt mr-2"></i> Sign In
     </button>
-    <div style="text-align:center;margin-top:16px;font-size:11px;color:#94a3b8;">
-      Contact admin to reset your password
-    </div>
   </div>
 </div>
 
@@ -327,20 +324,22 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 <div class="form-step" id="step-1">
   <div class="sec-title"><div class="icon-wrap bg-indigo-100"><i class="fas fa-hospital-user text-indigo-600"></i></div>2–3. Reason for EP Lab &amp; Admission</div>
   <div class="card card-blue mb-5">
-    <div class="font-bold text-blue-900 mb-3 text-sm">2. Patient is coming to EP Lab because of:</div>
-    <div class="space-y-2" id="epReasonGroup">
-      <label class="radio-item"><input type="radio" name="epReason" value="CRT/AICD" onchange="onEPR()"> CRT/AICD with or without pacing</label>
-      <label class="radio-item"><input type="radio" name="epReason" value="Pacemaker" onchange="onEPR()"> Pacemaker</label>
-      <div id="pmTypeDiv" class="hidden ml-8 mt-1">
-        <label class="lbl">2.1 Pacemaker type:</label>
-        <div class="space-y-1 mt-1">
-          <label class="radio-item"><input type="radio" name="pacemakerType" value="Temporary pacemaker" onchange="onEPR()"> Temporary pacemaker</label>
-          <label class="radio-item"><input type="radio" name="pacemakerType" value="Permanent pacemaker" onchange="onEPR()"> Permanent pacemaker</label>
-          <label class="radio-item"><input type="radio" name="pacemakerType" value="Temporary followed by permanent same hospitalization" onchange="onEPR()"> Temporary followed by permanent same hospitalization</label>
+    <div>
+      <label class="lbl" style="font-size:13px;font-weight:700;color:#1e3a8a;margin-bottom:12px;">2. Patient is coming to EP Lab because of:</label>
+      <div class="space-y-2" id="epReasonGroup">
+        <label class="radio-item"><input type="radio" name="epReason" value="CRT/AICD" onchange="onEPR()"> CRT/AICD with or without pacing</label>
+        <label class="radio-item"><input type="radio" name="epReason" value="Pacemaker" onchange="onEPR()"> Pacemaker</label>
+        <div id="pmTypeDiv" class="hidden ml-8 mt-1">
+          <label class="lbl">2.1 Pacemaker type:</label>
+          <div class="space-y-1 mt-1">
+            <label class="radio-item"><input type="radio" name="pacemakerType" value="Temporary pacemaker" onchange="onEPR()"> Temporary pacemaker</label>
+            <label class="radio-item"><input type="radio" name="pacemakerType" value="Permanent pacemaker" onchange="onEPR()"> Permanent pacemaker</label>
+            <label class="radio-item"><input type="radio" name="pacemakerType" value="Temporary followed by permanent same hospitalization" onchange="onEPR()"> Temporary followed by permanent same hospitalization</label>
+          </div>
         </div>
+        <label class="radio-item"><input type="radio" name="epReason" value="EPS/Ablation" onchange="onEPR()"> EPS/Ablation</label>
+        <label class="radio-item"><input type="radio" name="epReason" value="LAAO" onchange="onEPR()"> Left Atrial Appendage Occlusion (LAAO – WATCHMAN)</label>
       </div>
-      <label class="radio-item"><input type="radio" name="epReason" value="EPS/Ablation" onchange="onEPR()"> EPS/Ablation</label>
-      <label class="radio-item"><input type="radio" name="epReason" value="LAAO" onchange="onEPR()"> Left Atrial Appendage Occlusion (LAAO – WATCHMAN)</label>
     </div>
   </div>
   <div class="card card-gray">
@@ -374,7 +373,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     <div class="flex items-center justify-between mb-2"><span class="font-bold text-red-900 text-sm">4.1 Atrial Fibrillation</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'afib','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'afib','Yes')">Yes</button></div></div>
     <input type="hidden" name="hx_afib" id="val_afib" value="">
     <div id="sub_afib" class="sub-reveal">
-      <div class="g2 mb-3"><div style="grid-column:1/-1"><label class="lbl">4.1a AFib Classification:</label><select name="afibClassification" class="inp"><option value="">Select...</option><option>Persistent (&gt;7 days)</option><option>Paroxysmal (terminating spontaneously w/in 7 days)</option><option>Long standing persistent (&gt;1 year)</option><option>Permanent</option></select></div></div>
+      <div class="g2 mb-3"><div style="grid-column:1/-1"><label class="lbl">4.1a AFib Classification:</label><select name="afibClassification" class="inp"><option value="">Select...</option><option>Persistent (&gt;7 days)</option><option>Paroxysmal (terminating spontaneously within 7 days)</option><option>Long standing persistent (&gt;1 year)</option><option>Permanent</option></select></div></div>
       <div class="g2 mb-3">
         <div><label class="lbl">4.1b Plans for Cardioversion</label><select name="afibCardioversion" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
         <div><label class="lbl">4.1e Prior attempt of ablation</label><select name="afibPriorAblation" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
@@ -531,8 +530,8 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     <div class="font-bold text-gray-800 text-sm mb-4"><span style="background:#dbeafe;color:#1e40af;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:800;">ALL PATIENTS</span> 9.1 – 9.4</div>
     <div class="proc-stack">
       <div><label class="lbl">9.1 Procedure Start Date</label><input type="date" name="procStartDate" class="inp"></div>
-      <div><label class="lbl">9.2 Procedure Start Time (24h)</label><input type="time" name="procStartTime" class="inp"></div>
-      <div><label class="lbl">9.3 Procedure Finishing Time (24h)</label><input type="time" name="procEndTime" class="inp"></div>
+      <div><label class="lbl">9.2 Procedure Start Time (24h)</label><input type="text" name="procStartTime" class="inp time24" placeholder="HH:MM" maxlength="5" inputmode="numeric" pattern="([01][0-9]|2[0-3]):[0-5][0-9]"></div>
+      <div><label class="lbl">9.3 Procedure Finishing Time (24h)</label><input type="text" name="procEndTime" class="inp time24" placeholder="HH:MM" maxlength="5" inputmode="numeric" pattern="([01][0-9]|2[0-3]):[0-5][0-9]"></div>
       <div><label class="lbl">9.4 Operator Name</label><select name="operatorName" class="inp"><option value="">Select operator...</option><option>Operator 1</option><option>Operator 2</option><option>Operator 3</option><option>Operator 4</option><option>Operator 5</option></select></div>
     </div>
   </div>
@@ -572,7 +571,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
   </div>
   <div class="card mb-4">
     <div class="font-bold text-gray-800 text-sm mb-3">12. Discharge</div>
-    <div class="g4 mb-3"><div><label class="lbl">12.1 Date of discharge/death</label><input type="date" name="dischargeDate" class="inp"></div><div><label class="lbl">12.2 Time (24h)</label><input type="time" name="dischargeTime" class="inp"></div></div>
+    <div class="g4 mb-3"><div><label class="lbl">12.1 Date of discharge/death</label><input type="date" name="dischargeDate" class="inp"></div><div><label class="lbl">12.2 Time (24h)</label><input type="text" name="dischargeTime" class="inp time24" placeholder="HH:MM" maxlength="5" inputmode="numeric" pattern="([01][0-9]|2[0-3]):[0-5][0-9]"></div></div>
     <div><label class="lbl">12.3 Discharge status</label><div class="flex gap-2 flex-wrap mt-1"><label class="radio-item"><input type="radio" name="dischargeStatus" value="Dead" onchange="onDischSt()"> Dead</label><label class="radio-item"><input type="radio" name="dischargeStatus" value="Alive" onchange="onDischSt()"> Alive</label></div><div id="dischDead" class="sub-reveal mt-2"><label class="lbl">12.3a Cause of death</label><div class="flex gap-2 mt-1"><label class="radio-item"><input type="radio" name="causeOfDeath" value="Non-Cardiac"> Non-Cardiac</label><label class="radio-item"><input type="radio" name="causeOfDeath" value="Cardiac"> Cardiac</label></div></div><div id="dischAlive" class="sub-reveal mt-2"><label class="lbl">12.3b Discharge type</label><div class="g2 mt-1"><label class="radio-item"><input type="radio" name="dischargeType" value="Home"> Home</label><label class="radio-item"><input type="radio" name="dischargeType" value="LAMA"> LAMA</label><label class="radio-item"><input type="radio" name="dischargeType" value="Transfer to cardiac surgery"> Transfer to cardiac surgery</label><label class="radio-item"><input type="radio" name="dischargeType" value="Transfer to other dept"> Transfer to other dept</label></div></div></div>
   </div>
   <div class="card card-green"><div class="font-bold text-green-900 text-sm mb-3">13. Discharge Medications</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;" id="dischargeMedsGrid"></div></div>
@@ -2863,6 +2862,36 @@ let _domReady = false;
 window.addEventListener('firebaseReady', _tryBoot);
 document.addEventListener('DOMContentLoaded', function() {
   _domReady = true;
+  // ── 24h time input auto-formatter: inserts colon and clamps values ──
+  document.querySelectorAll('input.time24').forEach(inp=>{
+    inp.addEventListener('input', function(e){
+      let v = this.value.replace(/[^0-9]/g,'').slice(0,4);
+      if(v.length >= 3) v = v.slice(0,2) + ':' + v.slice(2);
+      this.value = v;
+    });
+    inp.addEventListener('blur', function(){
+      const v = this.value.trim();
+      if(!v){ return; }
+      // Accept H:MM, HH:MM, HHMM, HMM — normalize to HH:MM and validate
+      const digits = v.replace(/[^0-9]/g,'');
+      if(digits.length < 3 || digits.length > 4){
+        this.setCustomValidity('Use 24h format HH:MM (00:00–23:59)');
+        this.reportValidity();
+        return;
+      }
+      let hh, mm;
+      if(digits.length === 3){ hh = '0' + digits[0]; mm = digits.slice(1); }
+      else { hh = digits.slice(0,2); mm = digits.slice(2); }
+      const hNum = parseInt(hh,10), mNum = parseInt(mm,10);
+      if(hNum > 23 || mNum > 59){
+        this.setCustomValidity('Invalid time — hours 00–23, minutes 00–59');
+        this.reportValidity();
+        return;
+      }
+      this.setCustomValidity('');
+      this.value = hh + ':' + mm;
+    });
+  });
   _tryBoot();
 });
 </script>
