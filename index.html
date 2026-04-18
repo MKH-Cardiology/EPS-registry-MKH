@@ -909,6 +909,7 @@ window.doLogin = window.doLogin || function() {
 </script>
 
 <script>
+console.log('[MAIN-1] script start');
 function collection(db, path){ return db.collection(path); }
 function addDoc(ref, data){ return ref.add(data); }
 function setDoc(ref, data){ return ref.set(data); }
@@ -923,8 +924,10 @@ let currentUser = null;
 let currentRole = null;
 let currentUserName = '';
 
+console.log('[MAIN-2] about to define doLogin');
 // ── doLogin MUST be global so onclick works before Firebase loads ──
 window.doLogin = async function() {
+  console.log('[MAIN-doLogin] called');
   const e = document.getElementById('loginEmail').value.trim();
   const p = document.getElementById('loginPassword').value;
   if (!e || !p) { showLoginError('Enter email and password.'); return; }
@@ -2809,6 +2812,7 @@ document.addEventListener(‘DOMContentLoaded’, function() {
 _domReady = true;
 _tryBoot();
 });
+console.log(’[MAIN-END] script finished executing’);
 </script>
 
 <!-- TEMPORARY: Eruda mobile console for debugging. Tap the floating button (bottom-right) to open. Remove this block once issue is fixed. -->
