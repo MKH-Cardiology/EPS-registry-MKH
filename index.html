@@ -2821,6 +2821,232 @@ function initApp() {
     dcMed_clopidogrel:'DCClopi',dcMed_acei:'DCACEI',dcMed_betablocker:'DCBB',dcMed_mra:'DCMRA',dcMed_digoxin:'DCDigox',dcMed_loopdiuretic:'DCLoop',
   };
 
+  // ==================== NEW FIELDS ADDED IN v2 ====================
+  // Extend FIELD_MAP with every new field added to the form (labels for Excel/PDF)
+  Object.assign(FIELD_MAP, {
+    // New meds (Home + Discharge)
+    homeMed_disopyramide:'Home Med: Disopyramide', homeMed_procainamide:'Home Med: Procainamide',
+    homeMed_propafenone:'Home Med: Propafenone', homeMed_verapamil:'Home Med: Verapamil',
+    homeMed_diltiazem:'Home Med: Diltiazem', homeMed_rivaroxaban:'Home Med: Rivaroxaban',
+    homeMed_edoxaban:'Home Med: Edoxaban', homeMed_lmwh:'Home Med: LMWH',
+    homeMed_ufh:'Home Med: Unfractionated Heparin', homeMed_prasugrel:'Home Med: Prasugrel',
+    homeMed_ticagrelor:'Home Med: Ticagrelor', homeMed_cangrelor:'Home Med: Cangrelor',
+    dcMed_amiodarone:'DC Med: Amiodarone', dcMed_disopyramide:'DC Med: Disopyramide',
+    dcMed_flecainide:'DC Med: Flecainide', dcMed_procainamide:'DC Med: Procainamide',
+    dcMed_propafenone:'DC Med: Propafenone', dcMed_sotalol:'DC Med: Sotalol',
+    dcMed_verapamil:'DC Med: Verapamil', dcMed_diltiazem:'DC Med: Diltiazem',
+    dcMed_dabigatran:'DC Med: Dabigatran', dcMed_rivaroxaban:'DC Med: Rivaroxaban',
+    dcMed_edoxaban:'DC Med: Edoxaban', dcMed_lmwh:'DC Med: LMWH',
+    dcMed_ufh:'DC Med: Unfractionated Heparin', dcMed_prasugrel:'DC Med: Prasugrel',
+    dcMed_ticagrelor:'DC Med: Ticagrelor', dcMed_cangrelor:'DC Med: Cangrelor',
+    dcMed_arb:'DC Med: ARB', dcMed_arni:'DC Med: ARNI', dcMed_sglt:'DC Med: SGLT inhibitor',
+
+    // 4.15 Structural abnormality (Y/N wrapper already in FIELD_MAP as hx_struct)
+    struct_infiltrative:'Struct: Infiltrative',
+
+    // 9.5 CRT/AICD additions
+    crtInherited:'CRT: Inherited heart disease w/ SCD risk',
+    crtInh_longqt:'CRT Inh: Long QT', crtInh_hcm:'CRT Inh: HCM',
+    crtInh_brugada:'CRT Inh: Brugada', crtInh_arvd:'CRT Inh: ARVD/C',
+    crtInh_cpvt:'CRT Inh: CPVT',
+    crtRepl_relocation:'CRT Repl: Device relocation',
+    crtRepl_battery:'CRT Repl: End of battery life',
+    crtRepl_faulty:'CRT Repl: Faulty connector/header',
+    crtRepl_infection:'CRT Repl: Infection',
+    crtRepl_leadrev:'CRT Repl: Replaced at lead revision',
+    crtRepl_upgrade:'CRT Repl: Upgrade',
+    crtReimplant:'CRT: Reimplant intended',
+    crtDevImpl:'CRT: Device implant',
+    crtDeviceType:'CRT: Device Type',
+    crtPpmSame:'CRT: Pacemaker same procedure',
+    crtPpmType:'CRT: Pacemaker type',
+    crtLbbbQRS:'CRT LBBB: QRS width post (msec)',
+    crtLbbbQRSna:'CRT LBBB: QRS Not Assessed',
+    crtBrady:'CRT: Any Bradycardia indications',
+    crtBradyReason:'CRT: Bradycardia pacing reason',
+    crtLeadAssess:'CRT: Lead assessment',
+    crtLeadStatus:'CRT: Lead status',
+
+    // 9.6 Temporary PM additions
+    tpmIndication:'TPM: Indication',
+    tpmCause_electrolyte:'TPM Cause: Electrolyte imbalance',
+    tpmCause_drug:'TPM Cause: Drug induced',
+    tpmCause_digitalis:'TPM Cause: Digitalis toxicity',
+    tpmCause_antiarr:'TPM Cause: Anti-arrhythmic',
+    tpmCause_acuteMI:'TPM Cause: Acute MI',
+    tpmCause_myocarditis:'TPM Cause: Myocarditis',
+    tpmCause_endocarditis:'TPM Cause: Endocarditis',
+    tpmCause_postArrest:'TPM Cause: Post cardiac arrest',
+    tpmCause_hypothermia:'TPM Cause: Hypothermia',
+    tpmCause_bridge:'TPM Cause: Bridge to PPM',
+    tpmCause_postTAVI:'TPM Cause: Post TAVI/valve replacement',
+    tpmCause_unknown:'TPM Cause: Unknown',
+    tpmDrug_avBlock:'TPM Drug: AV blocking agent',
+    tpmMIType:'TPM: Acute MI type',
+    tpmPpmSameStay:'TPM: PPM during same hospital stay',
+
+    // 9.7 Permanent PM additions
+    ppmReplReason:'PPM: Replacement reason',
+    ppmReimplant:'PPM: Reimplant intended',
+    ppmDevImpl:'PPM: Device implant',
+    ppmDev_singleTV:'PPM Device: Single chamber transvenous',
+    ppmDev_dualTV:'PPM Device: Dual chamber transvenous',
+    ppmDev_leadlessSingle:'PPM Device: Leadless single chamber',
+    ppmDev_leadlessDual:'PPM Device: Leadless dual chamber',
+    ppmDev_his:'PPM Device: His-bundle',
+    ppmDev_leadlessLVEP:'PPM Device: Leadless LVEP',
+    ppmDev_ccm:'PPM Device: CCM',
+    ppmDev_lbbb:'PPM Device: LBBB',
+    ppmLbbbQRS:'PPM LBBB: QRS width post (msec)',
+    ppmLbbbQRSna:'PPM LBBB: QRS Not Assessed',
+    ppmIndication:'PPM: Indication',
+    ppmLeadAssess:'PPM: Lead assessment',
+    ppmLeadStatus:'PPM: Lead status',
+
+    // 9.8 EPS additions
+    epsSedation:'EPS: Sedation',
+    epsAnticoag:'EPS: Intraprocedural anticoagulation',
+    epsUninterrupted:'EPS: Uninterrupted anticoagulation',
+    epsPhrenic:'EPS: Phrenic nerve evaluation',
+    epsCathManip:'EPS: Catheter manipulation',
+    epsInducedArr:'EPS: Induced arrhythmia during study',
+    epsMapSystem:'EPS: Mapping system',
+
+    // 9.9 LAAO additions
+    laao_patientPref:'LAAO Ind: Patient preference',
+    laaoDeploy:'LAAO: Deployment attempts',
+    laaoTransseptal:'LAAO: Transseptal puncture',
+    laaoImaging:'LAAO: Imaging guidance',
+    laaoLeak:'LAAO: Final peri-device leak',
+    laaoAnticoag:'LAAO: Intraprocedural anticoagulation',
+
+    // Section 10 complications additions
+    cx_renal:'CX: Renal impairment/failure (pre-disch)',
+    cx_dialysis:'CX: Dialysis required',
+    cx_accessVasc:'CX: Access site vascular/bleeding',
+    cx_hematoma:'CX: Hematoma',
+    cx_occlusion:'CX: Vascular occlusion',
+    cx_avfistula:'CX: AV fistula',
+    cx_pseudoAneurysm:'CX: Pseudo-aneurysm',
+    cx_intervReq:'CX: Intervention required',
+    cx_intervEndo:'CX: Intervention - Endovascular repair',
+    cx_intervSurg:'CX: Intervention - Surgical repair',
+    cx_intervThrombin:'CX: Intervention - Thrombin injection',
+    cx_periphEmbol:'CX: Peripheral embolization',
+    cx_pericarditis:'CX: Pericarditis',
+    cx_vent:'CX: Ventilation',
+    ventType:'CX: Ventilation type',
+    cx_inotropes:'CX: Inotropes',
+    cx_mechComp:'CX: Mechanical complications',
+    mechCompType:'CX: Mechanical complication type',
+    bleedSite_gi:'Bleed Site: Gastrointestinal',
+    bleedSite_retro:'Bleed Site: Retroperitoneal',
+    bleedSite_genu:'Bleed Site: Genital-Urinary',
+    bleedSite_perc:'Bleed Site: Percutaneous entry site',
+    cx_transfusion:'CX: Transfusion',
+    transfusionUnits:'CX: Transfusion units',
+    cx_urgentSurg:'CX: Urgent cardiac surgery',
+    cx_pericEff:'CX: Pericardial effusion',
+    cx_pericEffInterv:'CX: Pericardial eff. - Requiring intervention',
+    cx_tamp2:'CX: Cardiac tamponade (10.2.17)',
+    cx_tampOpenSurg:'CX: Tamponade - Open cardiac surgery',
+    cx_tampPercDrain:'CX: Tamponade - Percutaneous drainage',
+    cx_hemothorax:'CX: Hemothorax',
+    cx_hemoDrain:'CX: Hemothorax - Requiring drainage',
+    cx_pneumo:'CX: Pneumothorax',
+    cx_pneumoInterv:'CX: Pneumothorax - Requiring intervention',
+    cx_phrenicDmg:'CX: Phrenic nerve damage',
+    cx_infection:'CX: Infection requiring antibiotics',
+    cx_setScrew:'CX: Set screw problem',
+    cx_bradyAE:'CX: Bradycardia adverse events',
+    cx_bradyAEppm:'CX: Bradycardia AE - Requiring PPM',
+
+    // Section 11 Outcome additions
+    condSysPace:'Conduction system pacing (LBB lead)',
+    condSysPaceQRS:'Final pace QRS duration (msec)',
+    condSysPaceQRSna:'Final pace QRS Not Assessed',
+  });
+
+  // Extend SPSS_VARS with short variable names (≤8 chars recommended for classic SPSS)
+  Object.assign(SPSS_VARS, {
+    // New meds
+    homeMed_disopyramide:'HMDiso', homeMed_procainamide:'HMProc', homeMed_propafenone:'HMProp',
+    homeMed_verapamil:'HMVera', homeMed_diltiazem:'HMDilt', homeMed_rivaroxaban:'HMRiva',
+    homeMed_edoxaban:'HMEdox', homeMed_lmwh:'HMLMWH', homeMed_ufh:'HMUFH',
+    homeMed_prasugrel:'HMPras', homeMed_ticagrelor:'HMTica', homeMed_cangrelor:'HMCang',
+    dcMed_amiodarone:'DCAmio', dcMed_disopyramide:'DCDiso', dcMed_flecainide:'DCFlec',
+    dcMed_procainamide:'DCProc', dcMed_propafenone:'DCProp', dcMed_sotalol:'DCSot',
+    dcMed_verapamil:'DCVera', dcMed_diltiazem:'DCDilt', dcMed_dabigatran:'DCDabi',
+    dcMed_rivaroxaban:'DCRiva', dcMed_edoxaban:'DCEdox', dcMed_lmwh:'DCLMWH',
+    dcMed_ufh:'DCUFH', dcMed_prasugrel:'DCPras', dcMed_ticagrelor:'DCTica',
+    dcMed_cangrelor:'DCCang', dcMed_arb:'DCARB', dcMed_arni:'DCARNI', dcMed_sglt:'DCSGLT',
+
+    // Structural
+    struct_infiltrative:'StInfilt',
+
+    // CRT/AICD
+    crtInherited:'CRTInher', crtInh_longqt:'CRTIhLQT', crtInh_hcm:'CRTIhHCM',
+    crtInh_brugada:'CRTIhBru', crtInh_arvd:'CRTIhARV', crtInh_cpvt:'CRTIhCPV',
+    crtRepl_relocation:'CRTRplRel', crtRepl_battery:'CRTRplBat', crtRepl_faulty:'CRTRplFlt',
+    crtRepl_infection:'CRTRplInf', crtRepl_leadrev:'CRTRplLdR', crtRepl_upgrade:'CRTRplUpg',
+    crtReimplant:'CRTReImp', crtDevImpl:'CRTDevIm', crtDeviceType:'CRTDevTy',
+    crtPpmSame:'CRTPpmSm', crtPpmType:'CRTPpmTy', crtLbbbQRS:'CRTLbQRS',
+    crtLbbbQRSna:'CRTLbQRSn', crtBrady:'CRTBrady', crtBradyReason:'CRTBrRsn',
+    crtLeadAssess:'CRTLdAsm', crtLeadStatus:'CRTLdSt',
+
+    // Temp PM
+    tpmIndication:'TPMInd', tpmCause_electrolyte:'TPMCEl', tpmCause_drug:'TPMCDrg',
+    tpmCause_digitalis:'TPMCDig', tpmCause_antiarr:'TPMCAntA', tpmCause_acuteMI:'TPMCMI',
+    tpmCause_myocarditis:'TPMCMyo', tpmCause_endocarditis:'TPMCEnd',
+    tpmCause_postArrest:'TPMCPCA', tpmCause_hypothermia:'TPMCHyp',
+    tpmCause_bridge:'TPMCBrg', tpmCause_postTAVI:'TPMCTAVI',
+    tpmCause_unknown:'TPMCUnk', tpmDrug_avBlock:'TPMDrgAV',
+    tpmMIType:'TPMMITy', tpmPpmSameStay:'TPMPpmSm',
+
+    // Perm PM
+    ppmReplReason:'PPMRplRs', ppmReimplant:'PPMReImp', ppmDevImpl:'PPMDevIm',
+    ppmDev_singleTV:'PPMDvSgT', ppmDev_dualTV:'PPMDvDlT',
+    ppmDev_leadlessSingle:'PPMDvLLS', ppmDev_leadlessDual:'PPMDvLLD',
+    ppmDev_his:'PPMDvHis', ppmDev_leadlessLVEP:'PPMDvLVE',
+    ppmDev_ccm:'PPMDvCCM', ppmDev_lbbb:'PPMDvLBB',
+    ppmLbbbQRS:'PPMLbQRS', ppmLbbbQRSna:'PPMLbQRSn',
+    ppmIndication:'PPMInd', ppmLeadAssess:'PPMLdAsm', ppmLeadStatus:'PPMLdSt',
+
+    // EPS
+    epsSedation:'EPSSed', epsAnticoag:'EPSAntic', epsUninterrupted:'EPSUnin',
+    epsPhrenic:'EPSPhre', epsCathManip:'EPSCatM', epsInducedArr:'EPSIndAr',
+    epsMapSystem:'EPSMap',
+
+    // LAAO
+    laao_patientPref:'LAOIndPP', laaoDeploy:'LAODepl', laaoTransseptal:'LAOTrSpt',
+    laaoImaging:'LAOImg', laaoLeak:'LAOLeak', laaoAnticoag:'LAOAntic',
+
+    // Complications
+    cx_renal:'CXRenal', cx_dialysis:'CXDialys', cx_accessVasc:'CXAccVas',
+    cx_hematoma:'CXHemat', cx_occlusion:'CXOcclu', cx_avfistula:'CXAVFist',
+    cx_pseudoAneurysm:'CXPseudo', cx_intervReq:'CXIntv',
+    cx_intervEndo:'CXIntvEn', cx_intervSurg:'CXIntvSg', cx_intervThrombin:'CXIntvTh',
+    cx_periphEmbol:'CXPerEmb', cx_pericarditis:'CXPeric',
+    cx_vent:'CXVent', ventType:'CXVentTy',
+    cx_inotropes:'CXInotr', cx_mechComp:'CXMech', mechCompType:'CXMechTy',
+    bleedSite_gi:'BldStGI', bleedSite_retro:'BldStRet',
+    bleedSite_genu:'BldStGU', bleedSite_perc:'BldStPer',
+    cx_transfusion:'CXTrans', transfusionUnits:'CXTrU',
+    cx_urgentSurg:'CXUrgSg',
+    cx_pericEff:'CXPerEff', cx_pericEffInterv:'CXPEInv',
+    cx_tamp2:'CXTmp2', cx_tampOpenSurg:'CXTmpOpS', cx_tampPercDrain:'CXTmpPcD',
+    cx_hemothorax:'CXHemoTx', cx_hemoDrain:'CXHemoDr',
+    cx_pneumo:'CXPneumo', cx_pneumoInterv:'CXPneuIv',
+    cx_phrenicDmg:'CXPhrDmg', cx_infection:'CXInfect',
+    cx_setScrew:'CXSetScr',
+    cx_bradyAE:'CXBrdAE', cx_bradyAEppm:'CXBrdPpm',
+
+    // Outcome
+    condSysPace:'CndSysPc', condSysPaceQRS:'CSPQRS', condSysPaceQRSna:'CSPQRSna',
+  });
+  // ==================== END NEW FIELDS ====================
+
+
   window.exportSPSS=async function(){
     const data=await getFilteredExportData();
     if(!data.length){alert('No data to export.');return;}
@@ -2869,14 +3095,25 @@ function initApp() {
       return XLSX.utils.aoa_to_sheet([hdr,...rows]);
     };
     const idFields=['_no','nameFirst','nameMiddle','nameLast','civilId','crfNo','fileNumber','gender','nationality','yob','estimatedAge','admissionDate','recordStatus','epReason','enrolledByName','patientOrigin'];
-    const hxFields=allFields.filter(f=>f.startsWith('hx_')||f.startsWith('arrest')||f.startsWith('icm')||f.startsWith('hf')||f.startsWith('afib')||['sysBp','diaBp','hr','weight','height'].includes(f));
-    const invFields=allFields.filter(f=>f.startsWith('inv_')||['lvef','lvesd','lvedd','rvsp','ecgAtrialRhythm','ecgVentRhythm','ecgQRS','creatInit','creatPeak','hgbInit','hgbLowest','sodium','potassium','magnesium','inr'].includes(f));
-    const outcFields=allFields.filter(f=>f.startsWith('cx_')||f.startsWith('bleed')||['procStartDate','procStartTime','procEndTime','operatorName','procSuccess','postECGrhythm','dischargeDate','dischargeStatus','causeOfDeath','dischargeType'].includes(f));
+    const hxFields=allFields.filter(f=>f.startsWith('hx_')||f.startsWith('arrest')||f.startsWith('icm')||f.startsWith('hf')||f.startsWith('afib')||f.startsWith('ssd_')||f.startsWith('struct_')||f.startsWith('syncope')||f.startsWith('avp')||f.startsWith('mvp')||f.startsWith('ca')||f.startsWith('cabg')||f.startsWith('pci')||f.startsWith('cied_')||['sysBp','sysBpUnrec','diaBp','diaBpUnrec','hr','hrUnrec','weight','weightUnrec','height','heightUnrec'].includes(f));
+    const medsFields=allFields.filter(f=>f.startsWith('homeMed_')||f.startsWith('dcMed_'));
+    const invFields=allFields.filter(f=>f.startsWith('inv_')||f.startsWith('ecg')||f.startsWith('holter')||f.startsWith('sev')||f.startsWith('laa')||f.startsWith('tee')||['lvef','lvefNA','lvesd','lvedd','rvsp','rvspNA','intracardThrombus','creatInit','creatInitNA','creatPeak','creatPeakNA','hgbInit','hgbInitNA','hgbLowest','hgbLowestNA','sodium','sodiumNA','potassium','potassiumNA','magnesium','magnesiumNA','inr','inrNA'].includes(f));
+    const procFields=allFields.filter(f=>f.startsWith('crt')||f.startsWith('tpm')||f.startsWith('ppm')||f.startsWith('eps')||f.startsWith('laao')||f==='procStartDate'||f==='procStartTime'||f==='procEndTime'||f==='operatorName');
+    const cxFields=allFields.filter(f=>f.startsWith('cx_')||f.startsWith('bleed')||f.startsWith('vent')||f.startsWith('scai')||f.startsWith('mech')||f.startsWith('stroke')||f.startsWith('transfus')||f==='comp_ca'||f==='comp_pci'||f==='comp_cabg'||f==='comp_tavr');
+    const outcFields=allFields.filter(f=>f.startsWith('cond')||['procSuccess','postECGrhythm','dischargeDate','dischargeTime','dischargeStatus','causeOfDeath','dischargeType'].includes(f));
+
+    // "Complete" sheet with every mapped field — guarantees no data is silently dropped
+    const completeFields=allFields;
+
     const wb=XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb,mkSheet(idFields),'Demographics');
     XLSX.utils.book_append_sheet(wb,mkSheet(hxFields),'History & Vitals');
+    XLSX.utils.book_append_sheet(wb,mkSheet(medsFields),'Medications');
     XLSX.utils.book_append_sheet(wb,mkSheet(invFields),'Investigations & Labs');
-    XLSX.utils.book_append_sheet(wb,mkSheet(outcFields),'Procedure & Outcome');
+    XLSX.utils.book_append_sheet(wb,mkSheet(procFields),'Procedure Details');
+    XLSX.utils.book_append_sheet(wb,mkSheet(cxFields),'Complications');
+    XLSX.utils.book_append_sheet(wb,mkSheet(outcFields),'Outcome & Discharge');
+    XLSX.utils.book_append_sheet(wb,mkSheet(completeFields),'Complete (All Fields)');
     XLSX.writeFile(wb,'EPS_Registry_Export.xlsx');
   };
 
