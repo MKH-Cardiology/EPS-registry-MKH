@@ -157,9 +157,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
       style="width:100%;padding:13px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:12px;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.4);transition:all .2s;">
       <i class="fas fa-sign-in-alt mr-2"></i> Sign In
     </button>
-    <div id="fbStatus" style="text-align:center;margin-top:12px;font-size:11px;color:#94a3b8;">
-      <i class="fas fa-circle-notch fa-spin" style="margin-right:4px;"></i> Connecting to server…
-    </div>
+
   </div>
 </div>
 
@@ -842,106 +840,51 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </main>
 <script>
 (async function initFirebaseReliably() {
-  // Firebase config
-  const FB_CONFIG = {
-    apiKey:"AIzaSyBocWe4k3ljikv2D2a_f7RDlPRnAaH6Zxs",
-    authDomain:"eps-registry-mkh.firebaseapp.com",
-    projectId:"eps-registry-mkh",
-    storageBucket:"eps-registry-mkh.firebasestorage.app",
-    messagingSenderId:"893225906696",
-    appId:"1:893225906696:web:d4c4324b4d9e3edecc57bd"
-  };
-
-// Two CDN sources per script — tries first, falls back to second automatically
-const SCRIPT_SETS = [
-[
-“https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-app-compat.js”,
-“https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js”
-],
-[
-“https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-firestore-compat.js”,
-“https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js”
-],
-[
-“https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-auth-compat.js”,
-“https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js”
-]
-];
-
-function loadScript(src) {
-return new Promise((resolve, reject) => {
-// Skip if already loaded (same src)
-if (document.querySelector(‘script[src=”’ + src + ‘”]’)) { resolve(); return; }
-const s = document.createElement(‘script’);
-s.src = src;
-s.onload = resolve;
-s.onerror = reject;
-document.head.appendChild(s);
-});
-}
-
-async function loadWithFallback(primarySrc, fallbackSrc) {
-try {
-await loadScript(primarySrc);
-} catch(e) {
-console.warn(‘Primary CDN failed (’ + primarySrc + ‘), trying fallback…’);
-await loadScript(fallbackSrc);
-}
-}
-
-function showFbError(msg) {
-const el = document.getElementById(‘loginError’);
-if (el) { el.textContent = msg; el.style.display = ‘block’; }
-const btn = document.getElementById(‘loginBtn’);
-if (btn) { btn.disabled = false; btn.innerHTML = ‘<i class="fas fa-sign-in-alt mr-2"></i> Sign In’; }
-}
-
-try {
-// Load all three Firebase scripts, each with a fallback CDN
-for (const [primary, fallback] of SCRIPT_SETS) {
-await loadWithFallback(primary, fallback);
-}
-
-```
-// Initialize Firebase (guard against double-init on hot reload)
-let app;
-try {
-  app = firebase.app(); // throws if not yet initialized
-} catch(e) {
-  app = firebase.initializeApp(FB_CONFIG);
-}
-
-const db   = firebase.firestore();
-const auth = firebase.auth();
-
-window._db  = db;
-window._auth = auth;
-window._getDb = () => db;
-window._signIn = (e, p) => auth.signInWithEmailAndPassword(e, p);
-window._signOut = () => auth.signOut();
-window._onAuthStateChanged = (cb) => auth.onAuthStateChanged(cb);
-window._setupUsers = async function() {
-  const users = [{uid:"qEv59O8pk3bu6cVQjWFExLuoVTb2",email:"ahmadelsharkawi87@gmail.com",displayName:"Dr. Ahmed Elsharkawy",role:"investigator",active:true}];
-  for (const u of users) {
-    await db.collection("users").doc(u.uid).set({email:u.email,displayName:u.displayName,role:u.role,active:u.active,createdAt:new Date()});
+  const cdns = [
+    "https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-app-compat.js",
+    "https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-firestore-compat.js",
+    "https://cdn.jsdelivr.net/npm/firebase@9.23.0/firebase-auth-compat.js"
+  ];
+  try {
+    for (const src of cdns) {
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = src;
+        s.onload = resolve;
+        s.onerror = () => reject(new Error('Network Blocked: Failed to load Firebase from CDN.'));
+        document.head.appendChild(s);
+      });
+    }
+    firebase.initializeApp({
+      apiKey:"AIzaSyBocWe4k3ljikv2D2a_f7RDlPRnAaH6Zxs",
+      authDomain:"eps-registry-mkh.firebaseapp.com",
+      projectId:"eps-registry-mkh",
+      storageBucket:"eps-registry-mkh.firebasestorage.app",
+      messagingSenderId:"893225906696",
+      appId:"1:893225906696:web:d4c4324b4d9e3edecc57bd"
+    });
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+    window._db = db;
+    window._auth = auth;
+    window._getDb = () => db;
+    window._signIn = (e,p) => auth.signInWithEmailAndPassword(e,p);
+    window._signOut = () => auth.signOut();
+    window._onAuthStateChanged = (cb) => auth.onAuthStateChanged(cb);
+    window._setupUsers = async function() {
+      const users = [{uid:"qEv59O8pk3bu6cVQjWFExLuoVTb2",email:"ahmadelsharkawi87@gmail.com",displayName:"Dr. Ahmed Elsharkawy",role:"investigator",active:true}];
+      for(const u of users){
+        await db.collection("users").doc(u.uid).set({email:u.email,displayName:u.displayName,role:u.role,active:u.active,createdAt:new Date()});
+      }
+      alert("Users created successfully!");
+    };
+    window._fbReady = true;
+    window.dispatchEvent(new Event('firebaseReady'));
+    console.log("Firebase initialized successfully via jsDelivr");
+  } catch (err) {
+    document.getElementById('loginError').textContent = err.message;
+    document.getElementById('loginError').style.display = 'block';
   }
-  alert("Users created successfully!");
-};
-
-window._fbReady = true;
-window.dispatchEvent(new Event('firebaseReady'));
-console.log('Firebase ready');
-// Clear the "connecting" status — server is ready
-const fbSt = document.getElementById('fbStatus');
-if (fbSt) { fbSt.innerHTML = '<i class="fas fa-check-circle" style="color:#10b981;margin-right:4px;"></i> Connected'; setTimeout(()=>{ fbSt.style.opacity='0'; fbSt.style.transition='opacity 1s'; }, 1500); }
-```
-
-} catch (err) {
-console.error(‘Firebase load failed:’, err);
-showFbError(‘Could not connect to the database. Check your internet connection and refresh. (’ + (err.message || err) + ‘)’);
-const fbSt = document.getElementById(‘fbStatus’);
-if (fbSt) fbSt.innerHTML = ‘<i class="fas fa-exclamation-triangle" style="color:#e11d48;margin-right:4px;"></i> Connection failed — refresh the page’;
-}
 })();
 </script>
 
@@ -966,37 +909,26 @@ window.doLogin = async function() {
   const p = document.getElementById('loginPassword').value;
   if (!e || !p) { showLoginError('Enter email and password.'); return; }
   const btn = document.getElementById('loginBtn');
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Connecting…';
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Signing in…';
   btn.disabled = true;
-
-  // If Firebase isn't ready yet, wait up to 12 s in short pulses — show progress
-  if (!window._signIn) {
-    let waited = 0;
-    const MAX = 12000;
-    while (!window._signIn && waited < MAX) {
-      await new Promise(r => setTimeout(r, 300));
-      waited += 300;
-      // Update label so the user knows it's still working
-      const secs = Math.ceil((MAX - waited) / 1000);
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Connecting… (' + secs + 's)';
-    }
+  // Wait up to 8 seconds for Firebase to be ready
+  let waited = 0;
+  while (!window._signIn && waited < 8000) {
+    await new Promise(r => setTimeout(r, 200));
+    waited += 200;
   }
-
   if (!window._signIn) {
-    showLoginError('Cannot reach the server. Check your internet connection and refresh the page.');
+    showLoginError('Connection timeout. Please refresh and try again.');
     btn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i> Sign In';
     btn.disabled = false;
     return;
   }
-
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Signing in…';
   try {
     await window._signIn(e, p);
-    // Success — auth state change will hide the overlay
   } catch(err) {
     console.error('Login error:', err.code, err.message);
     const msg = (err.code==='auth/invalid-credential'||err.code==='auth/wrong-password'||err.code==='auth/user-not-found'||err.code==='auth/invalid-email')
-      ? 'Invalid email or password.' : 'Login failed: ' + (err.code || err.message);
+      ? 'Invalid email or password.' : 'Login failed: ' + (err.code||err.message);
     showLoginError(msg);
     btn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i> Sign In';
     btn.disabled = false;
@@ -1418,20 +1350,16 @@ window.switchTab=function(tab){
   if(tab==='admin' && currentRole!=='admin'){alert('Admin access only.');return;}
   if(tab==='downloads' && currentRole!=='admin'){alert('Admin access only.');return;}
   if(tab==='analytics' && currentRole==='investigator'){alert('Not available.');return;}
-
-  // If user clicks "Add CRF" while currently in edit mode, ask what they want
   if(tab==='form'){
     const existingId=document.getElementById('editRecordId')?.value||'';
     const bannerVisible=!document.getElementById('editModeBanner')?.classList.contains('hidden');
-    if(existingId || bannerVisible){
-      const startNew=confirm('You are currently editing a record.\n\nClick OK to start a NEW blank CRF, or Cancel to continue editing the current record.');
-      if(!startNew) return; // stay on current edit
-      // User wants a new CRF — reset form and generate a fresh CRF number
+    if(existingId||bannerVisible){
+      const startNew=confirm('You are currently editing a record.\n\nOK = start a NEW blank CRF\nCancel = continue editing current record');
+      if(!startNew)return;
       const form=document.getElementById('epsForm');
-      if(form){ resetFormUI(form); autoGenCRF(); }
+      if(form){resetFormUI(form);}
     }
   }
-
   if(tab==='admin')fetchData();
   else if(tab==='analytics')fetchAnalytics();
   else if(tab==='dashboard')loadDashboard();  // always fresh fetch when user explicitly clicks
@@ -2050,14 +1978,9 @@ function resetFormUI(f){
   document.getElementById('editRecordId').value='';
   ['hidEnrolledBy','hidEnrolledByName','hidEnrolledByCode','hidOrigTimestamp'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   ['btnSaveKeep','btnSaveClose','btnSubmitFinal'].forEach(id=>{const b=document.getElementById(id);if(b)b.disabled=false;});
-  // Clear any red/green tint applied to field containers by the indicator system
-  document.querySelectorAll('#epsForm [style*="fef2f2"], #epsForm [style*="fca5a5"]').forEach(el=>{
-    el.style.background='';el.style.border='';el.style.borderColor='';el.style.borderRadius='';el.style.padding='';
-  });
   goToStep(0);
   updateFieldIndicators();
   const banner=document.getElementById('dupCivilIdBanner');if(banner)banner.style.display='none';
-  // Generate a fresh CRF number for the new blank form
   autoGenCRF();
 }
 // ── DASHBOARD ────────────────────────────────────────────
@@ -2295,7 +2218,6 @@ if(el.type===‘checkbox’)el.checked=!!data[key];
 else if(el.type===‘radio’)document.getElementsByName(key).forEach(r=>{if(r.value===data[key])r.checked=true;});
 else{
 const v=data[key];
-// Skip Firestore Timestamp objects and plain objects — don’t set [object Object]
 if(v!==null&&typeof v===‘object’&&!Array.isArray(v))return;
 el.value=(v!==null&&v!==undefined)?v:’’;
 }
