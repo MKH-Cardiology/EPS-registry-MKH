@@ -563,6 +563,10 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
           <label class="radio-item"><input type="radio" name="crtDeviceType" value="CRT" onchange="onCrtDevType()"> CRT</label>
         </div>
 
+        <div id="crtDualHint" class="sub-reveal" style="margin-top:8px;padding:10px 12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;color:#1e40af;font-size:12px;font-weight:600;">
+          <i class="fas fa-info-circle mr-1"></i> If Device type is CRT-D or ICD-Dual chamber, specify below:
+        </div>
+
         <div id="crtDualSub" class="sub-reveal">
           <div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">9.5.c.1.a Pacemaker (same procedure)</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'crtPpmSame','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'crtPpmSame','Yes')">Yes</button></div></div>
           <input type="hidden" name="crtPpmSame" id="val_crtPpmSame" value="">
@@ -1597,7 +1601,7 @@ function initApp() {
   window.onBleedT=function(){const el=document.getElementById('bleedType3sub');if(el)el.classList.toggle('show',document.querySelector('input[name="bleedType"]:checked')?.value==='Type 3');};
   window.onDischSt=function(){const v=document.querySelector('input[name="dischargeStatus"]:checked')?.value;const dd=document.getElementById('dischDead'),da=document.getElementById('dischAlive');if(dd)dd.classList.toggle('show',v==='Dead');if(da)da.classList.toggle('show',v==='Alive');};
   // CRT/AICD device-type toggles: show pacemaker sub-section only for CRT-D or ICD-Dual chamber
-  window.onCrtDevType=function(){const v=document.querySelector('input[name="crtDeviceType"]:checked')?.value;const sub=document.getElementById('crtDualSub');if(sub)sub.classList.toggle('show', v==='CRT-D'||v==='ICD-Dual chamber');};
+  window.onCrtDevType=function(){const v=document.querySelector('input[name="crtDeviceType"]:checked')?.value;const show=v==='CRT-D'||v==='ICD-Dual chamber';const sub=document.getElementById('crtDualSub');if(sub)sub.classList.toggle('show', show);const hint=document.getElementById('crtDualHint');if(hint)hint.classList.toggle('show', show);};
   window.onCrtPpmType=function(){const v=document.querySelector('input[name="crtPpmType"]:checked')?.value;const sub=document.getElementById('crtLbbbSub');if(sub)sub.classList.toggle('show', v==='LBBB PPM');};
   window.onCrtLead=function(){const v=document.querySelector('input[name="crtLeadAssess"]:checked')?.value;const sub=document.getElementById('crtLeadExisting');if(sub)sub.classList.toggle('show', v==='Existing lead');};
   // Temporary PM cause toggles
@@ -2400,6 +2404,20 @@ function initApp() {
       else el.value=data[key]||'';
     });
     if(data.epReason)onEPR();
+    // Re-trigger all conditional toggle handlers so sub-reveal sections open for loaded values
+    try{
+      if(typeof onCrtGen==='function')onCrtGen();
+      if(typeof onCrtDevType==='function')onCrtDevType();
+      if(typeof onCrtPpmType==='function')onCrtPpmType();
+      if(typeof onCrtLead==='function')onCrtLead();
+      if(typeof onPpmGen==='function')onPpmGen();
+      if(typeof onPpmLbbb==='function')onPpmLbbb();
+      if(typeof onPpmLead==='function')onPpmLead();
+      if(typeof onTpmDrug==='function')onTpmDrug();
+      if(typeof onTpmMI==='function')onTpmMI();
+      if(typeof onBleedT==='function')onBleedT();
+      if(typeof onDischSt==='function')onDischSt();
+    }catch(e){console.warn('Toggle handler error during load:',e);}
     applyLock(st);
     goToStep(0);
     updateFieldIndicators();
