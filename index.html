@@ -664,7 +664,10 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     </div>
 
     <div class="card mb-3"><label class="lbl">9.6c Permanent pacemaker during same hospital stay</label>
-      <select name="tpmPpmSameStay" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select>
+      <select name="tpmPpmSameStay" class="inp max-w-xs" onchange="onTpmPpmSameStay()"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select>
+      <div id="tpmPpmSameStayHint" class="sub-reveal" style="margin-top:8px;padding:10px 12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;color:#1e40af;font-size:12px;font-weight:600;">
+        <i class="fas fa-arrow-down mr-1"></i> Please complete the Permanent Pacemaker (9.7) section below.
+      </div>
     </div>
   </div>
   <div class="proc-section" id="proc_permpm"><div class="card card-gray mb-3" style="border-left:4px solid #475569;"><div style="font-weight:800;color:#1e293b;font-size:14px;">9.7 — Permanent Pacemaker</div></div>
@@ -1625,6 +1628,19 @@ function initApp() {
   // Temporary PM cause toggles
   window.onTpmDrug=function(){const cb=document.querySelector('input[name="tpmCause_drug"]');const sub=document.getElementById('tpmDrugSub');if(sub)sub.classList.toggle('show', cb?.checked);};
   window.onTpmMI=function(){const cb=document.querySelector('input[name="tpmCause_acuteMI"]');const sub=document.getElementById('tpmMISub');if(sub)sub.classList.toggle('show', cb?.checked);};
+  // When "Permanent pacemaker during same hospital stay" = Yes, also reveal the permanent pacemaker (9.7) section
+  window.onTpmPpmSameStay=function(){
+    const v=document.querySelector('select[name="tpmPpmSameStay"]')?.value;
+    const show = v==='Yes';
+    const hint=document.getElementById('tpmPpmSameStayHint');
+    if(hint) hint.classList.toggle('show', show);
+    const permSec=document.getElementById('proc_permpm');
+    if(permSec){
+      if(show){ permSec.classList.add('show'); }
+      // Do NOT auto-hide if No, because the user might already be on a procedure that legitimately shows proc_permpm
+      // The onEPR() function is the authority on which sections are visible based on Step 2 choice
+    }
+  };
   // Permanent PM toggles
   window.onPpmLbbb=function(){const cb=document.querySelector('input[name="ppmDev_lbbb"]');const sub=document.getElementById('ppmLbbbSub');if(sub)sub.classList.toggle('show', cb?.checked);};
   window.onPpmLead=function(){const v=document.querySelector('input[name="ppmLeadAssess"]:checked')?.value;const sub=document.getElementById('ppmLeadExisting');if(sub)sub.classList.toggle('show', v==='Existing lead');};
@@ -2471,7 +2487,7 @@ function initApp() {
       [
         'onCrtGen','onCrtDevType','onCrtPpmType','onCrtLead',
         'onPpmGen','onPpmLbbb','onPpmLead',
-        'onTpmDrug','onTpmMI','onBleedT','onDischSt'
+        'onTpmDrug','onTpmMI','onTpmPpmSameStay','onBleedT','onDischSt'
       ].forEach(fn=>{
         try{ if(typeof window[fn]==='function') window[fn](); }
         catch(e){ console.warn('[editRecord] Handler error:',fn,e); }
