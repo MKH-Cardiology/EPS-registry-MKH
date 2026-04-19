@@ -1350,6 +1350,20 @@ window.switchTab=function(tab){
   if(tab==='admin' && currentRole!=='admin'){alert('Admin access only.');return;}
   if(tab==='downloads' && currentRole!=='admin'){alert('Admin access only.');return;}
   if(tab==='analytics' && currentRole==='investigator'){alert('Not available.');return;}
+
+  // If user clicks "Add CRF" while currently in edit mode, ask what they want
+  if(tab==='form'){
+    const existingId=document.getElementById('editRecordId')?.value||'';
+    const bannerVisible=!document.getElementById('editModeBanner')?.classList.contains('hidden');
+    if(existingId || bannerVisible){
+      const startNew=confirm('You are currently editing a record.\n\nClick OK to start a NEW blank CRF, or Cancel to continue editing the current record.');
+      if(!startNew) return; // stay on current edit
+      // User wants a new CRF — reset form and generate a fresh CRF number
+      const form=document.getElementById('epsForm');
+      if(form){ resetFormUI(form); autoGenCRF(); }
+    }
+  }
+
   if(tab==='admin')fetchData();
   else if(tab==='analytics')fetchAnalytics();
   else if(tab==='dashboard')loadDashboard();  // always fresh fetch when user explicitly clicks
@@ -1968,9 +1982,15 @@ function resetFormUI(f){
   document.getElementById('editRecordId').value='';
   ['hidEnrolledBy','hidEnrolledByName','hidEnrolledByCode','hidOrigTimestamp'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   ['btnSaveKeep','btnSaveClose','btnSubmitFinal'].forEach(id=>{const b=document.getElementById(id);if(b)b.disabled=false;});
+  // Clear any red/green tint applied to field containers by the indicator system
+  document.querySelectorAll('#epsForm [style*="fef2f2"], #epsForm [style*="fca5a5"]').forEach(el=>{
+    el.style.background='';el.style.border='';el.style.borderColor='';el.style.borderRadius='';el.style.padding='';
+  });
   goToStep(0);
   updateFieldIndicators();
   const banner=document.getElementById('dupCivilIdBanner');if(banner)banner.style.display='none';
+  // Generate a fresh CRF number for the new blank form
+  autoGenCRF();
 }
 // ── DASHBOARD ────────────────────────────────────────────
 let _dashFilter='all',_dashData=[];
