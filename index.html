@@ -502,8 +502,8 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     <div class="font-bold text-gray-800 text-sm mb-4"><span style="background:#dbeafe;color:#1e40af;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:800;">ALL PATIENTS</span> 9.1 – 9.4</div>
     <div class="proc-stack">
       <div><label class="lbl">9.1 Procedure Start Date</label><input type="date" name="procStartDate" class="inp"></div>
-      <div><label class="lbl">9.2 Procedure Start Time (24h)</label><input type="time" name="procStartTime" class="inp"></div>
-      <div><label class="lbl">9.3 Procedure Finishing Time (24h)</label><input type="time" name="procEndTime" class="inp"></div>
+      <div><label class="lbl">9.2 Procedure Start Time (24h, HH:MM)</label><input type="text" inputmode="numeric" name="procStartTime" class="inp" placeholder="14:30" pattern="^([01]\d|2[0-3]):[0-5]\d$" maxlength="5" oninput="fmt24h(this)" title="Use 24-hour format, e.g. 14:30"></div>
+      <div><label class="lbl">9.3 Procedure Finishing Time (24h, HH:MM)</label><input type="text" inputmode="numeric" name="procEndTime" class="inp" placeholder="16:45" pattern="^([01]\d|2[0-3]):[0-5]\d$" maxlength="5" oninput="fmt24h(this)" title="Use 24-hour format, e.g. 16:45"></div>
       <div><label class="lbl">9.4 Operator Name</label><select name="operatorName" class="inp"><option value="">Select operator...</option><option>Operator 1</option><option>Operator 2</option><option>Operator 3</option><option>Operator 4</option><option>Operator 5</option></select></div>
     </div>
   </div>
@@ -1008,7 +1008,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
   </div>
   <div class="card mb-4">
     <div class="font-bold text-gray-800 text-sm mb-3">12. Discharge</div>
-    <div class="g4 mb-3"><div><label class="lbl">12.1 Date of discharge/death</label><input type="date" name="dischargeDate" class="inp"></div><div><label class="lbl">12.2 Time (24h)</label><input type="time" name="dischargeTime" class="inp"></div></div>
+    <div class="g4 mb-3"><div><label class="lbl">12.1 Date of discharge/death</label><input type="date" name="dischargeDate" class="inp"></div><div><label class="lbl">12.2 Time (24h, HH:MM)</label><input type="text" inputmode="numeric" name="dischargeTime" class="inp" placeholder="09:15" pattern="^([01]\d|2[0-3]):[0-5]\d$" maxlength="5" oninput="fmt24h(this)" title="Use 24-hour format, e.g. 09:15"></div></div>
     <div><label class="lbl">12.3 Discharge status</label><div class="flex gap-2 flex-wrap mt-1"><label class="radio-item"><input type="radio" name="dischargeStatus" value="Dead" onchange="onDischSt()"> Dead</label><label class="radio-item"><input type="radio" name="dischargeStatus" value="Alive" onchange="onDischSt()"> Alive</label></div><div id="dischDead" class="sub-reveal mt-2"><label class="lbl">12.3a Cause of death</label><div class="flex gap-2 mt-1"><label class="radio-item"><input type="radio" name="causeOfDeath" value="Non-Cardiac"> Non-Cardiac</label><label class="radio-item"><input type="radio" name="causeOfDeath" value="Cardiac"> Cardiac</label></div></div><div id="dischAlive" class="sub-reveal mt-2"><label class="lbl">12.3b Discharge type</label><div class="g2 mt-1"><label class="radio-item"><input type="radio" name="dischargeType" value="Home"> Home</label><label class="radio-item"><input type="radio" name="dischargeType" value="LAMA"> LAMA</label><label class="radio-item"><input type="radio" name="dischargeType" value="Transfer to cardiac surgery"> Transfer to cardiac surgery</label><label class="radio-item"><input type="radio" name="dischargeType" value="Transfer to other dept"> Transfer to other dept</label></div></div></div>
   </div>
   <div class="card card-green"><div class="font-bold text-green-900 text-sm mb-3">13. Discharge Medications</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;" id="dischargeMedsGrid"></div></div>
@@ -1599,6 +1599,24 @@ function initApp() {
   window.onCrtGen=function(){const v=document.querySelector('input[name="crtGenerator"]:checked')?.value;['initial','replace','explant'].forEach(k=>{const el=document.getElementById(`crtGen_${k}`);if(el)el.classList.remove('show');});const t=v==='Initial implant'?'initial':v==='Generator replacement'?'replace':v==='Generator explant'?'explant':null;if(t){const el=document.getElementById(`crtGen_${t}`);if(el)el.classList.add('show');}};
   window.onPpmGen=function(){const v=document.querySelector('input[name="ppmGenerator"]:checked')?.value;['initial','replace','explant'].forEach(k=>{const el=document.getElementById(`ppmGen_${k}`);if(el)el.classList.remove('show');});const t=v==='Initial implant'?'initial':v==='Generator replacement'?'replace':v==='Generator explant'?'explant':null;if(t){const el=document.getElementById(`ppmGen_${t}`);if(el)el.classList.add('show');}};
   window.onBleedT=function(){const el=document.getElementById('bleedType3sub');if(el)el.classList.toggle('show',document.querySelector('input[name="bleedType"]:checked')?.value==='Type 3');};
+  // 24-hour time auto-formatter: accepts only digits, auto-inserts colon, caps at HH:MM (24h range)
+  window.fmt24h=function(el){
+    let v=(el.value||'').replace(/[^0-9]/g,'').slice(0,4);
+    if(v.length>=3){
+      let hh=v.slice(0,2), mm=v.slice(2,4);
+      // Clamp hours 0-23
+      if(parseInt(hh,10)>23) hh='23';
+      // Clamp minutes 0-59
+      if(mm.length===2 && parseInt(mm,10)>59) mm='59';
+      el.value=hh+':'+mm;
+    } else if(v.length>=1){
+      // Clamp the first two digits if they'd exceed 23
+      if(v.length===2 && parseInt(v,10)>23) v='23';
+      el.value=v;
+    } else {
+      el.value='';
+    }
+  };
   window.onDischSt=function(){const v=document.querySelector('input[name="dischargeStatus"]:checked')?.value;const dd=document.getElementById('dischDead'),da=document.getElementById('dischAlive');if(dd)dd.classList.toggle('show',v==='Dead');if(da)da.classList.toggle('show',v==='Alive');};
   // CRT/AICD device-type toggles: show pacemaker sub-section only for CRT-D or ICD-Dual chamber
   window.onCrtDevType=function(){const v=document.querySelector('input[name="crtDeviceType"]:checked')?.value;const show=v==='CRT-D'||v==='ICD-Dual chamber';const sub=document.getElementById('crtDualSub');if(sub)sub.classList.toggle('show', show);const hint=document.getElementById('crtDualHint');if(hint)hint.classList.toggle('show', show);};
