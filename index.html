@@ -2359,69 +2359,114 @@ function initApp() {
   window.deleteRecord=async function(id){if(!confirm('Permanently delete?'))return;try{await deleteDoc(doc(db,'patients_full',id));fetchData();loadRecordsCache();}catch(e){alert('Delete failed.');}};
 
   window.editRecord=function(data){
-    const st=data.recordStatus||'draft';
-    switchTab('form');
-    document.getElementById('epsForm').reset();
-    document.getElementById('editRecordId').value=data.id;
-    document.getElementById('recordStatus').value=st;
-    document.getElementById('hidEnrolledBy').value=data.enrolledBy||'';
-    document.getElementById('hidEnrolledByName').value=data.enrolledByName||'';
-    document.getElementById('hidEnrolledByCode').value=data.enrolledByCode||'';
-    const origTs=data.timestamp?.toDate?.().toISOString()||new Date(data.timestamp).toISOString();
-    document.getElementById('hidOrigTimestamp').value=origTs;
-    document.getElementById('editModeBanner').classList.remove('hidden');
-    Object.keys(data).forEach(key=>{
-      const el=document.getElementsByName(key)[0];if(!el)return;
-      if((key.startsWith('homeMed_')||key.startsWith('dcMed_')) && el.type==='hidden'){
-        let v=data[key];
-        if(v===true||v==='Yes') v='Yes';
-        else if(v===false||v==='No') v='No';
-        else v='';
-        el.value=v;
-        const row=el.closest('.med-row');
-        if(row){
-          row.querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('selected'));
-          if(v==='Yes') row.querySelector('.yn-btn.yn-yes')?.classList.add('selected');
-          else if(v==='No') row.querySelector('.yn-btn.yn-no')?.classList.add('selected');
-        }
-        return;
-      }
-      if(el.type==='hidden' && el.id && el.id.startsWith('val_')){
-        const v=data[key];
-        el.value=(v==='Yes'||v==='No')?v:'';
-        const ynKey=el.id.replace('val_','');
-        const btns=document.querySelectorAll(`.yn-btn[onclick*="'${ynKey}'"]`);
-        btns.forEach(b=>b.classList.remove('selected'));
-        if(v==='Yes'||v==='No'){
-          btns.forEach(b=>{ if(b.onclick && b.getAttribute('onclick').includes(`'${v}'`)) b.classList.add('selected'); });
-        }
-        const sub=document.getElementById('sub_'+ynKey);
-        if(sub){ if(v==='Yes') sub.classList.add('show'); else sub.classList.remove('show'); }
-        return;
-      }
-      if(el.type==='checkbox')el.checked=!!data[key];
-      else if(el.type==='radio')document.getElementsByName(key).forEach(r=>{if(r.value===data[key])r.checked=true;});
-      else el.value=data[key]||'';
-    });
-    if(data.epReason)onEPR();
-    // Re-trigger all conditional toggle handlers so sub-reveal sections open for loaded values
     try{
-      if(typeof onCrtGen==='function')onCrtGen();
-      if(typeof onCrtDevType==='function')onCrtDevType();
-      if(typeof onCrtPpmType==='function')onCrtPpmType();
-      if(typeof onCrtLead==='function')onCrtLead();
-      if(typeof onPpmGen==='function')onPpmGen();
-      if(typeof onPpmLbbb==='function')onPpmLbbb();
-      if(typeof onPpmLead==='function')onPpmLead();
-      if(typeof onTpmDrug==='function')onTpmDrug();
-      if(typeof onTpmMI==='function')onTpmMI();
-      if(typeof onBleedT==='function')onBleedT();
-      if(typeof onDischSt==='function')onDischSt();
-    }catch(e){console.warn('Toggle handler error during load:',e);}
-    applyLock(st);
-    goToStep(0);
-    updateFieldIndicators();
-    onCivilIdInput();
+      console.log('[editRecord] Loading record:', data.id, 'keys:', Object.keys(data).length);
+      const st=data.recordStatus||'draft';
+      switchTab('form');
+      const form=document.getElementById('epsForm');
+      form.reset();
+      document.getElementById('editRecordId').value=data.id;
+      document.getElementById('recordStatus').value=st;
+      document.getElementById('hidEnrolledBy').value=data.enrolledBy||'';
+      document.getElementById('hidEnrolledByName').value=data.enrolledByName||'';
+      document.getElementById('hidEnrolledByCode').value=data.enrolledByCode||'';
+      try{
+        const origTs=data.timestamp?.toDate?.().toISOString()||new Date(data.timestamp).toISOString();
+        document.getElementById('hidOrigTimestamp').value=origTs;
+      }catch(_){ /* ignore ts parse issues */ }
+      document.getElementById('editModeBanner').classList.remove('hidden');
+
+      // Make sure the form section is visible BEFORE populating (so elements are laid out)
+      document.getElementById('section-form')?.classList.remove('hidden');
+
+      // Clear all Y/N hidden vals and selected buttons first (in case previous record left state)
+      document.querySelectorAll('input[type="hidden"][id^="val_"]').forEach(h=>{h.value='';});
+      document.querySelectorAll('.yn-btn.selected').forEach(b=>b.classList.remove('selected'));
+
+      let loaded=0;
+      Object.keys(data).forEach(key=>{
+        // Skip meta keys that aren't form fields
+        if(key==='id'||key==='timestamp'||key==='origTimestamp'||key==='lastModified')return;
+
+        const elList=document.getElementsByName(key);
+        if(!elList||elList.length===0)return;
+        const el=elList[0];
+
+        // Home/Discharge meds Y/N (hidden inputs)
+        if((key.startsWith('homeMed_')||key.startsWith('dcMed_')) && el.type==='hidden'){
+          let v=data[key];
+          if(v===true||v==='Yes') v='Yes';
+          else if(v===false||v==='No') v='No';
+          else v='';
+          el.value=v;
+          const row=el.closest('.med-row');
+          if(row){
+            row.querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('selected'));
+            if(v==='Yes') row.querySelector('.yn-btn.yn-yes')?.classList.add('selected');
+            else if(v==='No') row.querySelector('.yn-btn.yn-no')?.classList.add('selected');
+          }
+          loaded++;
+          return;
+        }
+
+        // Y/N toggle hidden vals (id starts with val_)
+        if(el.type==='hidden' && el.id && el.id.startsWith('val_')){
+          const v=data[key];
+          el.value=(v==='Yes'||v==='No')?v:'';
+          const ynKey=el.id.replace('val_','');
+          const btns=document.querySelectorAll(`.yn-btn[onclick*="'${ynKey}'"]`);
+          btns.forEach(b=>b.classList.remove('selected'));
+          if(v==='Yes'||v==='No'){
+            btns.forEach(b=>{ if(b.getAttribute('onclick')?.includes(`'${v}'`)) b.classList.add('selected'); });
+          }
+          const sub=document.getElementById('sub_'+ynKey);
+          if(sub){ sub.classList.toggle('show', v==='Yes'); }
+          loaded++;
+          return;
+        }
+
+        // Checkboxes: handle ALL elements with this name (could be multiple same-name checkboxes)
+        if(el.type==='checkbox'){
+          elList.forEach(c=>{ c.checked = !!data[key]; });
+          loaded++;
+          return;
+        }
+
+        // Radios: scan ALL elements with this name and check the matching value
+        if(el.type==='radio'){
+          const target=String(data[key]??'');
+          elList.forEach(r=>{ r.checked = (String(r.value)===target); });
+          loaded++;
+          return;
+        }
+
+        // Regular inputs/selects/textareas
+        el.value = data[key]==null ? '' : data[key];
+        loaded++;
+      });
+      console.log('[editRecord] Populated', loaded, 'fields');
+
+      // Reveal the correct procedure section
+      if(data.epReason && typeof onEPR==='function') onEPR();
+
+      // Re-trigger all conditional toggle handlers so sub-reveal sections open for loaded values
+      [
+        'onCrtGen','onCrtDevType','onCrtPpmType','onCrtLead',
+        'onPpmGen','onPpmLbbb','onPpmLead',
+        'onTpmDrug','onTpmMI','onBleedT','onDischSt'
+      ].forEach(fn=>{
+        try{ if(typeof window[fn]==='function') window[fn](); }
+        catch(e){ console.warn('[editRecord] Handler error:',fn,e); }
+      });
+
+      applyLock(st);
+      goToStep(0);
+      updateFieldIndicators();
+      onCivilIdInput();
+    }catch(err){
+      console.error('[editRecord] FAILED:',err);
+      alert('Could not load record for editing. Check console for details.\n'+err.message);
+    }
   };
 
   window.viewRecord=function(data){
