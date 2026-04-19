@@ -1,4 +1,5 @@
  <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -118,6 +119,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 <body class="min-h-screen">
 
 <!-- LOGIN OVERLAY (contact admin line removed) -->
+
 <div id="loginOverlay">
   <div class="login-card">
     <svg class="login-logo" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -145,6 +147,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </div>
 
 <!-- HEADER -->
+
 <header class="bg-white sticky top-0 z-50">
 <div class="max-w-screen-2xl mx-auto px-4 py-2.5 flex flex-wrap justify-between items-center gap-3">
   <div class="flex items-center gap-3">
@@ -190,6 +193,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </header>
 
 <!-- CHANGE PASSWORD MODAL -->
+
 <div id="changePwdModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9998;align-items:center;justify-content:center;">
   <div style="background:#fff;border-radius:20px;padding:32px;width:340px;max-width:95vw;box-shadow:0 24px 64px rgba(0,0,0,.3);">
     <div style="font-size:18px;font-weight:900;color:#0f172a;margin-bottom:6px;"><i class="fas fa-key text-blue-600 mr-2"></i>Change Password</div>
@@ -226,6 +230,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </div>
 
 <!-- FORM SECTION -->
+
 <section id="section-form" class="bg-white rounded-2xl shadow-lg border border-gray-100 flex flex-col md:flex-row min-h-[80vh] relative" style="overflow:visible;">
   <div class="sticky-sidebar w-full md:w-64 bg-gradient-to-b from-slate-50 to-slate-100 border-b md:border-b-0 md:border-r border-gray-200 p-4 shrink-0" style="align-self:flex-start;">
     <div class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Patient Journey</div>
@@ -257,6 +262,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
       <div class="flex-1 p-6 md:p-8" id="formScrollArea" style="overflow:visible;">
 
 <!-- STEP 0: IDENTIFICATION -->
+
 <div class="form-step active" id="step-0">
   <div class="sec-title"><div class="icon-wrap bg-blue-100"><i class="fas fa-id-card text-blue-600"></i></div>1. Identification</div>
   <div id="idFields">
@@ -296,6 +302,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </div>
 
 <!-- STEP 1: EP REASON (with required indicator) -->
+
 <div class="form-step" id="step-1">
   <div class="sec-title"><div class="icon-wrap bg-indigo-100"><i class="fas fa-hospital-user text-indigo-600"></i></div>2–3. Reason for EP Lab &amp; Admission</div>
   <div class="card card-blue mb-5">
@@ -331,6 +338,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </div>
 
 <!-- STEP 2: HISTORY (with AFib classification fix) -->
+
 <div class="form-step" id="step-2">
   <div class="sec-title"><div class="icon-wrap bg-red-100"><i class="fas fa-heartbeat text-red-600"></i></div>4–5. History, Risk Factors &amp; Examination</div>
   <div class="card card-gray mb-4">
@@ -423,12 +431,14 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </div>
 
 <!-- STEP 3: HOME MEDICATIONS -->
+
 <div class="form-step" id="step-3">
   <div class="sec-title"><div class="icon-wrap bg-blue-100"><i class="fas fa-pills text-blue-600"></i></div>6. Home Medications (At Admission)</div>
   <div class="card card-gray"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;" id="homeMedsGrid"></div></div>
 </div>
 
 <!-- STEP 4: INVESTIGATIONS -->
+
 <div class="form-step" id="step-4">
   <div class="sec-title"><div class="icon-wrap bg-purple-100"><i class="fas fa-microscope text-purple-600"></i></div>7–8. Pre-procedural Investigations &amp; Labs</div>
   <div class="card mb-4">
@@ -495,6 +505,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </div>
 
 <!-- STEP 5: PROCEDURE -->
+
 <div class="form-step" id="step-5">
   <div class="sec-title"><div class="icon-wrap bg-indigo-100"><i class="fas fa-procedures text-indigo-600"></i></div>9. Procedure Details</div>
   <div class="card mb-5">
@@ -515,6 +526,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </div>
 
 <!-- STEP 6: COMPLICATIONS -->
+
 <div class="form-step" id="step-6">
   <div class="sec-title"><div class="icon-wrap bg-red-100"><i class="fas fa-exclamation-triangle text-red-600"></i></div>10. Events &amp; Complications</div>
   <div class="card mb-4"><div class="font-bold text-gray-800 text-sm mb-3">10.1 Procedures during hospital stay</div><div class="g4"><div><label class="lbl">CA</label><select name="comp_ca" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">PCI</label><select name="comp_pci" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">CABG</label><select name="comp_cabg" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">TAVR</label><select name="comp_tavr" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
@@ -529,6 +541,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </div>
 
 <!-- STEP 7: OUTCOME -->
+
 <div class="form-step" id="step-7">
   <div class="sec-title"><div class="icon-wrap bg-orange-100"><i class="fas fa-door-open text-orange-600"></i></div>11–13. Outcome &amp; Discharge</div>
   <div class="card mb-4">
@@ -570,6 +583,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </section>
 
 <!-- DASHBOARD SECTION -->
+
 <section id="section-dashboard" class="hidden">
   <div id="dashDiagBanner" style="display:none;background:#fef3c7;border:2px solid #d97706;border-radius:10px;padding:12px 16px;margin-bottom:12px;color:#78350f;font-size:13px;line-height:1.5;">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
@@ -600,6 +614,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </section>
 
 <!-- ANALYTICS SECTION -->
+
 <section id="section-analytics" class="hidden bg-white rounded-2xl shadow-lg p-4 md:p-6 border border-gray-100 min-h-[80vh]">
   <div class="flex items-center justify-between mb-4 border-b pb-3">
     <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2"><i class="fas fa-chart-line text-blue-600"></i> Clinical Analytics</h2>
@@ -621,6 +636,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </section>
 
 <!-- DOWNLOADS SECTION -->
+
 <section id="section-downloads" class="hidden bg-white rounded-2xl shadow-lg p-6 border border-gray-100 min-h-[60vh]">
   <div class="flex items-center justify-between mb-6 border-b pb-4">
     <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
@@ -683,6 +699,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </section>
 
 <!-- ADMIN PANEL -->
+
 <section id="section-admin" class="hidden bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-gray-100 min-h-[80vh]">
   <div class="flex flex-col md:flex-row justify-between items-center mb-4 border-b pb-4 gap-4">
     <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2"><i class="fas fa-shield-alt text-blue-600"></i> Admin Panel</h2>
@@ -1772,722 +1789,697 @@ function initApp() {
     const w=window.open('','_blank','width=700,height=600');
     if(w){
       w.document.write(`<html><head><title>Debug Info</title><style>body{font-family:monospace;padding:20px;background:#f8fafc;}pre{background:white;border:1px solid #cbd5e1;border-radius:8px;padding:16px;white-space:pre-wrap;word-break:break-all;font-size:12px;}button{background:#1d4ed8;color:white;border:0;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:700;margin-bottom:12px;}</style></head><body><h3>Diagnostic info</h3><button onclick="navigator.clipboard.writeText(document.getElementById('d').textContent).then(()=>alert('Copied!'))">Copy</button><pre id="d">${txt.replace(/</g,'&lt;')}</pre></body></html>`);
-    } else alert(txt);
-  };
-  window.loadDashboard=async function(){
-    try {
-      let ref = collection(db,'patients_full');
-      if(currentRole==='investigator') ref = ref.where('enrolledBy','==',currentUser.uid);
-      const snap=await getDocs(ref);
-      _dashData=[];const civIds={};
-      snap.forEach(ds=>{
-        const d=ds.data();d.id=ds.id;
-        d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();
-        try { d._comp=calcCompletion(d); } catch(e) { d._comp={score:0,total:1,pct:0,complete:false}; }
-        try { d._ts = d.timestamp?.toDate?.().getTime() || new Date(d.timestamp).getTime(); } catch(e) { d._ts=0; }
-        _dashData.push(d);
-        civIds[d.civilId]=(civIds[d.civilId]||0)+1;
-      });
-      if(currentRole==='investigator') _dashData=_dashData.filter(d=>d.enrolledBy===currentUser.uid);
-      _dashData.forEach(d=>{d._isDup=(civIds[d.civilId]||0)>1;});
-      _dashData.sort((a,b)=>a._ts - b._ts);
-      _dashData.forEach((d,i)=>{d._no=i+1;});
-      document.getElementById('dash_total').textContent=_dashData.length;
-      document.getElementById('dash_complete').textContent=_dashData.filter(d=>d._comp.complete).length;
-      document.getElementById('dash_incomplete').textContent=_dashData.filter(d=>!d._comp.complete).length;
-      document.getElementById('dash_reviewed').textContent=_dashData.filter(d=>d.recordStatus==='reviewed').length;
-      renderDashboard();
-    } catch(err) {
-      console.error('[DASH]', err);
-      showDashDiagBanner('⚠️ Dashboard failed: '+(err.message||err));
-    }
-  };
-  function renderDashboard(){
-    let data=_dashData;
-    if(_dashFilter==='draft')data=data.filter(d=>(!d.recordStatus||d.recordStatus==='draft'));
-    if(_dashFilter==='submitted')data=data.filter(d=>d.recordStatus==='submitted');
-    if(_dashFilter==='reviewed')data=data.filter(d=>d.recordStatus==='reviewed');
-    if(_dashFilter==='complete')data=data.filter(d=>d._comp.complete);
-    if(_dashFilter==='incomplete')data=data.filter(d=>!d._comp.complete);
-    if(_dashFilter==='duplicate')data=data.filter(d=>d._isDup);
-    const grid=document.getElementById('dashGrid');
-    if(!data.length){grid.innerHTML='<div class="bg-white rounded-2xl border border-gray-200 p-12 text-center text-gray-400"><i class="fas fa-inbox text-4xl mb-3 block"></i>No records match this filter</div>';return;}
-    const canEdit = currentRole !== 'cso';
-    grid.innerHTML=data.map(d=>{
-      const c=d._comp,st=d.recordStatus||'draft';
-      const barCol=c.complete?'#059669':c.pct>=70?'#d97706':'#e11d48';
-      const invInfo = (currentRole==='admin'||currentRole==='cso') ? `<span><i class="fas fa-user-md fa-xs mr-1"></i>${d.enrolledByName||'—'}</span>` : '';
-      return`<div class="dash-card" style="display:flex;align-items:center;gap:16px;padding:14px 18px;">
-        <div style="font-size:13px;font-weight:800;color:#94a3b8;min-width:32px;">#${d._no}</div>
-        <div style="flex:1;min-width:0;">
-          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
-            <span style="font-weight:800;font-size:14px;">${d.fullName||'Anonymous'}</span>
-            ${statusBadge(st)}
-            ${d._isDup?'<span class="dup-flag"><i class="fas fa-exclamation-circle"></i> Dup</span>':''}
-          </div>
-          <div style="font-size:12px;color:#64748b;display:flex;flex-wrap:wrap;gap:10px;">
-            <span>CID: <b>${d.civilId||'—'}</b></span>
-            <span>File: <b>${d.fileNumber||'—'}</b></span>
-            <span>${d.admissionDate||'—'}</span>
-            <span>${d.epReason||'—'}</span>
-            ${invInfo}
-          </div>
-          <div style="margin-top:8px;display:flex;align-items:center;gap:8px;">
-            <div style="flex:1;height:5px;background:#e2e8f0;border-radius:3px;overflow:hidden;"><div style="height:100%;width:${c.pct}%;background:${barCol};border-radius:3px;"></div></div>
-            <span style="font-size:10px;font-weight:700;color:${barCol};min-width:32px;">${c.pct}%</span>
-          </div>
-        </div>
-        <div style="display:flex;gap:6px;flex-shrink:0;">
-          ${canEdit ? `<button onclick='editRecord(${JSON.stringify(d).replace(/'/g,"\\'")})' class="btn btn-yellow text-xs px-3 py-1.5"><i class="fas fa-edit"></i></button>` : `<button onclick='viewRecord(${JSON.stringify(d).replace(/'/g,"\\'")})' class="btn btn-gray text-xs px-3 py-1.5"><i class="fas fa-eye"></i></button>`}
-        </div>
-      </div>`;
-    }).join('');
-  }
 
-  // ADMIN FETCH
-  let allData=[];
-  window.fetchData=async function(){
-    populateInvestigatorDropdowns();
-    const sCID=document.getElementById('searchCivilId')?.value||'';
-    const sDC=document.getElementById('searchDoctorCode')?.value||'';
-    const sCRF=document.getElementById('searchCrfNo')?.value||'';
-    const sINV=document.getElementById('filterInvestigatorAdmin')?.value||'';
-    const sST=document.getElementById('filterStatus')?.value||'';
-    const snap=await getDocs(collection(db,'patients_full'));
-    const tbody=document.getElementById('tableBody');
-    tbody.innerHTML='';allData=[];
-    const all=[];const civIds={};
-    snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();d._ts=d.timestamp?.toDate?.().getTime()||new Date(d.timestamp).getTime();all.push(d);civIds[d.civilId]=(civIds[d.civilId]||0)+1;});
-    all.sort((a,b)=>a._ts - b._ts);
-    all.forEach((data,idx)=>{
-      data._no=idx+1;data._isDup=(civIds[data.civilId]||0)>1;
-      if(sCID&&!data.civilId?.includes(sCID))return;
-      if(sDC&&!(data.enrolledByCode||getDoctorCode(data.enrolledByName)||'').includes(sDC))return;
-      if(sCRF&&!data.crfNo?.includes(sCRF))return;
-      if(sINV&&data.enrolledBy!==sINV)return;
-      if(sST&&(data.recordStatus||'draft')!==sST)return;
-      allData.push(data);
-      const comp=calcCompletion(data);const st=data.recordStatus||'draft';
-      const barCol=comp.complete?'#059669':comp.pct>=70?'#d97706':'#e11d48';
-      const tr=document.createElement('tr');
-      const createdAt=data.timestamp?.toDate?.()||new Date(data.timestamp);
-      const updatedAt=data.updatedAt?.toDate?.()||new Date(data.updatedAt);
-      const fmtDT=dt=>dt.toLocaleString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:false}).replace(',','');
-      tr.innerHTML=`
-        <td style="font-weight:800;color:#94a3b8;font-size:12px;text-align:center;">${data._no}</td>
-        <td><span style="font-family:'DM Mono',monospace;font-weight:800;color:#1e40af;">${data.crfNo||'—'}</span></td>
-        <td><span style="font-family:'DM Mono',monospace;">${data.civilId||'—'}</span></td>
-        <td class="text-center"><span style="font-family:'DM Mono',monospace;background:#dbeafe;color:#1e40af;border-radius:5px;padding:2px 7px;font-weight:700;">${data.enrolledByCode||getDoctorCode(data.enrolledByName)}</span></td>
-        <td>${statusBadge(st)}</td>
-        <td class="text-xs"><div class="font-semibold">${data.enrolledByName||'—'}</div></td>
-        <td class="text-xs" style="white-space:nowrap;">${fmtDT(createdAt)}</td>
-        <td class="text-xs">${data.updatedByName?`<div>${data.updatedByName}</div>`:'<span class="text-gray-400">—</span>'}</td>
-        <td class="text-xs" style="white-space:nowrap;">${updatedAt?fmtDT(updatedAt):'<span class="text-gray-400">—</span>'}</td>
-        <td class="text-right" style="white-space:nowrap;">
-          <button onclick='editRecord(${JSON.stringify(data).replace(/'/g,"\\'")})' class="btn btn-yellow text-xs px-2 py-1 mr-1"><i class="fas fa-edit"></i></button>
-          ${st!=='reviewed'?`<button onclick="markReviewed('${data.id}')" class="btn btn-green text-xs px-2 py-1 mr-1"><i class="fas fa-check-circle"></i></button>`:''}
-          ${st==='reviewed'?`<button onclick="markDraft('${data.id}')" class="btn btn-gray text-xs px-2 py-1 mr-1"><i class="fas fa-undo"></i></button>`:''}
-          <button onclick="deleteRecord('${data.id}')" class="btn btn-red text-xs px-2 py-1"><i class="fas fa-trash"></i></button>
-        </td>`;
-      tbody.appendChild(tr);
-    });
-    if(!allData.length)tbody.innerHTML='<tr><td colspan="10" class="text-center py-8 text-gray-400">No records found</td></tr>';
-    _allRecordsCache=allData.slice();
-  };
-  window.clearAdminFilters=function(){['searchCivilId','searchDoctorCode','searchCrfNo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});['filterStatus','filterInvestigatorAdmin'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});fetchData();};
-  window.deleteRecord=async function(id){if(!confirm('Permanently delete?'))return;try{await deleteDoc(doc(db,'patients_full',id));fetchData();loadRecordsCache();}catch(e){alert('Delete failed.');}};
+```
+} else alert(txt);
+```
 
-  window.editRecord=function(data){
-    const st=data.recordStatus||'draft';
-    switchTab('form');
-    document.getElementById('epsForm').reset();
-    document.getElementById('editRecordId').value=data.id;
-    document.getElementById('recordStatus').value=st;
-    document.getElementById('hidEnrolledBy').value=data.enrolledBy||'';
-    document.getElementById('hidEnrolledByName').value=data.enrolledByName||'';
-    document.getElementById('hidEnrolledByCode').value=data.enrolledByCode||'';
-    const origTs=data.timestamp?.toDate?.().toISOString()||new Date(data.timestamp).toISOString();
-    document.getElementById('hidOrigTimestamp').value=origTs;
-    document.getElementById('editModeBanner').classList.remove('hidden');
-    Object.keys(data).forEach(key=>{
-      const el=document.getElementsByName(key)[0];if(!el)return;
-      if((key.startsWith('homeMed_')||key.startsWith('dcMed_')) && el.type==='hidden'){
-        let v=data[key];
-        if(v===true||v==='Yes') v='Yes';
-        else if(v===false||v==='No') v='No';
-        else v='';
-        el.value=v;
-        const row=el.closest('.med-row');
-        if(row){
-          row.querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('selected'));
-          if(v==='Yes') row.querySelector('.yn-btn.yn-yes')?.classList.add('selected');
-          else if(v==='No') row.querySelector('.yn-btn.yn-no')?.classList.add('selected');
-        }
-        return;
-      }
-      if(el.type==='hidden' && el.id && el.id.startsWith('val_')){
-        const v=data[key];
-        el.value=(v==='Yes'||v==='No')?v:'';
-        const ynKey=el.id.replace('val_','');
-        const btns=document.querySelectorAll(`.yn-btn[onclick*="'${ynKey}'"]`);
-        btns.forEach(b=>b.classList.remove('selected'));
-        if(v==='Yes'||v==='No'){
-          btns.forEach(b=>{ if(b.onclick && b.getAttribute('onclick').includes(`'${v}'`)) b.classList.add('selected'); });
-        }
-        const sub=document.getElementById('sub_'+ynKey);
-        if(sub){ if(v==='Yes') sub.classList.add('show'); else sub.classList.remove('show'); }
-        return;
-      }
-      if(el.type==='checkbox')el.checked=!!data[key];
-      else if(el.type==='radio')document.getElementsByName(key).forEach(r=>{if(r.value===data[key])r.checked=true;});
-      else el.value=data[key]||'';
-    });
-    if(data.epReason)onEPR();
-    applyLock(st);
-    goToStep(0);
-    updateFieldIndicators();
-    onCivilIdInput();
-  };
+};
+window.loadDashboard=async function(){
+try {
+let ref = collection(db,‘patients_full’);
+if(currentRole===‘investigator’) ref = ref.where(‘enrolledBy’,’==’,currentUser.uid);
+const snap=await getDocs(ref);
+_dashData=[];const civIds={};
+snap.forEach(ds=>{
+const d=ds.data();d.id=ds.id;
+d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();
+try { d._comp=calcCompletion(d); } catch(e) { d._comp={score:0,total:1,pct:0,complete:false}; }
+try { d._ts = d.timestamp?.toDate?.().getTime() || new Date(d.timestamp).getTime(); } catch(e) { d._ts=0; }
+_dashData.push(d);
+civIds[d.civilId]=(civIds[d.civilId]||0)+1;
+});
+if(currentRole===‘investigator’) _dashData=_dashData.filter(d=>d.enrolledBy===currentUser.uid);
+_dashData.forEach(d=>{d._isDup=(civIds[d.civilId]||0)>1;});
+_dashData.sort((a,b)=>a._ts - b._ts);
+_dashData.forEach((d,i)=>{d._no=i+1;});
+document.getElementById(‘dash_total’).textContent=_dashData.length;
+document.getElementById(‘dash_complete’).textContent=_dashData.filter(d=>d._comp.complete).length;
+document.getElementById(‘dash_incomplete’).textContent=_dashData.filter(d=>!d._comp.complete).length;
+document.getElementById(‘dash_reviewed’).textContent=_dashData.filter(d=>d.recordStatus===‘reviewed’).length;
+renderDashboard();
+} catch(err) {
+console.error(’[DASH]’, err);
+showDashDiagBanner(‘⚠️ Dashboard failed: ‘+(err.message||err));
+}
+};
+function renderDashboard(){
+let data=_dashData;
+if(_dashFilter===‘draft’)data=data.filter(d=>(!d.recordStatus||d.recordStatus===‘draft’));
+if(_dashFilter===‘submitted’)data=data.filter(d=>d.recordStatus===‘submitted’);
+if(_dashFilter===‘reviewed’)data=data.filter(d=>d.recordStatus===‘reviewed’);
+if(_dashFilter===‘complete’)data=data.filter(d=>d._comp.complete);
+if(_dashFilter===‘incomplete’)data=data.filter(d=>!d._comp.complete);
+if(_dashFilter===‘duplicate’)data=data.filter(d=>d._isDup);
+const grid=document.getElementById(‘dashGrid’);
+if(!data.length){grid.innerHTML=’<div class="bg-white rounded-2xl border border-gray-200 p-12 text-center text-gray-400"><i class="fas fa-inbox text-4xl mb-3 block"></i>No records match this filter</div>’;return;}
+const canEdit = currentRole !== ‘cso’;
+grid.innerHTML=data.map(d=>{
+const c=d._comp,st=d.recordStatus||‘draft’;
+const barCol=c.complete?’#059669’:c.pct>=70?’#d97706’:’#e11d48’;
+const invInfo = (currentRole===‘admin’||currentRole===‘cso’) ? `<span><i class="fas fa-user-md fa-xs mr-1"></i>${d.enrolledByName||'—'}</span>` : ‘’;
+return`<div class="dash-card" style="display:flex;align-items:center;gap:16px;padding:14px 18px;"> <div style="font-size:13px;font-weight:800;color:#94a3b8;min-width:32px;">#${d._no}</div> <div style="flex:1;min-width:0;"> <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;"> <span style="font-weight:800;font-size:14px;">${d.fullName||'Anonymous'}</span> ${statusBadge(st)} ${d._isDup?'<span class="dup-flag"><i class="fas fa-exclamation-circle"></i> Dup</span>':''} </div> <div style="font-size:12px;color:#64748b;display:flex;flex-wrap:wrap;gap:10px;"> <span>CID: <b>${d.civilId||'—'}</b></span> <span>File: <b>${d.fileNumber||'—'}</b></span> <span>${d.admissionDate||'—'}</span> <span>${d.epReason||'—'}</span> ${invInfo} </div> <div style="margin-top:8px;display:flex;align-items:center;gap:8px;"> <div style="flex:1;height:5px;background:#e2e8f0;border-radius:3px;overflow:hidden;"><div style="height:100%;width:${c.pct}%;background:${barCol};border-radius:3px;"></div></div> <span style="font-size:10px;font-weight:700;color:${barCol};min-width:32px;">${c.pct}%</span> </div> </div> <div style="display:flex;gap:6px;flex-shrink:0;"> ${canEdit ? `<button onclick="editById('${d.id}')" class="btn btn-yellow text-xs px-3 py-1.5"><i class="fas fa-edit"></i></button>`:`<button onclick="viewById('${d.id}')" class="btn btn-gray text-xs px-3 py-1.5"><i class="fas fa-eye"></i></button>`} </div> </div>`;
+}).join(’’);
+}
 
-  window.viewRecord=function(data){
-    editRecord(data);
-    ['btnSaveKeep','btnSaveClose','btnSubmitFinal'].forEach(id=>{const b=document.getElementById(id);if(b)b.disabled=true;});
-    document.getElementById('editModeBanner').classList.add('hidden');
-  };
+// ADMIN FETCH
+let allData=[];
+window.fetchData=async function(){
+populateInvestigatorDropdowns();
+const sCID=document.getElementById(‘searchCivilId’)?.value||’’;
+const sDC=document.getElementById(‘searchDoctorCode’)?.value||’’;
+const sCRF=document.getElementById(‘searchCrfNo’)?.value||’’;
+const sINV=document.getElementById(‘filterInvestigatorAdmin’)?.value||’’;
+const sST=document.getElementById(‘filterStatus’)?.value||’’;
+const snap=await getDocs(collection(db,‘patients_full’));
+const tbody=document.getElementById(‘tableBody’);
+tbody.innerHTML=’’;allData=[];
+const all=[];const civIds={};
+snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();d._ts=d.timestamp?.toDate?.().getTime()||new Date(d.timestamp).getTime();all.push(d);civIds[d.civilId]=(civIds[d.civilId]||0)+1;});
+all.sort((a,b)=>a._ts - b._ts);
+all.forEach((data,idx)=>{
+data._no=idx+1;data._isDup=(civIds[data.civilId]||0)>1;
+if(sCID&&!data.civilId?.includes(sCID))return;
+if(sDC&&!(data.enrolledByCode||getDoctorCode(data.enrolledByName)||’’).includes(sDC))return;
+if(sCRF&&!data.crfNo?.includes(sCRF))return;
+if(sINV&&data.enrolledBy!==sINV)return;
+if(sST&&(data.recordStatus||‘draft’)!==sST)return;
+allData.push(data);
+const comp=calcCompletion(data);const st=data.recordStatus||‘draft’;
+const barCol=comp.complete?’#059669’:comp.pct>=70?’#d97706’:’#e11d48’;
+const tr=document.createElement(‘tr’);
+const createdAt=data.timestamp?.toDate?.()||new Date(data.timestamp);
+const updatedAt=data.updatedAt?.toDate?.()||new Date(data.updatedAt);
+const fmtDT=dt=>dt.toLocaleString(‘en-GB’,{day:‘2-digit’,month:‘2-digit’,year:‘numeric’,hour:‘2-digit’,minute:‘2-digit’,hour12:false}).replace(’,’,’’);
+tr.innerHTML=` <td style="font-weight:800;color:#94a3b8;font-size:12px;text-align:center;">${data._no}</td> <td><span style="font-family:'DM Mono',monospace;font-weight:800;color:#1e40af;">${data.crfNo||'—'}</span></td> <td><span style="font-family:'DM Mono',monospace;">${data.civilId||'—'}</span></td> <td class="text-center"><span style="font-family:'DM Mono',monospace;background:#dbeafe;color:#1e40af;border-radius:5px;padding:2px 7px;font-weight:700;">${data.enrolledByCode||getDoctorCode(data.enrolledByName)}</span></td> <td>${statusBadge(st)}</td> <td class="text-xs"><div class="font-semibold">${data.enrolledByName||'—'}</div></td> <td class="text-xs" style="white-space:nowrap;">${fmtDT(createdAt)}</td> <td class="text-xs">${data.updatedByName?`<div>${data.updatedByName}</div>`:'<span class="text-gray-400">—</span>'}</td> <td class="text-xs" style="white-space:nowrap;">${updatedAt?fmtDT(updatedAt):'<span class="text-gray-400">—</span>'}</td> <td class="text-right" style="white-space:nowrap;"> <button onclick="editById('${data.id}')" class="btn btn-yellow text-xs px-2 py-1 mr-1"><i class="fas fa-edit"></i></button> ${st!=='reviewed'?`<button onclick="markReviewed('${data.id}')" class="btn btn-green text-xs px-2 py-1 mr-1"><i class="fas fa-check-circle"></i></button>`:''} ${st==='reviewed'?`<button onclick="markDraft('${data.id}')" class="btn btn-gray text-xs px-2 py-1 mr-1"><i class="fas fa-undo"></i></button>`:''} <button onclick="deleteRecord('${data.id}')" class="btn btn-red text-xs px-2 py-1"><i class="fas fa-trash"></i></button> </td>`;
+tbody.appendChild(tr);
+});
+if(!allData.length)tbody.innerHTML=’<tr><td colspan="10" class="text-center py-8 text-gray-400">No records found</td></tr>’;
+_allRecordsCache=allData.slice();
+};
+window.clearAdminFilters=function(){[‘searchCivilId’,‘searchDoctorCode’,‘searchCrfNo’].forEach(id=>{const el=document.getElementById(id);if(el)el.value=’’;});[‘filterStatus’,‘filterInvestigatorAdmin’].forEach(id=>{const el=document.getElementById(id);if(el)el.value=’’;});fetchData();};
+window.deleteRecord=async function(id){if(!confirm(‘Permanently delete?’))return;try{await deleteDoc(doc(db,‘patients_full’,id));fetchData();loadRecordsCache();}catch(e){alert(‘Delete failed.’);}};
 
-  // QUICK SEARCH
-  let _allRecordsCache=[];
-  async function loadRecordsCache(){
-    try {
-      let ref = collection(db,'patients_full');
-      if(currentRole==='investigator') ref = ref.where('enrolledBy','==',currentUser.uid);
-      const snap=await getDocs(ref);
-      _allRecordsCache=[];const civIds={};
-      snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();d._ts=d.timestamp?.toDate?.().getTime()||new Date(d.timestamp).getTime();_allRecordsCache.push(d);civIds[d.civilId]=(civIds[d.civilId]||0)+1;});
-      _allRecordsCache.sort((a,b)=>a._ts - b._ts);
-      _allRecordsCache.forEach((d,i)=>{d._no=i+1;});
-    } catch(err) { _allRecordsCache=[]; }
-  }
-  window.liveSearch=function(){
-    const q=document.getElementById('qs_input').value.trim();
-    if(!q){document.getElementById('qs_results').classList.add('hidden');return;}
-    const results=_allRecordsCache.filter(d=>(d.civilId||'').includes(q)||(d.fileNumber||'').includes(q)||(d.crfNo||'').includes(q));
-    const container=document.getElementById('qs_results');
-    document.getElementById('qs_count').textContent=`${results.length} found`;
-    const list=document.getElementById('qs_list');
-    if(!results.length){list.innerHTML='<div class="px-4 py-6 text-center text-gray-400 text-sm">No records found</div>';}
-    else{
-      list.innerHTML=results.slice(0,8).map(d=>{
-        const comp=calcCompletion(d);
-        return`<div class="px-4 py-3 hover:bg-blue-50 cursor-pointer transition flex items-center justify-between gap-3" onclick='editFromSearch(${JSON.stringify(d).replace(/'/g,"\\'")})'>
-          <div><div class="font-bold text-gray-800 text-sm">#${d._no} — ${d.fullName||'Anonymous'}</div><div class="text-xs text-gray-500 mt-0.5"><span class="mr-3">CID: <b>${d.civilId||'—'}</b></span><span>File: <b>${d.fileNumber||'—'}</b></span></div></div>
-          <div class="flex items-center gap-2 shrink-0"><span class="badge badge-blue">${d.epReason||'—'}</span>${statusBadge(d.recordStatus||'draft')}<button class="btn btn-yellow text-xs px-2 py-1"><i class="fas fa-edit"></i></button></div>
-        </div>`;
-      }).join('');
-    }
-    container.classList.remove('hidden');
-  };
-  window.clearQS=function(){document.getElementById('qs_input').value='';document.getElementById('qs_results').classList.add('hidden');};
-  window.editFromSearch=function(data){clearQS();editRecord(data);};
-  document.addEventListener('click',e=>{if(!document.getElementById('mainSearchBar')?.contains(e.target))document.getElementById('qs_results')?.classList.add('hidden');});
+window.editRecord=function(data){
+const st=data.recordStatus||‘draft’;
+switchTab(‘form’);
+document.getElementById(‘epsForm’).reset();
+document.getElementById(‘editRecordId’).value=data.id;
+document.getElementById(‘recordStatus’).value=st;
+document.getElementById(‘hidEnrolledBy’).value=data.enrolledBy||’’;
+document.getElementById(‘hidEnrolledByName’).value=data.enrolledByName||’’;
+document.getElementById(‘hidEnrolledByCode’).value=data.enrolledByCode||’’;
+const origTs=data.timestamp?.toDate?.().toISOString()||new Date(data.timestamp).toISOString();
+document.getElementById(‘hidOrigTimestamp’).value=origTs;
+document.getElementById(‘editModeBanner’).classList.remove(‘hidden’);
+Object.keys(data).forEach(key=>{
+const el=document.getElementsByName(key)[0];if(!el)return;
+if((key.startsWith(‘homeMed_’)||key.startsWith(‘dcMed_’)) && el.type===‘hidden’){
+let v=data[key];
+if(v===true||v===‘Yes’) v=‘Yes’;
+else if(v===false||v===‘No’) v=‘No’;
+else v=’’;
+el.value=v;
+const row=el.closest(’.med-row’);
+if(row){
+row.querySelectorAll(’.yn-btn’).forEach(b=>b.classList.remove(‘selected’));
+if(v===‘Yes’) row.querySelector(’.yn-btn.yn-yes’)?.classList.add(‘selected’);
+else if(v===‘No’) row.querySelector(’.yn-btn.yn-no’)?.classList.add(‘selected’);
+}
+return;
+}
+if(el.type===‘hidden’ && el.id && el.id.startsWith(‘val_’)){
+const v=data[key];
+el.value=(v===‘Yes’||v===‘No’)?v:’’;
+const ynKey=el.id.replace(‘val_’,’’);
+const btns=document.querySelectorAll(`.yn-btn[onclick*="'${ynKey}'"]`);
+btns.forEach(b=>b.classList.remove(‘selected’));
+if(v===‘Yes’||v===‘No’){
+btns.forEach(b=>{ if(b.onclick && b.getAttribute(‘onclick’).includes(`'${v}'`)) b.classList.add(‘selected’); });
+}
+const sub=document.getElementById(‘sub_’+ynKey);
+if(sub){ if(v===‘Yes’) sub.classList.add(‘show’); else sub.classList.remove(‘show’); }
+return;
+}
+if(el.type===‘checkbox’)el.checked=!!data[key];
+else if(el.type===‘radio’)document.getElementsByName(key).forEach(r=>{if(r.value===data[key])r.checked=true;});
+else el.value=data[key]||’’;
+});
+if(data.epReason)onEPR();
+applyLock(st);
+goToStep(0);
+updateFieldIndicators();
+onCivilIdInput();
+};
 
-  async function populateInvestigatorDropdowns(){
-    try{
-      const snap=await db.collection('users').get();
-      const rows=[];
-      snap.forEach(ds=>{const u=ds.data();u.id=ds.id;rows.push(u);});
-      const invOpts=rows.filter(u=>u.role==='investigator'||u.role==='cso').map(u=>`<option value="${u.id}">${u.displayName||u.email}</option>`).join('');
-      ['filterInvestigatorAdmin','exportInvestigator'].forEach(id=>{
-        const el=document.getElementById(id);
-        if(el)el.innerHTML='<option value="">All Investigators</option>'+invOpts;
-      });
-    }catch(e){}
-  }
+window.viewRecord=function(data){
+editRecord(data);
+[‘btnSaveKeep’,‘btnSaveClose’,‘btnSubmitFinal’].forEach(id=>{const b=document.getElementById(id);if(b)b.disabled=true;});
+document.getElementById(‘editModeBanner’).classList.add(‘hidden’);
+};
 
-  // USER MANAGEMENT
-  window.loadUserList=async function(){
-    const tbody=document.getElementById('userTableBody');
-    if(!tbody)return;
-    tbody.innerHTML='<tr><td colspan="6" class="text-center py-6 text-gray-400"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</td></tr>';
-    try{
-      const snap=await db.collection('users').get();
-      const rows=[];
-      snap.forEach(ds=>{const u=ds.data();u.id=ds.id;rows.push(u);});
-      const patSnap=await db.collection('patients_full').get();
-      const counts={};
-      patSnap.forEach(ds=>{const uid=ds.data().enrolledBy;if(uid)counts[uid]=(counts[uid]||0)+1;});
-      const invOpts=rows.filter(u=>u.role==='investigator'||u.role==='cso').map(u=>`<option value="${u.id}">${u.displayName||u.email}</option>`).join('');
-      ['filterInvestigatorAdmin','exportInvestigator'].forEach(id=>{
-        const el=document.getElementById(id);
-        if(el)el.innerHTML='<option value="">All Investigators</option>'+invOpts;
-      });
-      if(!rows.length){tbody.innerHTML='<tr><td colspan="6" class="text-center py-6 text-gray-400">No users found</td></tr>';return;}
-      tbody.innerHTML=rows.map(u=>`
-        <tr>
-          <td><div class="font-bold text-gray-800">${u.displayName||'—'}</div></td>
-          <td class="text-xs text-gray-500">${u.email||'—'}</td>
-          <td><span class="role-${u.role||'investigator'}">${(u.role||'investigator').toUpperCase()}</span></td>
-          <td class="text-center"><span style="font-family:'DM Mono',monospace;background:#dbeafe;color:#1e40af;border-radius:5px;padding:2px 8px;font-weight:700;font-size:12px;">${getDoctorCode(u.displayName)}</span></td>
-          <td class="font-bold text-blue-700 text-center">${counts[u.id]||0}</td>
-          <td>${u.active?'<span class="badge badge-green">Active</span>':'<span class="badge badge-red">Disabled</span>'}</td>
-          <td style="white-space:nowrap;">
-            <button onclick="editUserDoc('${u.id}','${(u.displayName||'').replace(/'/g,"\\'")}','${u.email||''}','${u.role||'investigator'}')" class="btn btn-yellow text-xs px-2 py-1 mr-1" title="Edit"><i class="fas fa-edit"></i></button>
-            <button onclick="toggleUserActive('${u.id}',${!u.active})" class="btn ${u.active?'btn-red':'btn-green'} text-xs px-2 py-1 mr-1" title="${u.active?'Disable':'Enable'}">${u.active?'<i class="fas fa-ban"></i>':'<i class="fas fa-check"></i>'}</button>
-            <button onclick="deleteUserDoc('${u.id}','${(u.displayName||u.email||'').replace(/'/g,"\\'")}' )" class="btn btn-gray text-xs px-2 py-1" title="Delete"><i class="fas fa-trash"></i></button>
-          </td>
-        </tr>`).join('');
-    }catch(e){
-      tbody.innerHTML=`<tr><td colspan="6" class="text-center py-6 text-red-500">Error loading users: ${e.message}</td></tr>`;
-    }
-  };
+// QUICK SEARCH
+let _allRecordsCache=[];
+async function loadRecordsCache(){
+try {
+let ref = collection(db,‘patients_full’);
+if(currentRole===‘investigator’) ref = ref.where(‘enrolledBy’,’==’,currentUser.uid);
+const snap=await getDocs(ref);
+_allRecordsCache=[];const civIds={};
+snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();d._ts=d.timestamp?.toDate?.().getTime()||new Date(d.timestamp).getTime();_allRecordsCache.push(d);civIds[d.civilId]=(civIds[d.civilId]||0)+1;});
+_allRecordsCache.sort((a,b)=>a._ts - b._ts);
+_allRecordsCache.forEach((d,i)=>{d._no=i+1;});
+} catch(err) { _allRecordsCache=[]; }
+}
+window.liveSearch=function(){
+const q=document.getElementById(‘qs_input’).value.trim();
+if(!q){document.getElementById(‘qs_results’).classList.add(‘hidden’);return;}
+const results=_allRecordsCache.filter(d=>(d.civilId||’’).includes(q)||(d.fileNumber||’’).includes(q)||(d.crfNo||’’).includes(q));
+const container=document.getElementById(‘qs_results’);
+document.getElementById(‘qs_count’).textContent=`${results.length} found`;
+const list=document.getElementById(‘qs_list’);
+if(!results.length){list.innerHTML=’<div class="px-4 py-6 text-center text-gray-400 text-sm">No records found</div>’;}
+else{
+list.innerHTML=results.slice(0,8).map(d=>{
+const comp=calcCompletion(d);
+return`<div class="px-4 py-3 hover:bg-blue-50 cursor-pointer transition flex items-center justify-between gap-3" onclick="editFromSearch('${d.id}')"> <div><div class="font-bold text-gray-800 text-sm">#${d._no} — ${d.fullName||'Anonymous'}</div><div class="text-xs text-gray-500 mt-0.5"><span class="mr-3">CID: <b>${d.civilId||'—'}</b></span><span>File: <b>${d.fileNumber||'—'}</b></span></div></div> <div class="flex items-center gap-2 shrink-0"><span class="badge badge-blue">${d.epReason||'—'}</span>${statusBadge(d.recordStatus||'draft')}<button class="btn btn-yellow text-xs px-2 py-1"><i class="fas fa-edit"></i></button></div> </div>`;
+}).join(’’);
+}
+container.classList.remove(‘hidden’);
+};
+window.clearQS=function(){document.getElementById(‘qs_input’).value=’’;document.getElementById(‘qs_results’).classList.add(‘hidden’);};
+// Lookup helpers — fetch the record by id from any available cache, then call editRecord/viewRecord.
+// This avoids embedding huge JSON blobs in onclick attributes (which broke when patient data
+// contained quotes, newlines, < > & or other characters that mangle the attribute).
+function findRecordById(id){
+const caches = [
+typeof _dashData !== ‘undefined’ ? _dashData : null,
+typeof allData !== ‘undefined’ ? allData : null,
+typeof _allRecordsCache !== ‘undefined’ ? _allRecordsCache : null
+];
+for (const c of caches){
+if (!c) continue;
+const hit = c.find(r => r && r.id === id);
+if (hit) return hit;
+}
+return null;
+}
+window.editById = async function(id){
+let rec = findRecordById(id);
+if (!rec){
+try {
+const snap = await getDoc(doc(db,‘patients_full’,id));
+if (snap && snap.exists){ rec = snap.data(); rec.id = snap.id; }
+} catch(e){ console.error(’[editById] fetch failed’, e); }
+}
+if (!rec){ alert(‘Could not load that record.’); return; }
+editRecord(rec);
+};
+window.viewById = async function(id){
+let rec = findRecordById(id);
+if (!rec){
+try {
+const snap = await getDoc(doc(db,‘patients_full’,id));
+if (snap && snap.exists){ rec = snap.data(); rec.id = snap.id; }
+} catch(e){ console.error(’[viewById] fetch failed’, e); }
+}
+if (!rec){ alert(‘Could not load that record.’); return; }
+viewRecord(rec);
+};
+window.editFromSearch=function(id){clearQS();editById(id);};
+document.addEventListener(‘click’,e=>{if(!document.getElementById(‘mainSearchBar’)?.contains(e.target))document.getElementById(‘qs_results’)?.classList.add(‘hidden’);});
 
-  window.showAddUserForm=function(){ const f=document.getElementById('addUserForm'); f.style.display=f.style.display==='none'?'block':'none'; };
-  window.createUserDocument=async function(){
-    const uid=document.getElementById('newUserUID').value.trim();
-    const name=document.getElementById('newUserName').value.trim();
-    const email=document.getElementById('newUserEmail').value.trim();
-    const role=document.getElementById('newUserRole').value;
-    if(!uid||!name||!email){alert('All fields required.');return;}
-    try{
-      await setDoc(doc(db,'users',uid),{displayName:name,email,role,active:true,createdAt:new Date()});
-      alert(`User "${name}" created!`);
-      document.getElementById('addUserForm').style.display='none';
-      ['newUserUID','newUserName','newUserEmail'].forEach(id=>document.getElementById(id).value='');
-      loadUserList();
-    }catch(e){alert('Failed: '+e.message);}
-  };
-  window.toggleUserActive=async function(uid,newState){
-    if(!confirm(`${newState?'Enable':'Disable'} this user?`))return;
-    try{await db.collection('users').doc(uid).update({active:newState});loadUserList();}catch(e){alert('Failed: '+e.message);}
-  };
-  window.deleteUserDoc=async function(uid,name){
-    if(!confirm(`Remove "${name}" from users?`))return;
-    try{await db.collection('users').doc(uid).delete();loadUserList();}catch(e){alert('Failed: '+e.message);}
-  };
-  window.editUserDoc=function(uid,name,email,role){
-    const newName=prompt('Display Name:',name);
-    if(newName===null)return;
-    const newRole=prompt('Role (admin / cso / investigator):',role);
-    if(newRole===null)return;
-    if(!['admin','cso','investigator'].includes(newRole)){alert('Invalid role.');return;}
-    db.collection('users').doc(uid).update({displayName:newName,role:newRole}).then(()=>{alert('Updated!');loadUserList();}).catch(e=>alert('Failed: '+e.message));
-  };
+async function populateInvestigatorDropdowns(){
+try{
+const snap=await db.collection(‘users’).get();
+const rows=[];
+snap.forEach(ds=>{const u=ds.data();u.id=ds.id;rows.push(u);});
+const invOpts=rows.filter(u=>u.role===‘investigator’||u.role===‘cso’).map(u=>`<option value="${u.id}">${u.displayName||u.email}</option>`).join(’’);
+[‘filterInvestigatorAdmin’,‘exportInvestigator’].forEach(id=>{
+const el=document.getElementById(id);
+if(el)el.innerHTML=’<option value="">All Investigators</option>’+invOpts;
+});
+}catch(e){}
+}
 
-  // DOCTOR CODES
-  let _editableDoctorCodes={...DOCTOR_CODES};
-  window.renderDoctorCodesTable=async function(){
-    try{
-      const snap=await db.collection('settings').doc('doctorCodes').get();
-      if(snap.exists){Object.assign(_editableDoctorCodes,snap.data());}
-    }catch(e){}
-    _renderCodesRows();
-  };
-  function _renderCodesRows(){
-    const tbody=document.getElementById('doctorCodesBody');
-    if(!tbody)return;
-    tbody.innerHTML=Object.entries(_editableDoctorCodes).map(([name,code])=>`
-      <tr>
-        <td><input type="text" value="${name}" data-orig="${name}" class="inp inp-sm dc-name" style="min-width:180px;"></td>
-        <td><input type="text" value="${code}" class="inp inp-sm dc-code" maxlength="3" style="width:80px;font-family:'DM Mono',monospace;text-align:center;" oninput="this.value=this.value.replace(/\\D/g,'')"></td>
-        <td><span style="font-family:'DM Mono',monospace;font-size:12px;color:#64748b;">01-${code}-NNN</span></td>
-        <td><button type="button" onclick="removeDoctorCodeRow(this)" class="btn btn-red text-xs px-2 py-1"><i class="fas fa-trash"></i></button></td>
-      </tr>`).join('');
-  }
-  window.addDoctorCodeRow=function(){
-    const tbody=document.getElementById('doctorCodesBody');
-    if(!tbody)return;
-    const tr=document.createElement('tr');
-    tr.innerHTML=`
-      <td><input type="text" placeholder="Dr. Name" data-orig="" class="inp inp-sm dc-name" style="min-width:180px;"></td>
-      <td><input type="text" placeholder="106" class="inp inp-sm dc-code" maxlength="3" style="width:80px;font-family:'DM Mono',monospace;text-align:center;" oninput="this.value=this.value.replace(/\\D/g,'')"></td>
-      <td><span style="font-family:'DM Mono',monospace;font-size:12px;color:#64748b;">01-???-NNN</span></td>
-      <td><button type="button" onclick="removeDoctorCodeRow(this)" class="btn btn-red text-xs px-2 py-1"><i class="fas fa-trash"></i></button></td>`;
-    tbody.appendChild(tr);
-  };
-  window.removeDoctorCodeRow=function(btn){ btn.closest('tr').remove(); };
-  window.saveDoctorCodes=async function(){
-    const rows=document.querySelectorAll('#doctorCodesBody tr');
-    const newCodes={};
-    let valid=true;
-    rows.forEach(row=>{
-      const name=row.querySelector('.dc-name')?.value.trim();
-      const code=row.querySelector('.dc-code')?.value.trim();
-      if(!name||!code){valid=false;return;}
-      if(!/^\d{3}$/.test(code)){valid=false;alert(`Code for "${name}" must be exactly 3 digits.`);return;}
-      newCodes[name]=code;
-    });
-    if(!valid)return;
-    const codeVals=Object.values(newCodes);
-    if(new Set(codeVals).size!==codeVals.length){alert('Duplicate codes detected.');return;}
-    try{
-      await db.collection('settings').doc('doctorCodes').set(newCodes);
-      Object.keys(DOCTOR_CODES).forEach(k=>delete DOCTOR_CODES[k]);
-      Object.assign(DOCTOR_CODES,newCodes);
-      Object.assign(_editableDoctorCodes,newCodes);
-      showToast('Doctor codes saved!','#059669');
-    }catch(e){alert('Save failed: '+e.message);}
-  };
+// USER MANAGEMENT
+window.loadUserList=async function(){
+const tbody=document.getElementById(‘userTableBody’);
+if(!tbody)return;
+tbody.innerHTML=’<tr><td colspan="6" class="text-center py-6 text-gray-400"><i class="fas fa-spinner fa-spin mr-2"></i>Loading…</td></tr>’;
+try{
+const snap=await db.collection(‘users’).get();
+const rows=[];
+snap.forEach(ds=>{const u=ds.data();u.id=ds.id;rows.push(u);});
+const patSnap=await db.collection(‘patients_full’).get();
+const counts={};
+patSnap.forEach(ds=>{const uid=ds.data().enrolledBy;if(uid)counts[uid]=(counts[uid]||0)+1;});
+const invOpts=rows.filter(u=>u.role===‘investigator’||u.role===‘cso’).map(u=>`<option value="${u.id}">${u.displayName||u.email}</option>`).join(’’);
+[‘filterInvestigatorAdmin’,‘exportInvestigator’].forEach(id=>{
+const el=document.getElementById(id);
+if(el)el.innerHTML=’<option value="">All Investigators</option>’+invOpts;
+});
+if(!rows.length){tbody.innerHTML=’<tr><td colspan="6" class="text-center py-6 text-gray-400">No users found</td></tr>’;return;}
+tbody.innerHTML=rows.map(u=>` <tr> <td><div class="font-bold text-gray-800">${u.displayName||'—'}</div></td> <td class="text-xs text-gray-500">${u.email||'—'}</td> <td><span class="role-${u.role||'investigator'}">${(u.role||'investigator').toUpperCase()}</span></td> <td class="text-center"><span style="font-family:'DM Mono',monospace;background:#dbeafe;color:#1e40af;border-radius:5px;padding:2px 8px;font-weight:700;font-size:12px;">${getDoctorCode(u.displayName)}</span></td> <td class="font-bold text-blue-700 text-center">${counts[u.id]||0}</td> <td>${u.active?'<span class="badge badge-green">Active</span>':'<span class="badge badge-red">Disabled</span>'}</td> <td style="white-space:nowrap;"> <button onclick="editUserDoc('${u.id}','${(u.displayName||'').replace(/'/g,"\\'")}','${u.email||''}','${u.role||'investigator'}')" class="btn btn-yellow text-xs px-2 py-1 mr-1" title="Edit"><i class="fas fa-edit"></i></button> <button onclick="toggleUserActive('${u.id}',${!u.active})" class="btn ${u.active?'btn-red':'btn-green'} text-xs px-2 py-1 mr-1" title="${u.active?'Disable':'Enable'}">${u.active?'<i class="fas fa-ban"></i>':'<i class="fas fa-check"></i>'}</button> <button onclick="deleteUserDoc('${u.id}','${(u.displayName||u.email||'').replace(/'/g,"\\'")}' )" class="btn btn-gray text-xs px-2 py-1" title="Delete"><i class="fas fa-trash"></i></button> </td> </tr>`).join(’’);
+}catch(e){
+tbody.innerHTML=`<tr><td colspan="6" class="text-center py-6 text-red-500">Error loading users: ${e.message}</td></tr>`;
+}
+};
 
-  // DOWNLOADS
-  async function loadExportFilters(){
-    const snap=await getDocs(collection(db,'users'));
-    const opts=['<option value="">All Investigators</option>'];
-    snap.forEach(ds=>{const u=ds.data();if(u.role==='investigator'||u.role==='cso')opts.push(`<option value="${ds.id}">${u.displayName||u.email}</option>`);});
-    document.getElementById('exportInvestigator').innerHTML=opts.join('');
-  }
-  async function getFilteredExportData(){
-    const snap=await getDocs(collection(db,'patients_full'));
-    const df=document.getElementById('exportDateFrom')?.value||'';
-    const dt=document.getElementById('exportDateTo')?.value||'';
-    const inv=document.getElementById('exportInvestigator')?.value||'';
-    const ep=document.getElementById('exportEpReason')?.value||'';
-    const all=[];
-    snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();all.push(d);});
-    all.sort((a,b)=>(a.admissionDate||'').localeCompare(b.admissionDate||''));
-    all.forEach((d,i)=>{d._no=i+1;});
-    return all.filter(d=>{
-      if(df&&d.admissionDate&&d.admissionDate<df)return false;
-      if(dt&&d.admissionDate&&d.admissionDate>dt)return false;
-      if(inv&&d.enrolledBy!==inv)return false;
-      if(ep&&d.epReason!==ep)return false;
-      return true;
-    });
-  }
+window.showAddUserForm=function(){ const f=document.getElementById(‘addUserForm’); f.style.display=f.style.display===‘none’?‘block’:‘none’; };
+window.createUserDocument=async function(){
+const uid=document.getElementById(‘newUserUID’).value.trim();
+const name=document.getElementById(‘newUserName’).value.trim();
+const email=document.getElementById(‘newUserEmail’).value.trim();
+const role=document.getElementById(‘newUserRole’).value;
+if(!uid||!name||!email){alert(‘All fields required.’);return;}
+try{
+await setDoc(doc(db,‘users’,uid),{displayName:name,email,role,active:true,createdAt:new Date()});
+alert(`User "${name}" created!`);
+document.getElementById(‘addUserForm’).style.display=‘none’;
+[‘newUserUID’,‘newUserName’,‘newUserEmail’].forEach(id=>document.getElementById(id).value=’’);
+loadUserList();
+}catch(e){alert(’Failed: ’+e.message);}
+};
+window.toggleUserActive=async function(uid,newState){
+if(!confirm(`${newState?'Enable':'Disable'} this user?`))return;
+try{await db.collection(‘users’).doc(uid).update({active:newState});loadUserList();}catch(e){alert(’Failed: ’+e.message);}
+};
+window.deleteUserDoc=async function(uid,name){
+if(!confirm(`Remove "${name}" from users?`))return;
+try{await db.collection(‘users’).doc(uid).delete();loadUserList();}catch(e){alert(’Failed: ’+e.message);}
+};
+window.editUserDoc=function(uid,name,email,role){
+const newName=prompt(‘Display Name:’,name);
+if(newName===null)return;
+const newRole=prompt(‘Role (admin / cso / investigator):’,role);
+if(newRole===null)return;
+if(![‘admin’,‘cso’,‘investigator’].includes(newRole)){alert(‘Invalid role.’);return;}
+db.collection(‘users’).doc(uid).update({displayName:newName,role:newRole}).then(()=>{alert(‘Updated!’);loadUserList();}).catch(e=>alert(’Failed: ’+e.message));
+};
 
-  window.searchForSinglePDF=async function(){
-    const q=document.getElementById('singlePatientSearch').value.trim();
-    if(!q){alert('Enter a Civil ID or File Number.');return;}
-    const snap=await getDocs(collection(db,'patients_full'));
-    const results=[];
-    snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();
-      if((d.civilId||'').includes(q)||(d.fileNumber||'').includes(q))results.push(d);
-    });
-    const div=document.getElementById('singlePatientResult');
-    if(!results.length){div.innerHTML='<div class="text-sm text-red-500 mt-2">No patient found.</div>';return;}
-    div.innerHTML=results.map(d=>`
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;margin-top:8px;">
-        <div><div class="font-bold text-sm">${d.fullName||'Anonymous'}</div><div class="text-xs text-gray-500">CID: ${d.civilId||'—'} | File: ${d.fileNumber||'—'} | ${d.admissionDate||'—'}</div></div>
-        <button onclick='exportSinglePDF(${JSON.stringify(d).replace(/'/g,"\\'")})' class="btn btn-red text-xs px-3 py-1.5"><i class="fas fa-file-pdf mr-1"></i>PDF</button>
-      </div>`).join('');
-  };
+// DOCTOR CODES
+let _editableDoctorCodes={…DOCTOR_CODES};
+window.renderDoctorCodesTable=async function(){
+try{
+const snap=await db.collection(‘settings’).doc(‘doctorCodes’).get();
+if(snap.exists){Object.assign(_editableDoctorCodes,snap.data());}
+}catch(e){}
+_renderCodesRows();
+};
+function _renderCodesRows(){
+const tbody=document.getElementById(‘doctorCodesBody’);
+if(!tbody)return;
+tbody.innerHTML=Object.entries(_editableDoctorCodes).map(([name,code])=>` <tr> <td><input type="text" value="${name}" data-orig="${name}" class="inp inp-sm dc-name" style="min-width:180px;"></td> <td><input type="text" value="${code}" class="inp inp-sm dc-code" maxlength="3" style="width:80px;font-family:'DM Mono',monospace;text-align:center;" oninput="this.value=this.value.replace(/\\D/g,'')"></td> <td><span style="font-family:'DM Mono',monospace;font-size:12px;color:#64748b;">01-${code}-NNN</span></td> <td><button type="button" onclick="removeDoctorCodeRow(this)" class="btn btn-red text-xs px-2 py-1"><i class="fas fa-trash"></i></button></td> </tr>`).join(’’);
+}
+window.addDoctorCodeRow=function(){
+const tbody=document.getElementById(‘doctorCodesBody’);
+if(!tbody)return;
+const tr=document.createElement(‘tr’);
+tr.innerHTML=` <td><input type="text" placeholder="Dr. Name" data-orig="" class="inp inp-sm dc-name" style="min-width:180px;"></td> <td><input type="text" placeholder="106" class="inp inp-sm dc-code" maxlength="3" style="width:80px;font-family:'DM Mono',monospace;text-align:center;" oninput="this.value=this.value.replace(/\\D/g,'')"></td> <td><span style="font-family:'DM Mono',monospace;font-size:12px;color:#64748b;">01-???-NNN</span></td> <td><button type="button" onclick="removeDoctorCodeRow(this)" class="btn btn-red text-xs px-2 py-1"><i class="fas fa-trash"></i></button></td>`;
+tbody.appendChild(tr);
+};
+window.removeDoctorCodeRow=function(btn){ btn.closest(‘tr’).remove(); };
+window.saveDoctorCodes=async function(){
+const rows=document.querySelectorAll(’#doctorCodesBody tr’);
+const newCodes={};
+let valid=true;
+rows.forEach(row=>{
+const name=row.querySelector(’.dc-name’)?.value.trim();
+const code=row.querySelector(’.dc-code’)?.value.trim();
+if(!name||!code){valid=false;return;}
+if(!/^\d{3}$/.test(code)){valid=false;alert(`Code for "${name}" must be exactly 3 digits.`);return;}
+newCodes[name]=code;
+});
+if(!valid)return;
+const codeVals=Object.values(newCodes);
+if(new Set(codeVals).size!==codeVals.length){alert(‘Duplicate codes detected.’);return;}
+try{
+await db.collection(‘settings’).doc(‘doctorCodes’).set(newCodes);
+Object.keys(DOCTOR_CODES).forEach(k=>delete DOCTOR_CODES[k]);
+Object.assign(DOCTOR_CODES,newCodes);
+Object.assign(_editableDoctorCodes,newCodes);
+showToast(‘Doctor codes saved!’,’#059669’);
+}catch(e){alert(’Save failed: ’+e.message);}
+};
 
-  const FIELD_MAP={
-    nameFirst:'First Name',nameMiddle:'Middle Name',nameLast:'Last Name',civilId:'Civil ID',crfNo:'CRF Number',fileNumber:'File Number',
-    gender:'Gender',nationality:'Nationality',yob:'Year of Birth',estimatedAge:'Age (yrs)',admissionDate:'Admission Date',
-    patientContact:'Patient Contact',relativeContact:'Relative Contact',
-    enrolledByName:'Enrolled By',enrolledByCode:'Enrolled By (Code)',updatedByName:'Updated By',updatedByCode:'Updated By (Code)',
-    epReason:'EP Lab Reason',pacemakerType:'Pacemaker Type',patientOrigin:'Patient Origin',
-    recordStatus:'Record Status',submissionType:'Submission Type',
-    sysBp:'Systolic BP',sysBpUnrec:'SysBP Unrecordable',diaBp:'Diastolic BP',diaBpUnrec:'DiaBP Unrecordable',
-    hr:'Heart Rate',hrUnrec:'HR Unrecordable',weight:'Weight (kg)',weightUnrec:'Weight Unrecordable',height:'Height (cm)',heightUnrec:'Height Unrecordable',
-    hx_afib:'Atrial Fibrillation',afibClassification:'AFib Classification',afibChads:'CHA₂DS₂-VASc',afibHasBled:'HAS-BLED',
-    afibCardioversion:'Plans for Cardioversion',afibPriorAblation:'Prior Ablation Attempt',
-    afibContraOAC:'Contraindication to OAC',afibMajorBleed:'Prior Major Bleeding',
-    hx_cardiacArrest:'Cardiac Arrest',arrestBradycardia:'Arrest: Bradycardia',arrestVF:'Arrest: VF',arrestVT:'Arrest: VT',
-    hx_icm:'Ischemic CMP',icmTimeframe:'ICM Timeframe',icmGDMT:'ICM GDMT',
-    hx_hf:'Heart Failure',hfType:'HF Type',
-    hx_cad:'CAD',hx_mi:'Prior MI',hx_valve:'Valvular HD',hx_cvd:'Cerebrovascular Disease',
-    hx_lung:'Chronic Lung Disease',hx_dialysis:'On Dialysis',hx_dm:'Diabetes Mellitus',hx_htn:'Hypertension',
-    hx_ssd:'Sudden Death Syndrome',ssd_brugada:'SSD: Brugada',ssd_cpvt:'SSD: CPVT',ssd_idiopathic:'SSD: Idiopathic',
-    ssd_longqt:'SSD: Long QT',ssd_shortqt:'SSD: Short QT',ssd_unknown:'SSD: Unknown',
-    hx_struct:'Structural Abnormalities',struct_arvc:'Struct: ARVC',struct_congenital:'Struct: Congenital HD',
-    struct_hcm:'Struct: HCM',struct_infiltrative:'Struct: Infiltrative',struct_lv:'Struct: LV Abnormality',
-    hx_syncope:'Syncope',syncopeRecent:'Syncope within 6 months',
-    hx_svt:'Paroxysmal SVT',hx_vf:'VF',hx_vt:'VT',
-    hx_avp:'Aortic Valve Procedure',avpType:'AVP Type',avpRecent:'AVP within 6 months',
-    hx_mvp:'Mitral Valve Procedure',mvpType:'MVP Type',mvpRecent:'MVP within 6 months',
-    hx_ca:'Coronary Angiography',caRecent:'CA within 6 months',caAfterArrest:'CA After Arrest',
-    hx_cabg:'Prior CABG',cabgRecent:'CABG within 6 months',
-    hx_pci:'Prior PCI',pciRecent:'PCI within 6 months',
-    hx_cied:'Prior CIED',cied_single:'CIED: Single PPM',cied_dual:'CIED: Dual PPM',cied_crtp:'CIED: CRT-P',
-    cied_leadlessSingle:'CIED: Leadless Single',cied_leadlessDual:'CIED: Leadless Dual',
-    cied_his:'CIED: His Bundle',cied_lbbb:'CIED: LBBA PPM',cied_icdSingle:'CIED: ICD Single',
-    cied_icdDual:'CIED: ICD Dual',cied_crtd:'CIED: CRT-D',cied_evicd:'CIED: EV-ICD',cied_sicd:'CIED: S-ICD',cied_unknown:'CIED: Unknown',
-    inv_ecg:'ECG',ecgAtrialRhythm:'ECG Atrial Rhythm',ecgVentRhythm:'ECG Vent Rhythm',ecgQRS:'QRS (msec)',ecgQRSna:'QRS Not Assessed',
-    inv_holter:'Holter',holterAtrialRhythm:'Holter Atrial Rhythm',holterVentRhythm:'Holter Vent Rhythm',
-    inv_tte:'TTE',lvef:'LVEF (%)',lvefNA:'LVEF Not Assessed',lvesd:'LVESD (mm)',lvedd:'LVEDD (mm)',
-    rvsp:'RVSP (mmHg)',rvspNA:'RVSP Not Assessed',
-    inv_sevValve:'Severe Valve Disease',sevMR:'Severe MR',sevAS:'Severe AS',sevAR:'Severe AR',sevTR:'Severe TR',
-    intracardThrombus:'Intracardiac Thrombus',
-    inv_tee:'TEE',teeThrombus:'TEE Atrial Thrombus',inv_laa:'LAA Morphology',
-    laaOstial:'LAA Ostial Diameter (mm)',laaDepth:'LAA Depth (mm)',
-    inv_cardiacCT:'Cardiac CT',inv_cmr:'Cardiac MRI',
-    creatInit:'Creatinine Initial',creatInitNA:'Creat Init Not Collected',
-    creatPeak:'Creatinine Peak',creatPeakNA:'Creat Peak Not Collected',
-    hgbInit:'Hgb Initial',hgbInitNA:'Hgb Init Not Collected',
-    hgbLowest:'Hgb Lowest',hgbLowestNA:'Hgb Lowest Not Collected',
-    sodium:'Sodium',sodiumNA:'Sodium Not Collected',
-    potassium:'Potassium',potassiumNA:'Potassium Not Collected',
-    magnesium:'Magnesium',magnesiumNA:'Magnesium Not Collected',
-    inr:'INR',inrNA:'INR Not Collected',
-    procStartDate:'Procedure Date',procStartTime:'Proc Start Time',procEndTime:'Proc End Time',operatorName:'Operator',
-    crtInd_surv:'CRT Ind: Cardiac Arrest Survivors',crtInd_eps:'CRT Ind: Inducible VT by EPS',
-    crtInd_icmEF:'CRT Ind: ICM EF≤35%',crtInd_nicmEF:'CRT Ind: Non-ICM EF≤35%',
-    crtGenerator:'CRT Generator Type',crtDeviceName:'CRT Device Name',
-    tpm_chb:'TPM Ind: CHB',tpm_mobitz2:'TPM Ind: Mobitz II',tpm_altBBB:'TPM Ind: Alt BBB',tpm_sss:'TPM Ind: SSS',
-    ppmGenerator:'PPM Generator Type',ppmDeviceName:'PPM Device Name',
-    ppmInd_21block:'PPM Ind: 2:1 Block',ppmInd_mobitz2:'PPM Ind: Mobitz II',ppmInd_chb:'PPM Ind: CHB',ppmInd_sss:'PPM Ind: SSS',
-    eps_avnrt:'EPS: AVNRT',eps_wpw:'EPS: WPW',eps_aflutter:'EPS: AFl',eps_afib:'EPS: AFib',eps_vt:'EPS: VT',eps_pvcs:'EPS: PVCs',
-    epsTransseptal:'EPS: Transseptal',epsICE:'EPS: ICE Used',epsAblTime:'EPS: Ablation Time (min)',epsFluoroTime:'EPS: Fluoro Time (min)',
-    laao_nonvalvular:'LAAO Ind: Non-valvular AFib',laao_highBleed:'LAAO Ind: High Bleed Risk',
-    laao_contraOAC:'LAAO Ind: Contra OAC',laao_priorBleed:'LAAO Ind: Prior Major Bleed',
-    laaoDeviceType:'LAAO Device',laaoDeviceSize:'LAAO Device Size (mm)',laaoPASS:'LAAO PASS Criteria Met',laaoOutcome:'LAAO Outcome',
-    comp_ca:'Hospital CA',comp_pci:'Hospital PCI',comp_cabg:'Hospital CABG',comp_tavr:'Hospital TAVR',
-    cx_cardArrest:'CX: Cardiac Arrest',cx_pulEdema:'CX: Pulmonary Edema',cx_tamponade1:'CX: Cardiac Tamponade',
-    cx_stroke:'CX: Stroke',strokeType:'CX: Stroke Type',
-    cx_cardShock:'CX: Cardiogenic Shock',scaiStage:'SCAI Stage',
-    cx_bleeding:'CX: Bleeding',bleedType:'CX: Bleed Type',bleedSubType:'CX: Bleed Sub-Type',
-    cx_mi:'CX: MI',cx_devEmbol:'CX: Device Embolization',
-    cx_pleuralEff:'CX: Pleural Effusion',cx_leadDislodge:'CX: Lead Dislodge',
-    procSuccess:'Procedure Success',postECGrhythm:'Post-Proc ECG Rhythm',
-    dischargeDate:'Discharge Date',dischargeTime:'Discharge Time',
-    dischargeStatus:'Discharge Status',causeOfDeath:'Cause of Death',dischargeType:'Discharge Type',
-  };
+// DOWNLOADS
+async function loadExportFilters(){
+const snap=await getDocs(collection(db,‘users’));
+const opts=[’<option value="">All Investigators</option>’];
+snap.forEach(ds=>{const u=ds.data();if(u.role===‘investigator’||u.role===‘cso’)opts.push(`<option value="${ds.id}">${u.displayName||u.email}</option>`);});
+document.getElementById(‘exportInvestigator’).innerHTML=opts.join(’’);
+}
+async function getFilteredExportData(){
+const snap=await getDocs(collection(db,‘patients_full’));
+const df=document.getElementById(‘exportDateFrom’)?.value||’’;
+const dt=document.getElementById(‘exportDateTo’)?.value||’’;
+const inv=document.getElementById(‘exportInvestigator’)?.value||’’;
+const ep=document.getElementById(‘exportEpReason’)?.value||’’;
+const all=[];
+snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();all.push(d);});
+all.sort((a,b)=>(a.admissionDate||’’).localeCompare(b.admissionDate||’’));
+all.forEach((d,i)=>{d._no=i+1;});
+return all.filter(d=>{
+if(df&&d.admissionDate&&d.admissionDate<df)return false;
+if(dt&&d.admissionDate&&d.admissionDate>dt)return false;
+if(inv&&d.enrolledBy!==inv)return false;
+if(ep&&d.epReason!==ep)return false;
+return true;
+});
+}
 
-  const SPSS_VARS={
-    _no:'CaseNo',nameFirst:'PtFirst',nameLast:'PtLast',civilId:'CivilID',crfNo:'CRFNo',fileNumber:'FileNo',
-    enrolledByName:'Investigator',enrolledByCode:'InvCode',updatedByName:'UpdatedBy',updatedByCode:'UpdCode',
-    gender:'Gender',nationality:'Natl',yob:'YOB',estimatedAge:'Age',admissionDate:'AdmDate',recordStatus:'Status',submissionType:'SubType',
-    epReason:'EPReason',pacemakerType:'PmType',patientOrigin:'PtOrigin',
-    sysBp:'SysBP',sysBpUnrec:'SysBPUnrec',diaBp:'DiaBP',diaBpUnrec:'DiaBPUnrec',
-    hr:'HR',hrUnrec:'HRUnrec',weight:'Weight',weightUnrec:'WtUnrec',height:'Height',heightUnrec:'HtUnrec',
-    hx_afib:'HxAFib',afibClassification:'AFibClass',afibChads:'CHADS',afibHasBled:'HASBLED',
-    afibCardioversion:'AFibCardio',afibPriorAblation:'AFibPrAbl',afibContraOAC:'AFibCtrOAC',afibMajorBleed:'AFibMajBld',
-    hx_cardiacArrest:'HxCA',arrestBradycardia:'ArrBrady',arrestVF:'ArrVF',arrestVT:'ArrVT',
-    hx_icm:'HxICM',icmTimeframe:'ICMTime',icmGDMT:'ICMGDMT',
-    hx_hf:'HxHF',hfType:'HFType',
-    hx_cad:'HxCAD',hx_mi:'HxMI',hx_valve:'HxValve',hx_cvd:'HxCVD',
-    hx_lung:'HxLung',hx_dialysis:'HxDialys',hx_dm:'HxDM',hx_htn:'HxHTN',
-    hx_ssd:'HxSSD',ssd_brugada:'SSDbruga',ssd_cpvt:'SSDCPVT',ssd_idiopathic:'SSDIdio',ssd_longqt:'SSDLongQT',ssd_shortqt:'SSDShrtQT',
-    hx_struct:'HxStruct',struct_arvc:'StARVC',struct_congenital:'StCong',struct_hcm:'StHCM',struct_lv:'StLV',
-    hx_syncope:'HxSyncop',syncopeRecent:'SyncRec',
-    hx_svt:'HxSVT',hx_vf:'HxVF',hx_vt:'HxVT',
-    hx_avp:'HxAVP',avpType:'AVPType',hx_mvp:'HxMVP',mvpType:'MVPType',
-    hx_ca:'HxCA2',hx_cabg:'HxCABG',hx_pci:'HxPCI',
-    hx_cied:'HxCIED',cied_single:'CIEDSingl',cied_dual:'CIEDDual',cied_crtp:'CIEDCRTP',
-    cied_icdSingle:'CIEDIcdS',cied_icdDual:'CIEDIcdD',cied_crtd:'CIEDCRTD',cied_sicd:'CIEDSICD',
-    inv_ecg:'InvECG',ecgAtrialRhythm:'ECGAtrR',ecgVentRhythm:'ECGVenR',ecgQRS:'ECGQRS',ecgQRSna:'ECGQRSna',
-    inv_holter:'InvHoltr',holterAtrialRhythm:'HolAtrR',holterVentRhythm:'HolVenR',
-    inv_tte:'InvTTE',lvef:'LVEF',lvefNA:'LVEFna',lvesd:'LVESD',lvedd:'LVEDD',rvsp:'RVSP',rvspNA:'RVSPna',
-    inv_sevValve:'SevValv',sevMR:'SevMR',sevAS:'SevAS',sevAR:'SevAR',sevTR:'SevTR',intracardThrombus:'ICThrom',
-    inv_tee:'InvTEE',teeThrombus:'TEEThrom',inv_laa:'InvLAA',laaOstial:'LAAOsti',laaDepth:'LAADep',
-    inv_cardiacCT:'InvCT',inv_cmr:'InvCMR',
-    creatInit:'CrInit',creatInitNA:'CrInitNA',creatPeak:'CrPeak',creatPeakNA:'CrPeakNA',
-    hgbInit:'HgbIn',hgbInitNA:'HgbInNA',hgbLowest:'HgbLow',hgbLowestNA:'HgbLowNA',
-    sodium:'Na',sodiumNA:'NaNA',potassium:'K',potassiumNA:'KNA',magnesium:'Mg',magnesiumNA:'MgNA',inr:'INR',inrNA:'INRNA',
-    procStartDate:'ProcDate',procStartTime:'ProcStart',procEndTime:'ProcEnd',operatorName:'Operator',
-    crtInd_surv:'CRTIndSrv',crtInd_eps:'CRTIndEPS',crtInd_icmEF:'CRTIndICM',crtInd_nicmEF:'CRTIndNIC',
-    crtGenerator:'CRTGen',
-    tpm_chb:'TPMindCHB',tpm_mobitz2:'TPMindM2',tpm_altBBB:'TPMindBBB',tpm_sss:'TPMindSSS',
-    ppmGenerator:'PPMGen',ppmInd_21block:'PPMind21',ppmInd_mobitz2:'PPMindM2',ppmInd_chb:'PPMindCHB',ppmInd_sss:'PPMindSSS',
-    eps_avnrt:'EPSAVNRT',eps_wpw:'EPSWPW',eps_aflutter:'EPSAFl',eps_afib:'EPSAFib',eps_vt:'EPSVT',eps_pvcs:'EPSPVCs',
-    epsTransseptal:'EPSTrans',epsICE:'EPSICE',epsAblTime:'EPSAblT',epsFluoroTime:'EPSFluro',
-    laao_nonvalvular:'LAOIndNV',laao_highBleed:'LAOIndHB',laao_contraOAC:'LAOIndOAC',laao_priorBleed:'LAOIndPB',
-    laaoDeviceType:'LAODType',laaoDeviceSize:'LAODSize',laaoPASS:'LAOPASS',laaoOutcome:'LAOOutcm',
-    comp_ca:'HospCA',comp_pci:'HospPCI',comp_cabg:'HospCABG',comp_tavr:'HospTAVR',
-    cx_cardArrest:'CXCA',cx_pulEdema:'CXPulEd',cx_tamponade1:'CXTampon',
-    cx_stroke:'CXStroke',strokeType:'CXStrkT',
-    cx_cardShock:'CXShock',scaiStage:'SCAI',
-    cx_bleeding:'CXBleed',bleedType:'CXBlT',bleedSubType:'CXBlSub',
-    cx_mi:'CXMI',cx_devEmbol:'CXDevEmb',cx_pleuralEff:'CXPleurl',cx_leadDislodge:'CXLeadDx',
-    procSuccess:'ProcSucc',postECGrhythm:'PostECG',
-    dischargeDate:'DischDate',dischargeTime:'DischTime',dischargeStatus:'DischSt',causeOfDeath:'DthCause',dischargeType:'DischTyp',
-    homeMed_amiodarone:'HMAmio',homeMed_flecainide:'HMFlec',homeMed_sotalol:'HMSotal',
-    homeMed_warfarin:'HMWarf',homeMed_dabigatran:'HMDabig',homeMed_apixaban:'HMApixa',
-    homeMed_aspirin:'HMAspir',homeMed_clopidogrel:'HMClopi',homeMed_acei:'HMACEI',homeMed_arb:'HMARB',
-    homeMed_arni:'HMARNI',homeMed_sglt:'HMSGLT',homeMed_betablocker:'HMBB',homeMed_mra:'HMMRA',
-    homeMed_digoxin:'HMDigox',homeMed_loopdiuretic:'HMLoop',
-    dcMed_warfarin:'DCWarf',dcMed_apixaban:'DCApixa',dcMed_aspirin:'DCAspir',
-    dcMed_clopidogrel:'DCClopi',dcMed_acei:'DCACEI',dcMed_betablocker:'DCBB',dcMed_mra:'DCMRA',dcMed_digoxin:'DCDigox',dcMed_loopdiuretic:'DCLoop',
-  };
+window.searchForSinglePDF=async function(){
+const q=document.getElementById(‘singlePatientSearch’).value.trim();
+if(!q){alert(‘Enter a Civil ID or File Number.’);return;}
+const snap=await getDocs(collection(db,‘patients_full’));
+const results=[];
+snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();
+if((d.civilId||’’).includes(q)||(d.fileNumber||’’).includes(q))results.push(d);
+});
+const div=document.getElementById(‘singlePatientResult’);
+if(!results.length){div.innerHTML=’<div class="text-sm text-red-500 mt-2">No patient found.</div>’;return;}
+div.innerHTML=results.map(d=>` <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;margin-top:8px;"> <div><div class="font-bold text-sm">${d.fullName||'Anonymous'}</div><div class="text-xs text-gray-500">CID: ${d.civilId||'—'} | File: ${d.fileNumber||'—'} | ${d.admissionDate||'—'}</div></div> <button onclick='exportSinglePDF(${JSON.stringify(d).replace(/'/g,"\\'")})' class="btn btn-red text-xs px-3 py-1.5"><i class="fas fa-file-pdf mr-1"></i>PDF</button> </div>`).join(’’);
+};
 
-  window.exportSPSS=async function(){
-    const data=await getFilteredExportData();
-    if(!data.length){alert('No data to export.');return;}
-    const vars=Object.keys(SPSS_VARS);
-    const encodeVal=(r,v)=>{
-      let val=r[v];
-      if(v.endsWith('Unrec')||v.endsWith('NA')){
-        if(val===true||val==='true')return 9;
-        if(val===false||val==='false'||val===undefined||val===null||val==='')return 0;
-        return 0;
-      }
-      const unrecKey=v+'Unrec';const naKey=v+'NA';
-      if((r[unrecKey]===true||r[unrecKey]==='true')||(r[naKey]===true||r[naKey]==='true')){
-        if(val===undefined||val===null||val==='')return 9;
-      }
-      if(val===true||val==='true')return 1;
-      if(val===false||val==='false')return 0;
-      if(val===undefined||val===null||val==='')return '';
-      return val;
-    };
-    const dataRows=[vars.map(v=>SPSS_VARS[v])];
-    data.forEach(r=>{dataRows.push(vars.map(v=>encodeVal(r,v)));});
-    const codebook=[['Variable','Label','Type','Missing Code','Notes']];
-    vars.forEach(v=>{
-      const label=FIELD_MAP[v]||v;
-      const sample=data[0]?.[v];
-      let type='String';
-      if(v.endsWith('Unrec')||v.endsWith('NA'))type='Binary (0=No, 9=Unrecorded)';
-      else if(sample===true||sample===false||sample==='Yes'||sample==='No')type='Binary (1=Yes, 0=No)';
-      else if(typeof sample==='number'||(!isNaN(parseFloat(sample))&&sample!==''))type='Numeric';
-      codebook.push([SPSS_VARS[v],label,type,'9 = Not recorded/Unrecordable','']);
-    });
-    const wb=XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(dataRows),'SPSS_Data');
-    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(codebook),'Codebook');
-    XLSX.writeFile(wb,'EPS_SPSS_Export.xlsx');
-  };
+const FIELD_MAP={
+nameFirst:‘First Name’,nameMiddle:‘Middle Name’,nameLast:‘Last Name’,civilId:‘Civil ID’,crfNo:‘CRF Number’,fileNumber:‘File Number’,
+gender:‘Gender’,nationality:‘Nationality’,yob:‘Year of Birth’,estimatedAge:‘Age (yrs)’,admissionDate:‘Admission Date’,
+patientContact:‘Patient Contact’,relativeContact:‘Relative Contact’,
+enrolledByName:‘Enrolled By’,enrolledByCode:‘Enrolled By (Code)’,updatedByName:‘Updated By’,updatedByCode:‘Updated By (Code)’,
+epReason:‘EP Lab Reason’,pacemakerType:‘Pacemaker Type’,patientOrigin:‘Patient Origin’,
+recordStatus:‘Record Status’,submissionType:‘Submission Type’,
+sysBp:‘Systolic BP’,sysBpUnrec:‘SysBP Unrecordable’,diaBp:‘Diastolic BP’,diaBpUnrec:‘DiaBP Unrecordable’,
+hr:‘Heart Rate’,hrUnrec:‘HR Unrecordable’,weight:‘Weight (kg)’,weightUnrec:‘Weight Unrecordable’,height:‘Height (cm)’,heightUnrec:‘Height Unrecordable’,
+hx_afib:‘Atrial Fibrillation’,afibClassification:‘AFib Classification’,afibChads:‘CHA₂DS₂-VASc’,afibHasBled:‘HAS-BLED’,
+afibCardioversion:‘Plans for Cardioversion’,afibPriorAblation:‘Prior Ablation Attempt’,
+afibContraOAC:‘Contraindication to OAC’,afibMajorBleed:‘Prior Major Bleeding’,
+hx_cardiacArrest:‘Cardiac Arrest’,arrestBradycardia:‘Arrest: Bradycardia’,arrestVF:‘Arrest: VF’,arrestVT:‘Arrest: VT’,
+hx_icm:‘Ischemic CMP’,icmTimeframe:‘ICM Timeframe’,icmGDMT:‘ICM GDMT’,
+hx_hf:‘Heart Failure’,hfType:‘HF Type’,
+hx_cad:‘CAD’,hx_mi:‘Prior MI’,hx_valve:‘Valvular HD’,hx_cvd:‘Cerebrovascular Disease’,
+hx_lung:‘Chronic Lung Disease’,hx_dialysis:‘On Dialysis’,hx_dm:‘Diabetes Mellitus’,hx_htn:‘Hypertension’,
+hx_ssd:‘Sudden Death Syndrome’,ssd_brugada:‘SSD: Brugada’,ssd_cpvt:‘SSD: CPVT’,ssd_idiopathic:‘SSD: Idiopathic’,
+ssd_longqt:‘SSD: Long QT’,ssd_shortqt:‘SSD: Short QT’,ssd_unknown:‘SSD: Unknown’,
+hx_struct:‘Structural Abnormalities’,struct_arvc:‘Struct: ARVC’,struct_congenital:‘Struct: Congenital HD’,
+struct_hcm:‘Struct: HCM’,struct_infiltrative:‘Struct: Infiltrative’,struct_lv:‘Struct: LV Abnormality’,
+hx_syncope:‘Syncope’,syncopeRecent:‘Syncope within 6 months’,
+hx_svt:‘Paroxysmal SVT’,hx_vf:‘VF’,hx_vt:‘VT’,
+hx_avp:‘Aortic Valve Procedure’,avpType:‘AVP Type’,avpRecent:‘AVP within 6 months’,
+hx_mvp:‘Mitral Valve Procedure’,mvpType:‘MVP Type’,mvpRecent:‘MVP within 6 months’,
+hx_ca:‘Coronary Angiography’,caRecent:‘CA within 6 months’,caAfterArrest:‘CA After Arrest’,
+hx_cabg:‘Prior CABG’,cabgRecent:‘CABG within 6 months’,
+hx_pci:‘Prior PCI’,pciRecent:‘PCI within 6 months’,
+hx_cied:‘Prior CIED’,cied_single:‘CIED: Single PPM’,cied_dual:‘CIED: Dual PPM’,cied_crtp:‘CIED: CRT-P’,
+cied_leadlessSingle:‘CIED: Leadless Single’,cied_leadlessDual:‘CIED: Leadless Dual’,
+cied_his:‘CIED: His Bundle’,cied_lbbb:‘CIED: LBBA PPM’,cied_icdSingle:‘CIED: ICD Single’,
+cied_icdDual:‘CIED: ICD Dual’,cied_crtd:‘CIED: CRT-D’,cied_evicd:‘CIED: EV-ICD’,cied_sicd:‘CIED: S-ICD’,cied_unknown:‘CIED: Unknown’,
+inv_ecg:‘ECG’,ecgAtrialRhythm:‘ECG Atrial Rhythm’,ecgVentRhythm:‘ECG Vent Rhythm’,ecgQRS:‘QRS (msec)’,ecgQRSna:‘QRS Not Assessed’,
+inv_holter:‘Holter’,holterAtrialRhythm:‘Holter Atrial Rhythm’,holterVentRhythm:‘Holter Vent Rhythm’,
+inv_tte:‘TTE’,lvef:‘LVEF (%)’,lvefNA:‘LVEF Not Assessed’,lvesd:‘LVESD (mm)’,lvedd:‘LVEDD (mm)’,
+rvsp:‘RVSP (mmHg)’,rvspNA:‘RVSP Not Assessed’,
+inv_sevValve:‘Severe Valve Disease’,sevMR:‘Severe MR’,sevAS:‘Severe AS’,sevAR:‘Severe AR’,sevTR:‘Severe TR’,
+intracardThrombus:‘Intracardiac Thrombus’,
+inv_tee:‘TEE’,teeThrombus:‘TEE Atrial Thrombus’,inv_laa:‘LAA Morphology’,
+laaOstial:‘LAA Ostial Diameter (mm)’,laaDepth:‘LAA Depth (mm)’,
+inv_cardiacCT:‘Cardiac CT’,inv_cmr:‘Cardiac MRI’,
+creatInit:‘Creatinine Initial’,creatInitNA:‘Creat Init Not Collected’,
+creatPeak:‘Creatinine Peak’,creatPeakNA:‘Creat Peak Not Collected’,
+hgbInit:‘Hgb Initial’,hgbInitNA:‘Hgb Init Not Collected’,
+hgbLowest:‘Hgb Lowest’,hgbLowestNA:‘Hgb Lowest Not Collected’,
+sodium:‘Sodium’,sodiumNA:‘Sodium Not Collected’,
+potassium:‘Potassium’,potassiumNA:‘Potassium Not Collected’,
+magnesium:‘Magnesium’,magnesiumNA:‘Magnesium Not Collected’,
+inr:‘INR’,inrNA:‘INR Not Collected’,
+procStartDate:‘Procedure Date’,procStartTime:‘Proc Start Time’,procEndTime:‘Proc End Time’,operatorName:‘Operator’,
+crtInd_surv:‘CRT Ind: Cardiac Arrest Survivors’,crtInd_eps:‘CRT Ind: Inducible VT by EPS’,
+crtInd_icmEF:‘CRT Ind: ICM EF≤35%’,crtInd_nicmEF:‘CRT Ind: Non-ICM EF≤35%’,
+crtGenerator:‘CRT Generator Type’,crtDeviceName:‘CRT Device Name’,
+tpm_chb:‘TPM Ind: CHB’,tpm_mobitz2:‘TPM Ind: Mobitz II’,tpm_altBBB:‘TPM Ind: Alt BBB’,tpm_sss:‘TPM Ind: SSS’,
+ppmGenerator:‘PPM Generator Type’,ppmDeviceName:‘PPM Device Name’,
+ppmInd_21block:‘PPM Ind: 2:1 Block’,ppmInd_mobitz2:‘PPM Ind: Mobitz II’,ppmInd_chb:‘PPM Ind: CHB’,ppmInd_sss:‘PPM Ind: SSS’,
+eps_avnrt:‘EPS: AVNRT’,eps_wpw:‘EPS: WPW’,eps_aflutter:‘EPS: AFl’,eps_afib:‘EPS: AFib’,eps_vt:‘EPS: VT’,eps_pvcs:‘EPS: PVCs’,
+epsTransseptal:‘EPS: Transseptal’,epsICE:‘EPS: ICE Used’,epsAblTime:‘EPS: Ablation Time (min)’,epsFluoroTime:‘EPS: Fluoro Time (min)’,
+laao_nonvalvular:‘LAAO Ind: Non-valvular AFib’,laao_highBleed:‘LAAO Ind: High Bleed Risk’,
+laao_contraOAC:‘LAAO Ind: Contra OAC’,laao_priorBleed:‘LAAO Ind: Prior Major Bleed’,
+laaoDeviceType:‘LAAO Device’,laaoDeviceSize:‘LAAO Device Size (mm)’,laaoPASS:‘LAAO PASS Criteria Met’,laaoOutcome:‘LAAO Outcome’,
+comp_ca:‘Hospital CA’,comp_pci:‘Hospital PCI’,comp_cabg:‘Hospital CABG’,comp_tavr:‘Hospital TAVR’,
+cx_cardArrest:‘CX: Cardiac Arrest’,cx_pulEdema:‘CX: Pulmonary Edema’,cx_tamponade1:‘CX: Cardiac Tamponade’,
+cx_stroke:‘CX: Stroke’,strokeType:‘CX: Stroke Type’,
+cx_cardShock:‘CX: Cardiogenic Shock’,scaiStage:‘SCAI Stage’,
+cx_bleeding:‘CX: Bleeding’,bleedType:‘CX: Bleed Type’,bleedSubType:‘CX: Bleed Sub-Type’,
+cx_mi:‘CX: MI’,cx_devEmbol:‘CX: Device Embolization’,
+cx_pleuralEff:‘CX: Pleural Effusion’,cx_leadDislodge:‘CX: Lead Dislodge’,
+procSuccess:‘Procedure Success’,postECGrhythm:‘Post-Proc ECG Rhythm’,
+dischargeDate:‘Discharge Date’,dischargeTime:‘Discharge Time’,
+dischargeStatus:‘Discharge Status’,causeOfDeath:‘Cause of Death’,dischargeType:‘Discharge Type’,
+};
 
-  window.exportToExcel=async function(){
-    const data=await getFilteredExportData();
-    if(!data.length){alert('No data to export.');return;}
-    const allFields=Object.keys(FIELD_MAP);
-    const mkSheet=(fields)=>{
-      const hdr=fields.map(f=>FIELD_MAP[f]||f);
-      const rows=data.map(r=>fields.map(f=>{let v=r[f];if(v===true)return'Yes';if(v===false)return'No';return v??'';}));
-      return XLSX.utils.aoa_to_sheet([hdr,...rows]);
-    };
-    const idFields=['_no','nameFirst','nameMiddle','nameLast','civilId','crfNo','fileNumber','gender','nationality','yob','estimatedAge','admissionDate','recordStatus','epReason','enrolledByName','patientOrigin'];
-    const hxFields=allFields.filter(f=>f.startsWith('hx_')||f.startsWith('arrest')||f.startsWith('icm')||f.startsWith('hf')||f.startsWith('afib')||['sysBp','diaBp','hr','weight','height'].includes(f));
-    const invFields=allFields.filter(f=>f.startsWith('inv_')||['lvef','lvesd','lvedd','rvsp','ecgAtrialRhythm','ecgVentRhythm','ecgQRS','creatInit','creatPeak','hgbInit','hgbLowest','sodium','potassium','magnesium','inr'].includes(f));
-    const outcFields=allFields.filter(f=>f.startsWith('cx_')||f.startsWith('bleed')||['procStartDate','procStartTime','procEndTime','operatorName','procSuccess','postECGrhythm','dischargeDate','dischargeStatus','causeOfDeath','dischargeType'].includes(f));
-    const wb=XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb,mkSheet(idFields),'Demographics');
-    XLSX.utils.book_append_sheet(wb,mkSheet(hxFields),'History & Vitals');
-    XLSX.utils.book_append_sheet(wb,mkSheet(invFields),'Investigations & Labs');
-    XLSX.utils.book_append_sheet(wb,mkSheet(outcFields),'Procedure & Outcome');
-    XLSX.writeFile(wb,'EPS_Registry_Export.xlsx');
-  };
+const SPSS_VARS={
+_no:‘CaseNo’,nameFirst:‘PtFirst’,nameLast:‘PtLast’,civilId:‘CivilID’,crfNo:‘CRFNo’,fileNumber:‘FileNo’,
+enrolledByName:‘Investigator’,enrolledByCode:‘InvCode’,updatedByName:‘UpdatedBy’,updatedByCode:‘UpdCode’,
+gender:‘Gender’,nationality:‘Natl’,yob:‘YOB’,estimatedAge:‘Age’,admissionDate:‘AdmDate’,recordStatus:‘Status’,submissionType:‘SubType’,
+epReason:‘EPReason’,pacemakerType:‘PmType’,patientOrigin:‘PtOrigin’,
+sysBp:‘SysBP’,sysBpUnrec:‘SysBPUnrec’,diaBp:‘DiaBP’,diaBpUnrec:‘DiaBPUnrec’,
+hr:‘HR’,hrUnrec:‘HRUnrec’,weight:‘Weight’,weightUnrec:‘WtUnrec’,height:‘Height’,heightUnrec:‘HtUnrec’,
+hx_afib:‘HxAFib’,afibClassification:‘AFibClass’,afibChads:‘CHADS’,afibHasBled:‘HASBLED’,
+afibCardioversion:‘AFibCardio’,afibPriorAblation:‘AFibPrAbl’,afibContraOAC:‘AFibCtrOAC’,afibMajorBleed:‘AFibMajBld’,
+hx_cardiacArrest:‘HxCA’,arrestBradycardia:‘ArrBrady’,arrestVF:‘ArrVF’,arrestVT:‘ArrVT’,
+hx_icm:‘HxICM’,icmTimeframe:‘ICMTime’,icmGDMT:‘ICMGDMT’,
+hx_hf:‘HxHF’,hfType:‘HFType’,
+hx_cad:‘HxCAD’,hx_mi:‘HxMI’,hx_valve:‘HxValve’,hx_cvd:‘HxCVD’,
+hx_lung:‘HxLung’,hx_dialysis:‘HxDialys’,hx_dm:‘HxDM’,hx_htn:‘HxHTN’,
+hx_ssd:‘HxSSD’,ssd_brugada:‘SSDbruga’,ssd_cpvt:‘SSDCPVT’,ssd_idiopathic:‘SSDIdio’,ssd_longqt:‘SSDLongQT’,ssd_shortqt:‘SSDShrtQT’,
+hx_struct:‘HxStruct’,struct_arvc:‘StARVC’,struct_congenital:‘StCong’,struct_hcm:‘StHCM’,struct_lv:‘StLV’,
+hx_syncope:‘HxSyncop’,syncopeRecent:‘SyncRec’,
+hx_svt:‘HxSVT’,hx_vf:‘HxVF’,hx_vt:‘HxVT’,
+hx_avp:‘HxAVP’,avpType:‘AVPType’,hx_mvp:‘HxMVP’,mvpType:‘MVPType’,
+hx_ca:‘HxCA2’,hx_cabg:‘HxCABG’,hx_pci:‘HxPCI’,
+hx_cied:‘HxCIED’,cied_single:‘CIEDSingl’,cied_dual:‘CIEDDual’,cied_crtp:‘CIEDCRTP’,
+cied_icdSingle:‘CIEDIcdS’,cied_icdDual:‘CIEDIcdD’,cied_crtd:‘CIEDCRTD’,cied_sicd:‘CIEDSICD’,
+inv_ecg:‘InvECG’,ecgAtrialRhythm:‘ECGAtrR’,ecgVentRhythm:‘ECGVenR’,ecgQRS:‘ECGQRS’,ecgQRSna:‘ECGQRSna’,
+inv_holter:‘InvHoltr’,holterAtrialRhythm:‘HolAtrR’,holterVentRhythm:‘HolVenR’,
+inv_tte:‘InvTTE’,lvef:‘LVEF’,lvefNA:‘LVEFna’,lvesd:‘LVESD’,lvedd:‘LVEDD’,rvsp:‘RVSP’,rvspNA:‘RVSPna’,
+inv_sevValve:‘SevValv’,sevMR:‘SevMR’,sevAS:‘SevAS’,sevAR:‘SevAR’,sevTR:‘SevTR’,intracardThrombus:‘ICThrom’,
+inv_tee:‘InvTEE’,teeThrombus:‘TEEThrom’,inv_laa:‘InvLAA’,laaOstial:‘LAAOsti’,laaDepth:‘LAADep’,
+inv_cardiacCT:‘InvCT’,inv_cmr:‘InvCMR’,
+creatInit:‘CrInit’,creatInitNA:‘CrInitNA’,creatPeak:‘CrPeak’,creatPeakNA:‘CrPeakNA’,
+hgbInit:‘HgbIn’,hgbInitNA:‘HgbInNA’,hgbLowest:‘HgbLow’,hgbLowestNA:‘HgbLowNA’,
+sodium:‘Na’,sodiumNA:‘NaNA’,potassium:‘K’,potassiumNA:‘KNA’,magnesium:‘Mg’,magnesiumNA:‘MgNA’,inr:‘INR’,inrNA:‘INRNA’,
+procStartDate:‘ProcDate’,procStartTime:‘ProcStart’,procEndTime:‘ProcEnd’,operatorName:‘Operator’,
+crtInd_surv:‘CRTIndSrv’,crtInd_eps:‘CRTIndEPS’,crtInd_icmEF:‘CRTIndICM’,crtInd_nicmEF:‘CRTIndNIC’,
+crtGenerator:‘CRTGen’,
+tpm_chb:‘TPMindCHB’,tpm_mobitz2:‘TPMindM2’,tpm_altBBB:‘TPMindBBB’,tpm_sss:‘TPMindSSS’,
+ppmGenerator:‘PPMGen’,ppmInd_21block:‘PPMind21’,ppmInd_mobitz2:‘PPMindM2’,ppmInd_chb:‘PPMindCHB’,ppmInd_sss:‘PPMindSSS’,
+eps_avnrt:‘EPSAVNRT’,eps_wpw:‘EPSWPW’,eps_aflutter:‘EPSAFl’,eps_afib:‘EPSAFib’,eps_vt:‘EPSVT’,eps_pvcs:‘EPSPVCs’,
+epsTransseptal:‘EPSTrans’,epsICE:‘EPSICE’,epsAblTime:‘EPSAblT’,epsFluoroTime:‘EPSFluro’,
+laao_nonvalvular:‘LAOIndNV’,laao_highBleed:‘LAOIndHB’,laao_contraOAC:‘LAOIndOAC’,laao_priorBleed:‘LAOIndPB’,
+laaoDeviceType:‘LAODType’,laaoDeviceSize:‘LAODSize’,laaoPASS:‘LAOPASS’,laaoOutcome:‘LAOOutcm’,
+comp_ca:‘HospCA’,comp_pci:‘HospPCI’,comp_cabg:‘HospCABG’,comp_tavr:‘HospTAVR’,
+cx_cardArrest:‘CXCA’,cx_pulEdema:‘CXPulEd’,cx_tamponade1:‘CXTampon’,
+cx_stroke:‘CXStroke’,strokeType:‘CXStrkT’,
+cx_cardShock:‘CXShock’,scaiStage:‘SCAI’,
+cx_bleeding:‘CXBleed’,bleedType:‘CXBlT’,bleedSubType:‘CXBlSub’,
+cx_mi:‘CXMI’,cx_devEmbol:‘CXDevEmb’,cx_pleuralEff:‘CXPleurl’,cx_leadDislodge:‘CXLeadDx’,
+procSuccess:‘ProcSucc’,postECGrhythm:‘PostECG’,
+dischargeDate:‘DischDate’,dischargeTime:‘DischTime’,dischargeStatus:‘DischSt’,causeOfDeath:‘DthCause’,dischargeType:‘DischTyp’,
+homeMed_amiodarone:‘HMAmio’,homeMed_flecainide:‘HMFlec’,homeMed_sotalol:‘HMSotal’,
+homeMed_warfarin:‘HMWarf’,homeMed_dabigatran:‘HMDabig’,homeMed_apixaban:‘HMApixa’,
+homeMed_aspirin:‘HMAspir’,homeMed_clopidogrel:‘HMClopi’,homeMed_acei:‘HMACEI’,homeMed_arb:‘HMARB’,
+homeMed_arni:‘HMARNI’,homeMed_sglt:‘HMSGLT’,homeMed_betablocker:‘HMBB’,homeMed_mra:‘HMMRA’,
+homeMed_digoxin:‘HMDigox’,homeMed_loopdiuretic:‘HMLoop’,
+dcMed_warfarin:‘DCWarf’,dcMed_apixaban:‘DCApixa’,dcMed_aspirin:‘DCAspir’,
+dcMed_clopidogrel:‘DCClopi’,dcMed_acei:‘DCACEI’,dcMed_betablocker:‘DCBB’,dcMed_mra:‘DCMRA’,dcMed_digoxin:‘DCDigox’,dcMed_loopdiuretic:‘DCLoop’,
+};
 
-  window.exportToPDF=async function(){
-    const data=await getFilteredExportData();
-    if(!data.length){alert('No data to export.');return;}
-    const{jsPDF}=window.jspdf;const pdfdoc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
-    pdfdoc.setFontSize(14);pdfdoc.setFont('helvetica','bold');
-    pdfdoc.text('EPS Registry – Mubarak Alkabeer Hospital',14,14);
-    pdfdoc.setFontSize(9);pdfdoc.setFont('helvetica','normal');
-    pdfdoc.text(`Generated: ${new Date().toLocaleDateString()} | ${data.length} records`,14,20);
-    const cols=['#','Patient','Civil ID','EP Reason','Investigator','Admission','Status','Completion'];
-    const rows=data.map(r=>{const c=calcCompletion(r);return[r._no||'',r.fullName||'Anonymous',r.civilId||'—',r.epReason||'—',r.enrolledByName||'—',r.admissionDate||'—',(r.recordStatus||'draft').toUpperCase(),`${c.pct}%`];});
-    pdfdoc.autoTable({head:[cols],body:rows,startY:26,styles:{fontSize:8},headStyles:{fillColor:[30,64,175],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[248,250,252]}});
-    pdfdoc.save('EPS_Registry_Summary.pdf');
-  };
+window.exportSPSS=async function(){
+const data=await getFilteredExportData();
+if(!data.length){alert(‘No data to export.’);return;}
+const vars=Object.keys(SPSS_VARS);
+const encodeVal=(r,v)=>{
+let val=r[v];
+if(v.endsWith(‘Unrec’)||v.endsWith(‘NA’)){
+if(val===true||val===‘true’)return 9;
+if(val===false||val===‘false’||val===undefined||val===null||val===’’)return 0;
+return 0;
+}
+const unrecKey=v+‘Unrec’;const naKey=v+‘NA’;
+if((r[unrecKey]===true||r[unrecKey]===‘true’)||(r[naKey]===true||r[naKey]===‘true’)){
+if(val===undefined||val===null||val===’’)return 9;
+}
+if(val===true||val===‘true’)return 1;
+if(val===false||val===‘false’)return 0;
+if(val===undefined||val===null||val===’’)return ‘’;
+return val;
+};
+const dataRows=[vars.map(v=>SPSS_VARS[v])];
+data.forEach(r=>{dataRows.push(vars.map(v=>encodeVal(r,v)));});
+const codebook=[[‘Variable’,‘Label’,‘Type’,‘Missing Code’,‘Notes’]];
+vars.forEach(v=>{
+const label=FIELD_MAP[v]||v;
+const sample=data[0]?.[v];
+let type=‘String’;
+if(v.endsWith(‘Unrec’)||v.endsWith(‘NA’))type=‘Binary (0=No, 9=Unrecorded)’;
+else if(sample===true||sample===false||sample===‘Yes’||sample===‘No’)type=‘Binary (1=Yes, 0=No)’;
+else if(typeof sample===‘number’||(!isNaN(parseFloat(sample))&&sample!==’’))type=‘Numeric’;
+codebook.push([SPSS_VARS[v],label,type,‘9 = Not recorded/Unrecordable’,’’]);
+});
+const wb=XLSX.utils.book_new();
+XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(dataRows),‘SPSS_Data’);
+XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(codebook),‘Codebook’);
+XLSX.writeFile(wb,‘EPS_SPSS_Export.xlsx’);
+};
 
-  window.exportSinglePDF=function(data){
-    const{jsPDF}=window.jspdf;const pdfdoc=new jsPDF({unit:'mm',format:'a4'});
-    const comp=calcCompletion(data);
-    pdfdoc.setFillColor(30,64,175);pdfdoc.rect(0,0,210,22,'F');
-    pdfdoc.setTextColor(255,255,255);pdfdoc.setFontSize(13);pdfdoc.setFont('helvetica','bold');
-    pdfdoc.text('EPS Registry – Mubarak Alkabeer Hospital',14,10);
-    pdfdoc.setFontSize(9);pdfdoc.setFont('helvetica','normal');
-    pdfdoc.text('Advanced Electrophysiology Registry',14,16);
-    pdfdoc.setTextColor(30,30,30);
-    pdfdoc.setFontSize(14);pdfdoc.setFont('helvetica','bold');
-    pdfdoc.text(data.fullName||'Anonymous Patient',14,30);
-    pdfdoc.setFontSize(9);pdfdoc.setFont('helvetica','normal');
-    pdfdoc.text([
-      `Civil ID: ${data.civilId||'—'}  |  File: ${data.fileNumber||'—'}  |  CRF: ${data.crfNo||'—'}`,
-      `Gender: ${data.gender||'—'}  |  Age: ${data.estimatedAge||'—'}  |  Admission: ${data.admissionDate||'—'}`,
-      `EP Reason: ${data.epReason||'—'}  |  Investigator: ${data.enrolledByName||'—'}  |  Status: ${(data.recordStatus||'draft').toUpperCase()}  |  Completion: ${comp.pct}%`,
-    ],14,38);
-    let y=52;
-    const sections=[
-      {title:'Procedure Details',keys:['procStartDate','procStartTime','procEndTime','operatorName','procSuccess']},
-      {title:'History Summary',keys:['hx_afib','hx_icm','hx_hf','hx_cad','hx_dm','hx_htn','hx_cied']},
-      {title:'Investigations',keys:['inv_ecg','inv_tte','lvef','creatInit','hgbInit','sodium','potassium','inr']},
-      {title:'Complications',keys:['cx_stroke','cx_cardArrest','cx_bleeding','cx_cardShock','cx_mi']},
-      {title:'Discharge',keys:['dischargeDate','dischargeStatus','dischargeType','causeOfDeath']},
-    ];
-    sections.forEach(sec=>{
-      if(y>260){pdfdoc.addPage();y=20;}
-      pdfdoc.setFillColor(240,244,248);pdfdoc.rect(12,y-4,186,8,'F');
-      pdfdoc.setFont('helvetica','bold');pdfdoc.setFontSize(9);pdfdoc.setTextColor(30,64,175);
-      pdfdoc.text(sec.title,14,y+0.5);y+=7;
-      const pairs=sec.keys.map(k=>{let v=data[k];if(v===true||v==='true')v='Yes';else if(v===false||v==='false')v='No';return[FIELD_MAP[k]||k,v??'—'];}).filter(p=>p[1]!=='—'&&p[1]!==''&&p[1]!==null);
-      if(!pairs.length){pdfdoc.setFont('helvetica','italic');pdfdoc.setFontSize(8);pdfdoc.setTextColor(150,150,150);pdfdoc.text('No data recorded',16,y);y+=5;return;}
-      pdfdoc.autoTable({head:[['Field','Value']],body:pairs,startY:y,margin:{left:14,right:14},styles:{fontSize:8},headStyles:{fillColor:[100,116,139],textColor:255},columnStyles:{0:{cellWidth:80},1:{cellWidth:100}},tableWidth:182});
-      y=pdfdoc.lastAutoTable.finalY+5;
-    });
-    pdfdoc.save(`EPS_Patient_${data.civilId||data.fileNumber||'report'}.pdf`);
-  };
+window.exportToExcel=async function(){
+const data=await getFilteredExportData();
+if(!data.length){alert(‘No data to export.’);return;}
+const allFields=Object.keys(FIELD_MAP);
+const mkSheet=(fields)=>{
+const hdr=fields.map(f=>FIELD_MAP[f]||f);
+const rows=data.map(r=>fields.map(f=>{let v=r[f];if(v===true)return’Yes’;if(v===false)return’No’;return v??’’;}));
+return XLSX.utils.aoa_to_sheet([hdr,…rows]);
+};
+const idFields=[’*no’,‘nameFirst’,‘nameMiddle’,‘nameLast’,‘civilId’,‘crfNo’,‘fileNumber’,‘gender’,‘nationality’,‘yob’,‘estimatedAge’,‘admissionDate’,‘recordStatus’,‘epReason’,‘enrolledByName’,‘patientOrigin’];
+const hxFields=allFields.filter(f=>f.startsWith(’hx*’)||f.startsWith(‘arrest’)||f.startsWith(‘icm’)||f.startsWith(‘hf’)||f.startsWith(‘afib’)||[‘sysBp’,‘diaBp’,‘hr’,‘weight’,‘height’].includes(f));
+const invFields=allFields.filter(f=>f.startsWith(‘inv_’)||[‘lvef’,‘lvesd’,‘lvedd’,‘rvsp’,‘ecgAtrialRhythm’,‘ecgVentRhythm’,‘ecgQRS’,‘creatInit’,‘creatPeak’,‘hgbInit’,‘hgbLowest’,‘sodium’,‘potassium’,‘magnesium’,‘inr’].includes(f));
+const outcFields=allFields.filter(f=>f.startsWith(‘cx_’)||f.startsWith(‘bleed’)||[‘procStartDate’,‘procStartTime’,‘procEndTime’,‘operatorName’,‘procSuccess’,‘postECGrhythm’,‘dischargeDate’,‘dischargeStatus’,‘causeOfDeath’,‘dischargeType’].includes(f));
+const wb=XLSX.utils.book_new();
+XLSX.utils.book_append_sheet(wb,mkSheet(idFields),‘Demographics’);
+XLSX.utils.book_append_sheet(wb,mkSheet(hxFields),‘History & Vitals’);
+XLSX.utils.book_append_sheet(wb,mkSheet(invFields),‘Investigations & Labs’);
+XLSX.utils.book_append_sheet(wb,mkSheet(outcFields),‘Procedure & Outcome’);
+XLSX.writeFile(wb,‘EPS_Registry_Export.xlsx’);
+};
 
-  // ANALYTICS
-  const _charts={};
-  window.fetchAnalytics=async function(){
-    const snap=await getDocs(collection(db,'patients_full'));
-    const recs=[];snap.forEach(ds=>{recs.push(ds.data());});
-    const n=recs.length;if(!n){alert('No data.');return;}
-    const filtered=currentRole==='investigator'?recs.filter(r=>r.enrolledBy===currentUser?.uid):recs;
-    document.getElementById('kpi_total').textContent=filtered.length;
-    const succ=filtered.filter(r=>r.procSuccess==='Yes').length;
-    document.getElementById('kpi_success').textContent=filtered.length?`${Math.round(succ/filtered.length*100)}%`:'—';
-    const complic=filtered.filter(r=>r.cx_stroke==='Yes'||r.cx_cardShock==='Yes'||r.cx_bleeding==='Yes').length;
-    document.getElementById('kpi_complications').textContent=filtered.length?`${Math.round(complic/filtered.length*100)}%`:'—';
-    const afib=filtered.filter(r=>r.hx_afib==='Yes').length;
-    document.getElementById('kpi_afib').textContent=filtered.length?`${Math.round(afib/filtered.length*100)}%`:'—';
-    _buildAnalytics(filtered,recs);
-  };
-  function _buildAnalytics(filtered,allRecs){
-    const mk=(id,type,labels,data,colors)=>{
-      const cv=document.getElementById(id);if(!cv)return;
-      if(_charts[id]) _charts[id].destroy();
-      _charts[id]=new Chart(cv,{type,data:{labels,datasets:[{data,backgroundColor:colors,borderColor:colors.map(c=>c+'dd'),borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:type==='pie'||type==='doughnut'}}}});
-    };
-    const m=filtered.filter(r=>r.gender==='Male').length,f=filtered.filter(r=>r.gender==='Female').length;
-    mk('genderChart','doughnut',['Male','Female'],[m,f],['#2563eb','#e11d48']);
-    const epMap={};filtered.forEach(r=>{if(r.epReason)epMap[r.epReason]=(epMap[r.epReason]||0)+1;});
-    mk('procChart','bar',Object.keys(epMap),Object.values(epMap),['#4f46e5','#2563eb','#0891b2','#059669','#d97706','#e11d48']);
-    const dMap={};filtered.forEach(r=>{if(r.dischargeStatus)dMap[r.dischargeStatus]=(dMap[r.dischargeStatus]||0)+1;});
-    mk('dischargeChart','pie',Object.keys(dMap),Object.values(dMap),['#059669','#e11d48','#d97706','#7c3aed']);
-    const cm=[['AFib',filtered.filter(r=>r.hx_afib==='Yes').length],['HF',filtered.filter(r=>r.hx_hf==='Yes').length],['ICM',filtered.filter(r=>r.hx_icm==='Yes').length],['CAD',filtered.filter(r=>r.hx_cad==='Yes').length],['HTN',filtered.filter(r=>r.hx_htn==='Yes').length],['DM',filtered.filter(r=>r.hx_dm==='Yes').length]].filter(c=>c[1]>0).sort((a,b)=>b[1]-a[1]);
-    mk('comorbChart','bar',cm.map(c=>c[0]),cm.map(c=>c[1]),['#e11d48','#f97316','#f59e0b','#84cc16','#06b6d4','#6366f1']);
-    const cxp=[['Stroke',filtered.filter(r=>r.cx_stroke==='Yes').length],['Shock',filtered.filter(r=>r.cx_cardShock==='Yes').length],['Bleeding',filtered.filter(r=>r.cx_bleeding==='Yes').length],['Lead Dislodge',filtered.filter(r=>r.cx_leadDislodge==='Yes').length]].filter(c=>c[1]>0);
-    if(cxp.length)mk('compChart','bar',cxp.map(c=>c[0]),cxp.map(c=>c[1]),['#dc2626','#e11d48','#f43f5e','#fb7185']);
-    const meds=[['BB',filtered.filter(r=>r.homeMed_betablocker===true||r.homeMed_betablocker==='true').length],['Amiodarone',filtered.filter(r=>r.homeMed_amiodarone===true||r.homeMed_amiodarone==='true').length],['Warfarin',filtered.filter(r=>r.homeMed_warfarin===true||r.homeMed_warfarin==='true').length],['Apixaban',filtered.filter(r=>r.homeMed_apixaban===true||r.homeMed_apixaban==='true').length],['ACE-I',filtered.filter(r=>r.homeMed_acei===true||r.homeMed_acei==='true').length]].filter(c=>c[1]>0).sort((a,b)=>b[1]-a[1]);
-    if(meds.length)mk('medsChart','bar',meds.map(c=>c[0]),meds.map(c=>c[1]),['#059669','#10b981','#34d399','#6ee7b7','#a7f3d0']);
-    if(currentRole==='admin'||currentRole==='cso'){
-      const invMap={};allRecs.forEach(r=>{if(r.enrolledByName)invMap[r.enrolledByName]=(invMap[r.enrolledByName]||0)+1;});
-      const sorted=Object.entries(invMap).sort((a,b)=>b[1]-a[1]);
-      mk('invChart','bar',sorted.map(e=>e[0]),sorted.map(e=>e[1]),['#7c3aed','#6d28d9','#5b21b6','#4c1d95','#8b5cf6']);
-    }
-  }
-  window.toggleAnalytic=function(key){
-    const body=document.getElementById(`body_${key}`);
-    const chev=document.getElementById(`chev_${key}`);
-    if(!body||!chev)return;
-    const isOpen=body.classList.contains('open');
-    body.classList.toggle('open',!isOpen);
-    chev.classList.toggle('open',!isOpen);
-  };
+window.exportToPDF=async function(){
+const data=await getFilteredExportData();
+if(!data.length){alert(‘No data to export.’);return;}
+const{jsPDF}=window.jspdf;const pdfdoc=new jsPDF({orientation:‘landscape’,unit:‘mm’,format:‘a4’});
+pdfdoc.setFontSize(14);pdfdoc.setFont(‘helvetica’,‘bold’);
+pdfdoc.text(‘EPS Registry – Mubarak Alkabeer Hospital’,14,14);
+pdfdoc.setFontSize(9);pdfdoc.setFont(‘helvetica’,‘normal’);
+pdfdoc.text(`Generated: ${new Date().toLocaleDateString()} | ${data.length} records`,14,20);
+const cols=[’#’,‘Patient’,‘Civil ID’,‘EP Reason’,‘Investigator’,‘Admission’,‘Status’,‘Completion’];
+const rows=data.map(r=>{const c=calcCompletion(r);return[r._no||’’,r.fullName||‘Anonymous’,r.civilId||’—’,r.epReason||’—’,r.enrolledByName||’—’,r.admissionDate||’—’,(r.recordStatus||‘draft’).toUpperCase(),`${c.pct}%`];});
+pdfdoc.autoTable({head:[cols],body:rows,startY:26,styles:{fontSize:8},headStyles:{fillColor:[30,64,175],textColor:255,fontStyle:‘bold’},alternateRowStyles:{fillColor:[248,250,252]}});
+pdfdoc.save(‘EPS_Registry_Summary.pdf’);
+};
 
-  // AUTO-LOGOUT
-  (function(){
-    let _idleTimer;
-    const IDLE_MS = 30 * 60 * 1000;
-    function resetIdle(){
-      clearTimeout(_idleTimer);
-      _idleTimer = setTimeout(async ()=>{
-        if(window._signOut && currentUser){
-          showToast('Session expired — signed out after 30 min.','#e11d48');
-          await new Promise(r=>setTimeout(r,1800));
-          await window._signOut();
-          location.reload();
-        }
-      }, IDLE_MS);
-    }
-    ['mousemove','keydown','mousedown','touchstart','scroll','click'].forEach(ev=>document.addEventListener(ev,resetIdle,{passive:true}));
-    resetIdle();
-  })();
+window.exportSinglePDF=function(data){
+const{jsPDF}=window.jspdf;const pdfdoc=new jsPDF({unit:‘mm’,format:‘a4’});
+const comp=calcCompletion(data);
+pdfdoc.setFillColor(30,64,175);pdfdoc.rect(0,0,210,22,‘F’);
+pdfdoc.setTextColor(255,255,255);pdfdoc.setFontSize(13);pdfdoc.setFont(‘helvetica’,‘bold’);
+pdfdoc.text(‘EPS Registry – Mubarak Alkabeer Hospital’,14,10);
+pdfdoc.setFontSize(9);pdfdoc.setFont(‘helvetica’,‘normal’);
+pdfdoc.text(‘Advanced Electrophysiology Registry’,14,16);
+pdfdoc.setTextColor(30,30,30);
+pdfdoc.setFontSize(14);pdfdoc.setFont(‘helvetica’,‘bold’);
+pdfdoc.text(data.fullName||‘Anonymous Patient’,14,30);
+pdfdoc.setFontSize(9);pdfdoc.setFont(‘helvetica’,‘normal’);
+pdfdoc.text([
+`Civil ID: ${data.civilId||'—'}  |  File: ${data.fileNumber||'—'}  |  CRF: ${data.crfNo||'—'}`,
+`Gender: ${data.gender||'—'}  |  Age: ${data.estimatedAge||'—'}  |  Admission: ${data.admissionDate||'—'}`,
+`EP Reason: ${data.epReason||'—'}  |  Investigator: ${data.enrolledByName||'—'}  |  Status: ${(data.recordStatus||'draft').toUpperCase()}  |  Completion: ${comp.pct}%`,
+],14,38);
+let y=52;
+const sections=[
+{title:‘Procedure Details’,keys:[‘procStartDate’,‘procStartTime’,‘procEndTime’,‘operatorName’,‘procSuccess’]},
+{title:‘History Summary’,keys:[‘hx_afib’,‘hx_icm’,‘hx_hf’,‘hx_cad’,‘hx_dm’,‘hx_htn’,‘hx_cied’]},
+{title:‘Investigations’,keys:[‘inv_ecg’,‘inv_tte’,‘lvef’,‘creatInit’,‘hgbInit’,‘sodium’,‘potassium’,‘inr’]},
+{title:‘Complications’,keys:[‘cx_stroke’,‘cx_cardArrest’,‘cx_bleeding’,‘cx_cardShock’,‘cx_mi’]},
+{title:‘Discharge’,keys:[‘dischargeDate’,‘dischargeStatus’,‘dischargeType’,‘causeOfDeath’]},
+];
+sections.forEach(sec=>{
+if(y>260){pdfdoc.addPage();y=20;}
+pdfdoc.setFillColor(240,244,248);pdfdoc.rect(12,y-4,186,8,‘F’);
+pdfdoc.setFont(‘helvetica’,‘bold’);pdfdoc.setFontSize(9);pdfdoc.setTextColor(30,64,175);
+pdfdoc.text(sec.title,14,y+0.5);y+=7;
+const pairs=sec.keys.map(k=>{let v=data[k];if(v===true||v===‘true’)v=‘Yes’;else if(v===false||v===‘false’)v=‘No’;return[FIELD_MAP[k]||k,v??’—’];}).filter(p=>p[1]!==’—’&&p[1]!==’’&&p[1]!==null);
+if(!pairs.length){pdfdoc.setFont(‘helvetica’,‘italic’);pdfdoc.setFontSize(8);pdfdoc.setTextColor(150,150,150);pdfdoc.text(‘No data recorded’,16,y);y+=5;return;}
+pdfdoc.autoTable({head:[[‘Field’,‘Value’]],body:pairs,startY:y,margin:{left:14,right:14},styles:{fontSize:8},headStyles:{fillColor:[100,116,139],textColor:255},columnStyles:{0:{cellWidth:80},1:{cellWidth:100}},tableWidth:182});
+y=pdfdoc.lastAutoTable.finalY+5;
+});
+pdfdoc.save(`EPS_Patient_${data.civilId||data.fileNumber||'report'}.pdf`);
+};
 
-  loadRecordsCache();
+// ANALYTICS
+const _charts={};
+window.fetchAnalytics=async function(){
+const snap=await getDocs(collection(db,‘patients_full’));
+const recs=[];snap.forEach(ds=>{recs.push(ds.data());});
+const n=recs.length;if(!n){alert(‘No data.’);return;}
+const filtered=currentRole===‘investigator’?recs.filter(r=>r.enrolledBy===currentUser?.uid):recs;
+document.getElementById(‘kpi_total’).textContent=filtered.length;
+const succ=filtered.filter(r=>r.procSuccess===‘Yes’).length;
+document.getElementById(‘kpi_success’).textContent=filtered.length?`${Math.round(succ/filtered.length*100)}%`:’—’;
+const complic=filtered.filter(r=>r.cx_stroke===‘Yes’||r.cx_cardShock===‘Yes’||r.cx_bleeding===‘Yes’).length;
+document.getElementById(‘kpi_complications’).textContent=filtered.length?`${Math.round(complic/filtered.length*100)}%`:’—’;
+const afib=filtered.filter(r=>r.hx_afib===‘Yes’).length;
+document.getElementById(‘kpi_afib’).textContent=filtered.length?`${Math.round(afib/filtered.length*100)}%`:’—’;
+_buildAnalytics(filtered,recs);
+};
+function _buildAnalytics(filtered,allRecs){
+const mk=(id,type,labels,data,colors)=>{
+const cv=document.getElementById(id);if(!cv)return;
+if(_charts[id]) _charts[id].destroy();
+_charts[id]=new Chart(cv,{type,data:{labels,datasets:[{data,backgroundColor:colors,borderColor:colors.map(c=>c+‘dd’),borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:type===‘pie’||type===‘doughnut’}}}});
+};
+const m=filtered.filter(r=>r.gender===‘Male’).length,f=filtered.filter(r=>r.gender===‘Female’).length;
+mk(‘genderChart’,‘doughnut’,[‘Male’,‘Female’],[m,f],[’#2563eb’,’#e11d48’]);
+const epMap={};filtered.forEach(r=>{if(r.epReason)epMap[r.epReason]=(epMap[r.epReason]||0)+1;});
+mk(‘procChart’,‘bar’,Object.keys(epMap),Object.values(epMap),[’#4f46e5’,’#2563eb’,’#0891b2’,’#059669’,’#d97706’,’#e11d48’]);
+const dMap={};filtered.forEach(r=>{if(r.dischargeStatus)dMap[r.dischargeStatus]=(dMap[r.dischargeStatus]||0)+1;});
+mk(‘dischargeChart’,‘pie’,Object.keys(dMap),Object.values(dMap),[’#059669’,’#e11d48’,’#d97706’,’#7c3aed’]);
+const cm=[[‘AFib’,filtered.filter(r=>r.hx_afib===‘Yes’).length],[‘HF’,filtered.filter(r=>r.hx_hf===‘Yes’).length],[‘ICM’,filtered.filter(r=>r.hx_icm===‘Yes’).length],[‘CAD’,filtered.filter(r=>r.hx_cad===‘Yes’).length],[‘HTN’,filtered.filter(r=>r.hx_htn===‘Yes’).length],[‘DM’,filtered.filter(r=>r.hx_dm===‘Yes’).length]].filter(c=>c[1]>0).sort((a,b)=>b[1]-a[1]);
+mk(‘comorbChart’,‘bar’,cm.map(c=>c[0]),cm.map(c=>c[1]),[’#e11d48’,’#f97316’,’#f59e0b’,’#84cc16’,’#06b6d4’,’#6366f1’]);
+const cxp=[[‘Stroke’,filtered.filter(r=>r.cx_stroke===‘Yes’).length],[‘Shock’,filtered.filter(r=>r.cx_cardShock===‘Yes’).length],[‘Bleeding’,filtered.filter(r=>r.cx_bleeding===‘Yes’).length],[‘Lead Dislodge’,filtered.filter(r=>r.cx_leadDislodge===‘Yes’).length]].filter(c=>c[1]>0);
+if(cxp.length)mk(‘compChart’,‘bar’,cxp.map(c=>c[0]),cxp.map(c=>c[1]),[’#dc2626’,’#e11d48’,’#f43f5e’,’#fb7185’]);
+const meds=[[‘BB’,filtered.filter(r=>r.homeMed_betablocker===true||r.homeMed_betablocker===‘true’).length],[‘Amiodarone’,filtered.filter(r=>r.homeMed_amiodarone===true||r.homeMed_amiodarone===‘true’).length],[‘Warfarin’,filtered.filter(r=>r.homeMed_warfarin===true||r.homeMed_warfarin===‘true’).length],[‘Apixaban’,filtered.filter(r=>r.homeMed_apixaban===true||r.homeMed_apixaban===‘true’).length],[‘ACE-I’,filtered.filter(r=>r.homeMed_acei===true||r.homeMed_acei===‘true’).length]].filter(c=>c[1]>0).sort((a,b)=>b[1]-a[1]);
+if(meds.length)mk(‘medsChart’,‘bar’,meds.map(c=>c[0]),meds.map(c=>c[1]),[’#059669’,’#10b981’,’#34d399’,’#6ee7b7’,’#a7f3d0’]);
+if(currentRole===‘admin’||currentRole===‘cso’){
+const invMap={};allRecs.forEach(r=>{if(r.enrolledByName)invMap[r.enrolledByName]=(invMap[r.enrolledByName]||0)+1;});
+const sorted=Object.entries(invMap).sort((a,b)=>b[1]-a[1]);
+mk(‘invChart’,‘bar’,sorted.map(e=>e[0]),sorted.map(e=>e[1]),[’#7c3aed’,’#6d28d9’,’#5b21b6’,’#4c1d95’,’#8b5cf6’]);
+}
+}
+window.toggleAnalytic=function(key){
+const body=document.getElementById(`body_${key}`);
+const chev=document.getElementById(`chev_${key}`);
+if(!body||!chev)return;
+const isOpen=body.classList.contains(‘open’);
+body.classList.toggle(‘open’,!isOpen);
+chev.classList.toggle(‘open’,!isOpen);
+};
+
+// AUTO-LOGOUT
+(function(){
+let _idleTimer;
+const IDLE_MS = 30 * 60 * 1000;
+function resetIdle(){
+clearTimeout(_idleTimer);
+_idleTimer = setTimeout(async ()=>{
+if(window._signOut && currentUser){
+showToast(‘Session expired — signed out after 30 min.’,’#e11d48’);
+await new Promise(r=>setTimeout(r,1800));
+await window._signOut();
+location.reload();
+}
+}, IDLE_MS);
+}
+[‘mousemove’,‘keydown’,‘mousedown’,‘touchstart’,‘scroll’,‘click’].forEach(ev=>document.addEventListener(ev,resetIdle,{passive:true}));
+resetIdle();
+})();
+
+loadRecordsCache();
 } // end initApp
 
 let _domReady = false;
 function _tryBoot() { if (window._fbReady && _domReady) initApp(); }
-window.addEventListener('firebaseReady', _tryBoot);
-document.addEventListener('DOMContentLoaded', function() { _domReady = true; _tryBoot(); });
+window.addEventListener(‘firebaseReady’, _tryBoot);
+document.addEventListener(‘DOMContentLoaded’, function() { _domReady = true; _tryBoot(); });
 </script>
+
 </body>
 </html>
 ```
