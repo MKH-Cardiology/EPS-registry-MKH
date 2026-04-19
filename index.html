@@ -325,7 +325,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 <div class="form-step" id="step-1">
   <div class="sec-title"><div class="icon-wrap bg-indigo-100"><i class="fas fa-hospital-user text-indigo-600"></i></div>2–3. Reason for EP Lab &amp; Admission</div>
   <div class="card card-blue mb-5">
-    <label class="lbl" style="font-size:14px;font-weight:700;color:#1e3a8a;">2. Patient is coming to EP Lab because of:</label>
+    <label class="lbl" style="font-size:14px;font-weight:700;color:#1e3a8a;margin-bottom:8px;">2. Patient is coming to EP Lab because of:</label>
     <div class="space-y-2" id="epReasonGroup">
       <label class="radio-item"><input type="radio" name="epReason" value="CRT/AICD" onchange="onEPR()"> CRT/AICD with or without pacing</label>
       <label class="radio-item"><input type="radio" name="epReason" value="Pacemaker" onchange="onEPR()"> Pacemaker</label>
@@ -1350,16 +1350,6 @@ window.switchTab=function(tab){
   if(tab==='admin' && currentRole!=='admin'){alert('Admin access only.');return;}
   if(tab==='downloads' && currentRole!=='admin'){alert('Admin access only.');return;}
   if(tab==='analytics' && currentRole==='investigator'){alert('Not available.');return;}
-  if(tab==='form'){
-    const existingId=document.getElementById('editRecordId')?.value||'';
-    const bannerVisible=!document.getElementById('editModeBanner')?.classList.contains('hidden');
-    if(existingId||bannerVisible){
-      const startNew=confirm('You are currently editing a record.\n\nOK = start a NEW blank CRF\nCancel = continue editing current record');
-      if(!startNew)return;
-      const form=document.getElementById('epsForm');
-      if(form){resetFormUI(form);}
-    }
-  }
   if(tab==='admin')fetchData();
   else if(tab==='analytics')fetchAnalytics();
   else if(tab==='dashboard')loadDashboard();  // always fresh fetch when user explicitly clicks
@@ -1981,7 +1971,6 @@ function resetFormUI(f){
   goToStep(0);
   updateFieldIndicators();
   const banner=document.getElementById('dupCivilIdBanner');if(banner)banner.style.display='none';
-  autoGenCRF();
 }
 // ── DASHBOARD ────────────────────────────────────────────
 let _dashFilter='all',_dashData=[];
@@ -2219,7 +2208,7 @@ else if(el.type===‘radio’)document.getElementsByName(key).forEach(r=>{if(r.v
 else{
 const v=data[key];
 if(v!==null&&typeof v===‘object’&&!Array.isArray(v))return;
-el.value=(v!==null&&v!==undefined)?v:’’;
+el.value=(v!==null&&v!==undefined)?String(v):’’;
 }
 });
 if(data.epReason)onEPR();
