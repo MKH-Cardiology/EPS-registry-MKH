@@ -1565,16 +1565,6 @@ html,body{max-width:100vw;overflow-x:hidden;}
         <tbody id="tableBody" class="bg-white divide-y divide-gray-100"></tbody>
       </table>
     </div>
-    <!-- ADMIN MAINTENANCE: Renumber CRFs (one-time / on-demand) -->
-    <div class="mt-5 p-4 rounded-xl border-2 border-dashed border-amber-300 bg-amber-50">
-      <div class="flex items-start gap-3 flex-wrap">
-        <div class="flex-1 min-w-[200px]">
-          <div class="font-bold text-amber-900 text-sm mb-1"><i class="fas fa-screwdriver-wrench mr-1"></i> Maintenance — Renumber CRFs</div>
-          <div class="text-xs text-amber-800 leading-relaxed">Reassigns the patient serial (3rd segment of CRF) globally across the entire registry, ordered by enrollment timestamp (oldest = 001). Use this once to fix legacy records with out-of-order serials. The hospital code (01) and doctor code stay the same — only the serial changes.</div>
-        </div>
-        <button onclick="adminRenumberCRFs()" class="btn btn-yellow text-sm whitespace-nowrap"><i class="fas fa-list-ol"></i> Renumber CRFs…</button>
-      </div>
-    </div>
   </div>
 
   <div id="adminUsersPanel" style="display:none;" class="pt-4">
@@ -2469,144 +2459,36 @@ function initApp() {
     const hospitalCode='01';
     const prefix=`${hospitalCode}-${userCode}-`;
     try{
-      // ---- ATOMIC SERIAL via transaction on meta/crfCounter ----
-      // Guarantees no two doctors get the same serial even on simultaneous saves.
-      const counterRef=doc(db,'meta','crfCounter');
-      const nextSerial=await db.runTransaction(async tx=>{
-        const ds=await tx.get(counterRef);
-        let last=0;
-        if(ds.exists){
-          last=ds.data().lastSerial||0;
-        } else {
-          // First-ever run: seed counter with the current max serial across patients_full
-          const snap=await getDocs(collection(db,'patients_full'));
-          snap.forEach(d=>{
-            const crf=d.data().crfNo||'';
-            const parts=crf.split('-');
-            if(parts.length===3){const s=parseInt(parts[2],10);if(!isNaN(s)&&s>last)last=s;}
-          });
-        }
-        const next=last+1;
-        tx.set(counterRef,{lastSerial:next,updatedAt:new Date()},{merge:true});
-        return next;
+      // GAP-FILL: read all CRFs and pick the lowest free serial (1, 2, 3, …).
+      // If a record was deleted, its serial becomes available and is reused.
+      // Serial is GLOBAL across the registry, not per-doctor.
+      const snap=await getDocs(collection(db,'patients_full'));
+      const used=new Set();
+      snap.forEach(ds=>{
+        const crf=ds.data().crfNo||'';
+        const parts=crf.split('-');
+        if(parts.length===3){const s=parseInt(parts[2],10);if(!isNaN(s))used.add(s);}
       });
+      let nextSerial=1;
+      while(used.has(nextSerial))nextSerial++;
       const nextSeq=String(nextSerial).padStart(3,'0');
       document.getElementById('req_crfNo').value=`${prefix}${nextSeq}`;
       updateFieldIndicators();
     }catch(e){
-      console.error('CRF auto-gen (transaction) failed, falling back to scan:',e);
-      // Fallback: scan all records for max serial (legacy behaviour)
-      try{
-        const snap=await getDocs(collection(db,'patients_full'));
-        let maxSeq=0;
-        snap.forEach(ds=>{
-          const crf=ds.data().crfNo||'';
-          const parts=crf.split('-');
-          if(parts.length===3){const seq=parseInt(parts[2],10);if(!isNaN(seq)&&seq>maxSeq)maxSeq=seq;}
-        });
-        const nextSeq=String(maxSeq+1).padStart(3,'0');
-        document.getElementById('req_crfNo').value=`${prefix}${nextSeq}`;
-        updateFieldIndicators();
-      }catch(e2){
-        const nextSeq=String((_allRecordsCache.length||0)+1).padStart(3,'0');
-        document.getElementById('req_crfNo').value=`${prefix}${nextSeq}`;
-        updateFieldIndicators();
-      }
+      console.error('CRF auto-gen failed:',e);
+      // Fallback: cache-based estimate
+      const used=new Set();
+      _allRecordsCache.forEach(r=>{
+        const crf=r.crfNo||'';
+        const parts=crf.split('-');
+        if(parts.length===3){const s=parseInt(parts[2],10);if(!isNaN(s))used.add(s);}
+      });
+      let n=1;while(used.has(n))n++;
+      const nextSeq=String(n).padStart(3,'0');
+      document.getElementById('req_crfNo').value=`${prefix}${nextSeq}`;
+      updateFieldIndicators();
     }
   };
-
-  // ==================== ADMIN: RENUMBER CRFs (one-time maintenance) ====================
-  // Reassigns CRF serial (3rd segment) globally across patients_full,
-  // ordered by enrollment timestamp ascending. Hospital code + doctor code preserved.
-  // Also resyncs meta/crfCounter to the new max so future auto-generation continues cleanly.
-  window.adminRenumberCRFs=async function(){
-    if(currentRole!=='admin'){alert('Admin only.');return;}
-
-    // Step 1 — load all records and compute the renumber plan
-    let plan=[];
-    try{
-      const snap=await getDocs(collection(db,'patients_full'));
-      const all=[];
-      snap.forEach(ds=>{
-        const d=ds.data();
-        const ts=d.timestamp?.toDate?.()?.getTime?.() ?? new Date(d.timestamp||0).getTime();
-        all.push({
-          id:ds.id,
-          oldCrf:d.crfNo||'',
-          civilId:d.civilId||'',
-          doctorCode:d.enrolledByCode||(d.crfNo?d.crfNo.split('-')[1]:'')||'000',
-          ts:isNaN(ts)?0:ts
-        });
-      });
-      // Sort by enrollment timestamp ascending (oldest first), tie-break by old CRF
-      all.sort((a,b)=>a.ts!==b.ts?a.ts-b.ts:a.oldCrf.localeCompare(b.oldCrf));
-      plan=all.map((r,idx)=>{
-        const seq=String(idx+1).padStart(3,'0');
-        const newCrf=`01-${r.doctorCode}-${seq}`;
-        return {...r,newCrf,changed:r.oldCrf!==newCrf};
-      });
-    }catch(e){
-      alert('Failed to load records: '+e.message);
-      return;
-    }
-
-    const total=plan.length;
-    const changes=plan.filter(p=>p.changed);
-    if(total===0){alert('No records to renumber.');return;}
-
-    // Step 2 — preview + double confirmation
-    const sample=changes.slice(0,8).map(p=>`  ${p.oldCrf||'(blank)'}  →  ${p.newCrf}`).join('\n');
-    const moreCount=Math.max(0,changes.length-8);
-    const summary=`RENUMBER CRFs — preview\n\n`+
-      `Total records: ${total}\n`+
-      `Will be changed: ${changes.length}\n`+
-      `Already correct: ${total-changes.length}\n\n`+
-      `First changes:\n${sample}${moreCount>0?`\n  …and ${moreCount} more`:''}\n\n`+
-      `This will overwrite the crfNo field on ${changes.length} records.\n`+
-      `It cannot be undone automatically.\n\nProceed?`;
-    if(!confirm(summary))return;
-
-    const typed=prompt(`Type the word RENUMBER (all caps) to confirm:`);
-    if(typed!=='RENUMBER'){alert('Cancelled — confirmation did not match.');return;}
-
-    // Step 3 — execute in batches of 400 (Firestore limit is 500/batch)
-    const btn=event?.target?.closest('button');
-    if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Renumbering…';}
-    let done=0,failed=0;
-    try{
-      const BATCH=400;
-      for(let i=0;i<changes.length;i+=BATCH){
-        const slice=changes.slice(i,i+BATCH);
-        const batch=db.batch();
-        slice.forEach(p=>{
-          batch.update(doc(db,'patients_full',p.id),{
-            crfNo:p.newCrf,
-            renumberedAt:new Date(),
-            renumberedFrom:p.oldCrf||null
-          });
-        });
-        try{await batch.commit();done+=slice.length;}
-        catch(be){console.error('Batch failed at offset',i,be);failed+=slice.length;}
-        if(btn)btn.innerHTML=`<i class="fas fa-spinner fa-spin"></i> ${done}/${changes.length}…`;
-      }
-
-      // Step 4 — resync the atomic counter to the new max (= total)
-      try{
-        await setDoc(doc(db,'meta','crfCounter'),{lastSerial:total,updatedAt:new Date(),renumberedAt:new Date()},{merge:true});
-      }catch(ce){console.error('Counter resync failed:',ce);}
-
-      // Refresh caches
-      try{await loadRecordsCache();}catch(_){}
-      try{await fetchData();}catch(_){}
-
-      alert(`Done.\n\nUpdated: ${done}\nFailed: ${failed}\nCounter set to: ${total}`);
-    }catch(e){
-      alert('Renumber failed: '+e.message);
-    }finally{
-      if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-list-ol"></i> Renumber CRFs…';}
-    }
-  };
-  // ============================================================================
 
   // COMPLETION SCORING
   function calcCompletion(r){
