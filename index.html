@@ -114,9 +114,43 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 .admin-sub-tab{padding:8px 18px;border-radius:8px 8px 0 0;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid #e2e8f0;border-bottom:none;background:#f8fafc;color:#64748b;transition:all .15s;}
 .admin-sub-tab.active{background:#fff;color:#1d4ed8;border-color:#bfdbfe;}
 @media(max-width:640px){#idFields [style*="1fr 1fr 1fr"]{grid-template-columns:1fr!important;}#idFields [style*="1fr 1fr 1fr 1fr"]{grid-template-columns:1fr 1fr!important;}#idFields [style*="1fr 1fr"]{grid-template-columns:1fr!important;}}
+/* ---- Footnote (i) icon + popover ---- */
+.fn-btn{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#dbeafe;color:#1d4ed8;border:1px solid #bfdbfe;font-size:10px;font-weight:800;font-family:'DM Sans',sans-serif;cursor:pointer;margin-left:5px;flex-shrink:0;transition:all .15s;padding:0;line-height:1;font-style:italic;vertical-align:middle;}
+.fn-btn:hover{background:#bfdbfe;color:#1e3a8a;transform:scale(1.1);}
+.fn-btn:focus{outline:2px solid #2563eb;outline-offset:2px;}
+.fn-overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(4px);z-index:9998;display:none;align-items:center;justify-content:center;padding:20px;animation:fadeUp .2s ease;}
+.fn-overlay.show{display:flex;}
+.fn-popover{background:#fff;border-radius:16px;padding:24px;max-width:560px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.3);border:1.5px solid #e2e8f0;}
+.fn-popover-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:12px;margin-bottom:14px;border-bottom:2px solid #e2e8f0;}
+.fn-popover-title{font-size:15px;font-weight:800;color:#0f172a;display:flex;align-items:center;gap:8px;}
+.fn-popover-title i{color:#2563eb;}
+.fn-popover-close{width:32px;height:32px;border-radius:8px;background:#f1f5f9;color:#475569;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s;flex-shrink:0;}
+.fn-popover-close:hover{background:#e2e8f0;color:#0f172a;}
+.fn-popover-body{font-size:13.5px;line-height:1.65;color:#1e293b;}
+.fn-popover-body p{margin:0 0 10px;}
+.fn-popover-body p:last-child{margin-bottom:0;}
+.fn-popover-body strong{color:#1d4ed8;font-weight:700;}
+.fn-popover-body ul{margin:6px 0 10px;padding-left:18px;}
+.fn-popover-body li{margin-bottom:4px;}
+.fn-popover-body .fn-tbl{width:100%;border-collapse:collapse;margin:8px 0;font-size:12.5px;}
+.fn-popover-body .fn-tbl th,.fn-popover-body .fn-tbl td{padding:6px 10px;border:1px solid #e2e8f0;text-align:left;}
+.fn-popover-body .fn-tbl th{background:#f1f5f9;font-weight:700;color:#1e3a8a;}
+.fn-popover-body .fn-section{background:#f8fafc;border-left:3px solid #2563eb;padding:10px 14px;border-radius:0 8px 8px 0;margin:8px 0;}
+.fn-popover-body .fn-section-title{font-weight:700;color:#1d4ed8;margin-bottom:4px;font-size:13px;}
 </style>
 </head>
 <body class="min-h-screen">
+
+<!-- FOOTNOTE / INFO POPOVER OVERLAY -->
+<div class="fn-overlay" id="fnOverlay" onclick="if(event.target===this)closeFn()">
+  <div class="fn-popover" role="dialog" aria-modal="true" aria-labelledby="fnTitle">
+    <div class="fn-popover-header">
+      <div class="fn-popover-title" id="fnTitle"><i class="fas fa-circle-info"></i><span id="fnTitleText">Field Information</span></div>
+      <button type="button" class="fn-popover-close" onclick="closeFn()" aria-label="Close"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="fn-popover-body" id="fnBody"></div>
+  </div>
+</div>
 
 <!-- LOGIN OVERLAY -->
 <div id="loginOverlay">
@@ -261,7 +295,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 <div class="form-step active" id="step-0">
   <div class="sec-title"><div class="icon-wrap bg-blue-100"><i class="fas fa-id-card text-blue-600"></i></div>1. Identification</div>
   <div id="idFields">
-    <div class="mb-4"><label class="lbl">1.1 Patient Name (Initials) <span style="color:#dc2626">*</span></label>
+    <div class="mb-4"><label class="lbl">1.1 Patient Name (Initials) <span style="color:#dc2626">*</span><button type="button" class="fn-btn" onclick="openFn('1.1')" aria-label="Field information" title="Click for field information">i</button></label>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
         <input type="text" id="req_nameFirst" name="nameFirst" placeholder="First" class="inp" maxlength="1" style="text-transform:uppercase;" oninput="this.value=this.value.toUpperCase();if(this.value.length===1){document.querySelector('[name=nameMiddle]').focus();}">
         <input type="text" name="nameMiddle" placeholder="Middle" class="inp" maxlength="1" style="text-transform:uppercase;" oninput="this.value=this.value.toUpperCase();if(this.value.length===1){document.getElementById('req_nameLast').focus();}">
@@ -273,7 +307,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
         <input type="text" id="civilId" name="civilId" inputmode="numeric" maxlength="12" placeholder="12 digits" class="inp" style="font-family:'DM Mono',monospace;" oninput="onCivilIdInput()">
         <div id="dupCivilIdBanner" style="display:none;margin-top:5px;background:#fff7ed;color:#c2410c;border:1.5px solid #fed7aa;border-radius:8px;padding:7px 11px;font-size:11px;font-weight:700;"><i class="fas fa-exclamation-triangle mr-1"></i><span id="dupCivilIdMsg"></span></div>
       </div>
-      <div><label class="lbl">1.3 CRF Number</label>
+      <div><label class="lbl">1.3 CRF Number<button type="button" class="fn-btn" onclick="openFn('1.3')" aria-label="Field information" title="Click for field information">i</button></label>
         <div style="display:flex;gap:6px;align-items:center;">
           <input type="text" id="req_crfNo" name="crfNo" inputmode="numeric" maxlength="10" placeholder="Generating…" class="inp" style="font-family:'DM Mono',monospace;" readonly>
         </div>
@@ -281,7 +315,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;" class="mb-4">
       <div><label class="lbl">1.4 Gender</label><select name="gender" class="inp"><option value="">Select...</option><option>Male</option><option>Female</option></select></div>
-      <div><label class="lbl">1.5 Nationality</label><select name="nationality" id="nationalitySelect" class="inp"></select></div>
+      <div><label class="lbl">1.5 Nationality<button type="button" class="fn-btn" onclick="openFn('1.5')" aria-label="Field information" title="Click for field information">i</button></label><select name="nationality" id="nationalitySelect" class="inp"></select></div>
       <div><label class="lbl">1.6 Year of Birth</label><input type="number" id="yob" name="yob" placeholder="YYYY" class="inp" min="1900" max="2025"></div>
       <div><label class="lbl">1.6a Est. Age</label><input type="number" id="estAge" name="estimatedAge" placeholder="yrs" class="inp"></div>
     </div>
@@ -337,11 +371,11 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
   <div class="card card-gray mb-4">
     <div class="font-bold text-gray-700 text-sm mb-3">5. Examination Vitals</div>
     <div class="g4">
-      <div><label class="lbl">Systolic BP (mmHg)</label><input type="number" name="sysBp" id="inp_sysBp" class="inp inp-sm"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="sysBpUnrec" id="cb_sysBpUnrec" class="w-3 h-3" onchange="toggleUnrec('sysBp')"> Unrecordable</label></div>
-      <div><label class="lbl">Diastolic BP (mmHg)</label><input type="number" name="diaBp" id="inp_diaBp" class="inp inp-sm"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="diaBpUnrec" id="cb_diaBpUnrec" class="w-3 h-3" onchange="toggleUnrec('diaBp')"> Unrecordable</label></div>
-      <div><label class="lbl">Presenting HR (/min)</label><input type="number" name="hr" id="inp_hr" class="inp inp-sm"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="hrUnrec" id="cb_hrUnrec" class="w-3 h-3" onchange="toggleUnrec('hr')"> Unrecordable</label></div>
-      <div><label class="lbl">Weight (kg)</label><input type="number" name="weight" id="inp_weight" class="inp inp-sm"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="weightUnrec" id="cb_weightUnrec" class="w-3 h-3" onchange="toggleUnrec('weight')"> Unrecordable</label></div>
-      <div><label class="lbl">Height (cm)</label><input type="number" name="height" id="inp_height" class="inp inp-sm"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="heightUnrec" id="cb_heightUnrec" class="w-3 h-3" onchange="toggleUnrec('height')"> Unrecordable</label></div>
+      <div><label class="lbl">Systolic BP (mmHg)<button type="button" class="fn-btn" onclick="openFn('5.1')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="sysBp" id="inp_sysBp" class="inp inp-sm"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="sysBpUnrec" id="cb_sysBpUnrec" class="w-3 h-3" onchange="toggleUnrec('sysBp')"> Unrecordable</label></div>
+      <div><label class="lbl">Diastolic BP (mmHg)<button type="button" class="fn-btn" onclick="openFn('5.2')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="diaBp" id="inp_diaBp" class="inp inp-sm"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="diaBpUnrec" id="cb_diaBpUnrec" class="w-3 h-3" onchange="toggleUnrec('diaBp')"> Unrecordable</label></div>
+      <div><label class="lbl">Presenting HR (/min)<button type="button" class="fn-btn" onclick="openFn('5.3')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="hr" id="inp_hr" class="inp inp-sm"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="hrUnrec" id="cb_hrUnrec" class="w-3 h-3" onchange="toggleUnrec('hr')"> Unrecordable</label></div>
+      <div><label class="lbl">Weight (kg)<button type="button" class="fn-btn" onclick="openFn('5.4')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="weight" id="inp_weight" class="inp inp-sm"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="weightUnrec" id="cb_weightUnrec" class="w-3 h-3" onchange="toggleUnrec('weight')"> Unrecordable</label></div>
+      <div><label class="lbl">Height (cm)<button type="button" class="fn-btn" onclick="openFn('5.5')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="height" id="inp_height" class="inp inp-sm"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="heightUnrec" id="cb_heightUnrec" class="w-3 h-3" onchange="toggleUnrec('height')"> Unrecordable</label></div>
     </div>
   </div>
   <div class="card card-red mb-3">
@@ -352,8 +386,8 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
       <div class="g2 mb-3">
         <div><label class="lbl">4.1b Plans for Cardioversion</label><select name="afibCardioversion" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
         <div><label class="lbl">4.1e Prior attempt of ablation</label><select name="afibPriorAblation" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
-        <div><label class="lbl">4.1c CHA&#x2082;DS&#x2082;-VASc score</label><select name="afibChads" class="inp"><option value="">Select</option><option>0</option><option>1</option><option>2</option><option>3</option><option>&gt;3</option></select></div>
-        <div><label class="lbl">4.1d HAS-BLED score</label><select name="afibHasBled" class="inp"><option value="">Select</option><option>0</option><option>1</option><option>2</option><option>3</option><option>&gt;3</option></select></div>
+        <div><label class="lbl">4.1c CHA&#x2082;DS&#x2082;-VASc score<button type="button" class="fn-btn" onclick="openFn('4.1c')" aria-label="Field information" title="Click for field information">i</button></label><select name="afibChads" class="inp"><option value="">Select</option><option>0</option><option>1</option><option>2</option><option>3</option><option>&gt;3</option></select></div>
+        <div><label class="lbl">4.1d HAS-BLED score<button type="button" class="fn-btn" onclick="openFn('4.1d')" aria-label="Field information" title="Click for field information">i</button></label><select name="afibHasBled" class="inp"><option value="">Select</option><option>0</option><option>1</option><option>2</option><option>3</option><option>&gt;3</option></select></div>
         <div><label class="lbl">4.1f Contraindication to long-term OAC</label><select name="afibContraOAC" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
         <div><label class="lbl">4.1g Prior major bleeding</label><select name="afibMajorBleed" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
       </div>
@@ -376,7 +410,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
   </div>
   <div class="card mb-3"><div class="font-bold text-gray-700 text-sm mb-3">4.5–4.13 Other Risk Factors</div><div class="g3" id="simpleRiskGrid"></div></div>
   <div class="card mb-3">
-    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.14 Syndromes of Sudden Death</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'ssd','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'ssd','Yes')">Yes</button></div></div>
+    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.14 Syndromes of Sudden Death<button type="button" class="fn-btn" onclick="openFn('4.14')" aria-label="Field information" title="Click for field information">i</button></span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'ssd','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'ssd','Yes')">Yes</button></div></div>
     <input type="hidden" name="hx_ssd" id="val_ssd" value="">
     <div id="sub_ssd" class="sub-reveal"><label class="lbl">4.14a Syndrome type:</label><div class="g3 mt-1"><label class="chk-item"><input type="checkbox" name="ssd_brugada"> Brugada</label><label class="chk-item"><input type="checkbox" name="ssd_cpvt"> Catecholaminergic polymorphic VT</label><label class="chk-item"><input type="checkbox" name="ssd_idiopathic"> Idiopathic/Primary VT/VF</label><label class="chk-item"><input type="checkbox" name="ssd_longqt"> Long QT</label><label class="chk-item"><input type="checkbox" name="ssd_shortqt"> Short QT</label><label class="chk-item"><input type="checkbox" name="ssd_unknown"> Unknown</label></div></div>
   </div>
@@ -439,7 +473,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
       <div class="g2 mb-3">
         <div style="grid-column:1/-1"><label class="lbl">7.1a Atrial Rhythm (Choose One Only):</label><div class="g3 mt-1"><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Sinus"> Sinus</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Atrial fibrillation"> Atrial fibrillation</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Atrial flutter"> Atrial flutter</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="SVT"> SVT</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Atrial tachycardia"> Atrial tachycardia</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Atrial paced"> Atrial paced</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Sinus arrest"> Sinus arrest</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Sinus pause"> Sinus pause</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="1st degree AV block"> 1st degree AV block</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="2nd degree AV block"> 2nd degree AV block</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="3rd degree AV block"> 3rd degree AV block</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Unknown rhythm"> Unknown rhythm</label></div></div>
         <div style="grid-column:1/-1"><label class="lbl">7.1b Ventricular Rhythm (Choose One Only):</label><div class="g3 mt-1"><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="Normal"> Normal</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="VT"> Ventricular tachycardia</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="VF"> Ventricular fibrillation</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="LBBB"> LBBB</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="RBBB"> RBBB</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="Alternating LBBB/RBBB"> Alternating LBBB and RBBB</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="IVCD delay"> IVCD delay</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="Frequent PVCs"> Frequent PVCs</label></div></div>
-        <div><label class="lbl">7.1c QRS duration (msec)</label><input type="number" name="ecgQRS" placeholder="msec" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="ecgQRSna" class="w-3 h-3"> Not assessed</label></div>
+        <div><label class="lbl">7.1c QRS duration (msec)<button type="button" class="fn-btn" onclick="openFn('7.1c')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="ecgQRS" placeholder="msec" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="ecgQRSna" class="w-3 h-3"> Not assessed</label></div>
       </div>
     </div>
   </div>
@@ -476,20 +510,20 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
       <div class="g2 mb-3"><div><label class="lbl">7.4a Atrial thrombus detected</label><select name="teeThrombus" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
       <div class="flex items-center justify-between mb-2"><span class="lbl mb-0">7.4b LAA morphology assessment</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'laa','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'laa','Yes')">Yes</button></div></div>
       <input type="hidden" name="inv_laa" id="val_laa" value="">
-      <div id="sub_laa" class="sub-reveal"><div class="g2"><div><label class="lbl">7.4b.1 LAA ostial diameter (mm)</label><input type="number" name="laaOstial" class="inp" step="0.1"></div><div><label class="lbl">7.4b.2 LAA depth (mm)</label><input type="number" name="laaDepth" class="inp" step="0.1"></div></div></div>
+      <div id="sub_laa" class="sub-reveal"><div class="g2"><div><label class="lbl">7.4b.1 LAA ostial diameter (mm)<button type="button" class="fn-btn" onclick="openFn('7.4b.1')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="laaOstial" class="inp" step="0.1"></div><div><label class="lbl">7.4b.2 LAA depth (mm)<button type="button" class="fn-btn" onclick="openFn('7.4b.2')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="laaDepth" class="inp" step="0.1"></div></div></div>
     </div>
   </div>
   <div class="card mb-4"><div class="g2"><div><label class="lbl">7.5 Cardiac CT Angiography</label><select name="inv_cardiacCT" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">7.6 Cardiac MRI (CMR)</label><select name="inv_cmr" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
   <div class="card card-purple">
     <div class="font-bold text-purple-900 mb-3 text-sm">8. Laboratory Results</div>
     <div class="g4">
-      <div><label class="lbl">8.1 Creatinine Initial (µmol/L)</label><input type="number" name="creatInit" step="0.1" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="creatInitNA" class="w-3 h-3"> Not collected</label></div>
-      <div><label class="lbl">8.2 Creatinine Peak (µmol/L)</label><input type="number" name="creatPeak" step="0.1" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="creatPeakNA" class="w-3 h-3"> Not collected</label></div>
-      <div><label class="lbl">8.3 Hemoglobin Initial (g/dL)</label><input type="number" name="hgbInit" step="0.1" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="hgbInitNA" class="w-3 h-3"> Not collected</label></div>
-      <div><label class="lbl">8.4 Hemoglobin Lowest (g/dL)</label><input type="number" name="hgbLowest" step="0.1" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="hgbLowestNA" class="w-3 h-3"> Not collected</label></div>
-      <div><label class="lbl">8.5 Sodium (mEq/L)</label><input type="number" name="sodium" step="0.1" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="sodiumNA" class="w-3 h-3"> Not collected</label></div>
-      <div><label class="lbl">8.6 Potassium (mEq/L)</label><input type="number" name="potassium" step="0.1" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="potassiumNA" class="w-3 h-3"> Not collected</label></div>
-      <div><label class="lbl">8.7 Magnesium Initial (mEq/L)</label><input type="number" name="magnesium" step="0.1" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="magnesiumNA" class="w-3 h-3"> Not collected</label></div>
+      <div><label class="lbl">8.1 Creatinine Initial (µmol/L)<button type="button" class="fn-btn" onclick="openFn('lab.creat')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="creatInit" step="0.1" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="creatInitNA" class="w-3 h-3"> Not collected</label></div>
+      <div><label class="lbl">8.2 Creatinine Peak (µmol/L)<button type="button" class="fn-btn" onclick="openFn('lab.creat')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="creatPeak" step="0.1" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="creatPeakNA" class="w-3 h-3"> Not collected</label></div>
+      <div><label class="lbl">8.3 Hemoglobin Initial (g/dL)<button type="button" class="fn-btn" onclick="openFn('lab.hgb')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="hgbInit" step="0.1" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="hgbInitNA" class="w-3 h-3"> Not collected</label></div>
+      <div><label class="lbl">8.4 Hemoglobin Lowest (g/dL)<button type="button" class="fn-btn" onclick="openFn('lab.hgb')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="hgbLowest" step="0.1" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="hgbLowestNA" class="w-3 h-3"> Not collected</label></div>
+      <div><label class="lbl">8.5 Sodium (mEq/L)<button type="button" class="fn-btn" onclick="openFn('lab.na')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="sodium" step="0.1" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="sodiumNA" class="w-3 h-3"> Not collected</label></div>
+      <div><label class="lbl">8.6 Potassium (mEq/L)<button type="button" class="fn-btn" onclick="openFn('lab.k')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="potassium" step="0.1" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="potassiumNA" class="w-3 h-3"> Not collected</label></div>
+      <div><label class="lbl">8.7 Magnesium Initial (mEq/L)<button type="button" class="fn-btn" onclick="openFn('lab.mg')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="magnesium" step="0.1" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="magnesiumNA" class="w-3 h-3"> Not collected</label></div>
       <div><label class="lbl">8.8 INR</label><input type="number" name="inr" step="0.01" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="inrNA" class="w-3 h-3"> Not collected</label></div>
     </div>
   </div>
@@ -501,9 +535,9 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
   <div class="card mb-5">
     <div class="font-bold text-gray-800 text-sm mb-4"><span style="background:#dbeafe;color:#1e40af;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:800;">ALL PATIENTS</span> 9.1 – 9.4</div>
     <div class="proc-stack">
-      <div><label class="lbl">9.1 Procedure Start Date</label><input type="date" name="procStartDate" class="inp"></div>
-      <div><label class="lbl">9.2 Procedure Start Time (24h, HH:MM)</label><input type="text" inputmode="numeric" name="procStartTime" class="inp" placeholder="14:30" pattern="^([01]\d|2[0-3]):[0-5]\d$" maxlength="5" oninput="fmt24h(this)" title="Use 24-hour format, e.g. 14:30"></div>
-      <div><label class="lbl">9.3 Procedure Finishing Time (24h, HH:MM)</label><input type="text" inputmode="numeric" name="procEndTime" class="inp" placeholder="16:45" pattern="^([01]\d|2[0-3]):[0-5]\d$" maxlength="5" oninput="fmt24h(this)" title="Use 24-hour format, e.g. 16:45"></div>
+      <div><label class="lbl">9.1 Procedure Start Date<button type="button" class="fn-btn" onclick="openFn('9.time')" aria-label="Field information" title="Click for field information">i</button></label><input type="date" name="procStartDate" class="inp"></div>
+      <div><label class="lbl">9.2 Procedure Start Time (24h, HH:MM)<button type="button" class="fn-btn" onclick="openFn('9.time')" aria-label="Field information" title="Click for field information">i</button></label><input type="text" inputmode="numeric" name="procStartTime" class="inp" placeholder="14:30" pattern="^([01]\d|2[0-3]):[0-5]\d$" maxlength="5" oninput="fmt24h(this)" title="Use 24-hour format, e.g. 14:30"></div>
+      <div><label class="lbl">9.3 Procedure Finishing Time (24h, HH:MM)<button type="button" class="fn-btn" onclick="openFn('9.time')" aria-label="Field information" title="Click for field information">i</button></label><input type="text" inputmode="numeric" name="procEndTime" class="inp" placeholder="16:45" pattern="^([01]\d|2[0-3]):[0-5]\d$" maxlength="5" oninput="fmt24h(this)" title="Use 24-hour format, e.g. 16:45"></div>
       <div><label class="lbl">9.4 Operator Name</label><select name="operatorName" class="inp"><option value="">Select operator...</option><option>Operator 1</option><option>Operator 2</option><option>Operator 3</option><option>Operator 4</option><option>Operator 5</option></select></div>
     </div>
   </div>
@@ -642,7 +676,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
         <label class="chk-item"><input type="checkbox" name="tpmCause_myocarditis"> Myocarditis</label>
         <label class="chk-item"><input type="checkbox" name="tpmCause_endocarditis"> Endocarditis</label>
         <label class="chk-item"><input type="checkbox" name="tpmCause_postArrest"> Post cardiac arrest</label>
-        <label class="chk-item"><input type="checkbox" name="tpmCause_hypothermia"> Hypothermia</label>
+        <label class="chk-item"><input type="checkbox" name="tpmCause_hypothermia"> Hypothermia<button type="button" class="fn-btn" onclick="event.preventDefault();event.stopPropagation();openFn('9.6b')" aria-label="Field information" title="Click for field information">i</button></label>
         <label class="chk-item"><input type="checkbox" name="tpmCause_bridge"> Bridge to PPM</label>
         <label class="chk-item"><input type="checkbox" name="tpmCause_postTAVI"> Post TAVI/valve replacement</label>
         <label class="chk-item"><input type="checkbox" name="tpmCause_unknown"> Unknown cause</label>
@@ -748,7 +782,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
       </div>
     </div>
 
-    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.8b Sedation (Choose One Only):</label>
+    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.8b Sedation (Choose One Only):<button type="button" class="fn-btn" onclick="openFn('9.8b')" aria-label="Field information" title="Click for field information">i</button></label>
       <div class="g2">
         <label class="radio-item"><input type="radio" name="epsSedation" value="Minimal/Anxiolysis"> Minimal/Anxiolysis</label>
         <label class="radio-item"><input type="radio" name="epsSedation" value="Moderate/Analgesia"> Moderate/Analgesia</label>
@@ -785,7 +819,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
           </div>
         </div>
         <div><label class="lbl">9.8j Electroanatomic Induced arrhythmia during EP study</label><select name="epsInducedArr" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
-        <div><label class="lbl">9.8.h Mapping System (Choose One Only)</label>
+        <div><label class="lbl">9.8.h Mapping System (Choose One Only)<button type="button" class="fn-btn" onclick="openFn('9.8h')" aria-label="Field information" title="Click for field information">i</button></label>
           <div class="flex gap-2 mt-1 flex-wrap">
             <label class="radio-item"><input type="radio" name="epsMapSystem" value="Carto"> Carto</label>
             <label class="radio-item"><input type="radio" name="epsMapSystem" value="Ensite"> Ensite</label>
@@ -815,7 +849,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
             <label class="radio-item"><input type="radio" name="laaoDeviceType" value="WATCHMAN FLX"> WATCHMAN FLX</label>
           </div>
         </div>
-        <div><label class="lbl">9.9.b Device size (mm)</label><input type="number" name="laaoDeviceSize" class="inp" step="0.5"></div>
+        <div><label class="lbl">9.9.b Device size (mm)<button type="button" class="fn-btn" onclick="openFn('9.9.b')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="laaoDeviceSize" class="inp" step="0.5"></div>
       </div>
     </div>
 
@@ -834,14 +868,14 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
             <label class="radio-item"><input type="radio" name="laaoTransseptal" value="Double"> Double</label>
           </div>
         </div>
-        <div><label class="lbl">9.9.c.3 Imaging guidance</label>
+        <div><label class="lbl">9.9.c.3 Imaging guidance<button type="button" class="fn-btn" onclick="openFn('9.9.c.3')" aria-label="Field information" title="Click for field information">i</button></label>
           <div class="flex gap-2 mt-1">
             <label class="radio-item"><input type="radio" name="laaoImaging" value="TEE"> TEE</label>
             <label class="radio-item"><input type="radio" name="laaoImaging" value="ICE"> ICE</label>
             <label class="radio-item"><input type="radio" name="laaoImaging" value="Both"> Both</label>
           </div>
         </div>
-        <div><label class="lbl">9.9.c.4 PASS criteria met</label><select name="laaoPASS" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+        <div><label class="lbl">9.9.c.4 PASS criteria met<button type="button" class="fn-btn" onclick="openFn('9.9.c.4')" aria-label="Field information" title="Click for field information">i</button></label><select name="laaoPASS" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
       </div>
       <div><label class="lbl">9.9.c.5 Final peri-device leak</label>
         <div class="flex gap-2 mt-1 flex-wrap">
@@ -880,13 +914,13 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
   <div class="card mb-4"><div class="font-bold text-gray-800 text-sm mb-3">10.1 Procedures during hospital stay</div><div class="g4"><div><label class="lbl">CA</label><select name="comp_ca" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">PCI</label><select name="comp_pci" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">CABG</label><select name="comp_cabg" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">TAVR</label><select name="comp_tavr" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
   <div class="card card-red mb-3">
     <div class="font-bold text-red-900 text-sm mb-3">10.2 Complications</div>
-    <div class="g3 mb-3"><div><label class="lbl">10.2.1 Resuscitated cardiac arrest</label><select name="cx_cardArrest" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.2 Pulmonary edema/CHF</label><select name="cx_pulEdema" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.3 Cardiac tamponade</label><select name="cx_tamponade1" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
+    <div class="g3 mb-3"><div><label class="lbl">10.2.1 Resuscitated cardiac arrest</label><select name="cx_cardArrest" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.2 Pulmonary edema/CHF<button type="button" class="fn-btn" onclick="openFn('10.2.2')" aria-label="Field information" title="Click for field information">i</button></label><select name="cx_pulEdema" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.3 Cardiac tamponade</label><select name="cx_tamponade1" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
 
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.4 Renal impairment/failure (pre-discharge)</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'renal','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'renal','Yes')">Yes</button></div></div><input type="hidden" name="cx_renal" id="val_renal" value=""><div id="sub_renal" class="sub-reveal"><label class="lbl">10.2.4.a Dialysis required</label><select name="cx_dialysis" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
+    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.4 Renal impairment/failure (pre-discharge)<button type="button" class="fn-btn" onclick="openFn('10.2.4')" aria-label="Field information" title="Click for field information">i</button></span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'renal','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'renal','Yes')">Yes</button></div></div><input type="hidden" name="cx_renal" id="val_renal" value=""><div id="sub_renal" class="sub-reveal"><label class="lbl">10.2.4.a Dialysis required</label><select name="cx_dialysis" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
 
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.5 Stroke</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'stroke','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'stroke','Yes')">Yes</button></div></div><input type="hidden" name="cx_stroke" id="val_stroke" value=""><div id="sub_stroke" class="sub-reveal"><label class="lbl">10.2.5.a Type (Choose One Only):</label><div class="flex gap-2 mt-1 flex-wrap"><label class="radio-item"><input type="radio" name="strokeType" value="Hemorrhagic"> Hemorrhagic</label><label class="radio-item"><input type="radio" name="strokeType" value="Thrombotic"> Thrombotic</label><label class="radio-item"><input type="radio" name="strokeType" value="Unknown"> Unknown (CT not done)</label></div></div></div>
+    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.5 Stroke<button type="button" class="fn-btn" onclick="openFn('10.2.5')" aria-label="Field information" title="Click for field information">i</button></span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'stroke','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'stroke','Yes')">Yes</button></div></div><input type="hidden" name="cx_stroke" id="val_stroke" value=""><div id="sub_stroke" class="sub-reveal"><label class="lbl">10.2.5.a Type (Choose One Only):</label><div class="flex gap-2 mt-1 flex-wrap"><label class="radio-item"><input type="radio" name="strokeType" value="Hemorrhagic"> Hemorrhagic</label><label class="radio-item"><input type="radio" name="strokeType" value="Thrombotic"> Thrombotic</label><label class="radio-item"><input type="radio" name="strokeType" value="Unknown"> Unknown (CT not done)</label></div></div></div>
 
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.6 Access site vascular/bleeding complications</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'accessVasc','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'accessVasc','Yes')">Yes</button></div></div><input type="hidden" name="cx_accessVasc" id="val_accessVasc" value=""><div id="sub_accessVasc" class="sub-reveal">
+    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.6 Access site vascular/bleeding complications<button type="button" class="fn-btn" onclick="openFn('10.2.6')" aria-label="Field information" title="Click for field information">i</button></span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'accessVasc','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'accessVasc','Yes')">Yes</button></div></div><input type="hidden" name="cx_accessVasc" id="val_accessVasc" value=""><div id="sub_accessVasc" class="sub-reveal">
       <div class="g2 mb-3">
         <div><label class="lbl">10.2.6.a Hematoma</label><select name="cx_hematoma" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
         <div><label class="lbl">10.2.6.b Occlusion</label><select name="cx_occlusion" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
@@ -904,13 +938,13 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
     </div></div>
 
     <div class="g2 mb-3">
-      <div><label class="lbl">10.2.8 Peripheral embolization</label><select name="cx_periphEmbol" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+      <div><label class="lbl">10.2.8 Peripheral embolization<button type="button" class="fn-btn" onclick="openFn('10.2.8')" aria-label="Field information" title="Click for field information">i</button></label><select name="cx_periphEmbol" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
       <div><label class="lbl">10.2.9 Pericarditis</label><select name="cx_pericarditis" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
     </div>
 
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.10 Cardiogenic shock</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'cardShock','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'cardShock','Yes')">Yes</button></div></div><input type="hidden" name="cx_cardShock" id="val_cardShock" value=""><div id="sub_cardShock" class="sub-reveal"><label class="lbl">10.2.10.a SCAI stage (Choose One Only):</label><div class="flex gap-2 flex-wrap mt-1"><label class="radio-item"><input type="radio" name="scaiStage" value="At risk"> At risk</label><label class="radio-item"><input type="radio" name="scaiStage" value="Beginning"> Beginning</label><label class="radio-item"><input type="radio" name="scaiStage" value="Classic"> Classic</label><label class="radio-item"><input type="radio" name="scaiStage" value="Deteriorating"> Deteriorating</label><label class="radio-item"><input type="radio" name="scaiStage" value="Extremis"> Extremis</label></div></div></div>
+    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.10 Cardiogenic shock<button type="button" class="fn-btn" onclick="openFn('10.2.10')" aria-label="Field information" title="Click for field information">i</button></span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'cardShock','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'cardShock','Yes')">Yes</button></div></div><input type="hidden" name="cx_cardShock" id="val_cardShock" value=""><div id="sub_cardShock" class="sub-reveal"><label class="lbl">10.2.10.a SCAI stage (Choose One Only):</label><div class="flex gap-2 flex-wrap mt-1"><label class="radio-item"><input type="radio" name="scaiStage" value="At risk"> At risk</label><label class="radio-item"><input type="radio" name="scaiStage" value="Beginning"> Beginning</label><label class="radio-item"><input type="radio" name="scaiStage" value="Classic"> Classic</label><label class="radio-item"><input type="radio" name="scaiStage" value="Deteriorating"> Deteriorating</label><label class="radio-item"><input type="radio" name="scaiStage" value="Extremis"> Extremis</label></div></div></div>
 
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.11 Ventilation</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'vent','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'vent','Yes')">Yes</button></div></div><input type="hidden" name="cx_vent" id="val_vent" value=""><div id="sub_vent" class="sub-reveal"><label class="lbl">10.2.11.a Type of ventilation (Choose One Only):</label>
+    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.11 Ventilation<button type="button" class="fn-btn" onclick="openFn('10.2.11')" aria-label="Field information" title="Click for field information">i</button></span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'vent','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'vent','Yes')">Yes</button></div></div><input type="hidden" name="cx_vent" id="val_vent" value=""><div id="sub_vent" class="sub-reveal"><label class="lbl">10.2.11.a Type of ventilation (Choose One Only):</label>
       <div class="flex gap-2 mt-1 flex-wrap">
         <label class="radio-item"><input type="radio" name="ventType" value="Non-invasive ventilation only"> Non-invasive ventilation only</label>
         <label class="radio-item"><input type="radio" name="ventType" value="Invasive ventilation only"> Invasive ventilation only</label>
@@ -922,7 +956,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
       <div><label class="lbl">10.2.12 Inotropes</label><select name="cx_inotropes" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
     </div>
 
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.12.a Mechanical complications</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'mechComp','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'mechComp','Yes')">Yes</button></div></div><input type="hidden" name="cx_mechComp" id="val_mechComp" value=""><div id="sub_mechComp" class="sub-reveal"><label class="lbl">10.2.12.b Type of mechanical complications (Choose One Only):</label>
+    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.12.a Mechanical complications<button type="button" class="fn-btn" onclick="openFn('10.2.12')" aria-label="Field information" title="Click for field information">i</button></span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'mechComp','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'mechComp','Yes')">Yes</button></div></div><input type="hidden" name="cx_mechComp" id="val_mechComp" value=""><div id="sub_mechComp" class="sub-reveal"><label class="lbl">10.2.12.b Type of mechanical complications (Choose One Only):</label>
       <div class="flex gap-2 mt-1 flex-wrap">
         <label class="radio-item"><input type="radio" name="mechCompType" value="Cardiac rupture"> Cardiac rupture</label>
         <label class="radio-item"><input type="radio" name="mechCompType" value="VSD"> VSD</label>
@@ -930,7 +964,7 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
       </div>
     </div></div>
 
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.13 Any bleeding</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'bleeding','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'bleeding','Yes')">Yes</button></div></div><input type="hidden" name="cx_bleeding" id="val_bleeding" value=""><div id="sub_bleeding" class="sub-reveal">
+    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.13 Any bleeding<button type="button" class="fn-btn" onclick="openFn('10.2.13')" aria-label="Field information" title="Click for field information">i</button></span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'bleeding','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'bleeding','Yes')">Yes</button></div></div><input type="hidden" name="cx_bleeding" id="val_bleeding" value=""><div id="sub_bleeding" class="sub-reveal">
       <label class="lbl">10.2.13.a Bleeding type (Choose One):</label>
       <div class="space-y-1 mt-1 mb-3">
         <label class="radio-item"><input type="radio" name="bleedType" value="Type 1" onchange="onBleedT()"> Type 1 (Not actionable)</label>
@@ -1252,6 +1286,394 @@ header{border-bottom:2px solid transparent;background-image:linear-gradient(#fff
 </main>
 
 <script>
+// ==================== FIELD FOOTNOTES (info popovers) ====================
+const FOOTNOTES = {
+  '1.1': {
+    title: '1.1 — Patient Name (Initials)',
+    body: `<p>Enter the patient's <strong>first initial</strong>, <strong>middle initial</strong>, and <strong>last initial</strong>.</p>
+<div class="fn-section">
+<div class="fn-section-title">Special rule for "Al" / "El"</div>
+<p>If the patient's family name begins with the definite article <strong>Al</strong> or <strong>El</strong>, write the initial <em>after</em> the article.</p>
+<ul>
+<li><strong>Alkandari</strong> → last initial = <strong>K</strong></li>
+<li><strong>Elrashed</strong> → last initial = <strong>R</strong></li>
+</ul>
+</div>`
+  },
+  '1.3': {
+    title: '1.3 — CRF Number',
+    body: `<p>Format: <strong>Hospital code – Investigator code – Patient serial number</strong> in the registry.</p>
+<p>Example: <code>MKH-01-0042</code></p>`
+  },
+  '1.5': {
+    title: '1.5 — Nationality',
+    body: `<p>Select the patient's nationality from the list.</p>
+<div class="fn-section">
+<div class="fn-section-title">Bedoon (stateless)</div>
+<p>For <strong>Bedoon</strong> patients, please select <strong>"Bedoon"</strong> from the dropdown list.</p>
+</div>`
+  },
+  '4.1c': {
+    title: '4.1c — CHA₂DS₂-VASc Score',
+    body: `<table class="fn-tbl">
+<tr><th>Component</th><th>Points</th></tr>
+<tr><td><strong>C</strong> — Congestive Heart Failure</td><td>1</td></tr>
+<tr><td><strong>H</strong> — Hypertension (any severity)</td><td>1</td></tr>
+<tr><td><strong>A₂</strong> — Age &lt; 65 yrs</td><td>0</td></tr>
+<tr><td><strong>A₂</strong> — Age 65–74 yrs</td><td>1</td></tr>
+<tr><td><strong>A₂</strong> — Age ≥ 75 yrs</td><td>2</td></tr>
+<tr><td><strong>D</strong> — Diabetes</td><td>1</td></tr>
+<tr><td><strong>S₂</strong> — Prior Stroke / TIA / Thromboembolism</td><td>2</td></tr>
+<tr><td><strong>V</strong> — Vascular Disease</td><td>1</td></tr>
+</table>`
+  },
+  '4.1d': {
+    title: '4.1d — HAS-BLED Score',
+    body: `<table class="fn-tbl">
+<tr><th>Letter</th><th>Component</th><th>Points</th></tr>
+<tr><td><strong>H</strong></td><td>Hypertension (uncontrolled, SBP &gt; 160 mmHg)</td><td>1</td></tr>
+<tr><td><strong>A</strong></td><td>Abnormal renal or liver function</td><td>1 each</td></tr>
+<tr><td><strong>S</strong></td><td>Stroke history</td><td>1</td></tr>
+<tr><td><strong>B</strong></td><td>Bleeding history or predisposition</td><td>1</td></tr>
+<tr><td><strong>L</strong></td><td>Labile INRs (TTR &lt; 60%)</td><td>1</td></tr>
+<tr><td><strong>E</strong></td><td>Elderly (age &gt; 65 yrs)</td><td>1</td></tr>
+<tr><td><strong>D</strong></td><td>Drugs / alcohol concomitant use</td><td>1 each</td></tr>
+</table>`
+  },
+  '4.14': {
+    title: '4.14 — Sudden Death Syndromes',
+    body: `<p><strong>Sudden Arrhythmic Death Syndrome (SADS)</strong> / <strong>Sudden Cardiac Death (SCD)</strong> are unexpected, fatal cardiac arrests, frequently in young, apparently healthy individuals — usually due to genetic electrical or structural heart abnormalities.</p>
+<div class="fn-section">
+<div class="fn-section-title">Key syndromes</div>
+<ul>
+<li><strong>Long QT Syndrome (LQTS)</strong> — electrical defect causing delayed myocardial repolarization → arrhythmias.</li>
+<li><strong>Brugada Syndrome</strong> — inherited sodium-channel disorder; fatal arrhythmias often during sleep/rest.</li>
+<li><strong>Catecholaminergic Polymorphic VT (CPVT)</strong> — arrhythmia triggered by physical or emotional stress.</li>
+<li><strong>Short QT Syndrome (SQTS)</strong> — rare, fast-acting arrhythmia.</li>
+<li><strong>Arrhythmogenic Right Ventricular Cardiomyopathy (ARVC)</strong> — myocardium replaced by fat/fibrous tissue; common in young athletes.</li>
+<li><strong>Hypertrophic Cardiomyopathy (HCM)</strong> — myocardial thickening; major SCD cause in the young.</li>
+<li><strong>Wolff-Parkinson-White (WPW)</strong> — accessory pathway → rapid heart rate.</li>
+</ul>
+</div>`
+  },
+  '5.1': {
+    title: '5.1 — Systolic BP',
+    body: `<p>Accepted range for <strong>Systolic BP</strong>: <strong>30 – 250 mmHg</strong>.</p>
+<p>Values outside this range will be flagged. Tick <em>Unrecordable</em> if BP could not be obtained.</p>`
+  },
+  '5.2': {
+    title: '5.2 — Diastolic BP',
+    body: `<p>Accepted range for <strong>Diastolic BP</strong>: <strong>30 – 150 mmHg</strong>.</p>
+<p>Values outside this range will be flagged. Tick <em>Unrecordable</em> if BP could not be obtained.</p>`
+  },
+  '5.3': {
+    title: '5.3 — Presenting Heart Rate',
+    body: `<p>Accepted range for <strong>HR</strong>: <strong>20 – 300 / min</strong>.</p>
+<p>Values outside this range will be flagged. Tick <em>Unrecordable</em> if HR could not be obtained.</p>`
+  },
+  '5.4': {
+    title: 'Weight',
+    body: `<p>Accepted range for <strong>Weight</strong>: <strong>40 – 160 kg</strong>.</p>`
+  },
+  '5.5': {
+    title: 'Height',
+    body: `<p>Accepted range for <strong>Height</strong>: <strong>150 – 220 cm</strong>.</p>`
+  },
+  '7.1c': {
+    title: '7.1c — QRS Duration',
+    body: `<p><strong>Upper limit:</strong> 100–110 ms is acceptable in some healthy individuals.</p>
+<p><strong>&gt; 120 ms</strong> is generally considered abnormal.</p>`
+  },
+  '7.4b.1': {
+    title: '7.4.b.1 — LAA Ostial Diameter',
+    body: `<p>By <strong>transesophageal echocardiography (TEE)</strong>, the left atrial appendage (LAA) ostial diameter is typically:</p>
+<p style="text-align:center;font-size:16px;"><strong>17 – 26 mm</strong></p>
+<p>Measurements are taken at <strong>0°, 45°, 90°, and 135°</strong> to find the maximum diameter.</p>`
+  },
+  '7.4b.2': {
+    title: '7.4.b.2 — LAA Depth',
+    body: `<p>By TEE, the LAA depth is typically:</p>
+<p style="text-align:center;font-size:16px;"><strong>23 – 27 mm</strong></p>
+<p>Varies by AF status — measurements often increase with AF progression. Measurements taken at <strong>0°, 45°, 90°, 135°</strong> for maximum diameter.</p>`
+  },
+  'lab.hgb': {
+    title: 'Hemoglobin',
+    body: `<p>Enter value in <strong>g/L</strong> only.</p>
+<p><strong>Normal range:</strong> 12 – 15 g/L</p>`
+  },
+  'lab.creat': {
+    title: 'Creatinine',
+    body: `<p>Enter value in <strong>µmol/L</strong>.</p>
+<p><strong>Normal range:</strong> 49 – 90 µmol/L</p>`
+  },
+  'lab.na': {
+    title: 'Sodium (Na)',
+    body: `<p>Enter value in <strong>mmol/L</strong>.</p>
+<p><strong>Normal range:</strong> 135 – 145 mmol/L</p>`
+  },
+  'lab.k': {
+    title: 'Potassium (K)',
+    body: `<p>Enter value in <strong>mmol/L</strong>.</p>
+<p><strong>Normal range:</strong> 3.5 – 5.1 mmol/L</p>`
+  },
+  'lab.mg': {
+    title: 'Magnesium (Mg)',
+    body: `<p>Enter value in <strong>mmol/L</strong>.</p>
+<p><strong>Normal range:</strong> 0.77 – 1.03 mmol/L</p>`
+  },
+  '9.time': {
+    title: '9.1 / 9.2 / 9.3 — Time Format',
+    body: `<p>All times must be entered in <strong>24-hour (military) format</strong>: <strong>HH:MM</strong></p>
+<ul>
+<li>2 digits for hours, 2 digits for minutes</li>
+<li>Clock starts at midnight (00:00)</li>
+<li>If time is <strong>AM</strong> → no conversion needed</li>
+<li>If time is <strong>PM</strong> → <strong>add 12</strong> to the hours</li>
+</ul>
+<table class="fn-tbl">
+<tr><th>Civilian</th><th>24-hour</th></tr>
+<tr><td>12 Midnight</td><td>00:00</td></tr>
+<tr><td>5:01 AM</td><td>05:01</td></tr>
+<tr><td>11:59 AM</td><td>11:59</td></tr>
+<tr><td>12 Noon</td><td>12:00</td></tr>
+<tr><td>5:31 PM</td><td>17:31</td></tr>
+<tr><td>11:59 PM</td><td>23:59</td></tr>
+</table>`
+  },
+  '9.6b': {
+    title: '9.6b — Hypothermia (TPM cause)',
+    body: `<p><strong>Definition:</strong> Body temperature drops below <strong>35 °C</strong>.</p>`
+  },
+  '9.8b': {
+    title: '9.8b — Sedation Levels',
+    body: `<div class="fn-section">
+<div class="fn-section-title">Minimal Sedation (Anxiolysis)</div>
+<p>Drug-induced state. Patients respond <strong>normally to verbal commands</strong>. Cognitive function and coordination may be impaired, but airway reflexes, ventilation, and cardiovascular function are <strong>unaffected</strong>. Typically a single oral sedative/analgesic before the procedure.</p>
+</div>
+<div class="fn-section">
+<div class="fn-section-title">Moderate Sedation / Analgesia ("Conscious Sedation")</div>
+<p>Drug-induced depression of consciousness. Patients respond <strong>purposefully</strong> to verbal commands ± light tactile stimulation. <strong>No airway intervention</strong>; spontaneous ventilation adequate; CV function usually maintained. Typically titrated IV sedatives/analgesics during the procedure.</p>
+</div>
+<div class="fn-section">
+<div class="fn-section-title">Deep Sedation / Analgesia</div>
+<p>Drug-induced depression of consciousness. Patients <strong>cannot be easily aroused</strong> but respond purposefully to repeated/painful stimulation. Ventilatory function may be impaired; airway assistance may be needed; spontaneous ventilation may be inadequate. CV function usually maintained.</p>
+</div>
+<div class="fn-section">
+<div class="fn-section-title">General Anaesthesia</div>
+<p>Drug-induced loss of consciousness. Patients are <strong>not arousable, even by painful stimuli</strong>. Ventilatory function often impaired; airway assistance and positive-pressure ventilation often required. CV function may be impaired.</p>
+</div>`
+  },
+  '9.8h': {
+    title: '9.8.h Mapping system',
+    body: `<p>During electrophysiology (EP) ablation procedures, 3D electro-anatomical mapping systems are used to visualize the heart's anatomy, track catheter location, and identify the source of arrhythmias (activation mapping) without relying solely on X-ray fluoroscopy.</p>
+<p>Here are the definitions of the mapping systems requested:</p>
+<div class="fn-section">
+<div class="fn-section-title">1. CARTO System:</div>
+<p>It is an electromagnetic-based mapping system utilizes a low-level magnetic field generated by a "locator pad" placed beneath the patient, which is detected by a sensor embedded in the tip of a specialized mapping catheter.</p>
+<ul>
+<li><strong>Key Features:</strong> It maps the 3D anatomy of the cardiac chamber in real time and creates color-coded maps of electrical activation (red being earliest) and voltage.</li>
+</ul>
+</div>
+<div class="fn-section">
+<div class="fn-section-title">2. EnSite Precision System (Abbott - formerly St. Jude Medical)</div>
+<p>It is usually used with software) It is primarily impedance-based. It offers high flexibility as it can work with various catheters and can build a 3D geometry from the mapping data.</p>
+</div>
+<div class="fn-section">
+<div class="fn-section-title">3. Rhythmia System (Boston Scientific)</div>
+<p>The Rhythmia Mapping System is designed for ultra-high-density mapping.</p>
+<ul>
+<li><strong>Technology:</strong> It uses a hybrid approach, combining magnetic technology for precise positioning with impedance technology for tracking. It is used to improve the accuracy of defining complex arrhythmias.</li>
+<li><strong>Automatic Mapping:</strong> It features automatic annotation, which filters and annotates complex signals (unipolar and bipolar) to remove noise and far-field signals, aiding in fast mapping.</li>
+</ul>
+</div>`
+  },
+  '9.9.b': {
+    title: '9.9.b — WATCHMAN Device Sizes',
+    body: `<div class="fn-section">
+<div class="fn-section-title">WATCHMAN 2.5 (Gen 2.5)</div>
+<p>Available in <strong>5 sizes</strong>: 21, 24, 27, 30, 33 mm.</p>
+</div>
+<div class="fn-section">
+<div class="fn-section-title">WATCHMAN FLX</div>
+<p>Available in <strong>5 sizes</strong>: 20, 24, 27, 31, 35 mm.</p>
+</div>`
+  },
+  '9.9.c.3': {
+    title: '9.9.c.3 — Imaging Guidance (ICE)',
+    body: `<p><strong>Intracardiac echocardiography (ICE)</strong> imaging during WATCHMAN device deployment offers real-time, high-resolution visualisation for:</p>
+<ul>
+<li>Transseptal puncture</li>
+<li>Device sizing</li>
+<li>Device placement</li>
+</ul>
+<p>Frequently serves as an <strong>alternative to TEE</strong>.</p>`
+  },
+  '9.9.c.4': {
+    title: '9.9.c.4 PASS criteria',
+    body: `<p><strong>PASS criteria : Position, Anchor, Size, and Seal</strong></p>
+<div class="fn-section">
+<div class="fn-section-title">P osition:</div>
+<p>The device should be located at or slightly distal to the orifice (ostium) of the left atrial appendage, with the shoulders of the device protruding into the left atrium by less than 50% of the device size.</p>
+</div>
+<div class="fn-section">
+<div class="fn-section-title">A nchor (Stability):</div>
+<p>A "tug test" is performed by retracting the delivery catheter and observing that the device moves in unison with the heart tissue, confirming secure fixation within the LAA.</p>
+</div>
+<div class="fn-section">
+<div class="fn-section-title">S ize (Compression):</div>
+<p>The device must be compressed, aiming for a diameter reduction of roughly (10%–30%) = ((80%–92%) of its original size) to ensure a tight fit.</p>
+</div>
+<div class="fn-section">
+<div class="fn-section-title">S eal:</div>
+<p>Using color Doppler ultrasound, it is confirmed that all lobes of the LAA distal to the device are sealed, with no peri-device flow (leaks) greater than 5 mm.</p>
+</div>`
+  },
+  '10.2.2': {
+    title: '10.2.2 — Pulmonary Edema / CHF',
+    body: `<p>Patient experienced documented onset of <strong>NEW CHF</strong> or an <strong>acute reoccurrence of CHF</strong> that necessitated <strong>new or increased pharmacologic therapy</strong>.</p>`
+  },
+  '10.2.4': {
+    title: '10.2.4 — Renal Impairment / Failure (pre-discharge)',
+    body: `<p>Acute or worsening renal failure resulting in <strong>one of the following</strong>:</p>
+<ul>
+<li>Increase of serum creatinine to <strong>&gt; 2.0 mg/dL (144 µmol/L)</strong> AND <strong>two times</strong> the baseline creatinine level.</li>
+<li><strong>New requirement for dialysis.</strong></li>
+</ul>`
+  },
+  '10.2.5': {
+    title: '10.2.5 — Stroke',
+    body: `<p>A stroke / CVA with loss of neurological function caused by an <strong>ischemic or hemorrhagic event</strong>, with <strong>residual symptoms ≥ 24 h</strong> after onset, or leading to death.</p>
+<div class="fn-section">
+<div class="fn-section-title">Stroke type — Hemorrhagic</div>
+<p>A stroke with documentation on imaging (CT or MRI) of hemorrhage in the cerebral parenchyma, or subdural / subarachnoid hemorrhage. Evidence may also come from <strong>lumbar puncture, neurosurgery, or autopsy</strong>.</p>
+</div>
+<div class="fn-section">
+<div class="fn-section-title">Unknown (CT not done)</div>
+<p>Type cannot be determined — no imaging performed (and not confirmed by lumbar puncture, neurosurgery, or autopsy).</p>
+</div>`
+  },
+  '10.2.6': {
+    title: '10.2.6 — Access Site Vascular / Bleeding Complications',
+    body: `<div class="fn-section">
+<div class="fn-section-title">Bleeding at percutaneous entry site</div>
+<ul>
+<li>Hematoma <strong>&gt; 10 cm</strong> for <strong>femoral</strong> access</li>
+<li>Hematoma <strong>&gt; 2 cm</strong> for <strong>radial</strong> access</li>
+<li>Hematoma <strong>&gt; 5 cm</strong> for <strong>brachial</strong> access</li>
+</ul>
+</div>
+<div class="fn-section">
+<div class="fn-section-title">Occlusion</div>
+<p>Access-site occlusion at the percutaneous entry site, during the procedure or after lab visit but before any subsequent lab visit.</p>
+<p><strong>Defined as:</strong> total obstruction of the artery (usually thrombus, may have other causes) at the access site, requiring surgical repair. May be accompanied by absent palpable pulse or absent Doppler signal.</p>
+</div>`
+  },
+  '10.2.8': {
+    title: '10.2.8 — Peripheral Embolization',
+    body: `<p>A peripheral embolization occurring <strong>distal to the arterial access site</strong> during the procedure or after lab visit but before any subsequent lab visit, <strong>requiring therapy</strong>.</p>
+<div class="fn-section">
+<div class="fn-section-title">Defined as</div>
+<p>Loss of distal pulse, pain, and/or discoloration (especially the toes). May include <strong>cholesterol emboli</strong>.</p>
+</div>`
+  },
+  '10.2.10': {
+    title: '10.2.10 — Cardiogenic Shock (SCAI Stages)',
+    body: `<div class="fn-section">
+<div class="fn-section-title">A — At risk</div>
+<p>Normal JVP, clear lung fields, warm extremities, normal hemodynamics and lactate.</p>
+</div>
+<div class="fn-section">
+<div class="fn-section-title">B — Beginning</div>
+<p>Relative hypotension or tachycardia; warm and perfused; SBP &lt; 90 mmHg; elevated JVP; rales; MAP &lt; 60 mmHg; <strong>normal lactate</strong>.</p>
+</div>
+<div class="fn-section">
+<div class="fn-section-title">C — Classic</div>
+<p>Hypoperfused, requires support. Altered mental status, cold extremities, extensive rales, UOP &lt; 30 mL/h, <strong>lactate ≥ 2 mmol/L</strong>, worsening renal function, worsening hemodynamics (CI &lt; 2.2 L/min/m², PCWP &gt; 15 mmHg).</p>
+</div>
+<div class="fn-section">
+<div class="fn-section-title">D — Deteriorating</div>
+<p>Similar to C but worsening despite initial support. Increasing pressors / devices; persistently <strong>lactate &gt; 2 mmol/L</strong>; worsening renal function.</p>
+</div>
+<div class="fn-section">
+<div class="fn-section-title">E — Extremis</div>
+<p>Circulatory collapse, unconsciousness, pulseless or multiple defibrillations, <strong>lactate ≥ 8 mmol/L</strong>, severe acidosis and hypotension despite maximal hemodynamic support.</p>
+</div>`
+  },
+  '10.2.11': {
+    title: '10.2.11 — Ventilation',
+    body: `<div class="fn-section">
+<div class="fn-section-title">Noninvasive Ventilation (NIPPV)</div>
+<p>Noninvasive Positive Pressure Ventilation — provides ventilatory support through the upper airways.</p>
+<ul>
+<li><strong>CPAP</strong> — continuous positive airway pressure</li>
+<li><strong>BiPAP</strong> — bi-level positive airway pressure</li>
+</ul>
+</div>
+<div class="fn-section">
+<div class="fn-section-title">Invasive Ventilation</div>
+<p>Requires <strong>intubation and mechanical ventilator</strong>.</p>
+</div>`
+  },
+  '10.2.12': {
+    title: '10.2.12 — Mechanical Complications: Cardiac Rupture',
+    body: `<p><strong>Cardiac rupture:</strong> Rupture of the ventricular myocardium, documented by:</p>
+<ul>
+<li>Cardiac echocardiography</li>
+<li>Ventriculography</li>
+<li>Pericardiocentesis</li>
+<li>Cardiac surgery</li>
+<li>Autopsy</li>
+</ul>
+<p>Rupture may be of the <strong>free wall</strong> or the <strong>ventricular septum</strong>.</p>`
+  },
+  '10.2.13': {
+    title: '10.2.13 — BARC Bleeding Definitions',
+    body: `<p><strong>BARC</strong> = Bleeding Academic Research Consortium</p>
+<div class="fn-section">
+<div class="fn-section-title">Type 1 — Not actionable</div>
+<p>No need for hospitalization or treatment (bruising, hematoma, nosebleeds, etc.).</p>
+</div>
+<div class="fn-section">
+<div class="fn-section-title">Type 2 — Actionable</div>
+<p>Must meet at least one: requires intervention, leads to hospitalization, or prompts evaluation.</p>
+</div>
+<div class="fn-section">
+<div class="fn-section-title">Type 3 — Major / Overt</div>
+<p>Bleeding with clinical, lab, or imaging evidence and healthcare provider response:</p>
+<ul>
+<li><strong>3a</strong> — overt bleeding + Hgb drop ≥ 3 to &lt; 5 g/dL with any transfusion</li>
+<li><strong>3b</strong> — overt bleeding + Hgb drop &gt; 5 g/dL; cardiac tamponade; bleeding requiring surgical intervention (excluding dental/nasal/skin/hemorrhoid); or requiring IV vasoactive drugs</li>
+<li><strong>3c</strong> — intracranial hemorrhage; or intraocular bleed compromising vision</li>
+</ul>
+</div>
+<div class="fn-section">
+<div class="fn-section-title">Type 4 — CABG-related bleeding</div>
+</div>
+<div class="fn-section">
+<div class="fn-section-title">Type 5 — Fatal bleeding</div>
+<ul>
+<li><strong>5a</strong> — clinically <em>suspicious</em> as cause of death, but bleeding not directly observed or confirmed</li>
+<li><strong>5b</strong> — fatal bleeding <em>directly observed</em> or confirmed on autopsy</li>
+</ul>
+</div>`
+  }
+};
+
+function openFn(key){
+  const fn = FOOTNOTES[key];
+  if(!fn) return;
+  document.getElementById('fnTitleText').textContent = fn.title;
+  document.getElementById('fnBody').innerHTML = fn.body;
+  document.getElementById('fnOverlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeFn(){
+  document.getElementById('fnOverlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+// Close on ESC
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeFn(); });
+
 // ==================== FIREBASE INIT ====================
 (async function initFirebaseReliably() {
   const cdns = [
@@ -1512,7 +1934,7 @@ function initApp() {
   window.changeStep=function(dir){const n=currentStep+dir;if(n>=0&&n<STEPS.length)goToStep(n);};
 
   // NATIONALITY
-  const countries=["Afghan","Albanian","Algerian","American","Andorran","Angolan","Argentine","Armenian","Australian","Austrian","Azerbaijani","Bahraini","Bangladeshi","Belgian","Brazilian","British","Bulgarian","Cambodian","Canadian","Chilean","Chinese","Colombian","Croatian","Cuban","Czech","Danish","Dutch","Egyptian","Emirati","Ethiopian","Filipino","Finnish","French","German","Ghanaian","Greek","Guatemalan","Hungarian","Indian","Indonesian","Iranian","Iraqi","Irish","Israeli","Italian","Ivorian","Japanese","Jordanian","Kazakhstani","Kenyan","Korean","Kuwaiti","Lebanese","Libyan","Malaysian","Moroccan","Nepalese","Nigerian","Norwegian","Omani","Pakistani","Palestinian","Polish","Portuguese","Qatari","Romanian","Russian","Saudi Arabian","Senegalese","Serbian","Singaporean","Somali","South African","Spanish","Sri Lankan","Sudanese","Swedish","Swiss","Syrian","Taiwanese","Thai","Tunisian","Turkish","Ugandan","Ukrainian","Venezuelan","Vietnamese","Yemeni","Other"];
+  const countries=["Afghan","Albanian","Algerian","American","Andorran","Angolan","Argentine","Armenian","Australian","Austrian","Azerbaijani","Bahraini","Bangladeshi","Bedoon","Belgian","Brazilian","British","Bulgarian","Cambodian","Canadian","Chilean","Chinese","Colombian","Croatian","Cuban","Czech","Danish","Dutch","Egyptian","Emirati","Ethiopian","Filipino","Finnish","French","German","Ghanaian","Greek","Guatemalan","Hungarian","Indian","Indonesian","Iranian","Iraqi","Irish","Israeli","Italian","Ivorian","Japanese","Jordanian","Kazakhstani","Kenyan","Korean","Kuwaiti","Lebanese","Libyan","Malaysian","Moroccan","Nepalese","Nigerian","Norwegian","Omani","Pakistani","Palestinian","Polish","Portuguese","Qatari","Romanian","Russian","Saudi Arabian","Senegalese","Serbian","Singaporean","Somali","South African","Spanish","Sri Lankan","Sudanese","Swedish","Swiss","Syrian","Taiwanese","Thai","Tunisian","Turkish","Ugandan","Ukrainian","Venezuelan","Vietnamese","Yemeni","Other"];
   document.getElementById('nationalitySelect').innerHTML='<option value="">Select…</option>'+countries.map(c=>`<option value="${c}">${c}</option>`).join('');
 
   // RISK GRID
