@@ -590,7 +590,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
 <div id="mainSearchBar" class="mb-4">
   <div class="bg-white rounded-2xl border border-gray-200 shadow-sm px-5 py-4 flex items-center gap-3">
     <i class="fas fa-search text-gray-400 shrink-0"></i>
-    <input type="text" id="qs_input" oninput="liveSearch()" onkeydown="if(event.key==='Enter')liveSearch()" placeholder="Search by Civil ID, File Number or CRF Number..." class="inp" style="border:none;box-shadow:none;padding:0;font-size:15px;" autocomplete="off">
+    <input type="text" id="qs_input" oninput="liveSearch()" onkeydown="if(event.key==='Enter')liveSearch()" placeholder="Search by Civil ID or CRF Number..." class="inp" style="border:none;box-shadow:none;padding:0;font-size:15px;" autocomplete="off">
     <button onclick="liveSearch()" class="btn btn-primary text-sm px-4 py-2 shrink-0"><i class="fas fa-search"></i> Search</button>
     <button onclick="clearQS()" class="btn btn-gray text-sm px-3 py-2 shrink-0"><i class="fas fa-times"></i></button>
   </div>
@@ -662,13 +662,12 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <div><label class="lbl">1.6 Year of Birth</label><input type="number" id="yob" name="yob" placeholder="YYYY" class="inp" min="1900" max="2025"></div>
       <div><label class="lbl">1.6a Est. Age</label><input type="number" id="estAge" name="estimatedAge" placeholder="yrs" class="inp"></div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" class="mb-4">
+    <div style="display:grid;grid-template-columns:1fr;gap:14px;" class="mb-4">
       <div><label class="lbl">1.7 Hospital Admission Date</label><input type="date" id="req_admDate" name="admissionDate" class="inp"></div>
-      <div><label class="lbl">File Number <span style="color:#dc2626">*</span></label><input type="text" id="req_fileNo" name="fileNumber" inputmode="numeric" maxlength="6" placeholder="6 digits" class="inp" style="font-family:'DM Mono',monospace;"></div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-      <div><label class="lbl">1.8 Patient Contact</label><input type="tel" name="patientContact" class="inp"></div>
-      <div><label class="lbl">1.9 Relative Contact</label><input type="tel" name="relativeContact" class="inp"></div>
+      <div><label class="lbl">1.8 Patient Contact (8 digits)</label><input type="tel" name="patientContact" inputmode="numeric" maxlength="8" pattern="^\d{8}$" placeholder="8 digits" class="inp" oninput="this.value=this.value.replace(/\D/g,'').slice(0,8)"></div>
+      <div><label class="lbl">1.9 Relative Contact (8 digits)</label><input type="tel" name="relativeContact" inputmode="numeric" maxlength="8" pattern="^\d{8}$" placeholder="8 digits" class="inp" oninput="this.value=this.value.replace(/\D/g,'').slice(0,8)"></div>
     </div>
   </div>
 </div>
@@ -692,7 +691,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
         </div>
       </div>
       <label class="radio-item"><input type="radio" name="epReason" value="EPS/Ablation" onchange="onEPR(); updateFieldIndicators();"> EPS/Ablation</label>
-      <label class="radio-item"><input type="radio" name="epReason" value="LAAO" onchange="onEPR(); updateFieldIndicators();"> Left Atrial Appendage Occlusion (LAAO – WATCHMAN)</label>
+      <label class="radio-item"><input type="radio" name="epReason" value="LAAO" onchange="onEPR(); updateFieldIndicators();"> Left Atrial Appendage Occlusion (LAAO)</label>
     </div>
   </div>
   <div class="card card-gray">
@@ -726,20 +725,21 @@ html,body{max-width:100vw;overflow-x:hidden;}
     <input type="hidden" name="hx_afib" id="val_afib" value="">
     <div id="sub_afib" class="sub-reveal">
       <div class="g2 mb-3"><div style="grid-column:1/-1"><label class="lbl">4.1a AFib Classification:</label><select name="afibClassification" class="inp"><option value="">Select...</option><option>Persistent (&gt;7 days)</option><option>Paroxysmal (terminating spontaneously within 7 days)</option><option>Long standing persistent (&gt;1 year)</option><option>Permanent</option></select></div></div>
+      <div class="g2 mb-3"><div style="grid-column:1/-1"><label class="lbl">4.1b AFib EHRA symptomatic classification (Choose One Only):</label><div class="g2 mt-1"><label class="radio-item"><input type="radio" name="afibEHRA" value="EHRA I"> EHRA I &mdash; no symptoms</label><label class="radio-item"><input type="radio" name="afibEHRA" value="EHRA II"> EHRA II &mdash; mild symptoms, normal daily activity not affected</label><label class="radio-item"><input type="radio" name="afibEHRA" value="EHRA III"> EHRA III &mdash; severe symptoms, normal daily activity affected</label><label class="radio-item"><input type="radio" name="afibEHRA" value="EHRA IV"> EHRA IV &mdash; disabling symptoms</label></div></div></div>
       <div class="g2 mb-3">
-        <div><label class="lbl">4.1b Plans for Cardioversion</label><select name="afibCardioversion" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
-        <div><label class="lbl">4.1e Prior attempt of ablation</label><select name="afibPriorAblation" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
-        <div><label class="lbl">4.1c CHA&#x2082;DS&#x2082;-VASc score<button type="button" class="fn-btn" onclick="openFn('4.1c')" aria-label="Field information" title="Click for field information">i</button></label><select name="afibChads" class="inp"><option value="">Select</option><option>0</option><option>1</option><option>2</option><option>3</option><option>&gt;3</option></select></div>
-        <div><label class="lbl">4.1d HAS-BLED score<button type="button" class="fn-btn" onclick="openFn('4.1d')" aria-label="Field information" title="Click for field information">i</button></label><select name="afibHasBled" class="inp"><option value="">Select</option><option>0</option><option>1</option><option>2</option><option>3</option><option>&gt;3</option></select></div>
-        <div><label class="lbl">4.1f Contraindication to long-term OAC</label><select name="afibContraOAC" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
-        <div><label class="lbl">4.1g Prior major bleeding</label><select name="afibMajorBleed" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+        <div><label class="lbl">4.1c Plans for Cardioversion</label><select name="afibCardioversion" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+        <div><label class="lbl">4.1f Prior attempt of ablation</label><select name="afibPriorAblation" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+        <div><label class="lbl">4.1d CHA&#x2082;DS&#x2082;-VASc score<button type="button" class="fn-btn" onclick="openFn('4.1c')" aria-label="Field information" title="Click for field information">i</button></label><select name="afibChads" class="inp"><option value="">Select</option><option>0</option><option>1</option><option>2</option><option>3</option><option>&gt;3</option></select></div>
+        <div><label class="lbl">4.1e HAS-BLED score<button type="button" class="fn-btn" onclick="openFn('4.1d')" aria-label="Field information" title="Click for field information">i</button></label><select name="afibHasBled" class="inp"><option value="">Select</option><option>0</option><option>1</option><option>2</option><option>3</option><option>&gt;3</option></select></div>
+        <div><label class="lbl">4.1g Contraindication to long-term OAC</label><select name="afibContraOAC" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+        <div><label class="lbl">4.1h Prior major bleeding</label><select name="afibMajorBleed" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
       </div>
     </div>
   </div>
   <div class="card mb-3">
     <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.2 Cardiac Arrest</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'cardArrest','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'cardArrest','Yes')">Yes</button></div></div>
     <input type="hidden" name="hx_cardiacArrest" id="val_cardArrest" value="">
-    <div id="sub_cardArrest" class="sub-reveal"><div class="g3"><div><label class="lbl">4.2a Bradycardia Arrest</label><select name="arrestBradycardia" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.2b VF Arrest</label><select name="arrestVF" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.2c VT Arrest</label><select name="arrestVT" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
+    <div id="sub_cardArrest" class="sub-reveal"><div class="g4"><div><label class="lbl">4.2a Bradycardia Arrest</label><select name="arrestBradycardia" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.2b VF Arrest</label><select name="arrestVF" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.2c VT Arrest</label><select name="arrestVT" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.2d Asystole</label><select name="arrestAsystole" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
   </div>
   <div class="card mb-3">
     <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.3 Cardiomyopathy - Ischemic</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'icm','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'icm','Yes')">Yes</button></div></div>
@@ -776,7 +776,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
   <div class="card mb-3">
     <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.21 Mitral Valve Procedure</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'mvp','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'mvp','Yes')">Yes</button></div></div>
     <input type="hidden" name="hx_mvp" id="val_mvp" value="">
-    <div id="sub_mvp" class="sub-reveal"><div class="g2"><div><label class="lbl">4.21a Type</label><div class="flex gap-2 flex-wrap"><label class="radio-item"><input type="radio" name="mvpType" value="PMVR"> PMVR</label><label class="radio-item"><input type="radio" name="mvpType" value="Mechanical mitral valve"> Mechanical MV</label><label class="radio-item"><input type="radio" name="mvpType" value="Bioprosthetic mitral valve"> Bioprosthetic MV</label></div></div><div><label class="lbl">4.21b Within last 6 months</label><select name="mvpRecent" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
+    <div id="sub_mvp" class="sub-reveal"><div class="g2"><div><label class="lbl">4.21a Type</label><div class="flex gap-2 flex-wrap"><label class="radio-item"><input type="radio" name="mvpType" value="PMVR"> PMVR</label><label class="radio-item"><input type="radio" name="mvpType" value="Mechanical mitral valve"> Mechanical MV</label><label class="radio-item"><input type="radio" name="mvpType" value="Bioprosthetic mitral valve"> Bioprosthetic MV</label><label class="radio-item"><input type="radio" name="mvpType" value="Mitral clipping"> Mitral clipping</label></div></div><div><label class="lbl">4.21b MV Procedure performed within the last 6 months</label><select name="mvpRecent" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
   </div>
   <div class="card mb-3">
     <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.22 Coronary Angiography</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'ca','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'ca','Yes')">Yes</button></div></div>
@@ -814,9 +814,16 @@ html,body{max-width:100vw;overflow-x:hidden;}
     <input type="hidden" name="inv_ecg" id="val_ecg" value="">
     <div id="sub_ecg" class="sub-reveal">
       <div class="g2 mb-3">
-        <div style="grid-column:1/-1"><label class="lbl">7.1a Atrial Rhythm (Choose One Only):</label><div class="g3 mt-1"><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Sinus"> Sinus</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Atrial fibrillation"> Atrial fibrillation</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Atrial flutter"> Atrial flutter</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="SVT"> SVT</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Atrial tachycardia"> Atrial tachycardia</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Atrial paced"> Atrial paced</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Sinus arrest"> Sinus arrest</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Sinus pause"> Sinus pause</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="1st degree AV block"> 1st degree AV block</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="2nd degree AV block"> 2nd degree AV block</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="3rd degree AV block"> 3rd degree AV block</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Unknown rhythm"> Unknown rhythm</label></div></div>
-        <div style="grid-column:1/-1"><label class="lbl">7.1b Ventricular Rhythm (Choose One Only):</label><div class="g3 mt-1"><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="Normal"> Normal</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="VT"> Ventricular tachycardia</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="VF"> Ventricular fibrillation</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="LBBB"> LBBB</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="RBBB"> RBBB</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="Alternating LBBB/RBBB"> Alternating LBBB and RBBB</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="IVCD delay"> IVCD delay</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="Frequent PVCs"> Frequent PVCs</label></div></div>
-        <div><label class="lbl">7.1c QRS duration (msec)<button type="button" class="fn-btn" onclick="openFn('7.1c')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="ecgQRS" placeholder="msec" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="ecgQRSna" class="w-3 h-3"> Not assessed</label></div>
+        <div style="grid-column:1/-1"><label class="lbl">7.1a Atrial Rhythm (Choose One Only):</label><div class="g3 mt-1"><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Sinus"> Sinus</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Atrial fibrillation"> Atrial fibrillation</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Atrial flutter"> Atrial flutter</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="SVT"> SVT</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Atrial tachycardia"> Atrial tachycardia</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Atrial paced"> Atrial paced</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Sinus arrest"> Sinus arrest</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Sinus pause"> Sinus pause</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="1st degree AV block"> 1st degree AV block</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="2nd degree AV block, Mobitz I"> 2&deg; AV block, Mobitz I</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="2nd degree AV block, Mobitz II"> 2&deg; AV block, Mobitz II</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="3rd degree AV block"> 3rd degree AV block</label><label class="radio-item"><input type="radio" name="ecgAtrialRhythm" value="Unknown rhythm"> Unknown rhythm</label></div></div>
+        <div style="grid-column:1/-1">
+          <div class="card mb-2" style="background:#fff;border:1px solid #e5e7eb;">
+            <div class="flex items-center justify-between mb-2" style="gap:12px;flex-wrap:wrap;"><span class="font-bold text-gray-800 text-sm">7.1b Nodal Rhythm</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'ecgNodal','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'ecgNodal','Yes')">Yes</button></div></div>
+            <input type="hidden" name="ecgNodal" id="val_ecgNodal" value="">
+            <div id="sub_ecgNodal" class="sub-reveal"><label class="lbl">7.1b.1 Nodal rhythm type (Choose One Only):</label><div class="g2 mt-1"><label class="radio-item"><input type="radio" name="ecgNodalType" value="Junctional bradycardia (<40/min)"> Junctional bradycardia (&lt;40/min)</label><label class="radio-item"><input type="radio" name="ecgNodalType" value="Junctional escape (40-60/min)"> Junctional escape (40&ndash;60/min)</label><label class="radio-item"><input type="radio" name="ecgNodalType" value="Accelerated junctional (60-100/min)"> Accelerated junctional (60&ndash;100/min)</label><label class="radio-item"><input type="radio" name="ecgNodalType" value="Junctional tachycardia (>100/min)"> Junctional tachycardia (&gt;100/min)</label></div></div>
+          </div>
+        </div>
+        <div style="grid-column:1/-1"><label class="lbl">7.1c Ventricular Rhythm (Choose One Only):</label><div class="g3 mt-1"><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="Normal"> Normal</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="VT"> Ventricular tachycardia</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="VF"> Ventricular fibrillation</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="LBBB"> LBBB</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="RBBB"> RBBB</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="Alternating LBBB/RBBB"> Alternating LBBB and RBBB</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="IVCD delay"> IVCD delay</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="Frequent PVCs"> Frequent PVCs</label></div></div>
+        <div><label class="lbl">7.1d QRS duration (msec)<button type="button" class="fn-btn" onclick="openFn('7.1c')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="ecgQRS" placeholder="msec" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="ecgQRSna" class="w-3 h-3"> Not assessed</label></div>
       </div>
     </div>
   </div>
@@ -856,7 +863,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <div id="sub_laa" class="sub-reveal"><div class="g2"><div><label class="lbl">7.4b.1 LAA ostial diameter (mm)<button type="button" class="fn-btn" onclick="openFn('7.4b.1')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="laaOstial" class="inp" step="0.1"></div><div><label class="lbl">7.4b.2 LAA depth (mm)<button type="button" class="fn-btn" onclick="openFn('7.4b.2')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="laaDepth" class="inp" step="0.1"></div></div></div>
     </div>
   </div>
-  <div class="card mb-4"><div class="g2"><div><label class="lbl">7.5 Cardiac CT Angiography</label><select name="inv_cardiacCT" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">7.6 Cardiac MRI (CMR)</label><select name="inv_cmr" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
+  <div class="card mb-4"><div class="g2"><div><label class="lbl">7.5 Tilting table test performed</label><select name="inv_tiltTable" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">7.6 Implantable loop recorder performed</label><select name="inv_loopRecorder" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">7.7 Cardiac CT Angiography</label><select name="inv_cardiacCT" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">7.8 Cardiac MRI (CMR)</label><select name="inv_cmr" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
   <div class="card card-purple">
     <div class="font-bold text-purple-900 mb-3 text-sm">8. Laboratory Results</div>
     <div class="g4">
@@ -892,6 +899,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
         <label class="chk-item"><input type="checkbox" name="crtInd_eps"> Inducible VT by EPS</label>
         <label class="chk-item"><input type="checkbox" name="crtInd_icmEF"> ICM with EF ≤ 35%</label>
         <label class="chk-item"><input type="checkbox" name="crtInd_nicmEF"> Non-ICM with EF ≤ 35%</label>
+        <label class="chk-item"><input type="checkbox" name="crtInd_vtUnresp"> VT not responding to ablation or medical therapy</label>
       </div>
       <div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">Inherited heart disease with increased risk of SCD</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'crtInherited','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'crtInherited','Yes')">Yes</button></div></div>
       <input type="hidden" name="crtInherited" id="val_crtInherited" value="">
@@ -910,10 +918,9 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <div class="flex gap-2 flex-wrap mb-2">
         <label class="radio-item"><input type="radio" name="crtGenerator" value="Initial implant" onchange="onCrtGen()"> Initial implant</label>
         <label class="radio-item"><input type="radio" name="crtGenerator" value="Generator replacement" onchange="onCrtGen()"> Generator replacement</label>
-        <label class="radio-item"><input type="radio" name="crtGenerator" value="Generator explant" onchange="onCrtGen()"> Generator explant</label>
+        <label class="radio-item"><input type="radio" name="crtGenerator" value="Generator/device explant" onchange="onCrtGen()"> Generator/device explant</label>
       </div>
-      <div id="crtGen_initial" class="sub-reveal mt-2"><label class="lbl">9.5.b.1 Device Name</label><input type="text" name="crtDeviceName" class="inp"></div>
-      <div id="crtGen_replace" class="sub-reveal mt-2"><label class="lbl">9.5.b.2 Reasons for generator replacement (check all that apply):</label>
+      <div id="crtGen_replace" class="sub-reveal mt-2"><label class="lbl">9.5.b.1 Reasons for generator replacement (check all that apply):</label>
         <div class="g2 mt-1">
           <label class="chk-item"><input type="checkbox" name="crtRepl_relocation"> Device relocation</label>
           <label class="chk-item"><input type="checkbox" name="crtRepl_battery"> End of battery life</label>
@@ -923,7 +930,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
           <label class="chk-item"><input type="checkbox" name="crtRepl_upgrade"> Upgrade</label>
         </div>
       </div>
-      <div id="crtGen_explant" class="sub-reveal mt-2"><label class="lbl">9.5.b.3 Reimplant intended</label><select name="crtReimplant" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+      <div id="crtGen_explant" class="sub-reveal mt-2"><label class="lbl">9.5.b.2 Reimplant intended</label><select name="crtReimplant" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
     </div>
 
     <div class="card mb-3">
@@ -983,17 +990,18 @@ html,body{max-width:100vw;overflow-x:hidden;}
     </div>
 
     <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.5d Lead assessment:</label>
-      <div class="flex gap-2 flex-wrap">
-        <label class="radio-item"><input type="radio" name="crtLeadAssess" value="New lead" onchange="onCrtLead()"> New lead</label>
-        <label class="radio-item"><input type="radio" name="crtLeadAssess" value="Existing lead" onchange="onCrtLead()"> Existing lead</label>
+      <div class="g2 mb-3">
+        <div><label class="lbl">9.5.d.1 New lead</label><select name="crtNewLead" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+        <div><label class="lbl">9.5.d.2 Existing lead</label><select name="crtExistingLead" class="inp" onchange="onCrtLead()"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
       </div>
-      <div id="crtLeadExisting" class="sub-reveal mt-2"><label class="lbl">9.5.d.1 Lead status (Choose One Only):</label>
+      <div id="crtLeadExisting" class="sub-reveal mb-3"><label class="lbl">9.5.d.2.1 Lead status (Choose One Only):</label>
         <div class="flex gap-2 flex-wrap mt-1">
           <label class="radio-item"><input type="radio" name="crtLeadStatus" value="Extracted"> Extracted</label>
           <label class="radio-item"><input type="radio" name="crtLeadStatus" value="Abandoned"> Abandoned</label>
           <label class="radio-item"><input type="radio" name="crtLeadStatus" value="Reused"> Reused</label>
         </div>
       </div>
+      <div><label class="lbl">9.5.d.3 Additional lead to the existing leads</label><select name="crtAdditionalLead" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
     </div>
   </div>
   <div class="proc-section" id="proc_temppm"><div class="card card-gray mb-3" style="border-left:4px solid #64748b;"><div style="font-weight:800;color:#334155;font-size:14px;">9.6 — Temporary Pacemaker</div></div>
@@ -1052,7 +1060,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <div class="flex gap-2 flex-wrap mb-2">
         <label class="radio-item"><input type="radio" name="ppmGenerator" value="Initial implant" onchange="onPpmGen()"> Initial implant</label>
         <label class="radio-item"><input type="radio" name="ppmGenerator" value="Generator replacement" onchange="onPpmGen()"> Generator replacement</label>
-        <label class="radio-item"><input type="radio" name="ppmGenerator" value="Generator explant" onchange="onPpmGen()"> Generator explant</label>
+        <label class="radio-item"><input type="radio" name="ppmGenerator" value="Generator/device explant" onchange="onPpmGen()"> Generator/device explant</label>
       </div>
       <div id="ppmGen_initial" class="sub-reveal mt-2"><label class="lbl">9.7.a.1 Device Name</label><input type="text" name="ppmDeviceName" class="inp"></div>
       <div id="ppmGen_replace" class="sub-reveal mt-2"><label class="lbl">9.7.a.2 Reasons for generator replacement (Choose One Only):</label>
@@ -1091,33 +1099,34 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <div class="g2">
         <label class="radio-item"><input type="radio" name="ppmIndication" value="2:1 AV block"> 2:1 AV block</label>
         <label class="radio-item"><input type="radio" name="ppmIndication" value="2° AV block, Mobitz II"> 2° AV block, Mobitz II</label>
-        <label class="radio-item"><input type="radio" name="ppmIndication" value="A-V mode ablation"> A-V mode ablation</label>
-        <label class="radio-item"><input type="radio" name="ppmIndication" value=">40% RV pacing"> &gt;40% RV pacing</label>
+        <label class="radio-item"><input type="radio" name="ppmIndication" value="A-V node ablation"> A-V node ablation</label>
+        <label class="radio-item"><input type="radio" name="ppmIndication" value=">40% RV pacing"> &gt;40% RV pacing burden</label>
         <label class="radio-item"><input type="radio" name="ppmIndication" value="Chronotropic incompetence"> Chronotropic incompetence</label>
         <label class="radio-item"><input type="radio" name="ppmIndication" value="CHB"> CHB</label>
         <label class="radio-item"><input type="radio" name="ppmIndication" value="SSS"> SSS</label>
+        <label class="radio-item"><input type="radio" name="ppmIndication" value="Significant pause"> Significant pause</label>
       </div>
     </div>
 
     <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.7d Lead assessment:</label>
-      <div class="flex gap-2 flex-wrap">
-        <label class="radio-item"><input type="radio" name="ppmLeadAssess" value="New lead" onchange="onPpmLead()"> New lead</label>
-        <label class="radio-item"><input type="radio" name="ppmLeadAssess" value="Existing lead" onchange="onPpmLead()"> Existing lead</label>
+      <div class="g2 mb-3">
+        <div><label class="lbl">9.7.d.1 New lead</label><select name="ppmNewLead" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+        <div><label class="lbl">9.7.d.2 Existing lead</label><select name="ppmExistingLead" class="inp" onchange="onPpmLead()"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
       </div>
-      <div id="ppmLeadExisting" class="sub-reveal mt-2"><label class="lbl">9.7.d.1 Lead status (Choose One Only):</label>
+      <div id="ppmLeadExisting" class="sub-reveal mb-3"><label class="lbl">9.7.d.2.1 Lead status (Choose One Only):</label>
         <div class="flex gap-2 flex-wrap mt-1">
           <label class="radio-item"><input type="radio" name="ppmLeadStatus" value="Extracted"> Extracted</label>
           <label class="radio-item"><input type="radio" name="ppmLeadStatus" value="Abandoned"> Abandoned</label>
           <label class="radio-item"><input type="radio" name="ppmLeadStatus" value="Reused"> Reused</label>
         </div>
       </div>
+      <div><label class="lbl">9.7.d.3 Additional lead to the existing leads</label><select name="ppmAdditionalLead" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
     </div>
   </div>
   <div class="proc-section" id="proc_eps"><div class="card card-purple mb-3" style="border-left:4px solid #7c3aed;"><div style="font-weight:800;color:#4c1d95;font-size:14px;">9.8 — EPS / Ablation</div></div>
     <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.8a Reason for EPS/Ablation:</label>
       <div class="g2">
-        <label class="chk-item"><input type="checkbox" name="eps_avnrt"> AVNRT</label>
-        <label class="chk-item"><input type="checkbox" name="eps_wpw"> WPW</label>
+        <label class="chk-item"><input type="checkbox" name="eps_svt"> SVT</label>
         <label class="chk-item"><input type="checkbox" name="eps_aflutter"> Atrial flutter</label>
         <label class="chk-item"><input type="checkbox" name="eps_afib"> Atrial fibrillation</label>
         <label class="chk-item"><input type="checkbox" name="eps_vt"> VT</label>
@@ -1136,44 +1145,42 @@ html,body{max-width:100vw;overflow-x:hidden;}
 
     <div class="card mb-3">
       <div class="g2 mb-3">
-        <div><label class="lbl">9.8c Transseptal Catheterization</label><select name="epsTransseptal" class="inp"><option value="">N/A</option><option>Single</option><option>Double</option></select></div>
+        <div><label class="lbl">9.8c Transseptal puncture</label><select name="epsTransseptal" class="inp"><option value="">N/A</option><option>Single</option><option>Double</option></select></div>
         <div><label class="lbl">9.8d Intracardiac Echocardiography (ICE)</label><select name="epsICE" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
-        <div><label class="lbl">9.8e Ablation Time (min)</label><input type="number" name="epsAblTime" class="inp"></div>
-        <div><label class="lbl">9.8f Fluoroscopy Time (min)</label><input type="number" name="epsFluoroTime" class="inp"></div>
+        <div><label class="lbl">9.8e Fluoroscopy Time (min)</label><input type="number" name="epsFluoroTime" class="inp"></div>
       </div>
     </div>
 
     <div class="card mb-3">
-      <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">9.8g Intraprocedural anticoagulation</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'epsAnticoag','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'epsAnticoag','Yes')">Yes</button></div></div>
+      <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">9.8f Intraprocedural anticoagulation</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'epsAnticoag','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'epsAnticoag','Yes')">Yes</button></div></div>
       <input type="hidden" name="epsAnticoag" id="val_epsAnticoag" value="">
-      <div id="sub_epsAnticoag" class="sub-reveal"><label class="lbl">9.8.g.1 Uninterrupted Anticoagulation Therapy</label>
+      <div id="sub_epsAnticoag" class="sub-reveal"><label class="lbl">9.8.f.1 Uninterrupted Anticoagulation Therapy</label>
         <select name="epsUninterrupted" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select>
       </div>
     </div>
 
     <div class="card mb-3">
       <div class="g2 mb-3">
-        <div><label class="lbl">9.8h Phrenic Nerve Evaluation</label><select name="epsPhrenic" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
-        <div><label class="lbl">9.8i Catheter Manipulation (Choose One Only)</label>
+        <div><label class="lbl">9.8h Catheter Manipulation (Choose One Only)</label>
           <div class="flex gap-2 mt-1 flex-wrap">
             <label class="radio-item"><input type="radio" name="epsCathManip" value="Manual"> Manual</label>
             <label class="radio-item"><input type="radio" name="epsCathManip" value="Magnetic/Robotic"> Magnetic/Robotic</label>
             <label class="radio-item"><input type="radio" name="epsCathManip" value="Other"> Other</label>
           </div>
         </div>
-        <div><label class="lbl">9.8j Electroanatomic Induced arrhythmia during EP study</label><select name="epsInducedArr" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
-        <div><label class="lbl">9.8.h Mapping System (Choose One Only)<button type="button" class="fn-btn" onclick="openFn('9.8h')" aria-label="Field information" title="Click for field information">i</button></label>
+        <div><label class="lbl">9.8i Persistent induction of arrhythmia after ablation</label><select name="epsInducedArr" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+        <div><label class="lbl">9.8j Mapping System (Choose One Only)<button type="button" class="fn-btn" onclick="openFn('9.8h')" aria-label="Field information" title="Click for field information">i</button></label>
           <div class="flex gap-2 mt-1 flex-wrap">
             <label class="radio-item"><input type="radio" name="epsMapSystem" value="Carto"> Carto</label>
             <label class="radio-item"><input type="radio" name="epsMapSystem" value="Ensite"> Ensite</label>
             <label class="radio-item"><input type="radio" name="epsMapSystem" value="Rhythmia"> Rhythmia</label>
-            <label class="radio-item"><input type="radio" name="epsMapSystem" value="Other"> Other</label>
+            <label class="radio-item"><input type="radio" name="epsMapSystem" value="Conventional (Cryo/Radiofrequency) ablation"> Conventional (Cryo/Radiofrequency) ablation</label>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="proc-section" id="proc_laao"><div class="card card-green mb-3" style="border-left:4px solid #059669;"><div style="font-weight:800;color:#065f46;font-size:14px;">9.9 — LAAO (WATCHMAN)</div></div>
+  <div class="proc-section" id="proc_laao"><div class="card card-green mb-3" style="border-left:4px solid #059669;"><div style="font-weight:800;color:#065f46;font-size:14px;">9.9 — LAAO</div></div>
     <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.9a Indication for LAAO (check all that apply):</label>
       <div class="g2">
         <label class="chk-item"><input type="checkbox" name="laao_nonvalvular"> Non-valvular atrial fibrillation</label>
@@ -1184,15 +1191,11 @@ html,body{max-width:100vw;overflow-x:hidden;}
       </div>
     </div>
 
-    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.9b WATCHMAN Device Details:</label>
-      <div class="g2">
-        <div><label class="lbl">9.9.b.1 Device type (Choose One Only)</label>
-          <div class="flex gap-2 mt-1 flex-wrap">
-            <label class="radio-item"><input type="radio" name="laaoDeviceType" value="WATCHMAN 2.5"> WATCHMAN 2.5</label>
-            <label class="radio-item"><input type="radio" name="laaoDeviceType" value="WATCHMAN FLX"> WATCHMAN FLX</label>
-          </div>
-        </div>
-        <div><label class="lbl">9.9.b Device size (mm)<button type="button" class="fn-btn" onclick="openFn('9.9.b')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="laaoDeviceSize" class="inp" step="0.5"></div>
+    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.9b LAA appendage occlusive Device type (Choose One Only):</label>
+      <div class="flex gap-2 mt-1 flex-wrap">
+        <label class="radio-item"><input type="radio" name="laaoDeviceType" value="Plug-based device (WATCHMAN)"> Plug-based device (WATCHMAN)</label>
+        <label class="radio-item"><input type="radio" name="laaoDeviceType" value="Disc and lobe device"> Disc and lobe device</label>
+        <label class="radio-item"><input type="radio" name="laaoDeviceType" value="Ligation/suture system device"> Ligation/suture system device</label>
       </div>
     </div>
 
@@ -1301,9 +1304,11 @@ html,body{max-width:100vw;overflow-x:hidden;}
 
     <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.12.a Mechanical complications<button type="button" class="fn-btn" onclick="openFn('10.2.12')" aria-label="Field information" title="Click for field information">i</button></span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'mechComp','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'mechComp','Yes')">Yes</button></div></div><input type="hidden" name="cx_mechComp" id="val_mechComp" value=""><div id="sub_mechComp" class="sub-reveal"><label class="lbl">10.2.12.b Type of mechanical complications (Choose One Only):</label>
       <div class="flex gap-2 mt-1 flex-wrap">
-        <label class="radio-item"><input type="radio" name="mechCompType" value="Cardiac rupture"> Cardiac rupture</label>
-        <label class="radio-item"><input type="radio" name="mechCompType" value="VSD"> VSD</label>
-        <label class="radio-item"><input type="radio" name="mechCompType" value="Papillary muscle rupture/acute severe MR"> Papillary muscle rupture/acute severe MR</label>
+        <label class="radio-item"><input type="radio" name="mechCompType" value="ASD"> ASD</label>
+        <label class="radio-item"><input type="radio" name="mechCompType" value="Myocardial tear"> Myocardial tear</label>
+        <label class="radio-item"><input type="radio" name="mechCompType" value="Aortic or vena-Caval laceration"> Aortic or vena-Caval laceration</label>
+        <label class="radio-item"><input type="radio" name="mechCompType" value="Arterial perforation"> Arterial perforation</label>
+        <label class="radio-item"><input type="radio" name="mechCompType" value="Ventricular perforation"> Ventricular perforation</label>
       </div>
     </div></div>
 
@@ -1354,7 +1359,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
     <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.19 Pneumothorax</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'pneumo','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'pneumo','Yes')">Yes</button></div></div><input type="hidden" name="cx_pneumo" id="val_pneumo" value=""><div id="sub_pneumo" class="sub-reveal"><label class="lbl">10.2.19.a Requiring intervention</label><select name="cx_pneumoInterv" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
 
     <div class="g3 mb-3">
-      <div><label class="lbl">10.2.20 Device embolization</label><select name="cx_devEmbol" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+      <div><label class="lbl">10.2.20 Device migration</label><select name="cx_devMigration" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
       <div><label class="lbl">10.2.21 Phrenic nerve damage</label><select name="cx_phrenicDmg" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
       <div><label class="lbl">10.2.22 Pleural effusion</label><select name="cx_pleuralEff" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
     </div>
@@ -1363,6 +1368,10 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <div><label class="lbl">10.2.23 Infection requiring antibiotics</label><select name="cx_infection" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
       <div><label class="lbl">10.2.25 Set Screw Problem</label><select name="cx_setScrew" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
       <div><label class="lbl">10.2.26 Lead Dislodgement</label><select name="cx_leadDislodge" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+    </div>
+
+    <div class="g3 mb-3">
+      <div><label class="lbl">10.2.27 Lead fracture</label><select name="cx_leadFracture" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
     </div>
 
     <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.24 Bradycardia adverse events</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'bradyAE','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'bradyAE','Yes')">Yes</button></div></div><input type="hidden" name="cx_bradyAE" id="val_bradyAE" value=""><div id="sub_bradyAE" class="sub-reveal"><label class="lbl">10.2.24.a Requiring permanent pacemaker</label><select name="cx_bradyAEppm" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
@@ -1376,7 +1385,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
     <div class="font-bold text-gray-800 text-sm mb-3">11. Outcome</div>
     <div class="g2 mb-3">
       <div><label class="lbl">11.1 Immediate Procedure Success</label><div class="flex gap-2 mt-1"><label class="radio-item"><input type="radio" name="procSuccess" value="Yes"> Yes</label><label class="radio-item"><input type="radio" name="procSuccess" value="No"> No</label></div></div>
-      <div><label class="lbl">11.2 ECG rhythm post-procedure</label><div class="g2 mt-1"><label class="radio-item"><input type="radio" name="postECGrhythm" value="Sinus"> Sinus</label><label class="radio-item"><input type="radio" name="postECGrhythm" value="Paced rhythm"> Paced rhythm</label><label class="radio-item"><input type="radio" name="postECGrhythm" value="Atrial fibrillation"> Atrial fibrillation</label><label class="radio-item"><input type="radio" name="postECGrhythm" value="Atrial flutter"> Atrial flutter</label><label class="radio-item"><input type="radio" name="postECGrhythm" value="Sinus arrest"> Sinus arrest</label><label class="radio-item"><input type="radio" name="postECGrhythm" value="Other"> Other</label></div></div>
+      <div><label class="lbl">11.2 ECG rhythm post-procedure</label><div class="g2 mt-1"><label class="radio-item"><input type="radio" name="postECGrhythm" value="Sinus"> Sinus</label><label class="radio-item"><input type="radio" name="postECGrhythm" value="Paced rhythm"> Paced rhythm</label><label class="radio-item"><input type="radio" name="postECGrhythm" value="Atrial fibrillation"> Atrial fibrillation</label><label class="radio-item"><input type="radio" name="postECGrhythm" value="Atrial flutter"> Atrial flutter</label><label class="radio-item"><input type="radio" name="postECGrhythm" value="Other"> Other</label></div></div>
     </div>
     <div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">11.3 Conduction system pacing (for patient with a left bundle lead)</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'condSysPace','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'condSysPace','Yes')">Yes</button></div></div>
     <input type="hidden" name="condSysPace" id="val_condSysPace" value="">
@@ -1516,7 +1525,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
     <div class="font-bold text-gray-800 mb-2"><i class="fas fa-user text-blue-600 mr-2"></i>Individual Patient Report</div>
     <div class="text-sm text-gray-500 mb-3">Search for a patient and download their individual PDF case report.</div>
     <div class="flex gap-2">
-      <input type="text" id="singlePatientSearch" class="inp flex-1" placeholder="Search by Civil ID or File Number...">
+      <input type="text" id="singlePatientSearch" class="inp flex-1" placeholder="Search by Civil ID...">
       <button onclick="searchForSinglePDF()" class="btn btn-primary text-sm"><i class="fas fa-search"></i> Find</button>
     </div>
     <div id="singlePatientResult" class="mt-3"></div>
@@ -1828,17 +1837,6 @@ const FOOTNOTES = {
 <li><strong>Technology:</strong> It uses a hybrid approach, combining magnetic technology for precise positioning with impedance technology for tracking. It is used to improve the accuracy of defining complex arrhythmias.</li>
 <li><strong>Automatic Mapping:</strong> It features automatic annotation, which filters and annotates complex signals (unipolar and bipolar) to remove noise and far-field signals, aiding in fast mapping.</li>
 </ul>
-</div>`
-  },
-  '9.9.b': {
-    title: '9.9.b — WATCHMAN Device Sizes',
-    body: `<div class="fn-section">
-<div class="fn-section-title">WATCHMAN 2.5 (Gen 2.5)</div>
-<p>Available in <strong>5 sizes</strong>: 21, 24, 27, 30, 33 mm.</p>
-</div>
-<div class="fn-section">
-<div class="fn-section-title">WATCHMAN FLX</div>
-<p>Available in <strong>5 sizes</strong>: 20, 24, 27, 31, 35 mm.</p>
 </div>`
   },
   '9.9.c.3': {
@@ -2301,7 +2299,7 @@ function initApp() {
     {name:"Verapamil",f:"verapamil"},{name:"Diltiazem",f:"diltiazem"},{name:"Warfarin",f:"warfarin"},{name:"Dabigatran",f:"dabigatran"},{name:"Apixaban",f:"apixaban"},
     {name:"Rivaroxaban",f:"rivaroxaban"},{name:"Edoxaban",f:"edoxaban"},{name:"LMWH",f:"lmwh"},{name:"Unfractionated Heparin",f:"ufh"},{name:"Aspirin",f:"aspirin"},{name:"Prasugrel",f:"prasugrel"},{name:"Clopidogrel",f:"clopidogrel"},
     {name:"Ticagrelor",f:"ticagrelor"},{name:"Cangrelor",f:"cangrelor"},{name:"ACE-I",f:"acei"},{name:"ARB",f:"arb"},{name:"ARNI",f:"arni"},{name:"SGLT inhibitor",f:"sglt"},
-    {name:"Beta Blockers",f:"betablocker"},{name:"MRA",f:"mra"},{name:"Digoxin",f:"digoxin"},{name:"Loop diuretics",f:"loopdiuretic"},
+    {name:"Beta Blockers",f:"betablocker"},{name:"MRA",f:"mra"},{name:"Digoxin",f:"digoxin"},{name:"Loop diuretics",f:"loopdiuretic"},{name:"Ivabradine",f:"ivabradine"},
   ];
   const hMG=document.getElementById('homeMedsGrid'), dMG=document.getElementById('dischargeMedsGrid');
   medsList.forEach(m=>{
@@ -2326,6 +2324,111 @@ function initApp() {
     else{document.getElementById('yob').value='';document.getElementById('estAge').value='';}
   });
 
+  // ==================== DATE TIMELINE LOGIC ====================
+  // Enforce: admission ≤ procedure ≤ discharge
+  // Today's date acts as the upper bound (no future dates).
+  function _showDateError(input, msg){
+    if(!input) return;
+    input.style.borderColor = '#dc2626';
+    input.style.background = '#fef2f2';
+    let warn = input.parentNode.querySelector('.date-warn');
+    if(!warn){
+      warn = document.createElement('div');
+      warn.className = 'date-warn';
+      warn.style.cssText = 'color:#dc2626;font-size:11px;font-weight:600;margin-top:4px;';
+      input.parentNode.appendChild(warn);
+    }
+    warn.textContent = '⚠ ' + msg;
+  }
+  function _clearDateError(input){
+    if(!input) return;
+    input.style.borderColor = '';
+    input.style.background = '';
+    const warn = input.parentNode.querySelector('.date-warn');
+    if(warn) warn.remove();
+  }
+  function validateDateTimeline(){
+    const admEl  = document.querySelector('[name="admissionDate"]');
+    const procEl = document.querySelector('[name="procStartDate"]');
+    const dcEl   = document.querySelector('[name="dischargeDate"]');
+    const today  = new Date().toISOString().slice(0,10);
+    [admEl, procEl, dcEl].forEach(_clearDateError);
+
+    if(admEl && admEl.value){
+      if(admEl.value > today){
+        _showDateError(admEl, 'Admission date cannot be in the future.');
+        return false;
+      }
+    }
+    if(procEl && procEl.value){
+      if(admEl && admEl.value && procEl.value < admEl.value){
+        _showDateError(procEl, 'Procedure date cannot be before admission date (' + admEl.value + ').');
+        return false;
+      }
+      if(procEl.value > today){
+        _showDateError(procEl, 'Procedure date cannot be in the future.');
+        return false;
+      }
+    }
+    if(dcEl && dcEl.value){
+      if(admEl && admEl.value && dcEl.value < admEl.value){
+        _showDateError(dcEl, 'Discharge date cannot be before admission date (' + admEl.value + ').');
+        return false;
+      }
+      if(procEl && procEl.value && dcEl.value < procEl.value){
+        _showDateError(dcEl, 'Discharge date cannot be before procedure date (' + procEl.value + ').');
+        return false;
+      }
+      if(dcEl.value > today){
+        _showDateError(dcEl, 'Discharge date cannot be in the future.');
+        return false;
+      }
+    }
+    return true;
+  }
+  function applyDateMinMax(){
+    const admEl  = document.querySelector('[name="admissionDate"]');
+    const procEl = document.querySelector('[name="procStartDate"]');
+    const dcEl   = document.querySelector('[name="dischargeDate"]');
+    const today  = new Date().toISOString().slice(0,10);
+    if(admEl){ admEl.max = today; }
+    if(procEl){ if(admEl && admEl.value) procEl.min = admEl.value; procEl.max = today; }
+    if(dcEl){
+      const lower = (procEl && procEl.value) ? procEl.value : (admEl && admEl.value ? admEl.value : '');
+      if(lower) dcEl.min = lower;
+      dcEl.max = today;
+    }
+  }
+  ['admissionDate','procStartDate','dischargeDate'].forEach(n=>{
+    const el = document.querySelector(`[name="${n}"]`);
+    if(el){
+      el.addEventListener('change', ()=>{ applyDateMinMax(); validateDateTimeline(); });
+      el.addEventListener('input',  ()=>{ applyDateMinMax(); validateDateTimeline(); });
+    }
+  });
+  setTimeout(applyDateMinMax, 200);
+
+  // Readmission overlap check: same Civil ID with overlapping admission window
+  // Returns array of overlapping records, or false if none.
+  async function checkReadmissionOverlap(civilId, admissionDate, dischargeDate, currentRecordId){
+    if(!civilId || civilId.length !== 12 || !admissionDate) return false;
+    const records = (typeof _allRecordsCache !== 'undefined' && _allRecordsCache.length > 0) ? _allRecordsCache : [];
+    const overlaps = records.filter(r => {
+      if(r.id === currentRecordId) return false;
+      if(r.civilId !== civilId) return false;
+      if(!r.admissionDate) return false;
+      // Other record's window: [r.admissionDate, r.dischargeDate || open]
+      // Current window:      [admissionDate, dischargeDate || open]
+      // Overlap if: currentStart <= otherEnd AND otherStart <= currentEnd
+      const otherEnd  = r.dischargeDate || '9999-12-31';
+      const myEnd     = dischargeDate   || '9999-12-31';
+      return (admissionDate <= otherEnd) && (r.admissionDate <= myEnd);
+    });
+    return overlaps.length > 0 ? overlaps : false;
+  }
+  // ==================== END DATE TIMELINE LOGIC ====================
+
+
   // YES/NO
   window.setYN=function(btn,key,val){
     btn.closest('.yn-group').querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('selected'));
@@ -2337,8 +2440,13 @@ function initApp() {
         sub.classList.add('show');
       } else {
         sub.classList.remove('show');
+        // Clear all form-control inputs inside the sub-section
         sub.querySelectorAll('input[type="radio"],input[type="checkbox"]').forEach(i=>{i.checked=false;});
         sub.querySelectorAll('input[type="text"],input[type="number"],input[type="date"],input[type="time"],input[type="tel"],input[type="email"],textarea,select').forEach(i=>{i.value='';});
+        // Cascade-reset nested Yes/No groups: clear hidden val_* inputs, deselect yn-btn, and recursively close nested sub-reveals
+        sub.querySelectorAll('input[type="hidden"][id^="val_"]').forEach(h=>{h.value='';});
+        sub.querySelectorAll('.yn-btn.selected').forEach(b=>b.classList.remove('selected'));
+        sub.querySelectorAll('.sub-reveal.show').forEach(s=>s.classList.remove('show'));
       }
     }
     updateFieldIndicators();
@@ -2363,8 +2471,8 @@ function initApp() {
     updateFieldIndicators();
   };
 
-  window.onCrtGen=function(){const v=document.querySelector('input[name="crtGenerator"]:checked')?.value;['initial','replace','explant'].forEach(k=>{const el=document.getElementById(`crtGen_${k}`);if(el)el.classList.remove('show');});const t=v==='Initial implant'?'initial':v==='Generator replacement'?'replace':v==='Generator explant'?'explant':null;if(t){const el=document.getElementById(`crtGen_${t}`);if(el)el.classList.add('show');}};
-  window.onPpmGen=function(){const v=document.querySelector('input[name="ppmGenerator"]:checked')?.value;['initial','replace','explant'].forEach(k=>{const el=document.getElementById(`ppmGen_${k}`);if(el)el.classList.remove('show');});const t=v==='Initial implant'?'initial':v==='Generator replacement'?'replace':v==='Generator explant'?'explant':null;if(t){const el=document.getElementById(`ppmGen_${t}`);if(el)el.classList.add('show');}};
+  window.onCrtGen=function(){const v=document.querySelector('input[name="crtGenerator"]:checked')?.value;['replace','explant'].forEach(k=>{const el=document.getElementById(`crtGen_${k}`);if(el)el.classList.remove('show');});const t=v==='Generator replacement'?'replace':v==='Generator/device explant'?'explant':null;if(t){const el=document.getElementById(`crtGen_${t}`);if(el)el.classList.add('show');}};
+  window.onPpmGen=function(){const v=document.querySelector('input[name="ppmGenerator"]:checked')?.value;['initial','replace','explant'].forEach(k=>{const el=document.getElementById(`ppmGen_${k}`);if(el)el.classList.remove('show');});const t=v==='Initial implant'?'initial':v==='Generator replacement'?'replace':v==='Generator/device explant'?'explant':null;if(t){const el=document.getElementById(`ppmGen_${t}`);if(el)el.classList.add('show');}};
   window.onBleedT=function(){const el=document.getElementById('bleedType3sub');if(el)el.classList.toggle('show',document.querySelector('input[name="bleedType"]:checked')?.value==='Type 3');};
   // 24-hour time auto-formatter: accepts only digits, auto-inserts colon, caps at HH:MM (24h range)
   window.fmt24h=function(el){
@@ -2388,7 +2496,7 @@ function initApp() {
   // CRT/AICD device-type toggles: show pacemaker sub-section only for CRT-D or ICD-Dual chamber
   window.onCrtDevType=function(){const v=document.querySelector('input[name="crtDeviceType"]:checked')?.value;const show=v==='CRT-D'||v==='ICD-Dual chamber';const sub=document.getElementById('crtDualSub');if(sub)sub.classList.toggle('show', show);const hint=document.getElementById('crtDualHint');if(hint)hint.classList.toggle('show', show);};
   window.onCrtPpmType=function(){const v=document.querySelector('input[name="crtPpmType"]:checked')?.value;const sub=document.getElementById('crtLbbbSub');if(sub)sub.classList.toggle('show', v==='LBBB PPM');};
-  window.onCrtLead=function(){const v=document.querySelector('input[name="crtLeadAssess"]:checked')?.value;const sub=document.getElementById('crtLeadExisting');if(sub)sub.classList.toggle('show', v==='Existing lead');};
+  window.onCrtLead=function(){const v=document.querySelector('select[name="crtExistingLead"]')?.value;const sub=document.getElementById('crtLeadExisting');if(sub)sub.classList.toggle('show', v==='Yes');};
   // Temporary PM cause toggles
   window.onTpmDrug=function(){const cb=document.querySelector('input[name="tpmCause_drug"]');const sub=document.getElementById('tpmDrugSub');if(sub)sub.classList.toggle('show', cb?.checked);};
   window.onTpmMI=function(){const cb=document.querySelector('input[name="tpmCause_acuteMI"]');const sub=document.getElementById('tpmMISub');if(sub)sub.classList.toggle('show', cb?.checked);};
@@ -2407,7 +2515,7 @@ function initApp() {
   };
   // Permanent PM toggles
   window.onPpmLbbb=function(){const cb=document.querySelector('input[name="ppmDev_lbbb"]');const sub=document.getElementById('ppmLbbbSub');if(sub)sub.classList.toggle('show', cb?.checked);};
-  window.onPpmLead=function(){const v=document.querySelector('input[name="ppmLeadAssess"]:checked')?.value;const sub=document.getElementById('ppmLeadExisting');if(sub)sub.classList.toggle('show', v==='Existing lead');};
+  window.onPpmLead=function(){const v=document.querySelector('select[name="ppmExistingLead"]')?.value;const sub=document.getElementById('ppmLeadExisting');if(sub)sub.classList.toggle('show', v==='Yes');};
 
   // VALIDATION
   function shErr(el,msg){if(!el)return;el.style.borderColor='#dc2626';el.style.boxShadow='0 0 0 3px rgba(220,38,38,.15)';let t=el.parentNode.querySelector('.vt');if(!t){t=document.createElement('div');t.className='vt';t.style.cssText='font-size:11px;color:#dc2626;font-weight:600;margin-top:3px;';el.parentNode.appendChild(t);}t.textContent='✖ '+msg;}
@@ -2495,7 +2603,7 @@ function initApp() {
     const checks=[
       !!(r.nameFirst&&r.nameLast),
       !!(r.civilId&&r.civilId.length===12),
-      !!(r.crfNo),!!(r.fileNumber),!!(r.admissionDate),!!(r.gender),
+      !!(r.crfNo),!!(r.admissionDate),!!(r.gender),
       !!(r.epReason),
       !!(r.sysBp||r.sysBpUnrec)&&!!(r.hr||r.hrUnrec),
       !!(r.inv_ecg==='Yes'||r.inv_tte==='Yes'||r.inv_holter==='Yes'||r.inv_tee==='Yes'),
@@ -2586,7 +2694,7 @@ function initApp() {
     });
     if(dups.length>0){
       banner.style.display='block';
-      msg.textContent=`Duplicate Civil ID found! ${dups.length} existing record(s): ${dups.map(d=>d.crfNo||d.fileNumber||'—').join(', ')}`;
+      msg.textContent=`Duplicate Civil ID found! ${dups.length} existing record(s): ${dups.map(d=>d.crfNo||'—').join(', ')}`;
     } else {
       banner.style.display='none';
     }
@@ -2611,7 +2719,8 @@ function initApp() {
     for(const member of g){
       if(document.querySelector(`input[type="radio"][name="${member}"]:checked`)) return true;
       const el = document.querySelector(`[name="${member}"]`);
-      if(el && el.value && String(el.value).trim() !== '') return true;
+      if(el && el.tagName !== 'INPUT' /* skip radio/checkbox by tag check */ && el.value && String(el.value).trim() !== '') return true;
+      if(el && el.tagName === 'INPUT' && el.type !== 'radio' && el.type !== 'checkbox' && el.value && String(el.value).trim() !== '') return true;
       const cbs = document.querySelectorAll(`input[type="checkbox"][name="${member}"]`);
       if(Array.from(cbs).some(cb => cb.checked)) return true;
     }
@@ -2857,19 +2966,34 @@ function initApp() {
     const form=document.getElementById('epsForm');
     const mandatory=[
       {id:'req_nameFirst',label:'Patient First Name'},{id:'req_nameLast',label:'Patient Last Name'},
-      {id:'civilId',label:'Civil ID'},{id:'req_crfNo',label:'CRF Number'},{id:'req_fileNo',label:'File Number'},
+      {id:'civilId',label:'Civil ID'},{id:'req_crfNo',label:'CRF Number'},
     ];
     for(const f of mandatory){
       const el=document.getElementById(f.id);
       if(!el||!el.value.trim()){goToStep(0);el?.focus();shErr(el,'Required');setTimeout(()=>clrV(el),3000);alert(`Required: "${f.label}"`);return false;}
     }
     if(!/^\d{12}$/.test(document.getElementById('civilId').value)){goToStep(0);alert('Civil ID must be 12 digits.');return false;}
-    if(!/^\d{6}$/.test(document.getElementById('req_fileNo').value)){goToStep(0);alert('File Number must be 6 digits.');return false;}
     if(!/^\d{2}-\d{3}-\d{3}$/.test(document.getElementById('req_crfNo').value)){goToStep(0);alert('CRF Number was not generated.');return false;}
+
+    // Date timeline validation: admission ≤ procedure ≤ discharge, and no future dates
+    if(!validateDateTimeline()){
+      alert('Please correct the date(s). Admission must be on/before procedure, and discharge on/after both. No future dates are allowed.');
+      return false;
+    }
 
     const civIdVal=document.getElementById('civilId').value;
     const admDateVal=document.querySelector('[name="admissionDate"]')?.value||'';
+    const dcDateVal =document.querySelector('[name="dischargeDate"]')?.value||'';
     const recIdForDupCheck=document.getElementById('editRecordId')?.value||null;
+
+    // Readmission overlap check: same Civil ID admitted in an overlapping window
+    const overlaps = await checkReadmissionOverlap(civIdVal, admDateVal, dcDateVal, recIdForDupCheck);
+    if(overlaps && overlaps.length > 0){
+      const lines = overlaps.map(d=>`• CRF: ${d.crfNo||'—'} | Admitted: ${d.admissionDate||'—'} | Discharged: ${d.dischargeDate||'(still admitted)'}`).join('\n');
+      alert(`⚠️ READMISSION OVERLAP DETECTED!\n\nThis Civil ID (${civIdVal}) has an existing admission whose date range overlaps with what you entered. A patient cannot be admitted while an earlier admission is still open.\n\n${lines}\n\nPlease verify the dates. If the previous admission has ended, set its discharge date first.`);
+      return false;
+    }
+
     const dups=await checkDuplicateCivilId(civIdVal,admDateVal,recIdForDupCheck);
     if(dups&&dups.length>0){
       const dupNames=dups.map(d=>`• ${d.fullName||'Unknown'} | CRF: ${d.crfNo||'—'} | Admitted: ${d.admissionDate||'—'}`).join('\n');
@@ -3100,7 +3224,6 @@ function initApp() {
           </div>
           <div style="font-size:12px;color:#64748b;display:flex;flex-wrap:wrap;gap:10px;">
             <span>CID: <b>${d.civilId||'—'}</b></span>
-            <span>File: <b>${d.fileNumber||'—'}</b></span>
             <span>${d.admissionDate||'—'}</span>
             <span>${d.epReason||'—'}</span>
             ${invInfo}
@@ -3303,7 +3426,7 @@ function initApp() {
   window.liveSearch=function(){
     const q=document.getElementById('qs_input').value.trim();
     if(!q){document.getElementById('qs_results').classList.add('hidden');return;}
-    const results=_allRecordsCache.filter(d=>(d.civilId||'').includes(q)||(d.fileNumber||'').includes(q)||(d.crfNo||'').includes(q));
+    const results=_allRecordsCache.filter(d=>(d.civilId||'').includes(q)||(d.crfNo||'').includes(q));
     const container=document.getElementById('qs_results');
     document.getElementById('qs_count').textContent=`${results.length} found`;
     const list=document.getElementById('qs_list');
@@ -3312,7 +3435,7 @@ function initApp() {
       list.innerHTML=results.slice(0,8).map(d=>{
         const comp=calcCompletion(d);
         return`<div class="px-4 py-3 hover:bg-blue-50 cursor-pointer transition flex items-center justify-between gap-3" onclick='editFromSearch(${JSON.stringify(d).replace(/'/g,"\\'")})'>
-          <div><div class="font-bold text-gray-800 text-sm">#${d._no} — ${d.fullName||'Anonymous'}</div><div class="text-xs text-gray-500 mt-0.5"><span class="mr-3">CID: <b>${d.civilId||'—'}</b></span><span>File: <b>${d.fileNumber||'—'}</b></span></div></div>
+          <div><div class="font-bold text-gray-800 text-sm">#${d._no} — ${d.fullName||'Anonymous'}</div><div class="text-xs text-gray-500 mt-0.5"><span class="mr-3">CID: <b>${d.civilId||'—'}</b></span><span>CRF: <b>${d.crfNo||'—'}</b></span></div></div>
           <div class="flex items-center gap-2 shrink-0"><span class="badge badge-blue">${d.epReason||'—'}</span>${statusBadge(d.recordStatus||'draft')}<button class="btn btn-yellow text-xs px-2 py-1"><i class="fas fa-edit"></i></button></div>
         </div>`;
       }).join('');
@@ -3488,17 +3611,17 @@ function initApp() {
 
   window.searchForSinglePDF=async function(){
     const q=document.getElementById('singlePatientSearch').value.trim();
-    if(!q){alert('Enter a Civil ID or File Number.');return;}
+    if(!q){alert('Enter a Civil ID.');return;}
     const snap=await getDocs(collection(db,'patients_full'));
     const results=[];
     snap.forEach(ds=>{const d=ds.data();d.id=ds.id;d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();
-      if((d.civilId||'').includes(q)||(d.fileNumber||'').includes(q))results.push(d);
+      if((d.civilId||'').includes(q))results.push(d);
     });
     const div=document.getElementById('singlePatientResult');
     if(!results.length){div.innerHTML='<div class="text-sm text-red-500 mt-2">No patient found.</div>';return;}
     div.innerHTML=results.map(d=>`
       <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;margin-top:8px;">
-        <div><div class="font-bold text-sm">${d.fullName||'Anonymous'}</div><div class="text-xs text-gray-500">CID: ${d.civilId||'—'} | File: ${d.fileNumber||'—'} | ${d.admissionDate||'—'}</div></div>
+        <div><div class="font-bold text-sm">${d.fullName||'Anonymous'}</div><div class="text-xs text-gray-500">CID: ${d.civilId||'—'} | CRF: ${d.crfNo||'—'} | ${d.admissionDate||'—'}</div></div>
         <button onclick='exportSinglePDF(${JSON.stringify(d).replace(/'/g,"\\'")})' class="btn btn-red text-xs px-3 py-1.5"><i class="fas fa-file-pdf mr-1"></i>PDF</button>
       </div>`).join('');
   };
@@ -3555,21 +3678,21 @@ function initApp() {
     procStartDate:'Procedure Date',procStartTime:'Proc Start Time',procEndTime:'Proc End Time',operatorName:'Operator',
     crtInd_surv:'CRT Ind: Cardiac Arrest Survivors',crtInd_eps:'CRT Ind: Inducible VT by EPS',
     crtInd_icmEF:'CRT Ind: ICM EF≤35%',crtInd_nicmEF:'CRT Ind: Non-ICM EF≤35%',
-    crtGenerator:'CRT Generator Type',crtDeviceName:'CRT Device Name',
+    crtGenerator:'CRT Generator Type',
     tpm_chb:'TPM Ind: CHB',tpm_mobitz2:'TPM Ind: Mobitz II',tpm_altBBB:'TPM Ind: Alt BBB',tpm_sss:'TPM Ind: SSS',
     ppmGenerator:'PPM Generator Type',ppmDeviceName:'PPM Device Name',
     ppmInd_21block:'PPM Ind: 2:1 Block',ppmInd_mobitz2:'PPM Ind: Mobitz II',ppmInd_chb:'PPM Ind: CHB',ppmInd_sss:'PPM Ind: SSS',
-    eps_avnrt:'EPS: AVNRT',eps_wpw:'EPS: WPW',eps_aflutter:'EPS: AFl',eps_afib:'EPS: AFib',eps_vt:'EPS: VT',eps_pvcs:'EPS: PVCs',
-    epsTransseptal:'EPS: Transseptal',epsICE:'EPS: ICE Used',epsAblTime:'EPS: Ablation Time (min)',epsFluoroTime:'EPS: Fluoro Time (min)',
+    eps_svt:'EPS: SVT',eps_aflutter:'EPS: AFl',eps_afib:'EPS: AFib',eps_vt:'EPS: VT',eps_pvcs:'EPS: PVCs',
+    epsTransseptal:'EPS: Transseptal',epsICE:'EPS: ICE Used',epsFluoroTime:'EPS: Fluoro Time (min)',
     laao_nonvalvular:'LAAO Ind: Non-valvular AFib',laao_highBleed:'LAAO Ind: High Bleed Risk',
     laao_contraOAC:'LAAO Ind: Contra OAC',laao_priorBleed:'LAAO Ind: Prior Major Bleed',
-    laaoDeviceType:'LAAO Device',laaoDeviceSize:'LAAO Device Size (mm)',laaoPASS:'LAAO PASS Criteria Met',laaoOutcome:'LAAO Outcome',
+    laaoDeviceType:'LAAO Device',laaoPASS:'LAAO PASS Criteria Met',laaoOutcome:'LAAO Outcome',
     comp_ca:'Hospital CA',comp_pci:'Hospital PCI',comp_cabg:'Hospital CABG',comp_tavr:'Hospital TAVR',
     cx_cardArrest:'CX: Cardiac Arrest',cx_pulEdema:'CX: Pulmonary Edema',cx_tamponade1:'CX: Cardiac Tamponade',
     cx_stroke:'CX: Stroke',strokeType:'CX: Stroke Type',
     cx_cardShock:'CX: Cardiogenic Shock',scaiStage:'SCAI Stage',
     cx_bleeding:'CX: Bleeding',bleedType:'CX: Bleed Type',bleedSubType:'CX: Bleed Sub-Type',
-    cx_mi:'CX: MI',cx_devEmbol:'CX: Device Embolization',
+    cx_mi:'CX: MI',cx_devMigration:'CX: Device Migration',
     cx_pleuralEff:'CX: Pleural Effusion',cx_leadDislodge:'CX: Lead Dislodge',
     procSuccess:'Procedure Success',postECGrhythm:'Post-Proc ECG Rhythm',
     dischargeDate:'Discharge Date',dischargeTime:'Discharge Time',
@@ -3612,16 +3735,16 @@ function initApp() {
     crtGenerator:'CRTGen',
     tpm_chb:'TPMindCHB',tpm_mobitz2:'TPMindM2',tpm_altBBB:'TPMindBBB',tpm_sss:'TPMindSSS',
     ppmGenerator:'PPMGen',ppmInd_21block:'PPMind21',ppmInd_mobitz2:'PPMindM2',ppmInd_chb:'PPMindCHB',ppmInd_sss:'PPMindSSS',
-    eps_avnrt:'EPSAVNRT',eps_wpw:'EPSWPW',eps_aflutter:'EPSAFl',eps_afib:'EPSAFib',eps_vt:'EPSVT',eps_pvcs:'EPSPVCs',
-    epsTransseptal:'EPSTrans',epsICE:'EPSICE',epsAblTime:'EPSAblT',epsFluoroTime:'EPSFluro',
+    eps_svt:'EPSSVT',eps_aflutter:'EPSAFl',eps_afib:'EPSAFib',eps_vt:'EPSVT',eps_pvcs:'EPSPVCs',
+    epsTransseptal:'EPSTrans',epsICE:'EPSICE',epsFluoroTime:'EPSFluro',
     laao_nonvalvular:'LAOIndNV',laao_highBleed:'LAOIndHB',laao_contraOAC:'LAOIndOAC',laao_priorBleed:'LAOIndPB',
-    laaoDeviceType:'LAODType',laaoDeviceSize:'LAODSize',laaoPASS:'LAOPASS',laaoOutcome:'LAOOutcm',
+    laaoDeviceType:'LAODType',laaoPASS:'LAOPASS',laaoOutcome:'LAOOutcm',
     comp_ca:'HospCA',comp_pci:'HospPCI',comp_cabg:'HospCABG',comp_tavr:'HospTAVR',
     cx_cardArrest:'CXCA',cx_pulEdema:'CXPulEd',cx_tamponade1:'CXTampon',
     cx_stroke:'CXStroke',strokeType:'CXStrkT',
     cx_cardShock:'CXShock',scaiStage:'SCAI',
     cx_bleeding:'CXBleed',bleedType:'CXBlT',bleedSubType:'CXBlSub',
-    cx_mi:'CXMI',cx_devEmbol:'CXDevEmb',cx_pleuralEff:'CXPleurl',cx_leadDislodge:'CXLeadDx',
+    cx_mi:'CXMI',cx_devMigration:'CXDevMig',cx_pleuralEff:'CXPleurl',cx_leadDislodge:'CXLeadDx',
     procSuccess:'ProcSucc',postECGrhythm:'PostECG',
     dischargeDate:'DischDate',dischargeTime:'DischTime',dischargeStatus:'DischSt',causeOfDeath:'DthCause',dischargeType:'DischTyp',
     homeMed_amiodarone:'HMAmio',homeMed_flecainide:'HMFlec',homeMed_sotalol:'HMSotal',
@@ -3676,7 +3799,9 @@ function initApp() {
     crtLbbbQRSna:'CRT LBBB: QRS Not Assessed',
     crtBrady:'CRT: Any Bradycardia indications',
     crtBradyReason:'CRT: Bradycardia pacing reason',
-    crtLeadAssess:'CRT: Lead assessment',
+    crtNewLead:'CRT: New lead',
+    crtExistingLead:'CRT: Existing lead',
+    crtAdditionalLead:'CRT: Additional lead to existing',
     crtLeadStatus:'CRT: Lead status',
 
     // 9.6 Temporary PM additions
@@ -3712,14 +3837,15 @@ function initApp() {
     ppmLbbbQRS:'PPM LBBB: QRS width post (msec)',
     ppmLbbbQRSna:'PPM LBBB: QRS Not Assessed',
     ppmIndication:'PPM: Indication',
-    ppmLeadAssess:'PPM: Lead assessment',
+    ppmNewLead:'PPM: New lead',
+    ppmExistingLead:'PPM: Existing lead',
+    ppmAdditionalLead:'PPM: Additional lead to existing',
     ppmLeadStatus:'PPM: Lead status',
 
     // 9.8 EPS additions
     epsSedation:'EPS: Sedation',
     epsAnticoag:'EPS: Intraprocedural anticoagulation',
     epsUninterrupted:'EPS: Uninterrupted anticoagulation',
-    epsPhrenic:'EPS: Phrenic nerve evaluation',
     epsCathManip:'EPS: Catheter manipulation',
     epsInducedArr:'EPS: Induced arrhythmia during study',
     epsMapSystem:'EPS: Mapping system',
@@ -3777,6 +3903,35 @@ function initApp() {
     condSysPace:'Conduction system pacing (LBB lead)',
     condSysPaceQRS:'Final pace QRS duration (msec)',
     condSysPaceQRSna:'Final pace QRS Not Assessed',
+
+    // ==================== POST-PILOT REVISION FIELDS ====================
+    // 4.1b AFib EHRA classification
+    afibEHRA:'AFib EHRA classification',
+    // 4.2d Asystole arrest
+    arrestAsystole:'Asystole Arrest',
+    // 7.1b Nodal Rhythm
+    ecgNodal:'ECG Nodal Rhythm',
+    ecgNodalType:'ECG Nodal Rhythm Type',
+    // 7.5/7.6 New investigations
+    inv_tiltTable:'Tilting table test performed',
+    inv_loopRecorder:'Implantable loop recorder performed',
+    // 9.5 CRT/AICD additions
+    crtInd_vtUnresp:'CRT Ind: VT not responding to ablation/medical therapy',
+    // 9.5d / 9.7d Lead assessment restructure
+    crtNewLead:'CRT: New lead',
+    crtExistingLead:'CRT: Existing lead',
+    crtAdditionalLead:'CRT: Additional lead to existing',
+    ppmNewLead:'PPM: New lead',
+    ppmExistingLead:'PPM: Existing lead',
+    ppmAdditionalLead:'PPM: Additional lead to existing',
+    // 9.8 EPS - SVT replaces AVNRT/WPW
+    eps_svt:'EPS: SVT',
+    // 10.2.20 / 10.2.27
+    cx_devMigration:'CX: Device Migration',
+    cx_leadFracture:'CX: Lead Fracture',
+    // Ivabradine medication
+    homeMed_ivabradine:'Home Med: Ivabradine',
+    dcMed_ivabradine:'DC Med: Ivabradine',
   });
 
   // Extend SPSS_VARS with short variable names (≤8 chars recommended for classic SPSS)
@@ -3804,7 +3959,7 @@ function initApp() {
     crtReimplant:'CRTReImp', crtDevImpl:'CRTDevIm', crtDeviceType:'CRTDevTy',
     crtPpmSame:'CRTPpmSm', crtPpmType:'CRTPpmTy', crtLbbbQRS:'CRTLbQRS',
     crtLbbbQRSna:'CRTLbQRSn', crtBrady:'CRTBrady', crtBradyReason:'CRTBrRsn',
-    crtLeadAssess:'CRTLdAsm', crtLeadStatus:'CRTLdSt',
+    crtNewLead:'CRTNewLd', crtExistingLead:'CRTExLd', crtAdditionalLead:'CRTAddLd', crtLeadStatus:'CRTLdSt',
 
     // Temp PM
     tpmIndication:'TPMInd', tpmCause_electrolyte:'TPMCEl', tpmCause_drug:'TPMCDrg',
@@ -3822,11 +3977,11 @@ function initApp() {
     ppmDev_his:'PPMDvHis', ppmDev_leadlessLVEP:'PPMDvLVE',
     ppmDev_ccm:'PPMDvCCM', ppmDev_lbbb:'PPMDvLBB',
     ppmLbbbQRS:'PPMLbQRS', ppmLbbbQRSna:'PPMLbQRSn',
-    ppmIndication:'PPMInd', ppmLeadAssess:'PPMLdAsm', ppmLeadStatus:'PPMLdSt',
+    ppmIndication:'PPMInd', ppmNewLead:'PPMNewLd', ppmExistingLead:'PPMExLd', ppmAdditionalLead:'PPMAddLd', ppmLeadStatus:'PPMLdSt',
 
     // EPS
     epsSedation:'EPSSed', epsAnticoag:'EPSAntic', epsUninterrupted:'EPSUnin',
-    epsPhrenic:'EPSPhre', epsCathManip:'EPSCatM', epsInducedArr:'EPSIndAr',
+    epsCathManip:'EPSCatM', epsInducedArr:'EPSIndAr',
     epsMapSystem:'EPSMap',
 
     // LAAO
@@ -3855,6 +4010,18 @@ function initApp() {
 
     // Outcome
     condSysPace:'CndSysPc', condSysPaceQRS:'CSPQRS', condSysPaceQRSna:'CSPQRSna',
+
+    // ==================== POST-PILOT REVISION FIELDS ====================
+    afibEHRA:'AFEHRA',
+    arrestAsystole:'ArrAsy',
+    ecgNodal:'ECGNodal', ecgNodalType:'ECGNodTy',
+    inv_tiltTable:'InvTilt', inv_loopRecorder:'InvLoop',
+    crtInd_vtUnresp:'CRTIndVT',
+    crtNewLead:'CRTNewLd', crtExistingLead:'CRTExLd', crtAdditionalLead:'CRTAddLd',
+    ppmNewLead:'PPMNewLd', ppmExistingLead:'PPMExLd', ppmAdditionalLead:'PPMAddLd',
+    eps_svt:'EPSSVT',
+    cx_devMigration:'CXDevMig', cx_leadFracture:'CXLdFrc',
+    homeMed_ivabradine:'HMIvab', dcMed_ivabradine:'DCIvab',
   });
   // ==================== END NEW FIELDS ====================
 
@@ -3956,7 +4123,7 @@ function initApp() {
     pdfdoc.text(data.fullName||'Anonymous Patient',14,30);
     pdfdoc.setFontSize(9);pdfdoc.setFont('helvetica','normal');
     pdfdoc.text([
-      `Civil ID: ${data.civilId||'—'}  |  File: ${data.fileNumber||'—'}  |  CRF: ${data.crfNo||'—'}`,
+      `Civil ID: ${data.civilId||'—'}  |  CRF: ${data.crfNo||'—'}`,
       `Gender: ${data.gender||'—'}  |  Age: ${data.estimatedAge||'—'}  |  Admission: ${data.admissionDate||'—'}`,
       `EP Reason: ${data.epReason||'—'}  |  Investigator: ${data.enrolledByName||'—'}  |  Status: ${(data.recordStatus||'draft').toUpperCase()}  |  Completion: ${comp.pct}%`,
     ],14,38);
@@ -3978,7 +4145,7 @@ function initApp() {
       pdfdoc.autoTable({head:[['Field','Value']],body:pairs,startY:y,margin:{left:14,right:14},styles:{fontSize:8},headStyles:{fillColor:[100,116,139],textColor:255},columnStyles:{0:{cellWidth:80},1:{cellWidth:100}},tableWidth:182});
       y=pdfdoc.lastAutoTable.finalY+5;
     });
-    pdfdoc.save(`EPS_Patient_${data.civilId||data.fileNumber||'report'}.pdf`);
+    pdfdoc.save(`EPS_Patient_${data.civilId||data.crfNo||'report'}.pdf`);
   };
 
   // ANALYTICS
