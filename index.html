@@ -2671,9 +2671,10 @@ function initApp() {
   window.adminUnlock=function(){
     const pin=prompt('Admin PIN:');
     if(pin!=='2468'){alert('Access Denied');return;}
-    document.getElementById('lockedOverlay').classList.add('hidden');
     document.getElementById('recordStatus').value='draft';
     document.getElementById('editModeBanner').classList.remove('hidden');
+    // Re-enable Save / Save&Close / Final Submit (applyLock with non-locked status hides overlay AND enables buttons)
+    applyLock('draft');
   };
   function applyLock(status){
     const locked=status==='submitted'||status==='reviewed';
