@@ -1366,15 +1366,15 @@ html,body{max-width:100vw;overflow-x:hidden;}
 
     <div class="g3 mb-3">
       <div><label class="lbl">10.2.23 Infection requiring antibiotics</label><select name="cx_infection" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
-      <div><label class="lbl">10.2.25 Set Screw Problem</label><select name="cx_setScrew" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
-      <div><label class="lbl">10.2.26 Lead Dislodgement</label><select name="cx_leadDislodge" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
-    </div>
-
-    <div class="g3 mb-3">
-      <div><label class="lbl">10.2.27 Lead fracture</label><select name="cx_leadFracture" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
     </div>
 
     <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.24 Bradycardia adverse events</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'bradyAE','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'bradyAE','Yes')">Yes</button></div></div><input type="hidden" name="cx_bradyAE" id="val_bradyAE" value=""><div id="sub_bradyAE" class="sub-reveal"><label class="lbl">10.2.24.a Requiring permanent pacemaker</label><select name="cx_bradyAEppm" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
+
+    <div class="g3 mb-3">
+      <div><label class="lbl">10.2.25 Set Screw Problem</label><select name="cx_setScrew" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+      <div><label class="lbl">10.2.26 Lead Dislodgement</label><select name="cx_leadDislodge" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+      <div><label class="lbl">10.2.27 Lead fracture</label><select name="cx_leadFracture" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+    </div>
   </div>
 </div>
 
@@ -2391,11 +2391,17 @@ function initApp() {
     const procEl = document.querySelector('[name="procStartDate"]');
     const dcEl   = document.querySelector('[name="dischargeDate"]');
     const today  = new Date().toISOString().slice(0,10);
-    if(admEl){ admEl.max = today; }
-    if(procEl){ if(admEl && admEl.value) procEl.min = admEl.value; procEl.max = today; }
+    // Registry start: no records before 2025-01-01 (prevents bogus years like 1990)
+    const REGISTRY_MIN = '2025-01-01';
+    if(admEl){ admEl.max = today; admEl.min = REGISTRY_MIN; }
+    if(procEl){
+      const lo = (admEl && admEl.value) ? admEl.value : REGISTRY_MIN;
+      procEl.min = lo;
+      procEl.max = today;
+    }
     if(dcEl){
-      const lower = (procEl && procEl.value) ? procEl.value : (admEl && admEl.value ? admEl.value : '');
-      if(lower) dcEl.min = lower;
+      const lower = (procEl && procEl.value) ? procEl.value : (admEl && admEl.value ? admEl.value : REGISTRY_MIN);
+      dcEl.min = lower;
       dcEl.max = today;
     }
   }
@@ -3081,36 +3087,253 @@ function initApp() {
       _showDashboardTab();
     }
   };
+  // ============================================================================
+  // FINAL SUBMIT — strict validation against actual form data (not just badges)
+  // ============================================================================
+  // Returns array of { name, label, stepIndex } for every required field that's
+  // empty given current form state. Does NOT depend on the badge UI.
+  function findIncompleteFields(){
+    const form = document.getElementById('epsForm');
+    const incomplete = [];
+    const seen = new Set();
+
+    // Skip these — handled separately or excluded by design
+    const SKIP = new Set([
+      'recordStatus','submissionType','recordId',
+      // Hidden bookkeeping fields
+      '_enrolledBy','_enrolledByName','_enrolledByCode','_origTimestamp','_updatedByName','_updatedByCode',
+      // Companion checkbox fields (Unrec/NA) — always validated via their parent
+      'sysBpUnrec','diaBpUnrec','hrUnrec','weightUnrec','heightUnrec',
+      'creatInitNA','creatPeakNA','hgbInitNA','hgbLowestNA',
+      'sodiumNA','potassiumNA','magnesiumNA','inrNA','ecgQRSna','lvefNA','rvspNA',
+      'crtLbbbQRSna','ppmLbbbQRSna','condSysPaceQRSna'
+    ]);
+
+    // Paired fields where filling EITHER the value input OR the Unrec/NA checkbox satisfies the requirement
+    const PAIRED = {
+      sysBp:'sysBpUnrec', diaBp:'diaBpUnrec', hr:'hrUnrec', weight:'weightUnrec', height:'heightUnrec',
+      creatInit:'creatInitNA', creatPeak:'creatPeakNA', hgbInit:'hgbInitNA', hgbLowest:'hgbLowestNA',
+      sodium:'sodiumNA', potassium:'potassiumNA', magnesium:'magnesiumNA', inr:'inrNA',
+      ecgQRS:'ecgQRSna', lvef:'lvefNA', rvsp:'rvspNA',
+      crtLbbbQRS:'crtLbbbQRSna', ppmLbbbQRS:'ppmLbbbQRSna', condSysPaceQRS:'condSysPaceQRSna'
+    };
+    // Either-or groups: at least one member must be filled
+    const EITHER_OR = [['ecgAtrialRhythm','ecgVentRhythm'],['holterAtrialRhythm','holterVentRhythm']];
+    const EITHER_OR_MEMBERS = new Set(EITHER_OR.flat());
+
+    // CHECKBOX GROUPS: each group requires at-least-one-checked when its container is shown.
+    // Individual members are NOT required — un-ticked checkbox = "this option does not apply".
+    const CHECKBOX_GROUPS = [
+      { label:'4.14a Syndrome type (SSD)', members:['ssd_brugada','ssd_cpvt','ssd_idiopathic','ssd_longqt','ssd_shortqt','ssd_unknown'] },
+      { label:'4.25a Prior CIED device type', members:['cied_single','cied_dual','cied_crtp','cied_leadlessSingle','cied_leadlessDual','cied_his','cied_lbbb','cied_icdSingle','cied_icdDual','cied_crtd','cied_evicd','cied_sicd','cied_unknown'] },
+      { label:'9.5 CRT/AICD indications', members:['crtInd_surv','crtInd_eps','crtInd_icmEF','crtInd_nicmEF','crtInd_vtUnresp'] },
+      { label:'9.5 CRT inherited disease type', members:['crtInh_longqt','crtInh_hcm','crtInh_brugada','crtInh_arvd','crtInh_cpvt'] },
+      { label:'9.5 CRT replacement reason', members:['crtRepl_relocation','crtRepl_battery','crtRepl_faulty','crtRepl_infection','crtRepl_leadrev','crtRepl_upgrade'] },
+      { label:'9.6 Temporary PM cause', members:['tpmCause_electrolyte','tpmCause_drug','tpmCause_digitalis','tpmCause_antiarr','tpmCause_acuteMI','tpmCause_myocarditis','tpmCause_endocarditis','tpmCause_postArrest','tpmCause_hypothermia','tpmCause_bridge','tpmCause_postTAVI','tpmCause_unknown'] },
+      { label:'9.7 Permanent PM device', members:['ppmDev_singleTV','ppmDev_dualTV','ppmDev_leadlessSingle','ppmDev_leadlessDual','ppmDev_his','ppmDev_leadlessLVEP','ppmDev_ccm','ppmDev_lbbb'] },
+      { label:'9.8 EPS arrhythmia mapped', members:['eps_svt','eps_aflutter','eps_afib','eps_vt','eps_pvcs'] },
+      { label:'9.9a LAAO indication', members:['laao_nonvalvular','laao_highBleed','laao_contraOAC','laao_priorBleed','laao_patientPref'] },
+      { label:'10.x Intervention type', members:['cx_intervEndo','cx_intervSurg','cx_intervThrombin'] },
+      { label:'10.2.13.b Bleeding site', members:['bleedSite_gi','bleedSite_retro','bleedSite_genu','bleedSite_perc'] }
+    ];
+    const CHECKBOX_GROUP_MEMBERS = new Set();
+    CHECKBOX_GROUPS.forEach(g => g.members.forEach(m => CHECKBOX_GROUP_MEMBERS.add(m)));
+
+    // Get human-readable label for a field
+    const getLabel = (name) => {
+      const el = form.querySelector(`[name="${name}"]`);
+      if(!el) return name;
+      // Walk up to find a .lbl or span.font-bold sibling/ancestor
+      let p = el.parentNode;
+      while(p && p !== form){
+        const lbl = p.querySelector(':scope > .lbl, :scope > label.lbl, :scope > .flex > span.font-bold, :scope > div > span.font-bold, :scope > span.font-bold');
+        if(lbl){ return (lbl.textContent || '').trim().replace(/\s+/g,' ').slice(0,80); }
+        p = p.parentNode;
+      }
+      return FIELD_MAP[name] || name;
+    };
+
+    // Get the form-step index (1-7) for a field
+    const getStepIndex = (name) => {
+      const el = form.querySelector(`[name="${name}"]`);
+      if(!el) return null;
+      const step = el.closest('.form-step');
+      if(!step) return null;
+      const m = step.id.match(/step-(\d+)/);
+      return m ? parseInt(m[1],10) : null;
+    };
+
+    // Decide if a field is "currently visible" (i.e., in a shown sub-reveal/proc-section)
+    const isVisible = (el) => {
+      if(!el) return false;
+      const sub = el.closest('.sub-reveal');
+      if(sub && !sub.classList.contains('show')) return false;
+      const proc = el.closest('.proc-section');
+      if(proc && !proc.classList.contains('show')) return false;
+      // Also respect Tailwind `.hidden` class (used for pmTypeDiv etc.)
+      let p = el;
+      while(p && p !== form){
+        if(p.classList && p.classList.contains('hidden')) return false;
+        p = p.parentElement;
+      }
+      return true;
+    };
+
+    // Decide if a field has a value
+    const hasValue = (name) => {
+      const els = form.querySelectorAll(`[name="${name}"]`);
+      if(!els.length) return true; // not in form — skip
+      const first = els[0];
+      const t = first.type;
+      if(t === 'radio'){
+        return Array.from(els).some(e => e.checked);
+      }
+      if(t === 'checkbox'){
+        return Array.from(els).some(e => e.checked);
+      }
+      if(first.tagName === 'SELECT'){
+        return first.value !== '' && first.value !== null;
+      }
+      // text, number, date, time, hidden, textarea, etc.
+      return !!(first.value && String(first.value).trim() !== '');
+    };
+
+    // 1) Check the EP Reason itself
+    seen.add('epReason');
+    if(!hasValue('epReason')){
+      incomplete.push({ name:'epReason', label:'EP Lab Reason (Section 3)', stepIndex:3 });
+    } else {
+      // If pacemaker, also check pacemakerType
+      const ep = document.querySelector('input[name="epReason"]:checked')?.value;
+      seen.add('pacemakerType');
+      if(ep === 'Pacemaker' && !hasValue('pacemakerType')){
+        incomplete.push({ name:'pacemakerType', label:'Pacemaker Type (Section 3)', stepIndex:3 });
+      }
+    }
+
+    // 2) Walk every visible non-medication field with a name
+    const allInputs = form.querySelectorAll('input[name], select[name], textarea[name]');
+    allInputs.forEach(el => {
+      const name = el.name;
+      if(!name || seen.has(name)) return;
+      if(SKIP.has(name)) return;
+      if(name.startsWith('homeMed_') || name.startsWith('dcMed_')) return;
+      if(!isVisible(el)) return;
+      // Skip companion of paired field — they're checked via the paired entry
+      if(Object.values(PAIRED).includes(name)) return;
+      // Skip either-or members — checked separately
+      if(EITHER_OR_MEMBERS.has(name)) return;
+      // Skip individual checkbox-group members — group-level check handles them
+      if(CHECKBOX_GROUP_MEMBERS.has(name)) return;
+
+      // Hidden "id^=val_" YN inputs: special handling — Yes requires sub-reveal to have content
+      if(el.type === 'hidden' && el.id && el.id.startsWith('val_')){
+        seen.add(name);
+        const v = el.value;
+        if(v !== 'Yes' && v !== 'No'){
+          incomplete.push({ name, label:getLabel(name), stepIndex:getStepIndex(name) });
+        }
+        return;
+      }
+
+      // Skip hidden inputs that aren't YN val_
+      if(el.type === 'hidden') return;
+
+      seen.add(name);
+
+      // Paired field check (e.g. sysBp ↔ sysBpUnrec)
+      if(PAIRED[name]){
+        const cb = form.querySelector(`input[type="checkbox"][name="${PAIRED[name]}"]`);
+        const filled = hasValue(name) || (cb && cb.checked);
+        if(!filled){
+          incomplete.push({ name, label:getLabel(name), stepIndex:getStepIndex(name) });
+        }
+        return;
+      }
+
+      // Default: must have a value
+      if(!hasValue(name)){
+        incomplete.push({ name, label:getLabel(name), stepIndex:getStepIndex(name) });
+      }
+    });
+
+    // 3) Either-or groups: visible group needs at least one member filled
+    EITHER_OR.forEach(group => {
+      const anyVisible = group.some(n => {
+        const el = form.querySelector(`[name="${n}"]`);
+        return el && isVisible(el);
+      });
+      if(!anyVisible) return;
+      const anyFilled = group.some(n => hasValue(n));
+      if(!anyFilled){
+        const first = group[0];
+        if(!seen.has(first)){
+          incomplete.push({ name:first, label:`${getLabel(first)} (or alternative)`, stepIndex:getStepIndex(first) });
+          seen.add(first);
+        }
+      }
+    });
+
+    // 4) Checkbox groups: when any member is visible, require at least one checked
+    CHECKBOX_GROUPS.forEach(group => {
+      const visibleMembers = group.members.filter(n => {
+        const el = form.querySelector(`input[type="checkbox"][name="${n}"]`);
+        return el && isVisible(el);
+      });
+      if(!visibleMembers.length) return;
+      const anyChecked = visibleMembers.some(n => {
+        const el = form.querySelector(`input[type="checkbox"][name="${n}"]`);
+        return el && el.checked;
+      });
+      if(!anyChecked){
+        const first = visibleMembers[0];
+        incomplete.push({ name:first, label:`${group.label} (tick at least one)`, stepIndex:getStepIndex(first) });
+      }
+    });
+
+    return incomplete;
+  }
+
   window.submitFinal=async function(){
     updateFieldIndicators();
     const form=document.getElementById('epsForm');
-    const incomplete=Array.from(form.querySelectorAll('.fi-badge')).filter(b=>{
-      if(b.textContent!=='✖') return false;
-      const hiddenSub=b.closest('.sub-reveal');
-      if(hiddenSub && !hiddenSub.classList.contains('show')) return false;
-      const hiddenProc=b.closest('.proc-section');
-      if(hiddenProc && !hiddenProc.classList.contains('show')) return false;
-      if(b.offsetParent===null) return false;
-      return true;
-    });
+    const incomplete = findIncompleteFields();
+
     if(incomplete.length>0){
-      const first=incomplete[0];
-      const step=first.closest('.form-step');
-      if(step){
-        const idx=parseInt(step.id.replace('step-',''),10);
-        if(!isNaN(idx)) goToStep(idx);
-      }
+      // Jump to step containing the first incomplete field
+      const first = incomplete[0];
+      if(first.stepIndex){ goToStep(first.stepIndex); }
+      // Try to scroll to and highlight that field
       setTimeout(()=>{
-        first.scrollIntoView({behavior:'smooth',block:'center'});
-        first.style.transform='scale(1.6)'; first.style.boxShadow='0 0 0 4px rgba(220,38,38,.25)';
-        setTimeout(()=>{first.style.transform='';first.style.boxShadow='';},900);
-      },150);
-      alert(`⚠️ Cannot submit: ${incomplete.length} field(s) incomplete.`);
+        const el = form.querySelector(`[name="${first.name}"]`);
+        const target = el?.closest('.card') || el?.closest('div') || el;
+        if(target && target.scrollIntoView){
+          target.scrollIntoView({behavior:'smooth',block:'center'});
+          target.style.outline = '3px solid #dc2626';
+          target.style.outlineOffset = '4px';
+          setTimeout(()=>{ target.style.outline=''; target.style.outlineOffset=''; },2500);
+        }
+      },200);
+
+      // Build a readable summary (first 8 fields)
+      const summary = incomplete.slice(0,8).map(f => `• ${f.label}${f.stepIndex?` (Step ${f.stepIndex})`:''}`).join('\n');
+      const more = incomplete.length > 8 ? `\n\n…and ${incomplete.length - 8} more.` : '';
+      alert(`⚠️ Cannot submit: ${incomplete.length} required field(s) still incomplete.\n\n${summary}${more}\n\nPlease complete every field before final submission.`);
       return;
     }
-    if(!confirm('Final Submit will lock this record. Are you sure?'))return;
+
+    if(!confirm('Submit this record as final?\n\nYou will not be able to edit it after submission.'))return;
     const ok=await saveRecord('submitted',true);
-    if(ok){showToast('Record submitted & locked','#2563eb');}
+    if(ok){
+      // Hide the locked overlay (it was applied by saveRecord) and reset form state
+      document.getElementById('lockedOverlay').classList.add('hidden');
+      document.getElementById('editModeBanner').classList.add('hidden');
+      resetFormUI(form);
+      // Refresh dashboard data and return to main page
+      try { await loadDashboard(); } catch(err) {}
+      _showDashboardTab();
+      showToast('Record submitted successfully','#059669');
+    }
   };
   window.markReviewed=async function(id){if(!confirm('Mark as Reviewed?'))return;try{await updateDoc(doc(db,'patients_full',id),{recordStatus:'reviewed',reviewedAt:new Date()});fetchData();loadDashboard();}catch(e){alert('Failed.');}};
   window.markDraft=async function(id){if(!confirm('Revert to Draft?'))return;try{await updateDoc(doc(db,'patients_full',id),{recordStatus:'draft'});fetchData();loadDashboard();}catch(e){alert('Failed.');}};
@@ -3713,7 +3936,7 @@ function initApp() {
     hx_hf:'HxHF',hfType:'HFType',
     hx_cad:'HxCAD',hx_mi:'HxMI',hx_valve:'HxValve',hx_cvd:'HxCVD',
     hx_lung:'HxLung',hx_dialysis:'HxDialys',hx_dm:'HxDM',hx_htn:'HxHTN',
-    hx_ssd:'HxSSD',ssd_brugada:'SSDbruga',ssd_cpvt:'SSDCPVT',ssd_idiopathic:'SSDIdio',ssd_longqt:'SSDLongQT',ssd_shortqt:'SSDShrtQT',
+    hx_ssd:'HxSSD',ssd_brugada:'SSDbruga',ssd_cpvt:'SSDCPVT',ssd_idiopathic:'SSDIdio',ssd_longqt:'SSDLongQT',ssd_shortqt:'SSDShrtQT',ssd_unknown:'SSDUnk',
     hx_struct:'HxStruct',struct_arvc:'StARVC',struct_congenital:'StCong',struct_hcm:'StHCM',struct_lv:'StLV',
     hx_syncope:'HxSyncop',syncopeRecent:'SyncRec',
     hx_svt:'HxSVT',hx_vf:'HxVF',hx_vt:'HxVT',
@@ -4026,56 +4249,284 @@ function initApp() {
   // ==================== END NEW FIELDS ====================
 
 
+  // ============================================================================
+  // EXPORT TYPING & MISSING-DATA HELPERS  (v3 — addresses analyst feedback May 6, 2026)
+  // ============================================================================
+  // Numeric fields: stored as raw numbers in Excel cells (not strings) so Stata
+  //                 / SPSS / Excel formulas treat them as int / double.
+  // Date fields:    stored as real Date cells (XLSX type 'd').
+  // Time fields:    stored as fractional-day numbers with hh:mm format.
+  // Unrec/NA logic: see encodeForExcel / encodeForSPSS below.
+
+  const NUMERIC_FIELDS=new Set([
+    'yob','estimatedAge',
+    'sysBp','diaBp','hr','weight','height',
+    'lvef','lvesd','lvedd','rvsp',
+    'creatInit','creatPeak','hgbInit','hgbLowest','sodium','potassium','magnesium','inr',
+    'ecgQRS','laaOstial','laaDepth','epsFluoroTime',
+    'crtLbbbQRS','ppmLbbbQRS','condSysPaceQRS',
+    'transfusionUnits','laaoDeploy',
+    'afibChads','afibHasBled'
+  ]);
+  const DATE_FIELDS=new Set(['admissionDate','procStartDate','dischargeDate']);
+  const TIME_FIELDS=new Set(['procStartTime','procEndTime','dischargeTime']);
+
+  // Parent-child blanking map. If parent === 'No' / false / blank, all listed children must be blank.
+  const PARENT_CHILDREN={
+    hx_afib:['afibClassification','afibChads','afibHasBled','afibCardioversion','afibPriorAblation','afibContraOAC','afibMajorBleed','afibEHRA'],
+    hx_cardiacArrest:['arrestBradycardia','arrestVF','arrestVT','arrestAsystole'],
+    hx_icm:['icmTimeframe','icmGDMT'],
+    hx_hf:['hfType'],
+    hx_ssd:['ssd_brugada','ssd_cpvt','ssd_idiopathic','ssd_longqt','ssd_shortqt','ssd_unknown'],
+    hx_struct:['struct_arvc','struct_congenital','struct_hcm','struct_infiltrative','struct_lv'],
+    hx_syncope:['syncopeRecent'],
+    hx_avp:['avpType','avpRecent'],
+    hx_mvp:['mvpType','mvpRecent'],
+    hx_ca:['caRecent','caAfterArrest'],
+    hx_cabg:['cabgRecent'],
+    hx_pci:['pciRecent'],
+    hx_cied:['cied_single','cied_dual','cied_crtp','cied_leadlessSingle','cied_leadlessDual','cied_his','cied_lbbb','cied_icdSingle','cied_icdDual','cied_crtd','cied_evicd','cied_sicd','cied_unknown'],
+    inv_ecg:['ecgAtrialRhythm','ecgVentRhythm','ecgQRS','ecgQRSna','ecgNodal','ecgNodalType'],
+    inv_holter:['holterAtrialRhythm','holterVentRhythm'],
+    inv_tte:['lvef','lvefNA','lvesd','lvedd','rvsp','rvspNA'],
+    inv_sevValve:['sevMR','sevAS','sevAR','sevTR'],
+    inv_tee:['teeThrombus'],
+    inv_laa:['laaOstial','laaDepth'],
+    cx_stroke:['strokeType'],
+    cx_cardShock:['scaiStage'],
+    cx_bleeding:['bleedType','bleedSubType','bleedSite_gi','bleedSite_retro','bleedSite_genu','bleedSite_perc'],
+    cx_vent:['ventType'],
+    cx_mechComp:['mechCompType'],
+    cx_transfusion:['transfusionUnits'],
+    cx_pericEff:['cx_pericEffInterv'],
+    cx_tamp2:['cx_tampOpenSurg','cx_tampPercDrain'],
+    cx_hemothorax:['cx_hemoDrain'],
+    cx_pneumo:['cx_pneumoInterv'],
+    cx_bradyAE:['cx_bradyAEppm'],
+    condSysPace:['condSysPaceQRS','condSysPaceQRSna']
+  };
+
+  // CRF-scoped blanking. Fields belonging to a specific procedure CRF — must be blank
+  // if epReason does not match. Prevents EPS/CRT/PPM/TPM/LAAO column cross-contamination.
+  // NOTE: prefix 'eps' is intentionally narrow ('eps_' or 'eps' followed by Capital) since
+  // 'epReason' itself starts with 'ep' (already different prefix), but to be safe we list
+  // explicit field names rather than relying purely on prefix.
+  const CRF_FIELDS={
+    'CRT/AICD':[
+      'crtInd_surv','crtInd_eps','crtInd_icmEF','crtInd_nicmEF','crtInd_vtUnresp','crtGenerator',
+      'crtInherited','crtInh_longqt','crtInh_hcm','crtInh_brugada','crtInh_arvd','crtInh_cpvt',
+      'crtRepl_relocation','crtRepl_battery','crtRepl_faulty','crtRepl_infection','crtRepl_leadrev','crtRepl_upgrade',
+      'crtReimplant','crtDevImpl','crtDeviceType','crtPpmSame','crtPpmType',
+      'crtLbbbQRS','crtLbbbQRSna','crtBrady','crtBradyReason',
+      'crtNewLead','crtExistingLead','crtAdditionalLead','crtLeadStatus',
+      'condSysPace','condSysPaceQRS','condSysPaceQRSna'
+    ],
+    'Pacemaker':[
+      'tpm_chb','tpm_mobitz2','tpm_altBBB','tpm_sss',
+      'tpmIndication','tpmCause_electrolyte','tpmCause_drug','tpmCause_digitalis','tpmCause_antiarr',
+      'tpmCause_acuteMI','tpmCause_myocarditis','tpmCause_endocarditis','tpmCause_postArrest',
+      'tpmCause_hypothermia','tpmCause_bridge','tpmCause_postTAVI','tpmCause_unknown',
+      'tpmDrug_avBlock','tpmMIType','tpmPpmSameStay',
+      'ppmGenerator','ppmDeviceName','ppmInd_21block','ppmInd_mobitz2','ppmInd_chb','ppmInd_sss',
+      'ppmReplReason','ppmReimplant','ppmDevImpl',
+      'ppmDev_singleTV','ppmDev_dualTV','ppmDev_leadlessSingle','ppmDev_leadlessDual',
+      'ppmDev_his','ppmDev_leadlessLVEP','ppmDev_ccm','ppmDev_lbbb',
+      'ppmLbbbQRS','ppmLbbbQRSna','ppmIndication',
+      'ppmNewLead','ppmExistingLead','ppmAdditionalLead','ppmLeadStatus'
+    ],
+    'EPS/Ablation':[
+      'eps_svt','eps_aflutter','eps_afib','eps_vt','eps_pvcs',
+      'epsTransseptal','epsICE','epsFluoroTime',
+      'epsSedation','epsAnticoag','epsUninterrupted','epsCathManip','epsInducedArr','epsMapSystem'
+    ],
+    'LAAO':[
+      'laao_nonvalvular','laao_highBleed','laao_contraOAC','laao_priorBleed','laao_patientPref',
+      'laaoDeviceType','laaoPASS','laaoOutcome',
+      'laaoDeploy','laaoTransseptal','laaoImaging','laaoLeak','laaoAnticoag'
+    ]
+  };
+
+  // Returns true if parent's stored value indicates "No" (or blank).
+  function parentIsNoOrBlank(rawVal){
+    return rawVal===false||rawVal==='false'||rawVal==='No'||rawVal===undefined||rawVal===null||rawVal==='';
+  }
+
+  // Returns the cleaned record: applies parent-child + CRF-scoped blanking BEFORE encoding.
+  function applyDefensiveBlanking(r){
+    const cleaned={...r};
+    // Parent-child blanking
+    for(const [parent,children] of Object.entries(PARENT_CHILDREN)){
+      if(parentIsNoOrBlank(cleaned[parent])){
+        children.forEach(c=>{cleaned[c]='';});
+      }
+    }
+    // CRF-scoped blanking — set fields belonging to OTHER CRFs to blank
+    const ep=cleaned.epReason;
+    if(ep){
+      for(const [crf,fields] of Object.entries(CRF_FIELDS)){
+        if(crf!==ep){
+          fields.forEach(f=>{cleaned[f]='';});
+        }
+      }
+    }
+    return cleaned;
+  }
+
+  // Convert YYYY-MM-DD string → JS Date (for XLSX type 'd' cell)
+  function toDateCell(s){
+    if(!s||typeof s!=='string')return s;
+    const m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if(!m)return s;
+    return new Date(Number(m[1]),Number(m[2])-1,Number(m[3]));
+  }
+  // Convert "HH:MM" or "HH:MM:SS" → fractional day for Excel time cell
+  function toTimeFraction(s){
+    if(!s||typeof s!=='string')return null;
+    const m=s.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+    if(!m)return null;
+    const h=Number(m[1]),mi=Number(m[2]),sec=Number(m[3]||0);
+    return (h*3600+mi*60+sec)/86400;
+  }
+
+  // Build a typed XLSX cell for the EXCEL sheet (analyst convention):
+  //   - Numeric fields → number cell or blank
+  //   - Date fields    → Date cell or blank
+  //   - Time fields    → time-formatted number cell or blank
+  //   - Unrec/NA columns → "Yes" if ticked, blank otherwise (NEVER "0" for untouched)
+  //   - Value column when its Unrec/NA is ticked → BLANK (not "9")
+  //   - Yes/No fields (boolean) → "Yes" / "No" / blank
+  function encodeForExcel(r,f){
+    const val=r[f];
+    // Unrec / NA marker columns
+    if(f.endsWith('Unrec')||f.endsWith('NA')){
+      if(val===true||val==='true')return 'Yes';
+      // Blank for untouched / explicit false (analyst: don't write 0 here)
+      return '';
+    }
+    // If this field has a paired Unrec/NA flag that is ticked, the value is missing → blank
+    const unrecKey=f+'Unrec', naKey=f+'NA';
+    if(r[unrecKey]===true||r[unrecKey]==='true'||r[naKey]===true||r[naKey]==='true'){
+      return '';
+    }
+    if(val===undefined||val===null||val==='')return '';
+    if(NUMERIC_FIELDS.has(f)){
+      const n=Number(val);
+      return isNaN(n)?val:{t:'n',v:n};
+    }
+    if(DATE_FIELDS.has(f)){
+      const d=toDateCell(val);
+      return d instanceof Date && !isNaN(d) ? {t:'d',v:d,z:'yyyy-mm-dd'} : val;
+    }
+    if(TIME_FIELDS.has(f)){
+      const tf=toTimeFraction(val);
+      return tf===null ? val : {t:'n',v:tf,z:'hh:mm'};
+    }
+    if(val===true||val==='true')return 'Yes';
+    if(val===false||val==='false')return 'No';
+    return val;
+  }
+
+  // Build typed cell for SPSS sheet — uses 9 as missing code for value cells when Unrec/NA ticked,
+  // 1 / blank for ticked / un-ticked Unrec markers (analyst expects 1=Yes, blank=untouched).
+  function encodeForSPSS(r,f){
+    const val=r[f];
+    if(f.endsWith('Unrec')||f.endsWith('NA')){
+      if(val===true||val==='true')return {t:'n',v:1};
+      return ''; // blank for untouched (NOT 0)
+    }
+    const unrecKey=f+'Unrec', naKey=f+'NA';
+    const unrecTicked=r[unrecKey]===true||r[unrecKey]==='true'||r[naKey]===true||r[naKey]==='true';
+    if(unrecTicked){
+      // Value missing because unrec/NA → use SPSS missing code 9 for numeric fields, blank for strings
+      if(NUMERIC_FIELDS.has(f))return {t:'n',v:9};
+      return '';
+    }
+    if(val===undefined||val===null||val==='')return '';
+    if(NUMERIC_FIELDS.has(f)){
+      const n=Number(val);
+      return isNaN(n)?val:{t:'n',v:n};
+    }
+    if(DATE_FIELDS.has(f)){
+      const d=toDateCell(val);
+      return d instanceof Date && !isNaN(d) ? {t:'d',v:d,z:'yyyy-mm-dd'} : val;
+    }
+    if(TIME_FIELDS.has(f)){
+      const tf=toTimeFraction(val);
+      return tf===null ? val : {t:'n',v:tf,z:'hh:mm'};
+    }
+    if(val===true||val==='true'||val==='Yes')return {t:'n',v:1};
+    if(val===false||val==='false'||val==='No')return {t:'n',v:0};
+    return val;
+  }
+
+  // Explicit medication ordering — keeps Home Meds and Discharge Meds grouped & in clinical order
+  const HOME_MEDS_ORDER=[
+    'homeMed_amiodarone','homeMed_disopyramide','homeMed_flecainide','homeMed_procainamide',
+    'homeMed_propafenone','homeMed_sotalol','homeMed_verapamil','homeMed_diltiazem',
+    'homeMed_warfarin','homeMed_dabigatran','homeMed_apixaban','homeMed_rivaroxaban',
+    'homeMed_edoxaban','homeMed_lmwh','homeMed_ufh',
+    'homeMed_aspirin','homeMed_clopidogrel','homeMed_prasugrel','homeMed_ticagrelor','homeMed_cangrelor',
+    'homeMed_acei','homeMed_arb','homeMed_arni','homeMed_sglt',
+    'homeMed_betablocker','homeMed_ivabradine','homeMed_mra','homeMed_digoxin','homeMed_loopdiuretic'
+  ];
+  const DC_MEDS_ORDER=[
+    'dcMed_amiodarone','dcMed_disopyramide','dcMed_flecainide','dcMed_procainamide',
+    'dcMed_propafenone','dcMed_sotalol','dcMed_verapamil','dcMed_diltiazem',
+    'dcMed_warfarin','dcMed_dabigatran','dcMed_apixaban','dcMed_rivaroxaban',
+    'dcMed_edoxaban','dcMed_lmwh','dcMed_ufh',
+    'dcMed_aspirin','dcMed_clopidogrel','dcMed_prasugrel','dcMed_ticagrelor','dcMed_cangrelor',
+    'dcMed_acei','dcMed_arb','dcMed_arni','dcMed_sglt',
+    'dcMed_betablocker','dcMed_ivabradine','dcMed_mra','dcMed_digoxin','dcMed_loopdiuretic'
+  ];
+
   window.exportSPSS=async function(){
-    const data=await getFilteredExportData();
-    if(!data.length){alert('No data to export.');return;}
+    const rawData=await getFilteredExportData();
+    if(!rawData.length){alert('No data to export.');return;}
+    const data=rawData.map(applyDefensiveBlanking);
     const vars=Object.keys(SPSS_VARS);
-    const encodeVal=(r,v)=>{
-      let val=r[v];
-      if(v.endsWith('Unrec')||v.endsWith('NA')){
-        if(val===true||val==='true')return 9;
-        if(val===false||val==='false'||val===undefined||val===null||val==='')return 0;
-        return 0;
-      }
-      const unrecKey=v+'Unrec';const naKey=v+'NA';
-      if((r[unrecKey]===true||r[unrecKey]==='true')||(r[naKey]===true||r[naKey]==='true')){
-        if(val===undefined||val===null||val==='')return 9;
-      }
-      if(val===true||val==='true')return 1;
-      if(val===false||val==='false')return 0;
-      if(val===undefined||val===null||val==='')return '';
-      return val;
-    };
-    const dataRows=[vars.map(v=>SPSS_VARS[v])];
-    data.forEach(r=>{dataRows.push(vars.map(v=>encodeVal(r,v)));});
+    const headerRow=vars.map(v=>SPSS_VARS[v]);
+    const aoa=[headerRow];
+    data.forEach(r=>{aoa.push(vars.map(v=>encodeForSPSS(r,v)));});
+    const ws=XLSX.utils.aoa_to_sheet(aoa,{cellDates:true});
+
     const codebook=[['Variable','Label','Type','Missing Code','Notes']];
     vars.forEach(v=>{
       const label=FIELD_MAP[v]||v;
-      const sample=data[0]?.[v];
       let type='String';
-      if(v.endsWith('Unrec')||v.endsWith('NA'))type='Binary (0=No, 9=Unrecorded)';
-      else if(sample===true||sample===false||sample==='Yes'||sample==='No')type='Binary (1=Yes, 0=No)';
-      else if(typeof sample==='number'||(!isNaN(parseFloat(sample))&&sample!==''))type='Numeric';
-      codebook.push([SPSS_VARS[v],label,type,'9 = Not recorded/Unrecordable','']);
+      if(v.endsWith('Unrec')||v.endsWith('NA'))type='Binary (1=Yes / blank=No or untouched)';
+      else if(NUMERIC_FIELDS.has(v))type='Numeric (int/double)';
+      else if(DATE_FIELDS.has(v))type='Date';
+      else if(TIME_FIELDS.has(v))type='Time';
+      else {
+        const sample=data.find(d=>d[v]!==undefined&&d[v]!==null&&d[v]!=='')?.[v];
+        if(sample===true||sample===false||sample==='Yes'||sample==='No')type='Binary (1=Yes, 0=No)';
+      }
+      const missing=NUMERIC_FIELDS.has(v)?'9 (when Unrec/NA flag = 1)':'blank';
+      codebook.push([SPSS_VARS[v],label,type,missing,'']);
     });
     const wb=XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(dataRows),'SPSS_Data');
+    XLSX.utils.book_append_sheet(wb,ws,'SPSS_Data');
     XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(codebook),'Codebook');
     XLSX.writeFile(wb,'EPS_SPSS_Export.xlsx');
   };
 
   window.exportToExcel=async function(){
-    const data=await getFilteredExportData();
-    if(!data.length){alert('No data to export.');return;}
+    const rawData=await getFilteredExportData();
+    if(!rawData.length){alert('No data to export.');return;}
+    const data=rawData.map(applyDefensiveBlanking);
     const allFields=Object.keys(FIELD_MAP);
+
     const mkSheet=(fields)=>{
       const hdr=fields.map(f=>FIELD_MAP[f]||f);
-      const rows=data.map(r=>fields.map(f=>{let v=r[f];if(v===true)return'Yes';if(v===false)return'No';return v??'';}));
-      return XLSX.utils.aoa_to_sheet([hdr,...rows]);
+      const aoa=[hdr];
+      data.forEach(r=>{aoa.push(fields.map(f=>encodeForExcel(r,f)));});
+      return XLSX.utils.aoa_to_sheet(aoa,{cellDates:true});
     };
+
     const idFields=['_no','nameFirst','nameMiddle','nameLast','civilId','crfNo','fileNumber','gender','nationality','yob','estimatedAge','admissionDate','recordStatus','epReason','enrolledByName','patientOrigin'];
     const hxFields=allFields.filter(f=>f.startsWith('hx_')||f.startsWith('arrest')||f.startsWith('icm')||f.startsWith('hf')||f.startsWith('afib')||f.startsWith('ssd_')||f.startsWith('struct_')||f.startsWith('syncope')||f.startsWith('avp')||f.startsWith('mvp')||f.startsWith('ca')||f.startsWith('cabg')||f.startsWith('pci')||f.startsWith('cied_')||['sysBp','sysBpUnrec','diaBp','diaBpUnrec','hr','hrUnrec','weight','weightUnrec','height','heightUnrec'].includes(f));
-    const medsFields=allFields.filter(f=>f.startsWith('homeMed_')||f.startsWith('dcMed_'));
+    // Medications: explicit ordered list, Home Meds first, then Discharge Meds
+    const medsFields=[...HOME_MEDS_ORDER.filter(f=>FIELD_MAP[f]),...DC_MEDS_ORDER.filter(f=>FIELD_MAP[f])];
     const invFields=allFields.filter(f=>f.startsWith('inv_')||f.startsWith('ecg')||f.startsWith('holter')||f.startsWith('sev')||f.startsWith('laa')||f.startsWith('tee')||['lvef','lvefNA','lvesd','lvedd','rvsp','rvspNA','intracardThrombus','creatInit','creatInitNA','creatPeak','creatPeakNA','hgbInit','hgbInitNA','hgbLowest','hgbLowestNA','sodium','sodiumNA','potassium','potassiumNA','magnesium','magnesiumNA','inr','inrNA'].includes(f));
     const procFields=allFields.filter(f=>f.startsWith('crt')||f.startsWith('tpm')||f.startsWith('ppm')||f.startsWith('eps')||f.startsWith('laao')||f==='procStartDate'||f==='procStartTime'||f==='procEndTime'||f==='operatorName');
     const cxFields=allFields.filter(f=>f.startsWith('cx_')||f.startsWith('bleed')||f.startsWith('vent')||f.startsWith('scai')||f.startsWith('mech')||f.startsWith('stroke')||f.startsWith('transfus')||f==='comp_ca'||f==='comp_pci'||f==='comp_cabg'||f==='comp_tavr');
