@@ -729,7 +729,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <div class="g2 mb-3">
         <div><label class="lbl">4.1c Plans for Cardioversion</label><select name="afibCardioversion" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
         <div><label class="lbl">4.1f Prior attempt of ablation</label><select name="afibPriorAblation" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
-        <div><label class="lbl">4.1d CHA&#x2082;DS&#x2082;-VASc score<button type="button" class="fn-btn" onclick="openFn('4.1c')" aria-label="Field information" title="Click for field information">i</button></label><select name="afibChads" class="inp"><option value="">Select</option><option>0</option><option>1</option><option>2</option><option>3</option><option>&gt;3</option></select></div>
+        <div><label class="lbl">4.1d CHADs-VA score<button type="button" class="fn-btn" onclick="openFn('4.1c')" aria-label="Field information" title="Click for field information">i</button></label><select name="afibChads" class="inp"><option value="">Select</option><option>0</option><option>1</option><option>2</option><option>3</option><option>&gt;3</option></select></div>
         <div><label class="lbl">4.1e HAS-BLED score<button type="button" class="fn-btn" onclick="openFn('4.1d')" aria-label="Field information" title="Click for field information">i</button></label><select name="afibHasBled" class="inp"><option value="">Select</option><option>0</option><option>1</option><option>2</option><option>3</option><option>&gt;3</option></select></div>
         <div><label class="lbl">4.1g Contraindication to long-term OAC</label><select name="afibContraOAC" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
         <div><label class="lbl">4.1h Prior major bleeding</label><select name="afibMajorBleed" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
@@ -794,7 +794,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
     <div id="sub_pci" class="sub-reveal"><label class="lbl">4.24a PCI done within last 6 months</label><select name="pciRecent" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
   </div>
   <div class="card">
-    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.25 Prior CV Implantable Electronic Device (CIED)</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'cied','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'cied','Yes')">Yes</button></div></div>
+    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.25 Prior CV Implantable Electronic Device (CIED)</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'cied','No'); recheckCiedAgainstLeads();">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'cied','Yes')">Yes</button></div></div>
     <input type="hidden" name="hx_cied" id="val_cied" value="">
     <div id="sub_cied" class="sub-reveal"><label class="lbl">4.25a Prior CIED device type:</label><div class="g3 mt-1"><label class="chk-item"><input type="checkbox" name="cied_single"> Single chamber transvenous PPM</label><label class="chk-item"><input type="checkbox" name="cied_dual"> Dual chamber transvenous PPM</label><label class="chk-item"><input type="checkbox" name="cied_crtp"> CRT-P</label><label class="chk-item"><input type="checkbox" name="cied_leadlessSingle"> Leadless single chamber PPM</label><label class="chk-item"><input type="checkbox" name="cied_leadlessDual"> Leadless dual chamber PPM</label><label class="chk-item"><input type="checkbox" name="cied_his"> His bundle PPM</label><label class="chk-item"><input type="checkbox" name="cied_lbbb"> Left bundle area PPM</label><label class="chk-item"><input type="checkbox" name="cied_icdSingle"> ICD single chamber</label><label class="chk-item"><input type="checkbox" name="cied_icdDual"> ICD dual chamber</label><label class="chk-item"><input type="checkbox" name="cied_crtd"> CRT-D</label><label class="chk-item"><input type="checkbox" name="cied_evicd"> Extravascular ICD</label><label class="chk-item"><input type="checkbox" name="cied_sicd"> S-ICD (Sub Q)</label><label class="chk-item"><input type="checkbox" name="cied_unknown"> Unknown</label></div></div>
   </div>
@@ -823,7 +823,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
           </div>
         </div>
         <div style="grid-column:1/-1"><label class="lbl">7.1c Ventricular Rhythm (Choose One Only):</label><div class="g3 mt-1"><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="Normal"> Normal</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="VT"> Ventricular tachycardia</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="VF"> Ventricular fibrillation</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="LBBB"> LBBB</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="RBBB"> RBBB</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="Alternating LBBB/RBBB"> Alternating LBBB and RBBB</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="IVCD delay"> IVCD delay</label><label class="radio-item"><input type="radio" name="ecgVentRhythm" value="Frequent PVCs"> Frequent PVCs</label></div></div>
-        <div><label class="lbl">7.1d QRS duration (msec)<button type="button" class="fn-btn" onclick="openFn('7.1c')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="ecgQRS" placeholder="msec" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="ecgQRSna" class="w-3 h-3"> Not assessed</label></div>
+        <div><label class="lbl">7.1d QRS duration (msec)<button type="button" class="fn-btn" onclick="openFn('7.1c')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="ecgQRS" min="40" max="300" placeholder="msec" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="ecgQRSna" class="w-3 h-3"> Not assessed</label></div>
       </div>
     </div>
   </div>
@@ -839,18 +839,26 @@ html,body{max-width:100vw;overflow-x:hidden;}
     <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">7.3 Trans-Thoracic Echocardiogram (TTE)</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'tte','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'tte','Yes')">Yes</button></div></div>
     <input type="hidden" name="inv_tte" id="val_tte" value="">
     <div id="sub_tte" class="sub-reveal">
+      <!-- 7.3 a/b/c/d — LV dimensions & RVSP, sit flush inside sub_tte (matches 7.2a styling) -->
       <div class="g4 mb-3">
-        <div><label class="lbl">7.3a LVEF (%)</label><input type="number" name="lvef" class="inp" placeholder="%"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="lvefNA" class="w-3 h-3"> Not assessed</label></div>
-        <div><label class="lbl">7.3b LVESD (mm)</label><input type="number" name="lvesd" class="inp"></div>
-        <div><label class="lbl">7.3c LVEDD (mm)</label><input type="number" name="lvedd" class="inp"></div>
-        <div><label class="lbl">7.3d RVSP (mmHg)</label><input type="number" name="rvsp" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="rvspNA" class="w-3 h-3"> Not assessed</label></div>
+        <div data-no-paint><label class="lbl">7.3a LVEF (%)</label><input type="number" name="lvef" class="inp" placeholder="%"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="lvefNA" class="w-3 h-3"> Not assessed</label></div>
+        <div data-no-paint><label class="lbl">7.3b LVESD (mm)</label><input type="number" name="lvesd" min="15" max="80" class="inp"></div>
+        <div data-no-paint><label class="lbl">7.3c LVEDD (mm)</label><input type="number" name="lvedd" min="25" max="90" class="inp"></div>
+        <div data-no-paint><label class="lbl">7.3d RVSP (mmHg)</label><input type="number" name="rvsp" min="10" max="120" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="rvspNA" class="w-3 h-3"> Not assessed</label></div>
       </div>
-      <div class="mb-3">
-        <div class="flex items-center justify-between mb-2"><span class="lbl mb-0">7.3e Severe valve disease</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'sevValve','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'sevValve','Yes')">Yes</button></div></div>
+
+      <!-- 7.3e Severe valve disease (Yes/No) + sub MR/AS/AR/TR. Uses the standard .card class so it
+           gets the same border/background treatment as 7.1/7.2/7.4 (including the automatic ✖/✓
+           badge from the hidden-input field-indicator painter, which finds the .card + span.font-bold).
+           checkSevValveConsistency() adds an inline red ✖ badge + red border when 7.3e=Yes but no sub valve is Yes. -->
+      <div id="sevValveCard" class="card mb-3" style="transition:border-color .15s,box-shadow .15s;">
+        <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">7.3e Severe valve disease<span id="sevValveBadge" style="margin-left:6px;display:none;font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px;background:#fee2e2;color:#dc2626;">✖ Need at least one valve = Yes</span></span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'sevValve','No'); checkSevValveConsistency();">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'sevValve','Yes'); checkSevValveConsistency();">Yes</button></div></div>
         <input type="hidden" name="inv_sevValve" id="val_sevValve" value="">
-        <div id="sub_sevValve" class="sub-reveal"><div class="g4"><div><label class="lbl">Severe MR</label><select name="sevMR" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">Severe AS</label><select name="sevAS" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">Severe AR</label><select name="sevAR" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">Severe TR</label><select name="sevTR" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
+        <div id="sub_sevValve" class="sub-reveal"><div class="g4"><div data-no-paint><label class="lbl">Severe MR</label><select name="sevMR" class="inp" onchange="checkSevValveConsistency()"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div data-no-paint><label class="lbl">Severe AS</label><select name="sevAS" class="inp" onchange="checkSevValveConsistency()"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div data-no-paint><label class="lbl">Severe AR</label><select name="sevAR" class="inp" onchange="checkSevValveConsistency()"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div data-no-paint><label class="lbl">Severe TR</label><select name="sevTR" class="inp" onchange="checkSevValveConsistency()"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
       </div>
-      <div><label class="lbl">7.3f Intracardiac thrombus</label><select name="intracardThrombus" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+
+      <!-- 7.3f Intracardiac thrombus, sits flush like 7.2a -->
+      <div data-no-paint><label class="lbl">7.3f Intracardiac thrombus</label><select name="intracardThrombus" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
     </div>
   </div>
   <div class="card mb-4">
@@ -967,7 +975,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
               <label class="radio-item"><input type="radio" name="crtPpmType" value="CCM"> CCM</label>
               <label class="radio-item"><input type="radio" name="crtPpmType" value="LBBB PPM" onchange="onCrtPpmType()"> LBBB PPM</label>
             </div>
-            <div id="crtLbbbSub" class="sub-reveal mb-3"><label class="lbl">c.1.a.1.a QRS width post procedure (msec)</label><input type="number" name="crtLbbbQRS" class="inp max-w-xs"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="crtLbbbQRSna" class="w-3 h-3"> Not assessed</label></div>
+            <div id="crtLbbbSub" class="sub-reveal mb-3"><label class="lbl">c.1.a.1.a QRS width post procedure (msec)</label><input type="number" name="crtLbbbQRS" min="40" max="300" class="inp max-w-xs"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="crtLbbbQRSna" class="w-3 h-3"> Not assessed</label></div>
 
             <div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">c.1.a.2 Any Bradycardia indications</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'crtBrady','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'crtBrady','Yes')">Yes</button></div></div>
             <input type="hidden" name="crtBrady" id="val_crtBrady" value="">
@@ -992,7 +1000,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
     <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.5d Lead assessment:</label>
       <div class="g2 mb-3">
         <div><label class="lbl">9.5.d.1 New lead</label><select name="crtNewLead" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
-        <div><label class="lbl">9.5.d.2 Existing lead</label><select name="crtExistingLead" class="inp" onchange="onCrtLead()"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+        <div><label class="lbl">9.5.d.2 Existing lead</label><select name="crtExistingLead" class="inp" onchange="onCrtLead(); checkCiedConsistency(this,'crtExistingLead','9.5.d.2 Existing lead')"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
       </div>
       <div id="crtLeadExisting" class="sub-reveal mb-3"><label class="lbl">9.5.d.2.1 Lead status (Choose One Only):</label>
         <div class="flex gap-2 flex-wrap mt-1">
@@ -1001,7 +1009,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
           <label class="radio-item"><input type="radio" name="crtLeadStatus" value="Reused"> Reused</label>
         </div>
       </div>
-      <div><label class="lbl">9.5.d.3 Additional lead to the existing leads</label><select name="crtAdditionalLead" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+      <div><label class="lbl">9.5.d.3 Additional lead to the existing leads</label><select name="crtAdditionalLead" class="inp max-w-xs" onchange="checkCiedConsistency(this,'crtAdditionalLead','9.5.d.3')"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
     </div>
   </div>
   <div class="proc-section" id="proc_temppm"><div class="card card-gray mb-3" style="border-left:4px solid #64748b;"><div style="font-weight:800;color:#334155;font-size:14px;">9.6 — Temporary Pacemaker</div></div>
@@ -1032,9 +1040,9 @@ html,body{max-width:100vw;overflow-x:hidden;}
         <label class="chk-item"><input type="checkbox" name="tpmCause_postTAVI"> Post TAVI/valve replacement</label>
         <label class="chk-item"><input type="checkbox" name="tpmCause_unknown"> Unknown cause</label>
       </div>
-      <div id="tpmDrugSub" class="sub-reveal mb-3"><label class="lbl">9.6.b.1 Drug used:</label>
+      <div id="tpmDrugSub" class="sub-reveal mb-3"><label class="lbl">9.6.b.1 Drug used — A-V blocking agent (BB, CCB)</label>
         <div class="g2 mt-1">
-          <label class="chk-item"><input type="checkbox" name="tpmDrug_avBlock"> A-V blocking agent (BB, CCB)</label>
+          <select name="tpmDrug_avBlock" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select>
         </div>
       </div>
       <div id="tpmMISub" class="sub-reveal"><label class="lbl">9.6.b.2 Acute MI type:</label>
@@ -1048,12 +1056,6 @@ html,body{max-width:100vw;overflow-x:hidden;}
       </div>
     </div>
 
-    <div class="card mb-3"><label class="lbl">9.6c Permanent pacemaker during same hospital stay</label>
-      <select name="tpmPpmSameStay" class="inp max-w-xs" onchange="onTpmPpmSameStay()"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select>
-      <div id="tpmPpmSameStayHint" class="sub-reveal" style="margin-top:8px;padding:10px 12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;color:#1e40af;font-size:12px;font-weight:600;">
-        <i class="fas fa-arrow-down mr-1"></i> Please complete the Permanent Pacemaker (9.7) section below.
-      </div>
-    </div>
   </div>
   <div class="proc-section" id="proc_permpm"><div class="card card-gray mb-3" style="border-left:4px solid #475569;"><div style="font-weight:800;color:#1e293b;font-size:14px;">9.7 — Permanent Pacemaker</div></div>
     <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.7a Generator:</label>
@@ -1062,7 +1064,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
         <label class="radio-item"><input type="radio" name="ppmGenerator" value="Generator replacement" onchange="onPpmGen()"> Generator replacement</label>
         <label class="radio-item"><input type="radio" name="ppmGenerator" value="Generator/device explant" onchange="onPpmGen()"> Generator/device explant</label>
       </div>
-      <div id="ppmGen_initial" class="sub-reveal mt-2"><label class="lbl">9.7.a.1 Device Name</label><input type="text" name="ppmDeviceName" class="inp"></div>
+      <div id="ppmGen_initial" class="sub-reveal mt-2"><div class="text-xs text-gray-600" style="padding:8px 12px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;"><i class="fas fa-info-circle mr-1" style="color:#0369a1;"></i>Initial implant selected — specify the device type in <b>9.7.b.1</b> below.</div></div>
       <div id="ppmGen_replace" class="sub-reveal mt-2"><label class="lbl">9.7.a.2 Reasons for generator replacement (Choose One Only):</label>
         <div class="g2 mt-1">
           <label class="radio-item"><input type="radio" name="ppmReplReason" value="Device relocation"> Device relocation</label>
@@ -1091,7 +1093,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
           <label class="chk-item"><input type="checkbox" name="ppmDev_ccm"> CCM</label>
           <label class="chk-item"><input type="checkbox" name="ppmDev_lbbb" onchange="onPpmLbbb()"> LBBB PPM</label>
         </div>
-        <div id="ppmLbbbSub" class="sub-reveal"><label class="lbl">9.7.b.1.a QRS width post procedure (msec)</label><input type="number" name="ppmLbbbQRS" class="inp max-w-xs"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="ppmLbbbQRSna" class="w-3 h-3"> Not assessed</label></div>
+        <div id="ppmLbbbSub" class="sub-reveal"><label class="lbl">9.7.b.1.a QRS width post procedure (msec)</label><input type="number" name="ppmLbbbQRS" min="40" max="300" class="inp max-w-xs"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="ppmLbbbQRSna" class="w-3 h-3"> Not assessed</label></div>
       </div>
     </div>
 
@@ -1111,7 +1113,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
     <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.7d Lead assessment:</label>
       <div class="g2 mb-3">
         <div><label class="lbl">9.7.d.1 New lead</label><select name="ppmNewLead" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
-        <div><label class="lbl">9.7.d.2 Existing lead</label><select name="ppmExistingLead" class="inp" onchange="onPpmLead()"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+        <div><label class="lbl">9.7.d.2 Existing lead</label><select name="ppmExistingLead" class="inp" onchange="onPpmLead(); checkCiedConsistency(this,'ppmExistingLead','9.7.d.2 Existing lead')"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
       </div>
       <div id="ppmLeadExisting" class="sub-reveal mb-3"><label class="lbl">9.7.d.2.1 Lead status (Choose One Only):</label>
         <div class="flex gap-2 flex-wrap mt-1">
@@ -1120,7 +1122,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
           <label class="radio-item"><input type="radio" name="ppmLeadStatus" value="Reused"> Reused</label>
         </div>
       </div>
-      <div><label class="lbl">9.7.d.3 Additional lead to the existing leads</label><select name="ppmAdditionalLead" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+      <div><label class="lbl">9.7.d.3 Additional lead to the existing leads</label><select name="ppmAdditionalLead" class="inp max-w-xs" onchange="checkCiedConsistency(this,'ppmAdditionalLead','9.7.d.3')"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
     </div>
   </div>
   <div class="proc-section" id="proc_eps"><div class="card card-purple mb-3" style="border-left:4px solid #7c3aed;"><div style="font-weight:800;color:#4c1d95;font-size:14px;">9.8 — EPS / Ablation</div></div>
@@ -1391,7 +1393,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
     <input type="hidden" name="condSysPace" id="val_condSysPace" value="">
     <div id="sub_condSysPace" class="sub-reveal">
       <label class="lbl">11.3.a Final pace QRS duration (msec)</label>
-      <input type="number" name="condSysPaceQRS" class="inp max-w-xs">
+      <input type="number" name="condSysPaceQRS" min="40" max="300" class="inp max-w-xs">
       <label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="condSysPaceQRSna" class="w-3 h-3"> Not assessed</label>
     </div>
   </div>
@@ -1666,7 +1668,7 @@ const FOOTNOTES = {
 </div>`
   },
   '4.1c': {
-    title: '4.1c — CHA₂DS₂-VASc Score',
+    title: '4.1c — CHADs-VA Score',
     body: `<table class="fn-tbl">
 <tr><th>Component</th><th>Points</th></tr>
 <tr><td><strong>C</strong> — Congestive Heart Failure</td><td>1</td></tr>
@@ -2354,34 +2356,37 @@ function initApp() {
     const today  = new Date().toISOString().slice(0,10);
     [admEl, procEl, dcEl].forEach(_clearDateError);
 
+    // Helper: show error, BLOCK by clearing the offending value, and alert the user
+    const reject = (el, msg) => {
+      _showDateError(el, msg);
+      try { el.value = ''; } catch(e){}
+      try { if(typeof updateFieldIndicators==='function') updateFieldIndicators(); } catch(e){}
+      try { alert('⚠️ Invalid date — entry rejected.\n\n' + msg); } catch(e){}
+      return false;
+    };
+
     if(admEl && admEl.value){
       if(admEl.value > today){
-        _showDateError(admEl, 'Admission date cannot be in the future.');
-        return false;
+        return reject(admEl, 'Admission date cannot be in the future.');
       }
     }
     if(procEl && procEl.value){
       if(admEl && admEl.value && procEl.value < admEl.value){
-        _showDateError(procEl, 'Procedure date cannot be before admission date (' + admEl.value + ').');
-        return false;
+        return reject(procEl, 'Procedure date cannot be before admission date (' + admEl.value + ').');
       }
       if(procEl.value > today){
-        _showDateError(procEl, 'Procedure date cannot be in the future.');
-        return false;
+        return reject(procEl, 'Procedure date cannot be in the future.');
       }
     }
     if(dcEl && dcEl.value){
       if(admEl && admEl.value && dcEl.value < admEl.value){
-        _showDateError(dcEl, 'Discharge date cannot be before admission date (' + admEl.value + ').');
-        return false;
+        return reject(dcEl, 'Discharge date cannot be before admission date (' + admEl.value + ').');
       }
       if(procEl && procEl.value && dcEl.value < procEl.value){
-        _showDateError(dcEl, 'Discharge date cannot be before procedure date (' + procEl.value + ').');
-        return false;
+        return reject(dcEl, 'Discharge date cannot be before procedure date (' + procEl.value + ').');
       }
       if(dcEl.value > today){
-        _showDateError(dcEl, 'Discharge date cannot be in the future.');
-        return false;
+        return reject(dcEl, 'Discharge date cannot be in the future.');
       }
     }
     return true;
@@ -2414,6 +2419,47 @@ function initApp() {
   });
   setTimeout(applyDateMinMax, 200);
 
+  // ============================================================================
+  // 9.2 → 9.3 Procedure time-sequence live validator
+  // Fires on blur of either time field. If 9.3 ≤ 9.2, clears the offending value
+  // and shows an alert + inline error message. Same calendar date assumed (9.1).
+  // ============================================================================
+  function _toMin(t){
+    if(!/^\d{2}:\d{2}$/.test(t)) return null;
+    const [h,m] = t.split(':').map(Number);
+    return h*60 + m;
+  }
+  function validateProcTimeSequence(triggeredEl){
+    const sEl = document.querySelector('[name="procStartTime"]');
+    const eEl = document.querySelector('[name="procEndTime"]');
+    if(!sEl || !eEl) return true;
+    const s = sEl.value || '';
+    const e = eEl.value || '';
+    // Clear any previous time-error UI
+    [sEl, eEl].forEach(el => { clrV(el); });
+    if(!s || !e) return true; // wait until both filled
+    const sm = _toMin(s), em = _toMin(e);
+    if(sm === null || em === null) return true;
+    if(em <= sm){
+      // Clear the field that the user just left (or default to end time)
+      const offender = (triggeredEl === sEl) ? sEl : eEl;
+      const msg = `Procedure finishing time (${e}) must be AFTER start time (${s}). Entry cleared — please re-enter.`;
+      shErr(offender, 'Must be after start time');
+      offender.value = '';
+      setTimeout(()=>clrV(offender), 6000);
+      try { if(typeof updateFieldIndicators==='function') updateFieldIndicators(); } catch(err){}
+      try { alert('⚠️ ' + msg); } catch(err){}
+      return false;
+    }
+    return true;
+  }
+  ['procStartTime','procEndTime'].forEach(n => {
+    const el = document.querySelector(`[name="${n}"]`);
+    if(el){
+      el.addEventListener('blur', () => validateProcTimeSequence(el));
+    }
+  });
+
   // Readmission overlap check: same Civil ID with overlapping admission window
   // Returns array of overlapping records, or false if none.
   async function checkReadmissionOverlap(civilId, admissionDate, dischargeDate, currentRecordId){
@@ -2436,6 +2482,35 @@ function initApp() {
 
 
   // YES/NO
+  // Suppress data-wiping when toggle handlers run during edit-record load. Set by editRecord()
+  // before populating fields and cleared after. While true, hidden sub-reveals just get hidden,
+  // not wiped — so legacy records keep their data even if it doesn't match current visibility rules.
+  window._suppressClearOnHide = false;
+
+  // ============================================================================
+  // clearSubReveal — wipe every form control inside a sub-reveal so that hidden
+  // data never reaches Firebase. Called whenever a sibling option switches and
+  // makes the previously-shown branch obsolete.
+  // ============================================================================
+  function clearSubReveal(sub){
+    if(!sub) return;
+    sub.classList.remove('show');
+    if(window._suppressClearOnHide) return; // Don't wipe data during edit-record load
+    // Uncheck radios & checkboxes
+    sub.querySelectorAll('input[type="radio"],input[type="checkbox"]').forEach(i=>{ i.checked=false; });
+    // Wipe text/number/date/time/tel/email/textarea/select values
+    sub.querySelectorAll('input[type="text"],input[type="number"],input[type="date"],input[type="time"],input[type="tel"],input[type="email"],textarea,select').forEach(i=>{ i.value=''; });
+    // Wipe hidden Yes/No tracker inputs (val_*) — these mirror yn-btn state
+    sub.querySelectorAll('input[type="hidden"][id^="val_"]').forEach(h=>{ h.value=''; });
+    // Deselect any yn-btn that was active inside this sub-reveal
+    sub.querySelectorAll('.yn-btn.selected').forEach(b=>b.classList.remove('selected'));
+    // Recursively close nested sub-reveals (data already wiped above)
+    sub.querySelectorAll('.sub-reveal.show').forEach(s=>s.classList.remove('show'));
+    // Clear inline error decorations left by validators
+    sub.querySelectorAll('.vt').forEach(t=>t.remove());
+    sub.querySelectorAll('.inp').forEach(el=>{ el.style.borderColor=''; el.style.boxShadow=''; });
+  }
+
   window.setYN=function(btn,key,val){
     btn.closest('.yn-group').querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('selected'));
     btn.classList.add('selected');
@@ -2445,14 +2520,7 @@ function initApp() {
       if(val==='Yes'){
         sub.classList.add('show');
       } else {
-        sub.classList.remove('show');
-        // Clear all form-control inputs inside the sub-section
-        sub.querySelectorAll('input[type="radio"],input[type="checkbox"]').forEach(i=>{i.checked=false;});
-        sub.querySelectorAll('input[type="text"],input[type="number"],input[type="date"],input[type="time"],input[type="tel"],input[type="email"],textarea,select').forEach(i=>{i.value='';});
-        // Cascade-reset nested Yes/No groups: clear hidden val_* inputs, deselect yn-btn, and recursively close nested sub-reveals
-        sub.querySelectorAll('input[type="hidden"][id^="val_"]').forEach(h=>{h.value='';});
-        sub.querySelectorAll('.yn-btn.selected').forEach(b=>b.classList.remove('selected'));
-        sub.querySelectorAll('.sub-reveal.show').forEach(s=>s.classList.remove('show'));
+        clearSubReveal(sub);
       }
     }
     updateFieldIndicators();
@@ -2463,23 +2531,90 @@ function initApp() {
     const v=document.querySelector('input[name="epReason"]:checked')?.value;
     const pm=document.querySelector('input[name="pacemakerType"]:checked')?.value;
     document.getElementById('pmTypeDiv').classList.toggle('hidden',v!=='Pacemaker');
-    document.querySelectorAll('.proc-section').forEach(s=>s.classList.remove('show'));
+    // Determine which procedure sections SHOULD be visible for this EP-reason / pacemaker-type combo.
+    const wanted = new Set();
+    if(v==='CRT/AICD') wanted.add('proc_crtaicd');
+    else if(v==='Pacemaker'){
+      if(pm==='Temporary pacemaker') wanted.add('proc_temppm');
+      else if(pm==='Permanent pacemaker') wanted.add('proc_permpm');
+      else if(pm==='Temporary followed by permanent same hospitalization'){
+        wanted.add('proc_temppm'); wanted.add('proc_permpm');
+      }
+    } else if(v==='EPS/Ablation') wanted.add('proc_eps');
+    else if(v==='LAAO') wanted.add('proc_laao');
+
+    // For any procedure section currently showing but no longer wanted, WIPE its data so stale
+    // entries from a prior choice don't get saved. Sections that remain wanted keep their data.
+    document.querySelectorAll('.proc-section').forEach(s=>{
+      if(!wanted.has(s.id)){
+        if(s.classList.contains('show')){
+          // Section was visible; user is switching away → clear its inputs
+          clearSubReveal(s);
+        }
+        s.classList.remove('show');
+      }
+    });
     document.getElementById('proc_noReason').style.display='none';
     if(!v){document.getElementById('proc_noReason').style.display='block';return;}
-    if(v==='CRT/AICD'){document.getElementById('proc_crtaicd').classList.add('show');}
-    else if(v==='Pacemaker'){
-      if(!pm){document.getElementById('proc_noReason').style.display='block';}
-      else if(pm==='Temporary pacemaker'){document.getElementById('proc_temppm').classList.add('show');}
-      else if(pm==='Permanent pacemaker'){document.getElementById('proc_permpm').classList.add('show');}
-      else{document.getElementById('proc_temppm').classList.add('show');document.getElementById('proc_permpm').classList.add('show');}
-    }else if(v==='EPS/Ablation'){document.getElementById('proc_eps').classList.add('show');}
-    else if(v==='LAAO'){document.getElementById('proc_laao').classList.add('show');}
+    if(v==='Pacemaker' && !pm){
+      document.getElementById('proc_noReason').style.display='block';
+    } else {
+      wanted.forEach(id => document.getElementById(id)?.classList.add('show'));
+    }
     updateFieldIndicators();
   };
 
-  window.onCrtGen=function(){const v=document.querySelector('input[name="crtGenerator"]:checked')?.value;['replace','explant'].forEach(k=>{const el=document.getElementById(`crtGen_${k}`);if(el)el.classList.remove('show');});const t=v==='Generator replacement'?'replace':v==='Generator/device explant'?'explant':null;if(t){const el=document.getElementById(`crtGen_${t}`);if(el)el.classList.add('show');}};
-  window.onPpmGen=function(){const v=document.querySelector('input[name="ppmGenerator"]:checked')?.value;['initial','replace','explant'].forEach(k=>{const el=document.getElementById(`ppmGen_${k}`);if(el)el.classList.remove('show');});const t=v==='Initial implant'?'initial':v==='Generator replacement'?'replace':v==='Generator/device explant'?'explant':null;if(t){const el=document.getElementById(`ppmGen_${t}`);if(el)el.classList.add('show');}};
-  window.onBleedT=function(){const el=document.getElementById('bleedType3sub');if(el)el.classList.toggle('show',document.querySelector('input[name="bleedType"]:checked')?.value==='Type 3');};
+  // CRT generator branch toggle. Wipes data in the previously-shown branch when user
+  // switches between Initial implant / Generator replacement / Generator/device explant.
+  window.onCrtGen=function(){
+    const v=document.querySelector('input[name="crtGenerator"]:checked')?.value;
+    const wantedKey = v==='Generator replacement' ? 'replace'
+                    : v==='Generator/device explant' ? 'explant'
+                    : null;
+    ['replace','explant'].forEach(k=>{
+      const el=document.getElementById(`crtGen_${k}`);
+      if(!el) return;
+      if(k===wantedKey){
+        el.classList.add('show');
+      } else if(el.classList.contains('show')){
+        clearSubReveal(el);
+      } else {
+        el.classList.remove('show');
+      }
+    });
+  };
+  // PPM generator branch toggle. Same principle as onCrtGen, but with three branches
+  // (initial / replace / explant). 'initial' branch is now informational-only (no inputs).
+  window.onPpmGen=function(){
+    const v=document.querySelector('input[name="ppmGenerator"]:checked')?.value;
+    const wantedKey = v==='Initial implant' ? 'initial'
+                    : v==='Generator replacement' ? 'replace'
+                    : v==='Generator/device explant' ? 'explant'
+                    : null;
+    ['initial','replace','explant'].forEach(k=>{
+      const el=document.getElementById(`ppmGen_${k}`);
+      if(!el) return;
+      if(k===wantedKey){
+        el.classList.add('show');
+      } else if(el.classList.contains('show')){
+        clearSubReveal(el);
+      } else {
+        el.classList.remove('show');
+      }
+    });
+  };
+  window.onBleedT=function(){
+    const sub=document.getElementById('bleedType3sub');
+    if(!sub) return;
+    const show = document.querySelector('input[name="bleedType"]:checked')?.value==='Type 3';
+    if(show){
+      sub.classList.add('show');
+    } else if(sub.classList.contains('show')){
+      clearSubReveal(sub);
+    } else {
+      sub.classList.remove('show');
+    }
+  };
   // 24-hour time auto-formatter: accepts only digits, auto-inserts colon, caps at HH:MM (24h range)
   window.fmt24h=function(el){
     let v=(el.value||'').replace(/[^0-9]/g,'').slice(0,4);
@@ -2498,30 +2633,141 @@ function initApp() {
       el.value='';
     }
   };
-  window.onDischSt=function(){const v=document.querySelector('input[name="dischargeStatus"]:checked')?.value;const dd=document.getElementById('dischDead'),da=document.getElementById('dischAlive');if(dd)dd.classList.toggle('show',v==='Dead');if(da)da.classList.toggle('show',v==='Alive');};
+  window.onDischSt=function(){
+    const v=document.querySelector('input[name="dischargeStatus"]:checked')?.value;
+    const dd=document.getElementById('dischDead'), da=document.getElementById('dischAlive');
+    [['Dead',dd],['Alive',da]].forEach(([want,el])=>{
+      if(!el) return;
+      if(v===want){
+        el.classList.add('show');
+      } else if(el.classList.contains('show')){
+        clearSubReveal(el);
+      } else {
+        el.classList.remove('show');
+      }
+    });
+  };
+  // Helper: show OR wipe-and-hide a single sub-reveal element based on a boolean condition.
+  function _toggleSub(el, show){
+    if(!el) return;
+    if(show){
+      el.classList.add('show');
+    } else if(el.classList.contains('show')){
+      clearSubReveal(el);
+    } else {
+      el.classList.remove('show');
+    }
+  }
   // CRT/AICD device-type toggles: show pacemaker sub-section only for CRT-D or ICD-Dual chamber
-  window.onCrtDevType=function(){const v=document.querySelector('input[name="crtDeviceType"]:checked')?.value;const show=v==='CRT-D'||v==='ICD-Dual chamber';const sub=document.getElementById('crtDualSub');if(sub)sub.classList.toggle('show', show);const hint=document.getElementById('crtDualHint');if(hint)hint.classList.toggle('show', show);};
-  window.onCrtPpmType=function(){const v=document.querySelector('input[name="crtPpmType"]:checked')?.value;const sub=document.getElementById('crtLbbbSub');if(sub)sub.classList.toggle('show', v==='LBBB PPM');};
-  window.onCrtLead=function(){const v=document.querySelector('select[name="crtExistingLead"]')?.value;const sub=document.getElementById('crtLeadExisting');if(sub)sub.classList.toggle('show', v==='Yes');};
-  // Temporary PM cause toggles
-  window.onTpmDrug=function(){const cb=document.querySelector('input[name="tpmCause_drug"]');const sub=document.getElementById('tpmDrugSub');if(sub)sub.classList.toggle('show', cb?.checked);};
-  window.onTpmMI=function(){const cb=document.querySelector('input[name="tpmCause_acuteMI"]');const sub=document.getElementById('tpmMISub');if(sub)sub.classList.toggle('show', cb?.checked);};
-  // When "Permanent pacemaker during same hospital stay" = Yes, also reveal the permanent pacemaker (9.7) section
-  window.onTpmPpmSameStay=function(){
-    const v=document.querySelector('select[name="tpmPpmSameStay"]')?.value;
-    const show = v==='Yes';
-    const hint=document.getElementById('tpmPpmSameStayHint');
+  window.onCrtDevType=function(){
+    const v=document.querySelector('input[name="crtDeviceType"]:checked')?.value;
+    const show=v==='CRT-D'||v==='ICD-Dual chamber';
+    _toggleSub(document.getElementById('crtDualSub'), show);
+    // crtDualHint is informational only — toggle visibility but no data to wipe
+    const hint=document.getElementById('crtDualHint');
     if(hint) hint.classList.toggle('show', show);
-    const permSec=document.getElementById('proc_permpm');
-    if(permSec){
-      if(show){ permSec.classList.add('show'); }
-      // Do NOT auto-hide if No, because the user might already be on a procedure that legitimately shows proc_permpm
-      // The onEPR() function is the authority on which sections are visible based on Step 2 choice
+  };
+  window.onCrtPpmType=function(){
+    const v=document.querySelector('input[name="crtPpmType"]:checked')?.value;
+    _toggleSub(document.getElementById('crtLbbbSub'), v==='LBBB PPM');
+  };
+  window.onCrtLead=function(){
+    const v=document.querySelector('select[name="crtExistingLead"]')?.value;
+    _toggleSub(document.getElementById('crtLeadExisting'), v==='Yes');
+  };
+  // Temporary PM cause toggles
+  window.onTpmDrug=function(){
+    const cb=document.querySelector('input[name="tpmCause_drug"]');
+    _toggleSub(document.getElementById('tpmDrugSub'), !!cb?.checked);
+  };
+  window.onTpmMI=function(){
+    const cb=document.querySelector('input[name="tpmCause_acuteMI"]');
+    _toggleSub(document.getElementById('tpmMISub'), !!cb?.checked);
+  };
+  // 9.6c (PPM during same hospital stay) was removed — redundant with EP reason "Temporary followed by permanent same hospitalization", which already reveals 9.7 via onEPR().
+  // Stub kept as a no-op so any saved-record snapshots referencing it don't error.
+  window.onTpmPpmSameStay=function(){};
+  // Permanent PM toggles
+  window.onPpmLbbb=function(){
+    const cb=document.querySelector('input[name="ppmDev_lbbb"]');
+    _toggleSub(document.getElementById('ppmLbbbSub'), !!cb?.checked);
+  };
+  window.onPpmLead=function(){
+    const v=document.querySelector('select[name="ppmExistingLead"]')?.value;
+    _toggleSub(document.getElementById('ppmLeadExisting'), v==='Yes');
+  };
+
+  // CIED-history consistency check: if investigator says "Yes" to having additional lead to existing leads
+  // (9.5.d.3 or 9.7.d.3), or selects Existing lead = Yes (9.5.d.2 / 9.7.d.2), but earlier set 4.25 Prior CIED
+  // = "No", show a notification — existing or additional leads at procedure time imply the patient already
+  // has a CIED in history.
+  window.checkCiedConsistency=function(selectEl, fieldName, sectionRef){
+    if(!selectEl || selectEl.value !== 'Yes') return;
+    const ciedVal = document.getElementById('val_cied')?.value || '';
+    if(ciedVal === 'No'){
+      // Highlight the conflict on the lead select
+      shErr(selectEl, 'Conflict with 4.25 Prior CIED');
+      setTimeout(()=>clrV(selectEl), 6000);
+      alert(
+        '⚠️ DATA CONSISTENCY CHECK\n\n' +
+        `You selected "Yes" for ${sectionRef}.\n\n` +
+        'But in Section 4 (History & Risk Factors) you marked\n' +
+        '4.25 Prior CV Implantable Electronic Device (CIED) = NO.\n\n' +
+        'If existing leads were found at the time of this procedure, the patient already has a CIED in their history. Please review and update either:\n' +
+        `   • 4.25 Prior CIED → Yes (and select the device type), or\n` +
+        `   • ${sectionRef} → No / re-confirm the lead status.`
+      );
     }
   };
-  // Permanent PM toggles
-  window.onPpmLbbb=function(){const cb=document.querySelector('input[name="ppmDev_lbbb"]');const sub=document.getElementById('ppmLbbbSub');if(sub)sub.classList.toggle('show', cb?.checked);};
-  window.onPpmLead=function(){const v=document.querySelector('select[name="ppmExistingLead"]')?.value;const sub=document.getElementById('ppmLeadExisting');if(sub)sub.classList.toggle('show', v==='Yes');};
+
+  // Reverse direction: if user toggles 4.25 Prior CIED to No after one of the lead-existing/lead-additional
+  // fields is already set to Yes, fire the popup once with all conflicting fields listed.
+  window.recheckCiedAgainstLeads=function(){
+    const ciedVal = document.getElementById('val_cied')?.value || '';
+    if(ciedVal !== 'No') return;
+    const checks = [
+      ['crtExistingLead',   '9.5.d.2 Existing lead'],
+      ['crtAdditionalLead', '9.5.d.3 Additional lead to the existing leads'],
+      ['ppmExistingLead',   '9.7.d.2 Existing lead'],
+      ['ppmAdditionalLead', '9.7.d.3 Additional lead to the existing leads'],
+    ];
+    const conflicts = checks.filter(([n]) => (document.querySelector(`[name="${n}"]`)?.value === 'Yes'));
+    if(conflicts.length === 0) return;
+    const lines = conflicts.map(([,ref]) => `   • ${ref} = Yes`).join('\n');
+    alert(
+      '⚠️ DATA CONSISTENCY CHECK\n\n' +
+      'You set 4.25 Prior CV Implantable Electronic Device (CIED) = NO,\n' +
+      'but the following procedure field(s) say leads were present from before:\n\n' +
+      lines + '\n\n' +
+      'If existing or additional leads were found at procedure time, the patient already has a CIED in their history. Please reconcile either 4.25 or the procedure field(s).'
+    );
+  };
+
+  // Severe-valve disease consistency check (live, no popup): if 7.3e = Yes but none of
+  // 7.3e.1–4 (MR/AS/AR/TR) is Yes, show an inline red ✖ badge and add a subtle red border
+  // accent on the card. The card stays light-blue (card-blue class) for visual consistency
+  // with the surrounding 7.3a–d / 7.3f cards. Hard block at save time is the second line of defense.
+  window.checkSevValveConsistency=function(){
+    const card  = document.getElementById('sevValveCard');
+    const badge = document.getElementById('sevValveBadge');
+    if(!card || !badge) return;
+    const sevValveVal = document.getElementById('val_sevValve')?.value || '';
+    const subVals = ['sevMR','sevAS','sevAR','sevTR'].map(n => document.querySelector(`[name="${n}"]`)?.value || '');
+    const anyYes = subVals.includes('Yes');
+    const conflict = (sevValveVal === 'Yes' && !anyYes);
+    if(conflict){
+      // Override only the border to red — leave background to the card-blue class
+      card.style.borderColor = '#dc2626';
+      card.style.boxShadow = '0 0 0 3px rgba(220,38,38,.10)';
+      badge.style.display = 'inline-block';
+    } else {
+      card.style.borderColor = '';
+      card.style.boxShadow = '';
+      badge.style.display = 'none';
+    }
+  };
+  // Re-evaluate on initial load (handles legacy records where 7.3e=Yes was saved with all subs=No)
+  setTimeout(()=>{ try{ checkSevValveConsistency(); }catch(e){} }, 250);
 
   // VALIDATION
   function shErr(el,msg){if(!el)return;el.style.borderColor='#dc2626';el.style.boxShadow='0 0 0 3px rgba(220,38,38,.15)';let t=el.parentNode.querySelector('.vt');if(!t){t=document.createElement('div');t.className='vt';t.style.cssText='font-size:11px;color:#dc2626;font-weight:600;margin-top:3px;';el.parentNode.appendChild(t);}t.textContent='✖ '+msg;}
@@ -2529,7 +2775,11 @@ function initApp() {
   function rangeV(name,mn,mx,unit=''){const el=document.querySelector(`[name="${name}"]`);if(!el)return;el.addEventListener('blur',function(){if(!this.value){clrV(this);return;}const v=parseFloat(this.value);if(isNaN(v))return;if(v<mn||v>mx){shErr(this,`Expected ${mn}–${mx}${unit?' '+unit:''}`);}else clrV(this);});}
   rangeV('sysBp',50,300,'mmHg');rangeV('diaBp',20,200,'mmHg');rangeV('hr',20,300,'/min');rangeV('weight',1,300,'kg');rangeV('height',50,250,'cm');
   rangeV('creatInit',10,3000,'µmol/L');rangeV('hgbInit',1,25,'g/dL');rangeV('sodium',100,170,'mEq/L');rangeV('potassium',1.5,9,'mEq/L');rangeV('inr',0.5,15);
-  rangeV('lvef',5,85,'%');rangeV('ecgQRS',60,800,'msec');rangeV('yob',1900,new Date().getFullYear());
+  rangeV('lvef',5,85,'%');rangeV('ecgQRS',40,300,'msec');rangeV('yob',1900,new Date().getFullYear());
+  // 7.3 LV dimensions and RVSP — clinically permissive bounds
+  rangeV('lvesd',15,80,'mm');rangeV('lvedd',25,90,'mm');rangeV('rvsp',10,120,'mmHg');
+  // Post-procedure QRS bounds
+  rangeV('crtLbbbQRS',40,300,'msec');rangeV('ppmLbbbQRS',40,300,'msec');rangeV('condSysPaceQRS',40,300,'msec');
 
   // UNRECORDABLE VITALS
   window.toggleUnrec=function(field){
@@ -2786,7 +3036,15 @@ function initApp() {
     const badge = _getOrCreateBadge(container, name);
     _setBadge(badge, filled);
     if(container && container.querySelector(':scope > .lbl, :scope > label.lbl')){
-      if(filled){
+      // Containers marked data-no-paint skip the pink-pending background — used when the
+      // field already lives inside a colored card-* wrapper, so the pink would clash.
+      if(container.hasAttribute('data-no-paint')){
+        // Always clear any inline background — let the parent card-* class handle visuals.
+        container.style.background = '';
+        container.style.borderColor = '';
+        container.style.borderRadius = '';
+        container.style.padding = '';
+      } else if(filled){
         container.style.background = '';
         container.style.borderColor = '';
         container.style.borderRadius = '';
@@ -2905,6 +3163,10 @@ function initApp() {
     form.querySelectorAll('input[type="hidden"][id^="val_"]').forEach(hid => {
       const key = hid.id.replace('val_','');
       if(_isSubReveal(hid)) return;
+      // 7.3e Severe valve disease — skip the red-when-empty / green-when-filled painting
+      // entirely. Card stays plain like its 7.3a–d siblings; consistency feedback comes from
+      // checkSevValveConsistency() (inline red ✖ badge only when 7.3e=Yes but no sub-valve=Yes).
+      if(key === 'sevValve') return;
       const ynVal = hid.value;
       const btn = form.querySelector(`.yn-btn[onclick*="'${key}'"]`);
       if(!btn) return;
@@ -2971,21 +3233,75 @@ function initApp() {
   async function saveRecord(targetStatus, closeAfter=false){
     if(!currentUser){alert('Not logged in.');return false;}
     const form=document.getElementById('epsForm');
+    // Section I (Identification) must be FULLY completed before Save & Close (or Submit) is allowed.
+    // Includes 1.1 Name, 1.2 Civil ID, 1.3 CRF#, 1.4 Gender, 1.5 Nationality, 1.6 YOB OR 1.6a Est. Age,
+    // 1.7 Admission Date, 1.8 Patient Contact, 1.9 Relative Contact.
     const mandatory=[
-      {id:'req_nameFirst',label:'Patient First Name'},{id:'req_nameLast',label:'Patient Last Name'},
-      {id:'civilId',label:'Civil ID'},{id:'req_crfNo',label:'CRF Number'},
+      {id:'req_nameFirst',label:'1.1 Patient First Initial'},
+      {sel:'[name="nameMiddle"]',label:'1.1 Patient Middle Initial'},
+      {id:'req_nameLast',label:'1.1 Patient Last Initial'},
+      {id:'civilId',label:'1.2 Civil ID'},
+      {id:'req_crfNo',label:'1.3 CRF Number'},
+      {sel:'[name="gender"]',label:'1.4 Gender'},
+      {sel:'[name="nationality"]',label:'1.5 Nationality'},
+      {id:'req_admDate',label:'1.7 Hospital Admission Date'},
+      {sel:'[name="patientContact"]',label:'1.8 Patient Contact'},
+      {sel:'[name="relativeContact"]',label:'1.9 Relative Contact'},
     ];
     for(const f of mandatory){
-      const el=document.getElementById(f.id);
-      if(!el||!el.value.trim()){goToStep(0);el?.focus();shErr(el,'Required');setTimeout(()=>clrV(el),3000);alert(`Required: "${f.label}"`);return false;}
+      const el=f.id?document.getElementById(f.id):document.querySelector(f.sel);
+      if(!el||!el.value.trim()){goToStep(0);el?.focus();shErr(el,'Required');setTimeout(()=>clrV(el),3000);alert(`Section I (Identification) must be completed before saving.\n\nMissing: "${f.label}"`);return false;}
     }
-    if(!/^\d{12}$/.test(document.getElementById('civilId').value)){goToStep(0);alert('Civil ID must be 12 digits.');return false;}
-    if(!/^\d{2}-\d{3}-\d{3}$/.test(document.getElementById('req_crfNo').value)){goToStep(0);alert('CRF Number was not generated.');return false;}
+    // 1.6 YOB or 1.6a Est. Age — at least one must be filled
+    const yobEl=document.getElementById('yob');
+    const ageEl=document.getElementById('estAge');
+    if(!(yobEl?.value.trim()) && !(ageEl?.value.trim())){
+      goToStep(0); yobEl?.focus(); shErr(yobEl,'Required');
+      setTimeout(()=>clrV(yobEl),3000);
+      alert('Section I (Identification) must be completed before saving.\n\nMissing: "1.6 Year of Birth" OR "1.6a Estimated Age"');
+      return false;
+    }
+    if(!/^\d{12}$/.test(document.getElementById('civilId').value)){goToStep(0);alert('1.2 Civil ID must be 12 digits.');return false;}
+    if(!/^\d{2}-\d{3}-\d{3}$/.test(document.getElementById('req_crfNo').value)){goToStep(0);alert('1.3 CRF Number was not generated.');return false;}
+    // 8-digit validation for contacts (only check format if a value is present — already required above)
+    const pcEl=document.querySelector('[name="patientContact"]');
+    const rcEl=document.querySelector('[name="relativeContact"]');
+    if(pcEl && pcEl.value && !/^\d{8}$/.test(pcEl.value)){goToStep(0); pcEl.focus(); shErr(pcEl,'8 digits required'); setTimeout(()=>clrV(pcEl),3000); alert('1.8 Patient Contact must be exactly 8 digits.'); return false;}
+    if(rcEl && rcEl.value && !/^\d{8}$/.test(rcEl.value)){goToStep(0); rcEl.focus(); shErr(rcEl,'8 digits required'); setTimeout(()=>clrV(rcEl),3000); alert('1.9 Relative Contact must be exactly 8 digits.'); return false;}
 
     // Date timeline validation: admission ≤ procedure ≤ discharge, and no future dates
     if(!validateDateTimeline()){
       alert('Please correct the date(s). Admission must be on/before procedure, and discharge on/after both. No future dates are allowed.');
       return false;
+    }
+
+    // 7.3e Severe valve disease consistency check: if "Yes", at least one of e.1–e.4 must be "Yes"
+    const sevValveVal = document.getElementById('val_sevValve')?.value;
+    if(sevValveVal === 'Yes'){
+      const sevSub = ['sevMR','sevAS','sevAR','sevTR'];
+      const anyYes = sevSub.some(n => (document.querySelector(`[name="${n}"]`)?.value === 'Yes'));
+      if(!anyYes){
+        goToStep(4); // Investigations step
+        const sub = document.getElementById('sub_sevValve');
+        if(sub) sub.scrollIntoView({behavior:'smooth', block:'center'});
+        alert('7.3e Severe valve disease was set to "Yes".\n\nAt least ONE of the following must also be "Yes":\n  • Severe MR\n  • Severe AS\n  • Severe AR\n  • Severe TR\n\nPlease specify which valve(s) are severely affected.');
+        return false;
+      }
+    }
+
+    // 9.2 → 9.3 Procedure time sequence: finishing time must be after start time (when both on same date)
+    const pStart = document.querySelector('[name="procStartTime"]')?.value || '';
+    const pEnd   = document.querySelector('[name="procEndTime"]')?.value || '';
+    if(pStart && pEnd && /^\d{2}:\d{2}$/.test(pStart) && /^\d{2}:\d{2}$/.test(pEnd)){
+      // Compare as minutes from midnight (assumes same calendar date — 9.1 Procedure Date)
+      const toMin = t => { const [h,m] = t.split(':').map(Number); return h*60 + m; };
+      if(toMin(pEnd) <= toMin(pStart)){
+        goToStep(5); // Procedure step
+        const endEl = document.querySelector('[name="procEndTime"]');
+        if(endEl){ endEl.focus(); shErr(endEl,'Must be after start time'); setTimeout(()=>clrV(endEl),5000); }
+        alert(`Procedure timing error:\n\n9.2 Start time: ${pStart}\n9.3 Finishing time: ${pEnd}\n\nFinishing time must be AFTER start time on the same procedure date.`);
+        return false;
+      }
     }
 
     const civIdVal=document.getElementById('civilId').value;
@@ -3605,18 +3921,25 @@ function initApp() {
       });
       console.log('[editRecord] Populated', loaded, 'fields');
 
-      // Reveal the correct procedure section
-      if(data.epReason && typeof onEPR==='function') onEPR();
+      // Reveal the correct procedure section. Suppress data-wiping during this load
+      // so legacy records (which may have stale data in sections that don't match the
+      // current EP reason) don't lose information just by opening them.
+      window._suppressClearOnHide = true;
+      try {
+        if(data.epReason && typeof onEPR==='function') onEPR();
 
-      // Re-trigger all conditional toggle handlers so sub-reveal sections open for loaded values
-      [
-        'onCrtGen','onCrtDevType','onCrtPpmType','onCrtLead',
-        'onPpmGen','onPpmLbbb','onPpmLead',
-        'onTpmDrug','onTpmMI','onTpmPpmSameStay','onBleedT','onDischSt'
-      ].forEach(fn=>{
-        try{ if(typeof window[fn]==='function') window[fn](); }
-        catch(e){ console.warn('[editRecord] Handler error:',fn,e); }
-      });
+        // Re-trigger all conditional toggle handlers so sub-reveal sections open for loaded values
+        [
+          'onCrtGen','onCrtDevType','onCrtPpmType','onCrtLead',
+          'onPpmGen','onPpmLbbb','onPpmLead',
+          'onTpmDrug','onTpmMI','onTpmPpmSameStay','onBleedT','onDischSt'
+        ].forEach(fn=>{
+          try{ if(typeof window[fn]==='function') window[fn](); }
+          catch(e){ console.warn('[editRecord] Handler error:',fn,e); }
+        });
+      } finally {
+        window._suppressClearOnHide = false;
+      }
 
       applyLock(st);
       goToStep(0);
@@ -3859,7 +4182,7 @@ function initApp() {
     recordStatus:'Record Status',submissionType:'Submission Type',
     sysBp:'Systolic BP',sysBpUnrec:'SysBP Unrecordable',diaBp:'Diastolic BP',diaBpUnrec:'DiaBP Unrecordable',
     hr:'Heart Rate',hrUnrec:'HR Unrecordable',weight:'Weight (kg)',weightUnrec:'Weight Unrecordable',height:'Height (cm)',heightUnrec:'Height Unrecordable',
-    hx_afib:'Atrial Fibrillation',afibClassification:'AFib Classification',afibChads:'CHA₂DS₂-VASc',afibHasBled:'HAS-BLED',
+    hx_afib:'Atrial Fibrillation',afibClassification:'AFib Classification',afibChads:'CHADs-VA',afibHasBled:'HAS-BLED',
     afibCardioversion:'Plans for Cardioversion',afibPriorAblation:'Prior Ablation Attempt',
     afibContraOAC:'Contraindication to OAC',afibMajorBleed:'Prior Major Bleeding',
     hx_cardiacArrest:'Cardiac Arrest',arrestBradycardia:'Arrest: Bradycardia',arrestVF:'Arrest: VF',arrestVT:'Arrest: VT',
@@ -3930,7 +4253,7 @@ function initApp() {
     epReason:'EPReason',pacemakerType:'PmType',patientOrigin:'PtOrigin',
     sysBp:'SysBP',sysBpUnrec:'SysBPUnrec',diaBp:'DiaBP',diaBpUnrec:'DiaBPUnrec',
     hr:'HR',hrUnrec:'HRUnrec',weight:'Weight',weightUnrec:'WtUnrec',height:'Height',heightUnrec:'HtUnrec',
-    hx_afib:'HxAFib',afibClassification:'AFibClass',afibChads:'CHADS',afibHasBled:'HASBLED',
+    hx_afib:'HxAFib',afibClassification:'AFibClass',afibChads:'ChadsVA',afibHasBled:'HASBLED',
     afibCardioversion:'AFibCardio',afibPriorAblation:'AFibPrAbl',afibContraOAC:'AFibCtrOAC',afibMajorBleed:'AFibMajBld',
     hx_cardiacArrest:'HxCA',arrestBradycardia:'ArrBrady',arrestVF:'ArrVF',arrestVT:'ArrVT',
     hx_icm:'HxICM',icmTimeframe:'ICMTime',icmGDMT:'ICMGDMT',
@@ -4327,8 +4650,10 @@ function initApp() {
       'tpmIndication','tpmCause_electrolyte','tpmCause_drug','tpmCause_digitalis','tpmCause_antiarr',
       'tpmCause_acuteMI','tpmCause_myocarditis','tpmCause_endocarditis','tpmCause_postArrest',
       'tpmCause_hypothermia','tpmCause_bridge','tpmCause_postTAVI','tpmCause_unknown',
-      'tpmDrug_avBlock','tpmMIType','tpmPpmSameStay',
-      'ppmGenerator','ppmDeviceName','ppmInd_21block','ppmInd_mobitz2','ppmInd_chb','ppmInd_sss',
+      'tpmDrug_avBlock','tpmMIType',
+      // tpmPpmSameStay removed (was 9.6c) — kept in FIELD_MAP/SPSS_VARS for legacy record export only
+      'ppmGenerator','ppmInd_21block','ppmInd_mobitz2','ppmInd_chb','ppmInd_sss',
+      // ppmDeviceName removed (was 9.7.a.1) — device type captured in 9.7.b.1 (ppmDev_*); kept in FIELD_MAP/SPSS_VARS for legacy record export only
       'ppmReplReason','ppmReimplant','ppmDevImpl',
       'ppmDev_singleTV','ppmDev_dualTV','ppmDev_leadlessSingle','ppmDev_leadlessDual',
       'ppmDev_his','ppmDev_leadlessLVEP','ppmDev_ccm','ppmDev_lbbb',
