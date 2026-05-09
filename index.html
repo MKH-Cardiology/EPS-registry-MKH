@@ -3163,10 +3163,6 @@ function initApp() {
     form.querySelectorAll('input[type="hidden"][id^="val_"]').forEach(hid => {
       const key = hid.id.replace('val_','');
       if(_isSubReveal(hid)) return;
-      // 7.3e Severe valve disease — skip the red-when-empty / green-when-filled painting
-      // entirely. Card stays plain like its 7.3a–d siblings; consistency feedback comes from
-      // checkSevValveConsistency() (inline red ✖ badge only when 7.3e=Yes but no sub-valve=Yes).
-      if(key === 'sevValve') return;
       const ynVal = hid.value;
       const btn = form.querySelector(`.yn-btn[onclick*="'${key}'"]`);
       if(!btn) return;
@@ -3197,6 +3193,9 @@ function initApp() {
         title.appendChild(badge);
       }
       _setBadge(badge, filled);
+      // 7.3e Severe valve disease — keep the ✖/✓ badge but skip the red-border/pink-background
+      // painting so the card stays plain like its 7.3a–d siblings.
+      if(key === 'sevValve') return;
       if(filled){
         card.style.borderColor = '';
         card.style.background = '';
