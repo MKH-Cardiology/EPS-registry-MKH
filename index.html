@@ -894,8 +894,8 @@ html,body{max-width:100vw;overflow-x:hidden;}
     <div class="font-bold text-gray-800 text-sm mb-4"><span style="background:#dbeafe;color:#1e40af;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:800;">ALL PATIENTS</span> 9.1 – 9.4</div>
     <div class="proc-stack">
       <div><label class="lbl">9.1 Procedure Start Date<button type="button" class="fn-btn" onclick="openFn('9.time')" aria-label="Field information" title="Click for field information">i</button></label><input type="date" name="procStartDate" class="inp"></div>
-      <div><label class="lbl">9.2 Procedure Start Time (24h, HH:MM)<button type="button" class="fn-btn" onclick="openFn('9.time')" aria-label="Field information" title="Click for field information">i</button></label><input type="text" inputmode="numeric" name="procStartTime" class="inp" placeholder="14:30" pattern="^([01]\d|2[0-3]):[0-5]\d$" maxlength="5" oninput="fmt24h(this)" title="Use 24-hour format, e.g. 14:30"></div>
-      <div><label class="lbl">9.3 Procedure Finishing Time (24h, HH:MM)<button type="button" class="fn-btn" onclick="openFn('9.time')" aria-label="Field information" title="Click for field information">i</button></label><input type="text" inputmode="numeric" name="procEndTime" class="inp" placeholder="16:45" pattern="^([01]\d|2[0-3]):[0-5]\d$" maxlength="5" oninput="fmt24h(this)" title="Use 24-hour format, e.g. 16:45"></div>
+      <div><label class="lbl">9.2 Procedure Start Time (24h, HH:MM)<button type="button" class="fn-btn" onclick="openFn('9.time')" aria-label="Field information" title="Click for field information">i</button></label><input type="time" name="procStartTime" class="inp" step="60" title="Use 24-hour format, e.g. 14:30"></div>
+      <div><label class="lbl">9.3 Procedure Finishing Time (24h, HH:MM)<button type="button" class="fn-btn" onclick="openFn('9.time')" aria-label="Field information" title="Click for field information">i</button></label><input type="time" name="procEndTime" class="inp" step="60" title="Use 24-hour format, e.g. 16:45"></div>
       <div><label class="lbl">9.4 Operator Name</label><select name="operatorName" class="inp"><option value="">Select operator...</option><option>Operator 1</option><option>Operator 2</option><option>Operator 3</option><option>Operator 4</option><option>Operator 5</option></select></div>
     </div>
   </div>
@@ -1399,7 +1399,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
   </div>
   <div class="card mb-4">
     <div class="font-bold text-gray-800 text-sm mb-3">12. Discharge</div>
-    <div class="g4 mb-3"><div><label class="lbl">12.1 Date of discharge/death</label><input type="date" name="dischargeDate" class="inp"></div><div><label class="lbl">12.2 Time (24h, HH:MM)</label><input type="text" inputmode="numeric" name="dischargeTime" class="inp" placeholder="09:15" pattern="^([01]\d|2[0-3]):[0-5]\d$" maxlength="5" oninput="fmt24h(this)" title="Use 24-hour format, e.g. 09:15"></div></div>
+    <div class="g4 mb-3"><div><label class="lbl">12.1 Date of discharge/death</label><input type="date" name="dischargeDate" class="inp"></div><div><label class="lbl">12.2 Time (24h, HH:MM)</label><input type="time" name="dischargeTime" class="inp" step="60" title="Use 24-hour format, e.g. 09:15"></div></div>
     <div><label class="lbl">12.3 Discharge status</label><div class="flex gap-2 flex-wrap mt-1"><label class="radio-item"><input type="radio" name="dischargeStatus" value="Dead" onchange="onDischSt()"> Dead</label><label class="radio-item"><input type="radio" name="dischargeStatus" value="Alive" onchange="onDischSt()"> Alive</label></div><div id="dischDead" class="sub-reveal mt-2"><label class="lbl">12.3a Cause of death</label><div class="flex gap-2 mt-1"><label class="radio-item"><input type="radio" name="causeOfDeath" value="Non-Cardiac"> Non-Cardiac</label><label class="radio-item"><input type="radio" name="causeOfDeath" value="Cardiac"> Cardiac</label></div></div><div id="dischAlive" class="sub-reveal mt-2"><label class="lbl">12.3b Discharge type</label><div class="g2 mt-1"><label class="radio-item"><input type="radio" name="dischargeType" value="Home"> Home</label><label class="radio-item"><input type="radio" name="dischargeType" value="LAMA"> LAMA</label><label class="radio-item"><input type="radio" name="dischargeType" value="Transfer to cardiac surgery"> Transfer to cardiac surgery</label><label class="radio-item"><input type="radio" name="dischargeType" value="Transfer to other dept"> Transfer to other dept</label></div></div></div>
   </div>
   <div class="card card-green"><div class="font-bold text-green-900 text-sm mb-3">13. Discharge Medications</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;" id="dischargeMedsGrid"></div></div>
@@ -4713,22 +4713,35 @@ function initApp() {
     return (h*3600+mi*60+sec)/86400;
   }
 
-  // Build a typed XLSX cell for the EXCEL sheet (analyst convention):
-  //   - Numeric fields → number cell or blank
-  //   - Date fields    → Date cell or blank
-  //   - Time fields    → time-formatted number cell or blank
-  //   - Unrec/NA columns → "Yes" if ticked, blank otherwise (NEVER "0" for untouched)
-  //   - Value column when its Unrec/NA is ticked → BLANK (not "9")
-  //   - Yes/No fields (boolean) → "Yes" / "No" / blank
+  // ============================================================================
+  // EXPORT TYPING — v4 (May 12, 2026) — analyst feedback fix
+  // ============================================================================
+  // Background: aoa_to_sheet({cellDates:true}) does NOT reliably honor inline
+  // typed-cell objects ({t,v,z}) inside the AOA — they get coerced to strings
+  // on many SheetJS builds. This is why ProcStart / ProcEnd / DischTime arrive
+  // in Stata as STRING columns despite being declared as time fields.
+  //
+  // Fix: encoders now return PLAIN scalars (string | number | JS Date | ''),
+  // then writeTypedSheet() walks the worksheet AFTER construction and rewrites
+  // each numeric/date/time cell as a proper {t,v,z} cell via direct assignment.
+  // This guarantees Stata reads them as type=double with format=%tcHH:MM:SS
+  // (times) or %td (dates) and Excel formats them visually as expected.
+  //
+  // Also: invalid legacy time/date values (e.g. ProcStart="8", end-before-start
+  // garbage from pre-validation records) are now BLANKED in the export rather
+  // than silently passed through as strings. Counts are logged to console for
+  // audit. The raw record in Firebase is untouched — only the export is cleaned.
+  // ============================================================================
+
+  // Encoder for EXCEL sheet — returns plain scalars (no {t,v,z} objects).
+  // Numeric → Number, Date → JS Date, Time → fractional-day Number,
+  // Yes/No / Unrec → "Yes" / "No" / blank, everything else → string.
   function encodeForExcel(r,f){
     const val=r[f];
-    // Unrec / NA marker columns
     if(f.endsWith('Unrec')||f.endsWith('NA')){
       if(val===true||val==='true')return 'Yes';
-      // Blank for untouched / explicit false (analyst: don't write 0 here)
       return '';
     }
-    // If this field has a paired Unrec/NA flag that is ticked, the value is missing → blank
     const unrecKey=f+'Unrec', naKey=f+'NA';
     if(r[unrecKey]===true||r[unrecKey]==='true'||r[naKey]===true||r[naKey]==='true'){
       return '';
@@ -4736,52 +4749,91 @@ function initApp() {
     if(val===undefined||val===null||val==='')return '';
     if(NUMERIC_FIELDS.has(f)){
       const n=Number(val);
-      return isNaN(n)?val:{t:'n',v:n};
+      return isNaN(n)?'':n;          // drop invalid numerics rather than emit a string
     }
     if(DATE_FIELDS.has(f)){
       const d=toDateCell(val);
-      return d instanceof Date && !isNaN(d) ? {t:'d',v:d,z:'yyyy-mm-dd'} : val;
+      return (d instanceof Date && !isNaN(d)) ? d : '';
     }
     if(TIME_FIELDS.has(f)){
       const tf=toTimeFraction(val);
-      return tf===null ? val : {t:'n',v:tf,z:'hh:mm'};
+      return (tf===null) ? '' : tf;  // drop invalid times (e.g. "8") rather than emit a string
     }
     if(val===true||val==='true')return 'Yes';
     if(val===false||val==='false')return 'No';
     return val;
   }
 
-  // Build typed cell for SPSS sheet — uses 9 as missing code for value cells when Unrec/NA ticked,
-  // 1 / blank for ticked / un-ticked Unrec markers (analyst expects 1=Yes, blank=untouched).
+  // Encoder for SPSS sheet — same shape, but ticked Unrec/NA → numeric 9 for
+  // missing-numeric fields, Yes/No → 1/0.
   function encodeForSPSS(r,f){
     const val=r[f];
     if(f.endsWith('Unrec')||f.endsWith('NA')){
-      if(val===true||val==='true')return {t:'n',v:1};
-      return ''; // blank for untouched (NOT 0)
+      if(val===true||val==='true')return 1;
+      return '';
     }
     const unrecKey=f+'Unrec', naKey=f+'NA';
     const unrecTicked=r[unrecKey]===true||r[unrecKey]==='true'||r[naKey]===true||r[naKey]==='true';
     if(unrecTicked){
-      // Value missing because unrec/NA → use SPSS missing code 9 for numeric fields, blank for strings
-      if(NUMERIC_FIELDS.has(f))return {t:'n',v:9};
+      if(NUMERIC_FIELDS.has(f))return 9;
       return '';
     }
     if(val===undefined||val===null||val==='')return '';
     if(NUMERIC_FIELDS.has(f)){
       const n=Number(val);
-      return isNaN(n)?val:{t:'n',v:n};
+      return isNaN(n)?'':n;
     }
     if(DATE_FIELDS.has(f)){
       const d=toDateCell(val);
-      return d instanceof Date && !isNaN(d) ? {t:'d',v:d,z:'yyyy-mm-dd'} : val;
+      return (d instanceof Date && !isNaN(d)) ? d : '';
     }
     if(TIME_FIELDS.has(f)){
       const tf=toTimeFraction(val);
-      return tf===null ? val : {t:'n',v:tf,z:'hh:mm'};
+      return (tf===null) ? '' : tf;
     }
-    if(val===true||val==='true'||val==='Yes')return {t:'n',v:1};
-    if(val===false||val==='false'||val==='No')return {t:'n',v:0};
+    if(val===true||val==='true'||val==='Yes')return 1;
+    if(val===false||val==='false'||val==='No')return 0;
     return val;
+  }
+
+  // Walk the freshly-built worksheet and overwrite cells in date/time/numeric
+  // columns with strongly-typed {t,v,z} cell objects. This is the only path
+  // SheetJS reliably honors for type+format metadata.
+  //   fields[colIdx]  → the field key for column colIdx (row 0 is header row)
+  //   ws             → worksheet built by aoa_to_sheet
+  function writeTypedSheet(ws, fields){
+    const range = XLSX.utils.decode_range(ws['!ref'] || 'A1');
+    for(let c=range.s.c; c<=range.e.c; c++){
+      const f = fields[c];
+      if(!f) continue;
+      const isNum  = NUMERIC_FIELDS.has(f);
+      const isDate = DATE_FIELDS.has(f);
+      const isTime = TIME_FIELDS.has(f);
+      if(!isNum && !isDate && !isTime) continue;
+      for(let row=range.s.r+1; row<=range.e.r; row++){  // skip header row
+        const addr = XLSX.utils.encode_cell({c,r:row});
+        const cell = ws[addr];
+        if(!cell) continue;
+        const v = cell.v;
+        if(v===undefined || v===null || v==='') continue;
+        if(isTime){
+          const num = (typeof v==='number') ? v : Number(v);
+          if(!isNaN(num) && num>=0 && num<1){
+            ws[addr] = {t:'n', v:num, z:'hh:mm'};
+          }
+        } else if(isDate){
+          if(v instanceof Date && !isNaN(v)){
+            ws[addr] = {t:'d', v:v, z:'yyyy-mm-dd'};
+          }
+        } else if(isNum){
+          const num = (typeof v==='number') ? v : Number(v);
+          if(!isNaN(num)){
+            ws[addr] = {t:'n', v:num};
+          }
+        }
+      }
+    }
+    return ws;
   }
 
   // Explicit medication ordering — keeps Home Meds and Discharge Meds grouped & in clinical order
@@ -4812,7 +4864,8 @@ function initApp() {
     const headerRow=vars.map(v=>SPSS_VARS[v]);
     const aoa=[headerRow];
     data.forEach(r=>{aoa.push(vars.map(v=>encodeForSPSS(r,v)));});
-    const ws=XLSX.utils.aoa_to_sheet(aoa,{cellDates:true});
+    let ws=XLSX.utils.aoa_to_sheet(aoa,{cellDates:true});
+    writeTypedSheet(ws, vars);
 
     const codebook=[['Variable','Label','Type','Missing Code','Notes']];
     vars.forEach(v=>{
@@ -4845,7 +4898,9 @@ function initApp() {
       const hdr=fields.map(f=>FIELD_MAP[f]||f);
       const aoa=[hdr];
       data.forEach(r=>{aoa.push(fields.map(f=>encodeForExcel(r,f)));});
-      return XLSX.utils.aoa_to_sheet(aoa,{cellDates:true});
+      const ws=XLSX.utils.aoa_to_sheet(aoa,{cellDates:true});
+      writeTypedSheet(ws, fields);
+      return ws;
     };
 
     const idFields=['_no','nameFirst','nameMiddle','nameLast','civilId','crfNo','fileNumber','gender','nationality','yob','estimatedAge','admissionDate','recordStatus','epReason','enrolledByName','patientOrigin'];
