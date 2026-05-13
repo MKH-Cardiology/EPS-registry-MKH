@@ -30,6 +30,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-bg);color:var(--text
 .inp{width:100%;padding:9px 13px;border:1.5px solid #d1d5db;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:14px;background:#fff;color:var(--text-main);transition:border-color .2s,box-shadow .25s;appearance:none;-webkit-appearance:none;}
 .inp:focus{border-color:var(--blue-primary);outline:none;box-shadow:0 0 0 4px rgba(37,99,235,.14);background:#fafcff;}
 .inp:hover:not(:focus){border-color:#9ca3af;}
+.inp.na-disabled,.inp:disabled{background:#f1f5f9;color:#94a3b8;cursor:not-allowed;border-color:#e2e8f0;}
 .inp-sm{padding:7px 10px;font-size:13px;}
 select.inp{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
 textarea.inp{resize:vertical;min-height:80px;}
@@ -842,8 +843,8 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <!-- 7.3 a/b/c/d — LV dimensions & RVSP, sit flush inside sub_tte (matches 7.2a styling) -->
       <div class="g4 mb-3">
         <div data-no-paint><label class="lbl">7.3a LVEF (%)</label><input type="number" name="lvef" class="inp" placeholder="%"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="lvefNA" class="w-3 h-3"> Not assessed</label></div>
-        <div data-no-paint><label class="lbl">7.3b LVESD (mm)</label><input type="number" name="lvesd" min="15" max="80" class="inp"></div>
-        <div data-no-paint><label class="lbl">7.3c LVEDD (mm)</label><input type="number" name="lvedd" min="25" max="90" class="inp"></div>
+        <div data-no-paint><label class="lbl">7.3b LVESD (mm)</label><input type="number" name="lvesd" min="15" max="80" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="lvesdNA" class="w-3 h-3"> Not assessed</label></div>
+        <div data-no-paint><label class="lbl">7.3c LVEDD (mm)</label><input type="number" name="lvedd" min="25" max="90" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="lveddNA" class="w-3 h-3"> Not assessed</label></div>
         <div data-no-paint><label class="lbl">7.3d RVSP (mmHg)</label><input type="number" name="rvsp" min="10" max="120" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="rvspNA" class="w-3 h-3"> Not assessed</label></div>
       </div>
 
@@ -894,8 +895,8 @@ html,body{max-width:100vw;overflow-x:hidden;}
     <div class="font-bold text-gray-800 text-sm mb-4"><span style="background:#dbeafe;color:#1e40af;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:800;">ALL PATIENTS</span> 9.1 – 9.4</div>
     <div class="proc-stack">
       <div><label class="lbl">9.1 Procedure Start Date<button type="button" class="fn-btn" onclick="openFn('9.time')" aria-label="Field information" title="Click for field information">i</button></label><input type="date" name="procStartDate" class="inp"></div>
-      <div><label class="lbl">9.2 Procedure Start Time (24h, HH:MM)<button type="button" class="fn-btn" onclick="openFn('9.time')" aria-label="Field information" title="Click for field information">i</button></label><input type="time" name="procStartTime" class="inp" step="60" title="Use 24-hour format, e.g. 14:30"></div>
-      <div><label class="lbl">9.3 Procedure Finishing Time (24h, HH:MM)<button type="button" class="fn-btn" onclick="openFn('9.time')" aria-label="Field information" title="Click for field information">i</button></label><input type="time" name="procEndTime" class="inp" step="60" title="Use 24-hour format, e.g. 16:45"></div>
+      <div><label class="lbl">9.2 Procedure Start Time (24h, HH:MM)<button type="button" class="fn-btn" onclick="openFn('9.time')" aria-label="Field information" title="Click for field information">i</button></label><input type="text" name="procStartTime" class="inp time24" inputmode="numeric" maxlength="5" placeholder="HH:MM" pattern="^([01]\d|2[0-3]):[0-5]\d$" title="Use 24-hour format, e.g. 14:30" autocomplete="off"></div>
+      <div><label class="lbl">9.3 Procedure Finishing Time (24h, HH:MM)<button type="button" class="fn-btn" onclick="openFn('9.time')" aria-label="Field information" title="Click for field information">i</button></label><input type="text" name="procEndTime" class="inp time24" inputmode="numeric" maxlength="5" placeholder="HH:MM" pattern="^([01]\d|2[0-3]):[0-5]\d$" title="Use 24-hour format, e.g. 16:45" autocomplete="off"></div>
       <div><label class="lbl">9.4 Operator Name</label><select name="operatorName" class="inp"><option value="">Select operator...</option><option>Operator 1</option><option>Operator 2</option><option>Operator 3</option><option>Operator 4</option><option>Operator 5</option></select></div>
     </div>
   </div>
@@ -1399,7 +1400,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
   </div>
   <div class="card mb-4">
     <div class="font-bold text-gray-800 text-sm mb-3">12. Discharge</div>
-    <div class="g4 mb-3"><div><label class="lbl">12.1 Date of discharge/death</label><input type="date" name="dischargeDate" class="inp"></div><div><label class="lbl">12.2 Time (24h, HH:MM)</label><input type="time" name="dischargeTime" class="inp" step="60" title="Use 24-hour format, e.g. 09:15"></div></div>
+    <div class="g4 mb-3"><div><label class="lbl">12.1 Date of discharge/death</label><input type="date" name="dischargeDate" class="inp"></div><div><label class="lbl">12.2 Time (24h, HH:MM)</label><input type="text" name="dischargeTime" class="inp time24" inputmode="numeric" maxlength="5" placeholder="HH:MM" pattern="^([01]\d|2[0-3]):[0-5]\d$" title="Use 24-hour format, e.g. 09:15" autocomplete="off"></div></div>
     <div><label class="lbl">12.3 Discharge status</label><div class="flex gap-2 flex-wrap mt-1"><label class="radio-item"><input type="radio" name="dischargeStatus" value="Dead" onchange="onDischSt()"> Dead</label><label class="radio-item"><input type="radio" name="dischargeStatus" value="Alive" onchange="onDischSt()"> Alive</label></div><div id="dischDead" class="sub-reveal mt-2"><label class="lbl">12.3a Cause of death</label><div class="flex gap-2 mt-1"><label class="radio-item"><input type="radio" name="causeOfDeath" value="Non-Cardiac"> Non-Cardiac</label><label class="radio-item"><input type="radio" name="causeOfDeath" value="Cardiac"> Cardiac</label></div></div><div id="dischAlive" class="sub-reveal mt-2"><label class="lbl">12.3b Discharge type</label><div class="g2 mt-1"><label class="radio-item"><input type="radio" name="dischargeType" value="Home"> Home</label><label class="radio-item"><input type="radio" name="dischargeType" value="LAMA"> LAMA</label><label class="radio-item"><input type="radio" name="dischargeType" value="Transfer to cardiac surgery"> Transfer to cardiac surgery</label><label class="radio-item"><input type="radio" name="dischargeType" value="Transfer to other dept"> Transfer to other dept</label></div></div></div>
   </div>
   <div class="card card-green"><div class="font-bold text-green-900 text-sm mb-3">13. Discharge Medications</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;" id="dischargeMedsGrid"></div></div>
@@ -2315,6 +2316,39 @@ function initApp() {
     btn.classList.add('selected');
     const hid=row.querySelector(`input[type="hidden"][name="${medName}"]`);
     if(hid)hid.value=val;
+    // Mutual-exclusion groups: choosing YES for one drug auto-sets the others in
+    // the same group to NO. Same rule applies to home (homeMed_*) and discharge
+    // (dcMed_*) medication lists.
+    //   • Oral anticoagulants: apixaban / dabigatran / edoxaban / rivaroxaban / warfarin
+    //   • P2Y12 inhibitors:    clopidogrel / prasugrel / ticagrelor
+    //   • RAAS modulators:     ACE-I (acei) / ARB / ARNI
+    const MED_EXCLUSIVE_GROUPS = [
+      ['apixaban','dabigatran','edoxaban','rivaroxaban','warfarin'],
+      ['clopidogrel','prasugrel','ticagrelor'],
+      ['acei','arb','arni']
+    ];
+    if(val === 'Yes'){
+      // Detect prefix (homeMed_ or dcMed_) and short drug key
+      const m = medName.match(/^(homeMed_|dcMed_)(.+)$/);
+      if(m){
+        const prefix = m[1], drugKey = m[2];
+        const group = MED_EXCLUSIVE_GROUPS.find(g => g.includes(drugKey));
+        if(group){
+          group.forEach(other => {
+            if(other === drugKey) return;
+            const otherName = prefix + other;
+            const otherRow = document.querySelector(`.med-row[data-med-key="${otherName}"]`);
+            if(!otherRow) return;
+            // Set the other drug to "No"
+            otherRow.querySelectorAll('.yn-btn').forEach(b => b.classList.remove('selected'));
+            const noBtn = otherRow.querySelector('.yn-btn.yn-no');
+            if(noBtn) noBtn.classList.add('selected');
+            const otherHid = otherRow.querySelector(`input[type="hidden"][name="${otherName}"]`);
+            if(otherHid) otherHid.value = 'No';
+          });
+        }
+      }
+    }
     updateFieldIndicators();
   };
   setTimeout(updateFieldIndicators, 100);
@@ -2418,6 +2452,110 @@ function initApp() {
     }
   });
   setTimeout(applyDateMinMax, 200);
+
+  // ============================================================================
+  // Paired-field mutual exclusion (value input ↔ "Not assessed/collected" checkbox)
+  // Covers 7.1d QRS, 7.3 ECHO fields (LVEF, RVSP), 7.5–7.6 post-procedure QRS,
+  // 8. LAB fields (creatinine, hgb, electrolytes, INR), and 11.3.a final pace QRS.
+  // Rules:
+  //   • Typing a value in the input → auto-uncheck the NA box.
+  //   • Ticking the NA box → clear and disable the value input until unticked.
+  // ============================================================================
+  const NA_PAIRS = {
+    // ECG / Echo
+    ecgQRS:'ecgQRSna', lvef:'lvefNA', lvesd:'lvesdNA', lvedd:'lveddNA', rvsp:'rvspNA',
+    // Lab section 8
+    creatInit:'creatInitNA', creatPeak:'creatPeakNA',
+    hgbInit:'hgbInitNA', hgbLowest:'hgbLowestNA',
+    sodium:'sodiumNA', potassium:'potassiumNA', magnesium:'magnesiumNA', inr:'inrNA',
+    // Post-procedure QRS fields
+    crtLbbbQRS:'crtLbbbQRSna', ppmLbbbQRS:'ppmLbbbQRSna', condSysPaceQRS:'condSysPaceQRSna'
+  };
+  function _applyNaState(valEl, naCb){
+    if(naCb.checked){
+      if(valEl.value !== ''){ valEl.value = ''; }
+      valEl.disabled = true;
+      valEl.classList.add('na-disabled');
+      valEl.setAttribute('aria-disabled','true');
+    } else {
+      valEl.disabled = false;
+      valEl.classList.remove('na-disabled');
+      valEl.removeAttribute('aria-disabled');
+    }
+  }
+  Object.entries(NA_PAIRS).forEach(([valName, naName]) => {
+    const valEl = document.querySelector(`[name="${valName}"]`);
+    const naCb  = document.querySelector(`input[type="checkbox"][name="${naName}"]`);
+    if(!valEl || !naCb) return;
+    // Initial sync (covers state restored from a draft)
+    _applyNaState(valEl, naCb);
+    // Value input → if non-empty, uncheck NA
+    valEl.addEventListener('input', () => {
+      if(valEl.value !== '' && naCb.checked){
+        naCb.checked = false;
+        _applyNaState(valEl, naCb);
+        try{ if(typeof updateFieldIndicators==='function') updateFieldIndicators(); }catch(e){}
+      }
+    });
+    // NA checkbox → clear & disable / re-enable value input
+    naCb.addEventListener('change', () => {
+      _applyNaState(valEl, naCb);
+      try{ if(typeof updateFieldIndicators==='function') updateFieldIndicators(); }catch(e){}
+    });
+  });
+  // Expose a re-sync helper so editRecord() can refresh disabled state after load
+  window._resyncNaPairs = function(){
+    Object.entries(NA_PAIRS).forEach(([valName, naName]) => {
+      const valEl = document.querySelector(`[name="${valName}"]`);
+      const naCb  = document.querySelector(`input[type="checkbox"][name="${naName}"]`);
+      if(valEl && naCb) _applyNaState(valEl, naCb);
+    });
+  };
+  // ============================================================================
+  // 24-hour time input mask (HH:MM)
+  // Replaces the native <input type="time"> which the OS may render in 12h AM/PM
+  // form depending on locale. Inputs with class "time24" get a numeric mask that
+  // auto-inserts the colon and clamps hours 00-23 and minutes 00-59.
+  // ============================================================================
+  function _formatTime24(raw){
+    // Keep digits only, max 4
+    const d = (raw||'').replace(/\D/g,'').slice(0,4);
+    if(d.length === 0) return '';
+    if(d.length <= 2) return d;
+    return d.slice(0,2) + ':' + d.slice(2);
+  }
+  function _validateTime24(v){
+    if(!v) return true;          // empty allowed; required-ness handled elsewhere
+    return /^([01]\d|2[0-3]):[0-5]\d$/.test(v);
+  }
+  function attachTime24Mask(el){
+    if(!el || el._time24Bound) return;
+    el._time24Bound = true;
+    el.addEventListener('input', function(){
+      const formatted = _formatTime24(this.value);
+      if(this.value !== formatted){ this.value = formatted; }
+    });
+    el.addEventListener('blur', function(){
+      const v = this.value;
+      if(v && !_validateTime24(v)){
+        // Attempt soft-clamp: if user typed "9:5" expand to "09:05"
+        const digits = v.replace(/\D/g,'');
+        if(digits.length === 3){
+          // e.g. "935" → "09:35"  (treat as H:MM)
+          this.value = '0' + digits[0] + ':' + digits.slice(1);
+        } else if(digits.length === 4){
+          this.value = digits.slice(0,2) + ':' + digits.slice(2);
+        }
+        if(!_validateTime24(this.value)){
+          try{ if(typeof shErr==='function') shErr(this,'Use 24h format HH:MM (00:00–23:59)'); }catch(e){}
+          this.value = '';
+        } else {
+          try{ if(typeof clrV==='function') clrV(this); }catch(e){}
+        }
+      }
+    });
+  }
+  document.querySelectorAll('input.time24').forEach(attachTime24Mask);
 
   // ============================================================================
   // 9.2 → 9.3 Procedure time-sequence live validator
@@ -2963,7 +3101,7 @@ function initApp() {
   const PAIRED_FIELDS = {
     'sysBp':'sysBpUnrec','diaBp':'diaBpUnrec','hr':'hrUnrec','weight':'weightUnrec','height':'heightUnrec',
     'creatInit':'creatInitNA','creatPeak':'creatPeakNA','hgbInit':'hgbInitNA','hgbLowest':'hgbLowestNA',
-    'sodium':'sodiumNA','potassium':'potassiumNA','magnesium':'magnesiumNA','inr':'inrNA','ecgQRS':'ecgQRSna','lvef':'lvefNA','rvsp':'rvspNA',
+    'sodium':'sodiumNA','potassium':'potassiumNA','magnesium':'magnesiumNA','inr':'inrNA','ecgQRS':'ecgQRSna','lvef':'lvefNA','lvesd':'lvesdNA','lvedd':'lveddNA','rvsp':'rvspNA',
   };
   const PAIRED_COMPANIONS = new Set(Object.values(PAIRED_FIELDS));
   const EITHER_OR_GROUPS = [
@@ -3421,7 +3559,7 @@ function initApp() {
       // Companion checkbox fields (Unrec/NA) — always validated via their parent
       'sysBpUnrec','diaBpUnrec','hrUnrec','weightUnrec','heightUnrec',
       'creatInitNA','creatPeakNA','hgbInitNA','hgbLowestNA',
-      'sodiumNA','potassiumNA','magnesiumNA','inrNA','ecgQRSna','lvefNA','rvspNA',
+      'sodiumNA','potassiumNA','magnesiumNA','inrNA','ecgQRSna','lvefNA','lvesdNA','lveddNA','rvspNA',
       'crtLbbbQRSna','ppmLbbbQRSna','condSysPaceQRSna'
     ]);
 
@@ -3944,6 +4082,10 @@ function initApp() {
       goToStep(0);
       updateFieldIndicators();
       onCivilIdInput();
+      // Re-sync NA paired-field state (value ↔ "Not assessed/collected" checkbox)
+      try {
+        if(typeof window._resyncNaPairs === 'function') window._resyncNaPairs();
+      } catch(e){ /* noop */ }
     }catch(err){
       console.error('[editRecord] FAILED:',err);
       alert('Could not load record for editing. Check console for details.\n'+err.message);
@@ -4206,7 +4348,7 @@ function initApp() {
     cied_icdDual:'CIED: ICD Dual',cied_crtd:'CIED: CRT-D',cied_evicd:'CIED: EV-ICD',cied_sicd:'CIED: S-ICD',cied_unknown:'CIED: Unknown',
     inv_ecg:'ECG',ecgAtrialRhythm:'ECG Atrial Rhythm',ecgVentRhythm:'ECG Vent Rhythm',ecgQRS:'QRS (msec)',ecgQRSna:'QRS Not Assessed',
     inv_holter:'Holter',holterAtrialRhythm:'Holter Atrial Rhythm',holterVentRhythm:'Holter Vent Rhythm',
-    inv_tte:'TTE',lvef:'LVEF (%)',lvefNA:'LVEF Not Assessed',lvesd:'LVESD (mm)',lvedd:'LVEDD (mm)',
+    inv_tte:'TTE',lvef:'LVEF (%)',lvefNA:'LVEF Not Assessed',lvesd:'LVESD (mm)',lvesdNA:'LVESD Not Assessed',lvedd:'LVEDD (mm)',lveddNA:'LVEDD Not Assessed',
     rvsp:'RVSP (mmHg)',rvspNA:'RVSP Not Assessed',
     inv_sevValve:'Severe Valve Disease',sevMR:'Severe MR',sevAS:'Severe AS',sevAR:'Severe AR',sevTR:'Severe TR',
     intracardThrombus:'Intracardiac Thrombus',
@@ -4269,7 +4411,7 @@ function initApp() {
     cied_icdSingle:'CIEDIcdS',cied_icdDual:'CIEDIcdD',cied_crtd:'CIEDCRTD',cied_sicd:'CIEDSICD',
     inv_ecg:'InvECG',ecgAtrialRhythm:'ECGAtrR',ecgVentRhythm:'ECGVenR',ecgQRS:'ECGQRS',ecgQRSna:'ECGQRSna',
     inv_holter:'InvHoltr',holterAtrialRhythm:'HolAtrR',holterVentRhythm:'HolVenR',
-    inv_tte:'InvTTE',lvef:'LVEF',lvefNA:'LVEFna',lvesd:'LVESD',lvedd:'LVEDD',rvsp:'RVSP',rvspNA:'RVSPna',
+    inv_tte:'InvTTE',lvef:'LVEF',lvefNA:'LVEFna',lvesd:'LVESD',lvesdNA:'LVESDna',lvedd:'LVEDD',lveddNA:'LVEDDna',rvsp:'RVSP',rvspNA:'RVSPna',
     inv_sevValve:'SevValv',sevMR:'SevMR',sevAS:'SevAS',sevAR:'SevAR',sevTR:'SevTR',intracardThrombus:'ICThrom',
     inv_tee:'InvTEE',teeThrombus:'TEEThrom',inv_laa:'InvLAA',laaOstial:'LAAOsti',laaDepth:'LAADep',
     inv_cardiacCT:'InvCT',inv_cmr:'InvCMR',
@@ -4611,7 +4753,7 @@ function initApp() {
     hx_cied:['cied_single','cied_dual','cied_crtp','cied_leadlessSingle','cied_leadlessDual','cied_his','cied_lbbb','cied_icdSingle','cied_icdDual','cied_crtd','cied_evicd','cied_sicd','cied_unknown'],
     inv_ecg:['ecgAtrialRhythm','ecgVentRhythm','ecgQRS','ecgQRSna','ecgNodal','ecgNodalType'],
     inv_holter:['holterAtrialRhythm','holterVentRhythm'],
-    inv_tte:['lvef','lvefNA','lvesd','lvedd','rvsp','rvspNA'],
+    inv_tte:['lvef','lvefNA','lvesd','lvesdNA','lvedd','lveddNA','rvsp','rvspNA'],
     inv_sevValve:['sevMR','sevAS','sevAR','sevTR'],
     inv_tee:['teeThrombus'],
     inv_laa:['laaOstial','laaDepth'],
@@ -4907,7 +5049,7 @@ function initApp() {
     const hxFields=allFields.filter(f=>f.startsWith('hx_')||f.startsWith('arrest')||f.startsWith('icm')||f.startsWith('hf')||f.startsWith('afib')||f.startsWith('ssd_')||f.startsWith('struct_')||f.startsWith('syncope')||f.startsWith('avp')||f.startsWith('mvp')||f.startsWith('ca')||f.startsWith('cabg')||f.startsWith('pci')||f.startsWith('cied_')||['sysBp','sysBpUnrec','diaBp','diaBpUnrec','hr','hrUnrec','weight','weightUnrec','height','heightUnrec'].includes(f));
     // Medications: explicit ordered list, Home Meds first, then Discharge Meds
     const medsFields=[...HOME_MEDS_ORDER.filter(f=>FIELD_MAP[f]),...DC_MEDS_ORDER.filter(f=>FIELD_MAP[f])];
-    const invFields=allFields.filter(f=>f.startsWith('inv_')||f.startsWith('ecg')||f.startsWith('holter')||f.startsWith('sev')||f.startsWith('laa')||f.startsWith('tee')||['lvef','lvefNA','lvesd','lvedd','rvsp','rvspNA','intracardThrombus','creatInit','creatInitNA','creatPeak','creatPeakNA','hgbInit','hgbInitNA','hgbLowest','hgbLowestNA','sodium','sodiumNA','potassium','potassiumNA','magnesium','magnesiumNA','inr','inrNA'].includes(f));
+    const invFields=allFields.filter(f=>f.startsWith('inv_')||f.startsWith('ecg')||f.startsWith('holter')||f.startsWith('sev')||f.startsWith('laa')||f.startsWith('tee')||['lvef','lvefNA','lvesd','lvesdNA','lvedd','lveddNA','rvsp','rvspNA','intracardThrombus','creatInit','creatInitNA','creatPeak','creatPeakNA','hgbInit','hgbInitNA','hgbLowest','hgbLowestNA','sodium','sodiumNA','potassium','potassiumNA','magnesium','magnesiumNA','inr','inrNA'].includes(f));
     const procFields=allFields.filter(f=>f.startsWith('crt')||f.startsWith('tpm')||f.startsWith('ppm')||f.startsWith('eps')||f.startsWith('laao')||f==='procStartDate'||f==='procStartTime'||f==='procEndTime'||f==='operatorName');
     const cxFields=allFields.filter(f=>f.startsWith('cx_')||f.startsWith('bleed')||f.startsWith('vent')||f.startsWith('scai')||f.startsWith('mech')||f.startsWith('stroke')||f.startsWith('transfus')||f==='comp_ca'||f==='comp_pci'||f==='comp_cabg'||f==='comp_tavr');
     const outcFields=allFields.filter(f=>f.startsWith('cond')||['procSuccess','postECGrhythm','dischargeDate','dischargeTime','dischargeStatus','causeOfDeath','dischargeType'].includes(f));
