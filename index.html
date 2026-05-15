@@ -1315,7 +1315,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <div><label class="lbl">10.2.11 Inotropes</label><select name="cx_inotropes" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
     </div>
 
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.11.a Mechanical complications<button type="button" class="fn-btn" onclick="openFn('10.2.11a')" aria-label="Field information" title="Click for field information">i</button></span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'mechComp','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'mechComp','Yes')">Yes</button></div></div><input type="hidden" name="cx_mechComp" id="val_mechComp" value=""><div id="sub_mechComp" class="sub-reveal"><label class="lbl">10.2.11.b Type of mechanical complications (Choose One Only):</label>
+    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.12 Mechanical complications<button type="button" class="fn-btn" onclick="openFn('10.2.12')" aria-label="Field information" title="Click for field information">i</button></span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'mechComp','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'mechComp','Yes')">Yes</button></div></div><input type="hidden" name="cx_mechComp" id="val_mechComp" value=""><div id="sub_mechComp" class="sub-reveal"><label class="lbl">10.2.12.a Type of mechanical complications (Choose One Only):</label>
       <div class="flex gap-2 mt-1 flex-wrap">
         <label class="radio-item"><input type="radio" name="mechCompType" value="ASD"> ASD</label>
         <label class="radio-item"><input type="radio" name="mechCompType" value="Myocardial tear"> Myocardial tear</label>
@@ -1325,8 +1325,8 @@ html,body{max-width:100vw;overflow-x:hidden;}
       </div>
     </div></div>
 
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.12 Any bleeding<button type="button" class="fn-btn" onclick="openFn('10.2.12')" aria-label="Field information" title="Click for field information">i</button></span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'bleeding','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'bleeding','Yes')">Yes</button></div></div><input type="hidden" name="cx_bleeding" id="val_bleeding" value=""><div id="sub_bleeding" class="sub-reveal">
-      <label class="lbl">10.2.12.a Bleeding type (Choose One):</label>
+    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.13 Any bleeding<button type="button" class="fn-btn" onclick="openFn('10.2.13')" aria-label="Field information" title="Click for field information">i</button></span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'bleeding','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'bleeding','Yes')">Yes</button></div></div><input type="hidden" name="cx_bleeding" id="val_bleeding" value=""><div id="sub_bleeding" class="sub-reveal">
+      <label class="lbl">10.2.13.a Bleeding type (Choose One):</label>
       <div class="space-y-1 mt-1 mb-3">
         <label class="radio-item"><input type="radio" name="bleedType" value="Type 1" onchange="onBleedT()"> Type 1 (Not actionable)</label>
         <label class="radio-item"><input type="radio" name="bleedType" value="Type 2" onchange="onBleedT()"> Type 2 (Actionable, requires further evaluation or nonsurgical intervention)</label>
@@ -1341,52 +1341,52 @@ html,body{max-width:100vw;overflow-x:hidden;}
           <label class="radio-item"><input type="radio" name="bleedSubType" value="Type 3c"> Type 3c (Intracranial hemorrhage or Intraocular bleed compromising vision)</label>
         </div>
       </div>
-      <label class="lbl">10.2.12.b Specify Bleeding site (check all that apply):</label>
+      <label class="lbl">10.2.13.b Specify Bleeding site (check all that apply):</label>
       <div class="g2 mt-1 mb-3">
         <label class="chk-item"><input type="checkbox" name="bleedSite_gi"> b.1 Gastrointestinal</label>
         <label class="chk-item"><input type="checkbox" name="bleedSite_retro"> b.2 Retroperitoneal</label>
         <label class="chk-item"><input type="checkbox" name="bleedSite_genu"> b.3 Genital-Urinary</label>
         <label class="chk-item"><input type="checkbox" name="bleedSite_perc"> b.4 Percutaneous entry site</label>
       </div>
-      <div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.12.c Transfusion</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'transfusion','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'transfusion','Yes')">Yes</button></div></div>
+      <div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.13.c Transfusion</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'transfusion','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'transfusion','Yes')">Yes</button></div></div>
       <input type="hidden" name="cx_transfusion" id="val_transfusion" value="">
       <div id="sub_transfusion" class="sub-reveal"><label class="lbl">c.1 Total Number of units</label><input type="number" name="transfusionUnits" class="inp max-w-xs" min="0"></div>
     </div></div>
 
     <div class="g2 mb-3">
-      <div><label class="lbl">10.2.13 Myocardial infarction</label><select name="cx_mi" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
-      <div><label class="lbl">10.2.14 Urgent cardiac surgery</label><select name="cx_urgentSurg" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+      <div><label class="lbl">10.2.14 Myocardial infarction</label><select name="cx_mi" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+      <div><label class="lbl">10.2.15 Urgent cardiac surgery</label><select name="cx_urgentSurg" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
     </div>
 
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.15 Pericardial effusion</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'pericEff','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'pericEff','Yes')">Yes</button></div></div><input type="hidden" name="cx_pericEff" id="val_pericEff" value=""><div id="sub_pericEff" class="sub-reveal"><label class="lbl">10.2.15.a Requiring Intervention</label><select name="cx_pericEffInterv" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
+    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.16 Pericardial effusion</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'pericEff','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'pericEff','Yes')">Yes</button></div></div><input type="hidden" name="cx_pericEff" id="val_pericEff" value=""><div id="sub_pericEff" class="sub-reveal"><label class="lbl">10.2.16.a Requiring Intervention</label><select name="cx_pericEffInterv" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
 
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.16 Cardiac tamponade</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'tamp2','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'tamp2','Yes')">Yes</button></div></div><input type="hidden" name="cx_tamp2" id="val_tamp2" value=""><div id="sub_tamp2" class="sub-reveal">
+    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.17 Cardiac tamponade</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'tamp2','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'tamp2','Yes')">Yes</button></div></div><input type="hidden" name="cx_tamp2" id="val_tamp2" value=""><div id="sub_tamp2" class="sub-reveal">
       <div class="g2">
-        <div><label class="lbl">10.2.16.a Open cardiac surgery</label><select name="cx_tampOpenSurg" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
-        <div><label class="lbl">10.2.16.b Percutaneous drainage</label><select name="cx_tampPercDrain" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+        <div><label class="lbl">10.2.17.a Open cardiac surgery</label><select name="cx_tampOpenSurg" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+        <div><label class="lbl">10.2.17.b Percutaneous drainage</label><select name="cx_tampPercDrain" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
       </div>
     </div></div>
 
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.17 Hemothorax</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'hemothorax','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'hemothorax','Yes')">Yes</button></div></div><input type="hidden" name="cx_hemothorax" id="val_hemothorax" value=""><div id="sub_hemothorax" class="sub-reveal"><label class="lbl">10.2.17.a Requiring drainage</label><select name="cx_hemoDrain" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
+    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.18 Hemothorax</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'hemothorax','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'hemothorax','Yes')">Yes</button></div></div><input type="hidden" name="cx_hemothorax" id="val_hemothorax" value=""><div id="sub_hemothorax" class="sub-reveal"><label class="lbl">10.2.18.a Requiring drainage</label><select name="cx_hemoDrain" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
 
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.18 Pneumothorax</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'pneumo','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'pneumo','Yes')">Yes</button></div></div><input type="hidden" name="cx_pneumo" id="val_pneumo" value=""><div id="sub_pneumo" class="sub-reveal"><label class="lbl">10.2.18.a Requiring intervention</label><select name="cx_pneumoInterv" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
+    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.19 Pneumothorax</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'pneumo','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'pneumo','Yes')">Yes</button></div></div><input type="hidden" name="cx_pneumo" id="val_pneumo" value=""><div id="sub_pneumo" class="sub-reveal"><label class="lbl">10.2.19.a Requiring intervention</label><select name="cx_pneumoInterv" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
 
     <div class="g3 mb-3">
-      <div><label class="lbl">10.2.19 Device migration</label><select name="cx_devMigration" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
-      <div><label class="lbl">10.2.20 Phrenic nerve damage</label><select name="cx_phrenicDmg" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
-      <div><label class="lbl">10.2.21 Pleural effusion</label><select name="cx_pleuralEff" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+      <div><label class="lbl">10.2.20 Device migration</label><select name="cx_devMigration" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+      <div><label class="lbl">10.2.21 Phrenic nerve damage</label><select name="cx_phrenicDmg" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+      <div><label class="lbl">10.2.22 Pleural effusion</label><select name="cx_pleuralEff" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
     </div>
 
     <div class="g3 mb-3">
-      <div><label class="lbl">10.2.22 Infection requiring antibiotics</label><select name="cx_infection" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+      <div><label class="lbl">10.2.23 Infection requiring antibiotics</label><select name="cx_infection" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
     </div>
 
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.23 Bradycardia adverse events</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'bradyAE','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'bradyAE','Yes')">Yes</button></div></div><input type="hidden" name="cx_bradyAE" id="val_bradyAE" value=""><div id="sub_bradyAE" class="sub-reveal"><label class="lbl">10.2.23.a Requiring permanent pacemaker</label><select name="cx_bradyAEppm" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
+    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.24 Bradycardia adverse events</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'bradyAE','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'bradyAE','Yes')">Yes</button></div></div><input type="hidden" name="cx_bradyAE" id="val_bradyAE" value=""><div id="sub_bradyAE" class="sub-reveal"><label class="lbl">10.2.24.a Requiring permanent pacemaker</label><select name="cx_bradyAEppm" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
 
     <div class="g3 mb-3">
-      <div><label class="lbl">10.2.24 Set Screw Problem</label><select name="cx_setScrew" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
-      <div><label class="lbl">10.2.25 Lead Dislodgement</label><select name="cx_leadDislodge" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
-      <div><label class="lbl">10.2.26 Lead fracture</label><select name="cx_leadFracture" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+      <div><label class="lbl">10.2.25 Set Screw Problem</label><select name="cx_setScrew" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+      <div><label class="lbl">10.2.26 Lead Dislodgement</label><select name="cx_leadDislodge" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+      <div><label class="lbl">10.2.27 Lead fracture</label><select name="cx_leadFracture" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
     </div>
   </div>
 </div>
@@ -1968,8 +1968,8 @@ const FOOTNOTES = {
 <p>Requires <strong>intubation and mechanical ventilator</strong>.</p>
 </div>`
   },
-  '10.2.11a': {
-    title: '10.2.11.a — Mechanical Complications: Cardiac Rupture',
+  '10.2.12': {
+    title: '10.2.12 — Mechanical Complications: Cardiac Rupture',
     body: `<p><strong>Cardiac rupture:</strong> Rupture of the ventricular myocardium, documented by:</p>
 <ul>
 <li>Cardiac echocardiography</li>
@@ -1980,8 +1980,8 @@ const FOOTNOTES = {
 </ul>
 <p>Rupture may be of the <strong>free wall</strong> or the <strong>ventricular septum</strong>.</p>`
   },
-  '10.2.12': {
-    title: '10.2.12 — BARC Bleeding Definitions',
+  '10.2.13': {
+    title: '10.2.13 — BARC Bleeding Definitions',
     body: `<p><strong>BARC</strong> = Bleeding Academic Research Consortium</p>
 <div class="fn-section">
 <div class="fn-section-title">Type 1 — Not actionable</div>
@@ -3697,7 +3697,7 @@ function initApp() {
       { label:'9.8 EPS arrhythmia mapped', members:['eps_svt','eps_aflutter','eps_afib','eps_vt','eps_pvcs'] },
       { label:'9.9a LAAO indication', members:['laao_nonvalvular','laao_highBleed','laao_contraOAC','laao_priorBleed','laao_patientPref'] },
       { label:'10.x Intervention type', members:['cx_intervEndo','cx_intervSurg','cx_intervThrombin'] },
-      { label:'10.2.12.b Bleeding site', members:['bleedSite_gi','bleedSite_retro','bleedSite_genu','bleedSite_perc'] }
+      { label:'10.2.13.b Bleeding site', members:['bleedSite_gi','bleedSite_retro','bleedSite_genu','bleedSite_perc'] }
     ];
     const CHECKBOX_GROUP_MEMBERS = new Set();
     CHECKBOX_GROUPS.forEach(g => g.members.forEach(m => CHECKBOX_GROUP_MEMBERS.add(m)));
@@ -4703,7 +4703,7 @@ function initApp() {
     cx_urgentSurg:'CX: Urgent cardiac surgery',
     cx_pericEff:'CX: Pericardial effusion',
     cx_pericEffInterv:'CX: Pericardial eff. - Requiring intervention',
-    cx_tamp2:'CX: Cardiac tamponade (10.2.16)',
+    cx_tamp2:'CX: Cardiac tamponade (10.2.17)',
     cx_tampOpenSurg:'CX: Tamponade - Open cardiac surgery',
     cx_tampPercDrain:'CX: Tamponade - Percutaneous drainage',
     cx_hemothorax:'CX: Hemothorax',
@@ -4743,7 +4743,7 @@ function initApp() {
     ppmAdditionalLead:'PPM: Additional lead to existing',
     // 9.8 EPS - SVT replaces AVNRT/WPW
     eps_svt:'EPS: SVT',
-    // 10.2.19 / 10.2.26
+    // 10.2.20 / 10.2.27
     cx_devMigration:'CX: Device Migration',
     cx_leadFracture:'CX: Lead Fracture',
     // Ivabradine medication
