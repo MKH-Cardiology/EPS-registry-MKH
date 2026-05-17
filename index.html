@@ -912,7 +912,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
   </div>
   <div id="proc_noReason" class="card card-yellow" style="text-align:center;padding:28px 20px;"><i class="fas fa-arrow-left" style="color:#d97706;font-size:20px;margin-bottom:10px;display:block;"></i><div style="font-weight:700;color:#92400e;font-size:15px;">No procedure selected yet</div><div style="font-size:13px;color:#a16207;margin-top:6px;">Go to <b>Step 2</b> and choose a procedure.</div></div>
   <div class="proc-section" id="proc_crtaicd"><div class="card card-blue mb-3" style="border-left:4px solid #2563eb;"><div style="font-weight:800;color:#1e3a8a;font-size:14px;">9.5 — CRT / AICD</div></div>
-    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.5a Indications for CRT/AICD:</label>
+    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.5a Indications for CRT/AICD (select all that apply):</label>
       <div class="g2 mb-3">
         <label class="chk-item"><input type="checkbox" name="crtInd_surv"> Survivors of cardiac arrest with VT/VF</label>
         <label class="chk-item"><input type="checkbox" name="crtInd_eps"> Inducible VT by EPS</label>
@@ -1046,6 +1046,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
         <label class="chk-item"><input type="checkbox" name="tpmCause_myocarditis"> Myocarditis</label>
         <label class="chk-item"><input type="checkbox" name="tpmCause_endocarditis"> Endocarditis</label>
         <label class="chk-item"><input type="checkbox" name="tpmCause_postArrest"> Post cardiac arrest</label>
+        <label class="chk-item"><input type="checkbox" name="tpmCause_degenerative"> Degenerative</label>
         <label class="chk-item"><input type="checkbox" name="tpmCause_hypothermia"> Hypothermia<button type="button" class="fn-btn" onclick="event.preventDefault();event.stopPropagation();openFn('9.6b')" aria-label="Field information" title="Click for field information">i</button></label>
         <label class="chk-item"><input type="checkbox" name="tpmCause_bridge"> Bridge to PPM</label>
         <label class="chk-item"><input type="checkbox" name="tpmCause_postTAVI"> Post TAVI/valve replacement</label>
@@ -1288,7 +1289,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
       </div>
     </div></div>
 
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.6 Intervention Required</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'intervReq','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'intervReq','Yes')">Yes</button></div></div><input type="hidden" name="cx_intervReq" id="val_intervReq" value=""><div id="sub_intervReq" class="sub-reveal"><label class="lbl">10.2.6.a Intervention Type (check all that apply):</label>
+    <div class="card mb-3" data-accessvasc-linked="1"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.6 Intervention Required</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'intervReq','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'intervReq','Yes')">Yes</button></div></div><input type="hidden" name="cx_intervReq" id="val_intervReq" value=""><div id="sub_intervReq" class="sub-reveal"><label class="lbl">10.2.6.a Intervention Type (check all that apply):</label>
       <div class="g3 mt-1">
         <label class="chk-item"><input type="checkbox" name="cx_intervEndo"> Endovascular repair</label>
         <label class="chk-item"><input type="checkbox" name="cx_intervSurg"> Surgical repair</label>
@@ -2635,6 +2636,26 @@ function initApp() {
     });
     return overlaps.length > 0 ? overlaps : false;
   }
+
+  // Deceased-patient check: a CRF cannot be created for a patient on a date
+  // AFTER their recorded date of death. Looks for any prior record with the
+  // same Civil ID where dischargeStatus = "Dead" and a discharge/death date is
+  // recorded (12.1 "Date of discharge/death"). If the new record's admission
+  // date is strictly after that death date, the save is blocked.
+  // Returns the conflicting (death) record, or false if no conflict.
+  function checkDeceasedPatient(civilId, admissionDate, currentRecordId){
+    if(!civilId || civilId.length !== 12 || !admissionDate) return false;
+    const records = (typeof _allRecordsCache !== 'undefined' && _allRecordsCache.length > 0) ? _allRecordsCache : [];
+    for(const r of records){
+      if(r.id === currentRecordId) continue;          // editing the same record
+      if(r.civilId !== civilId) continue;
+      if(r.dischargeStatus !== 'Dead') continue;      // only deceased records matter
+      const deathDate = r.dischargeDate;              // 12.1 doubles as date of death
+      if(!deathDate) continue;                        // no death date recorded → cannot enforce
+      if(admissionDate > deathDate) return r;         // admitted AFTER death → conflict
+    }
+    return false;
+  }
   // ==================== END DATE TIMELINE LOGIC ====================
 
 
@@ -2686,6 +2707,11 @@ function initApp() {
     // (or back to unselected).
     if(key === 'icm'){
       _applyIcmLinkage(val);
+    }
+    // 10.2.5 Access site vascular/bleeding complications ↔ 10.2.6 Intervention
+    // Required interlinkage: 10.2.6 only becomes available when 10.2.5 = "Yes".
+    if(key === 'accessVasc'){
+      _applyAccessVascLinkage(val);
     }
     updateFieldIndicators();
   };
@@ -2748,6 +2774,38 @@ function initApp() {
   }
   // Expose for editRecord() re-sync
   window._applyIcmLinkage = _applyIcmLinkage;
+
+  // -------------------------------------------------------------------------
+  // 10.2.5 Access site vascular/bleeding complications ↔ 10.2.6 Intervention
+  // Required interlinkage.
+  // -------------------------------------------------------------------------
+  // 10.2.6 (Intervention Required) is only clinically meaningful when an access
+  // site complication exists. When 10.2.5 = "No", 10.2.6 is automatically set
+  // to "No" as well (and its 10.2.6.a sub-reveal cleared) — but it stays fully
+  // editable and is NOT locked. When 10.2.5 = "Yes" or is unselected, 10.2.6 is
+  // left untouched so the investigator can freely choose.
+  function _applyAccessVascLinkage(accessVascVal){
+    const hid  = document.getElementById('val_intervReq');
+    const card = hid ? hid.closest('[data-accessvasc-linked]') : null;
+    if(!card || !hid) return;
+    const ynGroup = card.querySelector('.yn-group');
+    const yesBtn  = ynGroup ? ynGroup.querySelector('.yn-btn.yn-yes') : null;
+    const noBtn   = ynGroup ? ynGroup.querySelector('.yn-btn.yn-no')  : null;
+    // Buttons always remain enabled — 10.2.6 is never locked.
+    if(yesBtn) yesBtn.disabled = false;
+    if(noBtn)  noBtn.disabled  = false;
+    if(accessVascVal === 'No'){
+      // Mirror "No" onto 10.2.6 and clear its sub-reveal.
+      if(yesBtn) yesBtn.classList.remove('selected');
+      if(noBtn)  noBtn.classList.add('selected');
+      hid.value = 'No';
+      const sub = document.getElementById('sub_intervReq');
+      if(sub && sub.classList.contains('show')) clearSubReveal(sub);
+    }
+    // accessVascVal === 'Yes' or '' → leave 10.2.6 exactly as the user left it.
+  }
+  // Expose for editRecord() re-sync
+  window._applyAccessVascLinkage = _applyAccessVascLinkage;
 
   // EP REASON
   window.onEPR=function(){
@@ -3015,6 +3073,14 @@ function initApp() {
   };
   // Re-evaluate on initial load (handles legacy records where 7.3e=Yes was saved with all subs=No)
   setTimeout(()=>{ try{ checkSevValveConsistency(); }catch(e){} }, 250);
+  // Lock 10.2.6 Intervention Required on initial load — it stays locked until
+  // 10.2.5 Access site complications is set to "Yes".
+  setTimeout(()=>{ try{
+    if(typeof window._applyAccessVascLinkage === 'function'){
+      const avVal = (document.getElementById('val_accessVasc')||{}).value || '';
+      window._applyAccessVascLinkage(avVal);
+    }
+  }catch(e){} }, 260);
 
   // VALIDATION
   function shErr(el,msg){if(!el)return;el.style.borderColor='#dc2626';el.style.boxShadow='0 0 0 3px rgba(220,38,38,.15)';let t=el.parentNode.querySelector('.vt');if(!t){t=document.createElement('div');t.className='vt';t.style.cssText='font-size:11px;color:#dc2626;font-weight:600;margin-top:3px;';el.parentNode.appendChild(t);}t.textContent='✖ '+msg;}
@@ -3027,6 +3093,66 @@ function initApp() {
   rangeV('lvesd',15,80,'mm');rangeV('lvedd',25,90,'mm');rangeV('rvsp',10,120,'mmHg');
   // Post-procedure QRS bounds
   rangeV('crtLbbbQRS',40,300,'msec');rangeV('ppmLbbbQRS',40,300,'msec');rangeV('condSysPaceQRS',40,300,'msec');
+
+  // Section 8 Laboratory — live cross-field consistency check.
+  //   8.2 Creatinine Peak must not be < 8.1 Creatinine Initial.
+  //   8.4 Hemoglobin Lowest must not be > 8.3 Hemoglobin Initial.
+  // On a mismatch: show an alert explaining the problem, then CLEAR the field
+  // the user just edited so they can re-enter a correct value. The hard block
+  // at save time (in saveRecord) remains as a second line of defense.
+  function _labNumLive(name){
+    const naEl=document.querySelector(`[name="${name}NA"]`);
+    if(naEl && naEl.checked) return null;
+    const el=document.querySelector(`[name="${name}"]`);
+    if(!el || el.value.trim()==='') return null;
+    const v=parseFloat(el.value);
+    return isNaN(v)?null:v;
+  }
+  // editedField = the field name the user just changed (so we clear that one).
+  function _checkCreatPair(editedField){
+    const initEl=document.querySelector('[name="creatInit"]');
+    const peakEl=document.querySelector('[name="creatPeak"]');
+    const i=_labNumLive('creatInit'), p=_labNumLive('creatPeak');
+    if(i!==null && p!==null && p<i){
+      const clearEl = (editedField==='creatInit') ? initEl : peakEl;
+      // Defer so the current blur event finishes before alert/focus.
+      setTimeout(()=>{
+        alert(`Section 8 Laboratory Results — value error:\n\n8.1 Creatinine Initial: ${i}\n8.2 Creatinine Peak: ${p}\n\nThe Peak value cannot be lower than the Initial value.\n\nThe value you just entered has been cleared — please enter a correct value.`);
+        if(clearEl){ clearEl.value=''; clrV(clearEl); clearEl.focus(); }
+        clrV(initEl); clrV(peakEl);
+      },0);
+    } else {
+      clrV(initEl); clrV(peakEl);
+    }
+  }
+  function _checkHgbPair(editedField){
+    const initEl=document.querySelector('[name="hgbInit"]');
+    const lowEl=document.querySelector('[name="hgbLowest"]');
+    const i=_labNumLive('hgbInit'), l=_labNumLive('hgbLowest');
+    if(i!==null && l!==null && l>i){
+      const clearEl = (editedField==='hgbInit') ? initEl : lowEl;
+      // Defer so the current blur event finishes before alert/focus.
+      setTimeout(()=>{
+        alert(`Section 8 Laboratory Results — value error:\n\n8.3 Hemoglobin Initial: ${i}\n8.4 Hemoglobin Lowest: ${l}\n\nThe Lowest value cannot be higher than the Initial value.\n\nThe value you just entered has been cleared — please enter a correct value.`);
+        if(clearEl){ clearEl.value=''; clrV(clearEl); clearEl.focus(); }
+        clrV(initEl); clrV(lowEl);
+      },0);
+    } else {
+      clrV(initEl); clrV(lowEl);
+    }
+  }
+  ['creatInit','creatPeak'].forEach(n=>{
+    const el=document.querySelector(`[name="${n}"]`);
+    if(el) el.addEventListener('blur',()=>_checkCreatPair(n));
+    const na=document.querySelector(`[name="${n}NA"]`);
+    if(na) na.addEventListener('change',()=>_checkCreatPair(n));
+  });
+  ['hgbInit','hgbLowest'].forEach(n=>{
+    const el=document.querySelector(`[name="${n}"]`);
+    if(el) el.addEventListener('blur',()=>_checkHgbPair(n));
+    const na=document.querySelector(`[name="${n}NA"]`);
+    if(na) na.addEventListener('change',()=>_checkHgbPair(n));
+  });
 
   // UNRECORDABLE VITALS
   window.toggleUnrec=function(field){
@@ -3550,10 +3676,53 @@ function initApp() {
       }
     }
 
+    // Section 8 Laboratory Results — cross-field consistency:
+    //   8.2 Creatinine Peak must NOT be lower than 8.1 Creatinine Initial.
+    //   8.4 Hemoglobin Lowest must NOT be higher than 8.3 Hemoglobin Initial.
+    // Only checked when both the value and its companion "Not collected" box
+    // permit a numeric comparison (i.e. both values present and not flagged NA).
+    {
+      const labNum = (name) => {
+        const naEl = document.querySelector(`[name="${name}NA"]`);
+        if(naEl && naEl.checked) return null;          // flagged Not collected → skip
+        const el = document.querySelector(`[name="${name}"]`);
+        if(!el || el.value.trim()==='') return null;   // empty → skip
+        const v = parseFloat(el.value);
+        return isNaN(v) ? null : v;
+      };
+      const crInit = labNum('creatInit'),  crPeak  = labNum('creatPeak');
+      const hgInit = labNum('hgbInit'),    hgLow   = labNum('hgbLowest');
+      if(crInit!==null && crPeak!==null && crPeak < crInit){
+        goToStep(4); // Laboratory (within Investigations step)
+        const el = document.querySelector('[name="creatPeak"]');
+        if(el){ el.focus(); shErr(el,'Peak cannot be lower than initial'); setTimeout(()=>clrV(el),6000); }
+        alert(`Section 8 Laboratory Results — value error:\n\n8.1 Creatinine Initial: ${crInit}\n8.2 Creatinine Peak: ${crPeak}\n\nThe Peak value cannot be lower than the Initial value.`);
+        return false;
+      }
+      if(hgInit!==null && hgLow!==null && hgLow > hgInit){
+        goToStep(4); // Laboratory (within Investigations step)
+        const el = document.querySelector('[name="hgbLowest"]');
+        if(el){ el.focus(); shErr(el,'Lowest cannot be higher than initial'); setTimeout(()=>clrV(el),6000); }
+        alert(`Section 8 Laboratory Results — value error:\n\n8.3 Hemoglobin Initial: ${hgInit}\n8.4 Hemoglobin Lowest: ${hgLow}\n\nThe Lowest value cannot be higher than the Initial value.`);
+        return false;
+      }
+    }
+
     const civIdVal=document.getElementById('civilId').value;
     const admDateVal=document.querySelector('[name="admissionDate"]')?.value||'';
     const dcDateVal =document.querySelector('[name="dischargeDate"]')?.value||'';
     const recIdForDupCheck=document.getElementById('editRecordId')?.value||null;
+
+    // Deceased-patient check: block creating a CRF whose admission date falls
+    // AFTER the patient's recorded date of death.
+    const deceased = checkDeceasedPatient(civIdVal, admDateVal, recIdForDupCheck);
+    if(deceased){
+      goToStep(0);
+      const admEl=document.getElementById('req_admDate');
+      if(admEl){ admEl.focus(); shErr(admEl,'After recorded date of death'); setTimeout(()=>clrV(admEl),6000); }
+      alert(`⚠️ PATIENT IS DECEASED!\n\nThis Civil ID (${civIdVal}) has a previous record marked as DEAD.\n\n• CRF: ${deceased.crfNo||'—'}\n• Date of death: ${deceased.dischargeDate||'—'}\n\nA new CRF cannot be entered with an admission date (${admDateVal}) after the patient's date of death.\n\nPlease verify the Civil ID and the 1.7 Admission Date.`);
+      return false;
+    }
 
     // Readmission overlap check: same Civil ID admitted in an overlapping window
     const overlaps = await checkReadmissionOverlap(civIdVal, admDateVal, dcDateVal, recIdForDupCheck);
@@ -3692,7 +3861,7 @@ function initApp() {
       { label:'9.5 CRT/AICD indications', members:['crtInd_surv','crtInd_eps','crtInd_icmEF','crtInd_nicmEF','crtInd_vtUnresp'] },
       { label:'9.5 CRT inherited disease type', members:['crtInh_longqt','crtInh_hcm','crtInh_brugada','crtInh_arvd','crtInh_cpvt'] },
       { label:'9.5 CRT replacement reason', members:['crtRepl_relocation','crtRepl_battery','crtRepl_faulty','crtRepl_infection','crtRepl_leadrev','crtRepl_upgrade'] },
-      { label:'9.6 Temporary PM cause', members:['tpmCause_electrolyte','tpmCause_drug','tpmCause_digitalis','tpmCause_antiarr','tpmCause_acuteMI','tpmCause_myocarditis','tpmCause_endocarditis','tpmCause_postArrest','tpmCause_hypothermia','tpmCause_bridge','tpmCause_postTAVI','tpmCause_unknown'] },
+      { label:'9.6 Temporary PM cause', members:['tpmCause_electrolyte','tpmCause_drug','tpmCause_digitalis','tpmCause_antiarr','tpmCause_acuteMI','tpmCause_myocarditis','tpmCause_endocarditis','tpmCause_postArrest','tpmCause_degenerative','tpmCause_hypothermia','tpmCause_bridge','tpmCause_postTAVI','tpmCause_unknown'] },
       { label:'9.7 Permanent PM device', members:['ppmDev_singleTV','ppmDev_dualTV','ppmDev_leadlessSingle','ppmDev_leadlessDual','ppmDev_his','ppmDev_leadlessLVEP','ppmDev_ccm','ppmDev_lbbb'] },
       { label:'9.8 EPS arrhythmia mapped', members:['eps_svt','eps_aflutter','eps_afib','eps_vt','eps_pvcs'] },
       { label:'9.9a LAAO indication', members:['laao_nonvalvular','laao_highBleed','laao_contraOAC','laao_priorBleed','laao_patientPref'] },
@@ -3918,6 +4087,10 @@ function initApp() {
     goToStep(0);
     updateFieldIndicators();
     const banner=document.getElementById('dupCivilIdBanner');if(banner)banner.style.display='none';
+    // Re-lock 10.2.6 Intervention Required — fresh form has 10.2.5 unselected.
+    try {
+      if(typeof window._applyAccessVascLinkage === 'function') window._applyAccessVascLinkage('');
+    } catch(e){ /* noop */ }
   }
 
   // DASHBOARD
@@ -4200,6 +4373,13 @@ function initApp() {
         if(typeof window._applyIcmLinkage === 'function'){
           const icmVal = (document.getElementById('val_icm')||{}).value || '';
           window._applyIcmLinkage(icmVal);
+        }
+      } catch(e){ /* noop */ }
+      // Re-sync 10.2.5 Access site complications ↔ 10.2.6 Intervention linkage
+      try {
+        if(typeof window._applyAccessVascLinkage === 'function'){
+          const avVal = (document.getElementById('val_accessVasc')||{}).value || '';
+          window._applyAccessVascLinkage(avVal);
         }
       } catch(e){ /* noop */ }
     }catch(err){
@@ -4592,6 +4772,35 @@ function initApp() {
     dcMed_ufh:'DC Med: Unfractionated Heparin', dcMed_prasugrel:'DC Med: Prasugrel',
     dcMed_ticagrelor:'DC Med: Ticagrelor', dcMed_cangrelor:'DC Med: Cangrelor',
     dcMed_arb:'DC Med: ARB', dcMed_arni:'DC Med: ARNI', dcMed_sglt:'DC Med: SGLT inhibitor',
+    // Remaining Home/Discharge meds — these were never added to FIELD_MAP, so
+    // the Excel export showed them with raw database keys as headers (e.g.
+    // "dcMed_warfarin") instead of readable labels. Added here so every
+    // medication column exports with a proper "Home Med:" / "DC Med:" label.
+    homeMed_amiodarone:'Home Med: Amiodarone',
+    homeMed_flecainide:'Home Med: Flecainide',
+    homeMed_sotalol:'Home Med: Sotalol',
+    homeMed_warfarin:'Home Med: Warfarin',
+    homeMed_dabigatran:'Home Med: Dabigatran',
+    homeMed_apixaban:'Home Med: Apixaban',
+    homeMed_aspirin:'Home Med: Aspirin',
+    homeMed_clopidogrel:'Home Med: Clopidogrel',
+    homeMed_acei:'Home Med: ACE-I',
+    homeMed_arb:'Home Med: ARB',
+    homeMed_arni:'Home Med: ARNI',
+    homeMed_sglt:'Home Med: SGLT inhibitor',
+    homeMed_betablocker:'Home Med: Beta Blockers',
+    homeMed_mra:'Home Med: MRA',
+    homeMed_digoxin:'Home Med: Digoxin',
+    homeMed_loopdiuretic:'Home Med: Loop diuretics',
+    dcMed_warfarin:'DC Med: Warfarin',
+    dcMed_apixaban:'DC Med: Apixaban',
+    dcMed_aspirin:'DC Med: Aspirin',
+    dcMed_clopidogrel:'DC Med: Clopidogrel',
+    dcMed_acei:'DC Med: ACE-I',
+    dcMed_betablocker:'DC Med: Beta Blockers',
+    dcMed_mra:'DC Med: MRA',
+    dcMed_digoxin:'DC Med: Digoxin',
+    dcMed_loopdiuretic:'DC Med: Loop diuretics',
 
     // 4.15 Structural abnormality (Y/N wrapper already in FIELD_MAP as hx_struct)
     struct_infiltrative:'Struct: Infiltrative',
@@ -4631,6 +4840,7 @@ function initApp() {
     tpmCause_myocarditis:'TPM Cause: Myocarditis',
     tpmCause_endocarditis:'TPM Cause: Endocarditis',
     tpmCause_postArrest:'TPM Cause: Post cardiac arrest',
+    tpmCause_degenerative:'TPM Cause: Degenerative',
     tpmCause_hypothermia:'TPM Cause: Hypothermia',
     tpmCause_bridge:'TPM Cause: Bridge to PPM',
     tpmCause_postTAVI:'TPM Cause: Post TAVI/valve replacement',
@@ -4782,7 +4992,7 @@ function initApp() {
     tpmIndication:'TPMInd', tpmCause_electrolyte:'TPMCEl', tpmCause_drug:'TPMCDrg',
     tpmCause_digitalis:'TPMCDig', tpmCause_antiarr:'TPMCAntA', tpmCause_acuteMI:'TPMCMI',
     tpmCause_myocarditis:'TPMCMyo', tpmCause_endocarditis:'TPMCEnd',
-    tpmCause_postArrest:'TPMCPCA', tpmCause_hypothermia:'TPMCHyp',
+    tpmCause_postArrest:'TPMCPCA', tpmCause_degenerative:'TPMCDeg', tpmCause_hypothermia:'TPMCHyp',
     tpmCause_bridge:'TPMCBrg', tpmCause_postTAVI:'TPMCTAVI',
     tpmCause_unknown:'TPMCUnk', tpmDrug_avBlock:'TPMDrgAV',
     tpmMIType:'TPMMITy', tpmPpmSameStay:'TPMPpmSm',
@@ -4919,7 +5129,7 @@ function initApp() {
       'tpm_chb','tpm_mobitz2','tpm_altBBB','tpm_sss',
       'tpmIndication','tpmCause_electrolyte','tpmCause_drug','tpmCause_digitalis','tpmCause_antiarr',
       'tpmCause_acuteMI','tpmCause_myocarditis','tpmCause_endocarditis','tpmCause_postArrest',
-      'tpmCause_hypothermia','tpmCause_bridge','tpmCause_postTAVI','tpmCause_unknown',
+      'tpmCause_degenerative','tpmCause_hypothermia','tpmCause_bridge','tpmCause_postTAVI','tpmCause_unknown',
       'tpmDrug_avBlock','tpmMIType',
       // tpmPpmSameStay removed (was 9.6c) — kept in FIELD_MAP/SPSS_VARS for legacy record export only
       'ppmGenerator','ppmInd_21block','ppmInd_mobitz2','ppmInd_chb','ppmInd_sss',
@@ -5035,8 +5245,9 @@ function initApp() {
     return val;
   }
 
-  // Encoder for SPSS sheet — same shape, but ticked Unrec/NA → numeric 9 for
-  // missing-numeric fields, Yes/No → 1/0.
+  // Encoder for SPSS sheet — Yes/No → 1/0. Ticked Unrec/NA numeric fields are
+  // exported as BLANK (empty), not a 9 sentinel, so analysts treat them as
+  // standard system-missing rather than a real value.
   function encodeForSPSS(r,f){
     const val=r[f];
     if(f.endsWith('Unrec')||f.endsWith('NA')){
@@ -5046,7 +5257,7 @@ function initApp() {
     const unrecKey=f+'Unrec', naKey=f+'NA';
     const unrecTicked=r[unrecKey]===true||r[unrecKey]==='true'||r[naKey]===true||r[naKey]==='true';
     if(unrecTicked){
-      if(NUMERIC_FIELDS.has(f))return 9;
+      // Unrecordable / Not assessed → leave the cell blank (no numeric sentinel)
       return '';
     }
     if(val===undefined||val===null||val==='')return '';
@@ -5108,30 +5319,160 @@ function initApp() {
   }
 
   // Explicit medication ordering — keeps Home Meds and Discharge Meds grouped & in clinical order
-  const HOME_MEDS_ORDER=[
-    'homeMed_amiodarone','homeMed_disopyramide','homeMed_flecainide','homeMed_procainamide',
-    'homeMed_propafenone','homeMed_sotalol','homeMed_verapamil','homeMed_diltiazem',
-    'homeMed_warfarin','homeMed_dabigatran','homeMed_apixaban','homeMed_rivaroxaban',
-    'homeMed_edoxaban','homeMed_lmwh','homeMed_ufh',
-    'homeMed_aspirin','homeMed_clopidogrel','homeMed_prasugrel','homeMed_ticagrelor','homeMed_cangrelor',
-    'homeMed_acei','homeMed_arb','homeMed_arni','homeMed_sglt',
-    'homeMed_betablocker','homeMed_ivabradine','homeMed_mra','homeMed_digoxin','homeMed_loopdiuretic'
-  ];
-  const DC_MEDS_ORDER=[
-    'dcMed_amiodarone','dcMed_disopyramide','dcMed_flecainide','dcMed_procainamide',
-    'dcMed_propafenone','dcMed_sotalol','dcMed_verapamil','dcMed_diltiazem',
-    'dcMed_warfarin','dcMed_dabigatran','dcMed_apixaban','dcMed_rivaroxaban',
-    'dcMed_edoxaban','dcMed_lmwh','dcMed_ufh',
-    'dcMed_aspirin','dcMed_clopidogrel','dcMed_prasugrel','dcMed_ticagrelor','dcMed_cangrelor',
-    'dcMed_acei','dcMed_arb','dcMed_arni','dcMed_sglt',
-    'dcMed_betablocker','dcMed_ivabradine','dcMed_mra','dcMed_digoxin','dcMed_loopdiuretic'
-  ];
+  // Medication export order — derived DIRECTLY from medsList (the array that
+  // builds the data-entry grids) so the Excel/SPSS column order can never drift
+  // from the order shown in the CRF. medsList is defined earlier in initApp().
+  const HOME_MEDS_ORDER = medsList.map(m => 'homeMed_' + m.f);
+  const DC_MEDS_ORDER   = medsList.map(m => 'dcMed_'   + m.f);
+
+  // ============================================================================
+  // CANONICAL APP FIELD ORDER  (May 2026 — analyst feedback)
+  // ============================================================================
+  // The FIELD_MAP object had section-9/10 fields appended via Object.assign(),
+  // so Object.keys(FIELD_MAP) no longer matched the app's visible top-to-bottom
+  // order. The explicit groups below pin every exported column to the exact
+  // order/position it appears in the data-entry form. Both the Excel themed
+  // sheets and the SPSS sheet draw from these lists.
+  //
+  // EXPORT_GROUPS maps each themed Excel sheet to its ordered field list.
+  // APP_FIELD_ORDER is the flat concatenation, used for the SPSS sheet and the
+  // "Complete (All Fields)" sheet.
+  const EXPORT_GROUPS = {
+    'Demographics':[
+      '_no','nameFirst','nameMiddle','nameLast','civilId','crfNo','fileNumber',
+      'gender','nationality','yob','estimatedAge','admissionDate',
+      'patientContact','relativeContact','patientOrigin',
+      'epReason','pacemakerType',
+      'enrolledByName','enrolledByCode','updatedByName','updatedByCode',
+      'recordStatus','submissionType',
+    ],
+    'History & Vitals':[
+      // Section 5 vitals
+      'sysBp','sysBpUnrec','diaBp','diaBpUnrec','hr','hrUnrec',
+      'weight','weightUnrec','height','heightUnrec',
+      // Section 4 history
+      'hx_afib','afibClassification','afibEHRA','afibChads','afibHasBled',
+      'afibCardioversion','afibPriorAblation','afibContraOAC','afibMajorBleed',
+      'hx_cardiacArrest','arrestBradycardia','arrestAsystole','arrestVF','arrestVT',
+      'hx_icm','icmTimeframe','icmGDMT',
+      'hx_hf','hfType',
+      'hx_ca','caRecent','caAfterArrest',
+      'hx_cad','hx_mi','hx_pci','pciRecent','hx_cabg','cabgRecent',
+      'hx_valve','hx_cvd','hx_lung','hx_dialysis','hx_dm','hx_htn','hx_familialSyndrome',
+      'hx_ssd','ssd_brugada','ssd_cpvt','ssd_idiopathic','ssd_longqt','ssd_shortqt','ssd_unknown',
+      'hx_struct','struct_arvc','struct_congenital','struct_hcm','struct_infiltrative','struct_lv',
+      'hx_syncope','syncopeRecent','hx_svt','hx_vf','hx_vt',
+      'hx_avp','avpType','avpRecent','hx_mvp','mvpType','mvpRecent',
+      'hx_cied','cied_single','cied_dual','cied_crtp','cied_leadlessSingle','cied_leadlessDual',
+      'cied_his','cied_lbbb','cied_icdSingle','cied_icdDual','cied_crtd','cied_evicd','cied_sicd','cied_unknown',
+    ],
+    'Medications':[
+      // Home medications only (Step 3 in the CRF). Discharge medications appear
+      // in the "Outcome & Discharge" sheet after Discharge Type, mirroring
+      // section 13's position in the form.
+      ...HOME_MEDS_ORDER,
+    ],
+    'Investigations & Labs':[
+      // Section 7 investigations
+      'inv_ecg','ecgAtrialRhythm','ecgVentRhythm','ecgNodal','ecgNodalType','ecgQRS','ecgQRSna',
+      'inv_holter','holterAtrialRhythm','holterVentRhythm',
+      'inv_tte','lvef','lvefNA','lvesd','lvesdNA','lvedd','lveddNA','rvsp','rvspNA',
+      'inv_sevValve','sevMR','sevAS','sevAR','sevTR','intracardThrombus',
+      'inv_tee','teeThrombus','inv_laa','laaOstial','laaDepth',
+      'inv_cardiacCT','inv_cmr','inv_tiltTable','inv_loopRecorder',
+      // Section 8 laboratory
+      'creatInit','creatInitNA','creatPeak','creatPeakNA',
+      'hgbInit','hgbInitNA','hgbLowest','hgbLowestNA',
+      'sodium','sodiumNA','potassium','potassiumNA','magnesium','magnesiumNA','inr','inrNA',
+    ],
+    'Procedure Details':[
+      'procStartDate','procStartTime','procEndTime','operatorName',
+      // 9.5 CRT/AICD
+      'crtInd_surv','crtInd_eps','crtInd_icmEF','crtInd_nicmEF','crtInd_vtUnresp',
+      'crtInherited','crtInh_longqt','crtInh_hcm','crtInh_brugada','crtInh_arvd','crtInh_cpvt',
+      'crtGenerator','crtDeviceType','crtDevImpl',
+      'crtRepl_relocation','crtRepl_battery','crtRepl_faulty','crtRepl_infection','crtRepl_leadrev','crtRepl_upgrade',
+      'crtReimplant','crtPpmSame','crtPpmType','crtBrady','crtBradyReason',
+      'crtNewLead','crtExistingLead','crtAdditionalLead','crtLeadStatus','crtLbbbQRS','crtLbbbQRSna',
+      // 9.6 Temporary PM
+      'tpm_chb','tpm_mobitz2','tpm_altBBB','tpm_sss','tpmIndication',
+      'tpmCause_electrolyte','tpmCause_drug','tpmCause_digitalis','tpmCause_antiarr',
+      'tpmCause_acuteMI','tpmCause_myocarditis','tpmCause_endocarditis','tpmCause_postArrest',
+      'tpmCause_degenerative','tpmCause_hypothermia','tpmCause_bridge','tpmCause_postTAVI','tpmCause_unknown',
+      'tpmDrug_avBlock','tpmMIType','tpmPpmSameStay',
+      // 9.7 Permanent PM
+      'ppmGenerator','ppmDeviceName','ppmDevImpl',
+      'ppmDev_singleTV','ppmDev_dualTV','ppmDev_leadlessSingle','ppmDev_leadlessDual',
+      'ppmDev_his','ppmDev_leadlessLVEP','ppmDev_ccm','ppmDev_lbbb',
+      'ppmInd_21block','ppmInd_mobitz2','ppmInd_chb','ppmInd_sss','ppmIndication',
+      'ppmReplReason','ppmReimplant',
+      'ppmNewLead','ppmExistingLead','ppmAdditionalLead','ppmLeadStatus','ppmLbbbQRS','ppmLbbbQRSna',
+      // 9.8 EPS
+      'eps_svt','eps_aflutter','eps_afib','eps_vt','eps_pvcs',
+      'epsTransseptal','epsICE','epsFluoroTime','epsSedation','epsAnticoag','epsUninterrupted',
+      'epsCathManip','epsInducedArr','epsMapSystem',
+      // 9.9 LAAO
+      'laao_nonvalvular','laao_highBleed','laao_contraOAC','laao_priorBleed','laao_patientPref',
+      'laaoDeviceType','laaoPASS','laaoOutcome','laaoDeploy','laaoTransseptal','laaoImaging',
+      'laaoLeak','laaoAnticoag',
+    ],
+    'Complications':[
+      'comp_ca','comp_pci','comp_cabg','comp_tavr',
+      // Section 10.2 — order matches the renumbered form
+      'cx_cardArrest','cx_pulEdema',
+      'cx_renal','cx_dialysis',
+      'cx_stroke','strokeType',
+      'cx_accessVasc','cx_hematoma','cx_occlusion','cx_avfistula','cx_pseudoAneurysm',
+      'cx_intervReq','cx_intervEndo','cx_intervSurg','cx_intervThrombin',
+      'cx_periphEmbol','cx_pericarditis',
+      'cx_cardShock','scaiStage',
+      'cx_vent','ventType','cx_inotropes',
+      'cx_mechComp','mechCompType',
+      'cx_bleeding','bleedType','bleedSubType',
+      'bleedSite_gi','bleedSite_retro','bleedSite_genu','bleedSite_perc',
+      'cx_transfusion','transfusionUnits',
+      'cx_mi','cx_urgentSurg',
+      'cx_pericEff','cx_pericEffInterv',
+      'cx_tamp2','cx_tampOpenSurg','cx_tampPercDrain',
+      'cx_hemothorax','cx_hemoDrain','cx_pneumo','cx_pneumoInterv',
+      'cx_devMigration','cx_phrenicDmg','cx_pleuralEff','cx_infection',
+      'cx_bradyAE','cx_bradyAEppm',
+      'cx_setScrew','cx_leadDislodge','cx_leadFracture',
+    ],
+    'Outcome & Discharge':[
+      'procSuccess','postECGrhythm',
+      'condSysPace','condSysPaceQRS','condSysPaceQRSna',
+      'dischargeDate','dischargeTime','dischargeStatus','causeOfDeath','dischargeType',
+      // Section 13 Discharge Medications — placed right after Discharge Type,
+      // matching the form's order.
+      ...DC_MEDS_ORDER,
+    ],
+  };
+  // Flat canonical order — every field, in app order, deduplicated.
+  const APP_FIELD_ORDER = (function(){
+    const seen=new Set(); const out=[];
+    Object.values(EXPORT_GROUPS).forEach(list=>list.forEach(f=>{
+      if(!seen.has(f)){ seen.add(f); out.push(f); }
+    }));
+    // Safety net: append any FIELD_MAP key not captured above so nothing is
+    // ever silently dropped from the Complete sheet.
+    Object.keys(FIELD_MAP).forEach(f=>{
+      if(!seen.has(f)){ seen.add(f); out.push(f); }
+    });
+    return out;
+  })();
 
   window.exportSPSS=async function(){
     const rawData=await getFilteredExportData();
     if(!rawData.length){alert('No data to export.');return;}
     const data=rawData.map(applyDefensiveBlanking);
-    const vars=Object.keys(SPSS_VARS);
+    // Order SPSS variables to follow the APP's visible field order.
+    // Any SPSS variable not in APP_FIELD_ORDER is appended so no column drops.
+    const spssSet=new Set(Object.keys(SPSS_VARS));
+    const ordered=APP_FIELD_ORDER.filter(k=>spssSet.has(k));
+    const orderedSet=new Set(ordered);
+    const extras=Object.keys(SPSS_VARS).filter(k=>!orderedSet.has(k));
+    const vars=[...ordered,...extras];
     const headerRow=vars.map(v=>SPSS_VARS[v]);
     const aoa=[headerRow];
     data.forEach(r=>{aoa.push(vars.map(v=>encodeForSPSS(r,v)));});
@@ -5150,8 +5491,11 @@ function initApp() {
         const sample=data.find(d=>d[v]!==undefined&&d[v]!==null&&d[v]!=='')?.[v];
         if(sample===true||sample===false||sample==='Yes'||sample==='No')type='Binary (1=Yes, 0=No)';
       }
-      const missing=NUMERIC_FIELDS.has(v)?'9 (when Unrec/NA flag = 1)':'blank';
-      codebook.push([SPSS_VARS[v],label,type,missing,'']);
+      // All fields use blank (system-missing) for missing data — including
+      // numeric fields flagged Unrecordable / Not assessed. No "9" sentinel.
+      const missing='blank (system-missing)';
+      const notes=NUMERIC_FIELDS.has(v)?'Unrecordable / Not assessed exported as blank':'';
+      codebook.push([SPSS_VARS[v],label,type,missing,notes]);
     });
     const wb=XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb,ws,'SPSS_Data');
@@ -5163,7 +5507,6 @@ function initApp() {
     const rawData=await getFilteredExportData();
     if(!rawData.length){alert('No data to export.');return;}
     const data=rawData.map(applyDefensiveBlanking);
-    const allFields=Object.keys(FIELD_MAP);
 
     const mkSheet=(fields)=>{
       const hdr=fields.map(f=>FIELD_MAP[f]||f);
@@ -5174,26 +5517,19 @@ function initApp() {
       return ws;
     };
 
-    const idFields=['_no','nameFirst','nameMiddle','nameLast','civilId','crfNo','fileNumber','gender','nationality','yob','estimatedAge','admissionDate','recordStatus','epReason','enrolledByName','patientOrigin'];
-    const hxFields=allFields.filter(f=>f.startsWith('hx_')||f.startsWith('arrest')||f.startsWith('icm')||f.startsWith('hf')||f.startsWith('afib')||f.startsWith('ssd_')||f.startsWith('struct_')||f.startsWith('syncope')||f.startsWith('avp')||f.startsWith('mvp')||f.startsWith('ca')||f.startsWith('cabg')||f.startsWith('pci')||f.startsWith('cied_')||['sysBp','sysBpUnrec','diaBp','diaBpUnrec','hr','hrUnrec','weight','weightUnrec','height','heightUnrec'].includes(f));
-    // Medications: explicit ordered list, Home Meds first, then Discharge Meds
-    const medsFields=[...HOME_MEDS_ORDER.filter(f=>FIELD_MAP[f]),...DC_MEDS_ORDER.filter(f=>FIELD_MAP[f])];
-    const invFields=allFields.filter(f=>f.startsWith('inv_')||f.startsWith('ecg')||f.startsWith('holter')||f.startsWith('sev')||f.startsWith('laa')||f.startsWith('tee')||['lvef','lvefNA','lvesd','lvesdNA','lvedd','lveddNA','rvsp','rvspNA','intracardThrombus','creatInit','creatInitNA','creatPeak','creatPeakNA','hgbInit','hgbInitNA','hgbLowest','hgbLowestNA','sodium','sodiumNA','potassium','potassiumNA','magnesium','magnesiumNA','inr','inrNA'].includes(f));
-    const procFields=allFields.filter(f=>f.startsWith('crt')||f.startsWith('tpm')||f.startsWith('ppm')||f.startsWith('eps')||f.startsWith('laao')||f==='procStartDate'||f==='procStartTime'||f==='procEndTime'||f==='operatorName');
-    const cxFields=allFields.filter(f=>f.startsWith('cx_')||f.startsWith('bleed')||f.startsWith('vent')||f.startsWith('scai')||f.startsWith('mech')||f.startsWith('stroke')||f.startsWith('transfus')||f==='comp_ca'||f==='comp_pci'||f==='comp_cabg'||f==='comp_tavr');
-    const outcFields=allFields.filter(f=>f.startsWith('cond')||['procSuccess','postECGrhythm','dischargeDate','dischargeTime','dischargeStatus','causeOfDeath','dischargeType'].includes(f));
-
-    // "Complete" sheet with every mapped field — guarantees no data is silently dropped
-    const completeFields=allFields;
+    // Themed sheets — each draws from the explicit, app-ordered EXPORT_GROUPS
+    // lists so every column sits in the same order/position as the data-entry
+    // form. The "Complete" sheet uses the full flat app order.
+    const completeFields=APP_FIELD_ORDER;
 
     const wb=XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb,mkSheet(idFields),'Demographics');
-    XLSX.utils.book_append_sheet(wb,mkSheet(hxFields),'History & Vitals');
-    XLSX.utils.book_append_sheet(wb,mkSheet(medsFields),'Medications');
-    XLSX.utils.book_append_sheet(wb,mkSheet(invFields),'Investigations & Labs');
-    XLSX.utils.book_append_sheet(wb,mkSheet(procFields),'Procedure Details');
-    XLSX.utils.book_append_sheet(wb,mkSheet(cxFields),'Complications');
-    XLSX.utils.book_append_sheet(wb,mkSheet(outcFields),'Outcome & Discharge');
+    XLSX.utils.book_append_sheet(wb,mkSheet(EXPORT_GROUPS['Demographics']),'Demographics');
+    XLSX.utils.book_append_sheet(wb,mkSheet(EXPORT_GROUPS['History & Vitals']),'History & Vitals');
+    XLSX.utils.book_append_sheet(wb,mkSheet(EXPORT_GROUPS['Medications']),'Medications');
+    XLSX.utils.book_append_sheet(wb,mkSheet(EXPORT_GROUPS['Investigations & Labs']),'Investigations & Labs');
+    XLSX.utils.book_append_sheet(wb,mkSheet(EXPORT_GROUPS['Procedure Details']),'Procedure Details');
+    XLSX.utils.book_append_sheet(wb,mkSheet(EXPORT_GROUPS['Complications']),'Complications');
+    XLSX.utils.book_append_sheet(wb,mkSheet(EXPORT_GROUPS['Outcome & Discharge']),'Outcome & Discharge');
     XLSX.utils.book_append_sheet(wb,mkSheet(completeFields),'Complete (All Fields)');
     XLSX.writeFile(wb,'EPS_Registry_Export.xlsx');
   };
