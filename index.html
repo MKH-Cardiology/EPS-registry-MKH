@@ -4772,6 +4772,35 @@ function initApp() {
     dcMed_ufh:'DC Med: Unfractionated Heparin', dcMed_prasugrel:'DC Med: Prasugrel',
     dcMed_ticagrelor:'DC Med: Ticagrelor', dcMed_cangrelor:'DC Med: Cangrelor',
     dcMed_arb:'DC Med: ARB', dcMed_arni:'DC Med: ARNI', dcMed_sglt:'DC Med: SGLT inhibitor',
+    // Remaining Home/Discharge meds — these were never added to FIELD_MAP, so
+    // the Excel export showed them with raw database keys as headers (e.g.
+    // "dcMed_warfarin") instead of readable labels. Added here so every
+    // medication column exports with a proper "Home Med:" / "DC Med:" label.
+    homeMed_amiodarone:'Home Med: Amiodarone',
+    homeMed_flecainide:'Home Med: Flecainide',
+    homeMed_sotalol:'Home Med: Sotalol',
+    homeMed_warfarin:'Home Med: Warfarin',
+    homeMed_dabigatran:'Home Med: Dabigatran',
+    homeMed_apixaban:'Home Med: Apixaban',
+    homeMed_aspirin:'Home Med: Aspirin',
+    homeMed_clopidogrel:'Home Med: Clopidogrel',
+    homeMed_acei:'Home Med: ACE-I',
+    homeMed_arb:'Home Med: ARB',
+    homeMed_arni:'Home Med: ARNI',
+    homeMed_sglt:'Home Med: SGLT inhibitor',
+    homeMed_betablocker:'Home Med: Beta Blockers',
+    homeMed_mra:'Home Med: MRA',
+    homeMed_digoxin:'Home Med: Digoxin',
+    homeMed_loopdiuretic:'Home Med: Loop diuretics',
+    dcMed_warfarin:'DC Med: Warfarin',
+    dcMed_apixaban:'DC Med: Apixaban',
+    dcMed_aspirin:'DC Med: Aspirin',
+    dcMed_clopidogrel:'DC Med: Clopidogrel',
+    dcMed_acei:'DC Med: ACE-I',
+    dcMed_betablocker:'DC Med: Beta Blockers',
+    dcMed_mra:'DC Med: MRA',
+    dcMed_digoxin:'DC Med: Digoxin',
+    dcMed_loopdiuretic:'DC Med: Loop diuretics',
 
     // 4.15 Structural abnormality (Y/N wrapper already in FIELD_MAP as hx_struct)
     struct_infiltrative:'Struct: Infiltrative',
@@ -5290,24 +5319,11 @@ function initApp() {
   }
 
   // Explicit medication ordering — keeps Home Meds and Discharge Meds grouped & in clinical order
-  const HOME_MEDS_ORDER=[
-    'homeMed_amiodarone','homeMed_disopyramide','homeMed_flecainide','homeMed_procainamide',
-    'homeMed_propafenone','homeMed_sotalol','homeMed_verapamil','homeMed_diltiazem',
-    'homeMed_warfarin','homeMed_dabigatran','homeMed_apixaban','homeMed_rivaroxaban',
-    'homeMed_edoxaban','homeMed_lmwh','homeMed_ufh',
-    'homeMed_aspirin','homeMed_clopidogrel','homeMed_prasugrel','homeMed_ticagrelor','homeMed_cangrelor',
-    'homeMed_acei','homeMed_arb','homeMed_arni','homeMed_sglt',
-    'homeMed_betablocker','homeMed_ivabradine','homeMed_mra','homeMed_digoxin','homeMed_loopdiuretic'
-  ];
-  const DC_MEDS_ORDER=[
-    'dcMed_amiodarone','dcMed_disopyramide','dcMed_flecainide','dcMed_procainamide',
-    'dcMed_propafenone','dcMed_sotalol','dcMed_verapamil','dcMed_diltiazem',
-    'dcMed_warfarin','dcMed_dabigatran','dcMed_apixaban','dcMed_rivaroxaban',
-    'dcMed_edoxaban','dcMed_lmwh','dcMed_ufh',
-    'dcMed_aspirin','dcMed_clopidogrel','dcMed_prasugrel','dcMed_ticagrelor','dcMed_cangrelor',
-    'dcMed_acei','dcMed_arb','dcMed_arni','dcMed_sglt',
-    'dcMed_betablocker','dcMed_ivabradine','dcMed_mra','dcMed_digoxin','dcMed_loopdiuretic'
-  ];
+  // Medication export order — derived DIRECTLY from medsList (the array that
+  // builds the data-entry grids) so the Excel/SPSS column order can never drift
+  // from the order shown in the CRF. medsList is defined earlier in initApp().
+  const HOME_MEDS_ORDER = medsList.map(m => 'homeMed_' + m.f);
+  const DC_MEDS_ORDER   = medsList.map(m => 'dcMed_'   + m.f);
 
   // ============================================================================
   // CANONICAL APP FIELD ORDER  (May 2026 — analyst feedback)
@@ -5351,7 +5367,10 @@ function initApp() {
       'cied_his','cied_lbbb','cied_icdSingle','cied_icdDual','cied_crtd','cied_evicd','cied_sicd','cied_unknown',
     ],
     'Medications':[
-      ...HOME_MEDS_ORDER, ...DC_MEDS_ORDER,
+      // Home medications only (Step 3 in the CRF). Discharge medications appear
+      // in the "Outcome & Discharge" sheet after Discharge Type, mirroring
+      // section 13's position in the form.
+      ...HOME_MEDS_ORDER,
     ],
     'Investigations & Labs':[
       // Section 7 investigations
@@ -5424,6 +5443,9 @@ function initApp() {
       'procSuccess','postECGrhythm',
       'condSysPace','condSysPaceQRS','condSysPaceQRSna',
       'dischargeDate','dischargeTime','dischargeStatus','causeOfDeath','dischargeType',
+      // Section 13 Discharge Medications — placed right after Discharge Type,
+      // matching the form's order.
+      ...DC_MEDS_ORDER,
     ],
   };
   // Flat canonical order — every field, in app order, deduplicated.
