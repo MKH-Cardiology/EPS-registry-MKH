@@ -4668,9 +4668,7 @@ function initApp() {
     crtInd_surv:'CRT Ind: Cardiac Arrest Survivors',crtInd_eps:'CRT Ind: Inducible VT by EPS',
     crtInd_icmEF:'CRT Ind: ICM EF≤35%',crtInd_nicmEF:'CRT Ind: Non-ICM EF≤35%',
     crtGenerator:'CRT Generator Type',
-    tpm_chb:'TPM Ind: CHB',tpm_mobitz2:'TPM Ind: Mobitz II',tpm_altBBB:'TPM Ind: Alt BBB',tpm_sss:'TPM Ind: SSS',
     ppmGenerator:'PPM Generator Type',ppmDeviceName:'PPM Device Name',
-    ppmInd_21block:'PPM Ind: 2:1 Block',ppmInd_mobitz2:'PPM Ind: Mobitz II',ppmInd_chb:'PPM Ind: CHB',ppmInd_sss:'PPM Ind: SSS',
     eps_reason:'EPS/Ablation Reason',
     epsTransseptal:'EPS: Transseptal',epsICE:'EPS: ICE Used',epsFluoroTime:'EPS: Fluoro Time (min)',
     laao_nonvalvular:'LAAO Ind: Non-valvular AFib',laao_highBleed:'LAAO Ind: High Bleed Risk',
@@ -4730,8 +4728,7 @@ function initApp() {
     procStartDate:'ProcDate',procStartTime:'ProcStart',procEndTime:'ProcEnd',operatorName:'Operator',
     crtInd_surv:'CRTIndSrv',crtInd_eps:'CRTIndEPS',crtInd_icmEF:'CRTIndICM',crtInd_nicmEF:'CRTIndNIC',
     crtGenerator:'CRTGen',
-    tpm_chb:'TPMindCHB',tpm_mobitz2:'TPMindM2',tpm_altBBB:'TPMindBBB',tpm_sss:'TPMindSSS',
-    ppmGenerator:'PPMGen',ppmInd_21block:'PPMind21',ppmInd_mobitz2:'PPMindM2',ppmInd_chb:'PPMindCHB',ppmInd_sss:'PPMindSSS',
+    ppmGenerator:'PPMGen',
     eps_reason:'EPSReason',
     epsTransseptal:'EPSTrans',epsICE:'EPSICE',epsFluoroTime:'EPSFluro',
     laao_nonvalvular:'LAOIndNV',laao_highBleed:'LAOIndHB',laao_contraOAC:'LAOIndOAC',laao_priorBleed:'LAOIndPB',
@@ -5753,7 +5750,9 @@ function initApp() {
     ["Compli_AccesSite_Avfistula","cx_avfistula"],
     ["Compli_AccesSite_PseudoAneur","cx_pseudoAneurysm"],
     ["Compli_Intervention","cx_intervReq"],
-    ["Compli_InterventionType","cx_intervEndo"],
+    ["Compli_InterventionType_Endovascular","cx_intervEndo"],
+    ["Compli_InterventionType_Surgical","cx_intervSurg"],
+    ["Compli_InterventionType_Thrombin","cx_intervThrombin"],
     ["Compli_PerpheralEmboliz","cx_periphEmbol"],
     ["Compli_Pericarditis","cx_pericarditis"],
     ["Compli_CardiogenicShock","cx_cardShock"],
@@ -5766,7 +5765,10 @@ function initApp() {
     ["Compli_AnyBleeding","cx_bleeding"],
     ["Compli_AnyBleed_Type","bleedType"],
     ["Compli_MajorBleed_Type","bleedSubType"],
-    ["Compli_Bleed_Site","bleedSite_gi"],
+    ["Compli_Bleed_Site_GI","bleedSite_gi"],
+    ["Compli_Bleed_Site_Retroperitoneal","bleedSite_retro"],
+    ["Compli_Bleed_Site_GenitoUrinary","bleedSite_genu"],
+    ["Compli_Bleed_Site_PercutEntry","bleedSite_perc"],
     ["Compli_Bleed_Transfusion","cx_transfusion"],
     ["Compli_Bleed_TransfusUnit","transfusionUnits"],
     ["Compli_MI","cx_mi"],
@@ -5835,41 +5837,39 @@ function initApp() {
     if(!rawData.length){alert('No data to export.');return;}
     const data=rawData.map(applyDefensiveBlanking);
 
-    const mkSheet=(fields)=>{
-      const hdr=fields.map(f=>FIELD_MAP[f]||f);
-      const aoa=[hdr];
-      data.forEach(r=>{aoa.push(fields.map(f=>encodeForExcel(r,f)));});
-      const ws=XLSX.utils.aoa_to_sheet(aoa,{cellDates:true});
-      writeTypedSheet(ws, fields);
-      return ws;
-    };
-
-    // Themed sheets — each draws from the explicit, app-ordered EXPORT_GROUPS
-    // lists so every column sits in the same order/position as the data-entry
-    // form. The "Complete" sheet uses the full flat app order.
-    const completeFields=APP_FIELD_ORDER;
-
-    // Model sheet — single flat sheet, model variable names, model order.
-    const mkModelSheet=()=>{
-      const hdr=MODEL_EXPORT.map(p=>p[0]);
-      const keys=MODEL_EXPORT.map(p=>p[1]);
+    // Every sheet uses the EXACT model variable names from EPS_Variable_model
+    // (May 18 2026). MODEL_EXPORT is the single source of truth: [modelName,
+    // internalKey] pairs in model order. Themed sheets are section slices of
+    // that same list, so headers are 100% consistent with the model sheet.
+    //
+    // buildSheet(pairs): pairs = array of [modelName, internalKey].
+    const buildSheet=(pairs)=>{
+      const hdr=pairs.map(p=>p[0]);
+      const keys=pairs.map(p=>p[1]);
       const aoa=[hdr];
       data.forEach(r=>{aoa.push(keys.map(k=>encodeForExcel(r,k)));});
       const ws=XLSX.utils.aoa_to_sheet(aoa,{cellDates:true});
       writeTypedSheet(ws, keys);
       return ws;
     };
+    // Section slices of MODEL_EXPORT — boundaries match the model's row order.
+    const sliceByModelName=(startName,endName)=>{
+      const s=MODEL_EXPORT.findIndex(p=>p[0]===startName);
+      const e=endName?MODEL_EXPORT.findIndex(p=>p[0]===endName):MODEL_EXPORT.length;
+      return MODEL_EXPORT.slice(s, e<0?MODEL_EXPORT.length:e);
+    };
 
     const wb=XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb,mkModelSheet(),'Model');
-    XLSX.utils.book_append_sheet(wb,mkSheet(EXPORT_GROUPS['Demographics']),'Demographics');
-    XLSX.utils.book_append_sheet(wb,mkSheet(EXPORT_GROUPS['History & Vitals']),'History & Vitals');
-    XLSX.utils.book_append_sheet(wb,mkSheet(EXPORT_GROUPS['Medications']),'Medications');
-    XLSX.utils.book_append_sheet(wb,mkSheet(EXPORT_GROUPS['Investigations & Labs']),'Investigations & Labs');
-    XLSX.utils.book_append_sheet(wb,mkSheet(EXPORT_GROUPS['Procedure Details']),'Procedure Details');
-    XLSX.utils.book_append_sheet(wb,mkSheet(EXPORT_GROUPS['Complications']),'Complications');
-    XLSX.utils.book_append_sheet(wb,mkSheet(EXPORT_GROUPS['Outcome & Discharge']),'Outcome & Discharge');
-    XLSX.utils.book_append_sheet(wb,mkSheet(completeFields),'Complete (All Fields)');
+    // Model — full flat sheet, every variable in model order.
+    XLSX.utils.book_append_sheet(wb,buildSheet(MODEL_EXPORT),'Model');
+    // Themed sheets — section slices, same model variable names.
+    XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName('CaseNo','Exam_SysBPmmHg')),'Demographics');
+    XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName('Exam_SysBPmmHg','HomMed_Amiodarone')),'History & Vitals');
+    XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName('HomMed_Amiodarone','Invest_ECG')),'Home Medications');
+    XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName('Invest_ECG','Procedure_StartDate')),'Investigations & Labs');
+    XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName('Procedure_StartDate','Compli_ProcedureCA')),'Procedure Details');
+    XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName('Compli_ProcedureCA','Outcom_ImmProcedSuccess')),'Complications');
+    XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName('Outcom_ImmProcedSuccess',null)),'Outcome & Discharge');
     XLSX.writeFile(wb,'EPS_Registry_Export.xlsx');
   };
 
