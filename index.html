@@ -781,7 +781,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
   <div class="card mb-3">
     <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.17 Syndromes of Sudden Death<button type="button" class="fn-btn" onclick="openFn('4.14')" aria-label="Field information" title="Click for field information">i</button></span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'ssd','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'ssd','Yes')">Yes</button></div></div>
     <input type="hidden" name="hx_ssd" id="val_ssd" value="">
-    <div id="sub_ssd" class="sub-reveal"><label class="lbl">4.17a Syndrome type:</label><div class="g3 mt-1"><label class="chk-item"><input type="checkbox" name="ssd_brugada"> Brugada</label><label class="chk-item"><input type="checkbox" name="ssd_cpvt"> Catecholaminergic polymorphic VT</label><label class="chk-item"><input type="checkbox" name="ssd_idiopathic"> Idiopathic/Primary VT/VF</label><label class="chk-item"><input type="checkbox" name="ssd_longqt"> Long QT</label><label class="chk-item"><input type="checkbox" name="ssd_shortqt"> Short QT</label><label class="chk-item"><input type="checkbox" name="ssd_unknown"> Unknown</label></div></div>
+    <div id="sub_ssd" class="sub-reveal"><label class="lbl">4.17a Syndrome type:</label><div class="mt-1"><select name="ssd_type" class="inp"><option value="">Select…</option><option value="Brugada">Brugada</option><option value="Catecholaminergic polymorphic VT">Catecholaminergic polymorphic VT</option><option value="Idiopathic/Primary VT/VF">Idiopathic/Primary VT/VF</option><option value="Long QT">Long QT</option><option value="Short QT">Short QT</option><option value="Unknown">Unknown</option></select></div></div>
   </div>
   <div class="card mb-3">
     <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.18 Structural Abnormalities</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'struct','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'struct','Yes')">Yes</button></div></div>
@@ -807,7 +807,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
   <div class="card mb-3">
     <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.25 Prior CV Implantable Electronic Device (CIED)</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'cied','No'); recheckCiedAgainstLeads();">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'cied','Yes')">Yes</button></div></div>
     <input type="hidden" name="hx_cied" id="val_cied" value="">
-    <div id="sub_cied" class="sub-reveal"><label class="lbl">4.25a Prior CIED device type:</label><div class="g3 mt-1"><label class="chk-item"><input type="checkbox" name="cied_single"> Single chamber transvenous PPM</label><label class="chk-item"><input type="checkbox" name="cied_dual"> Dual chamber transvenous PPM</label><label class="chk-item"><input type="checkbox" name="cied_crtp"> CRT-P</label><label class="chk-item"><input type="checkbox" name="cied_leadlessSingle"> Leadless single chamber PPM</label><label class="chk-item"><input type="checkbox" name="cied_leadlessDual"> Leadless dual chamber PPM</label><label class="chk-item"><input type="checkbox" name="cied_his"> His bundle PPM</label><label class="chk-item"><input type="checkbox" name="cied_lbbb"> Left bundle area PPM</label><label class="chk-item"><input type="checkbox" name="cied_icdSingle"> ICD single chamber</label><label class="chk-item"><input type="checkbox" name="cied_icdDual"> ICD dual chamber</label><label class="chk-item"><input type="checkbox" name="cied_crtd"> CRT-D</label><label class="chk-item"><input type="checkbox" name="cied_evicd"> Extravascular ICD</label><label class="chk-item"><input type="checkbox" name="cied_sicd"> S-ICD (Sub Q)</label><label class="chk-item"><input type="checkbox" name="cied_unknown"> Unknown</label></div></div>
+    <div id="sub_cied" class="sub-reveal"><label class="lbl">4.25a Prior CIED device type:</label><div class="mt-1"><select name="cied_type" class="inp"><option value="">Select…</option><option value="Single chamber transvenous PPM">Single chamber transvenous PPM</option><option value="Dual chamber transvenous PPM">Dual chamber transvenous PPM</option><option value="CRT-P">CRT-P</option><option value="Leadless single chamber PPM">Leadless single chamber PPM</option><option value="Leadless dual chamber PPM">Leadless dual chamber PPM</option><option value="His bundle PPM">His bundle PPM</option><option value="Left bundle area PPM">Left bundle area PPM</option><option value="ICD single chamber">ICD single chamber</option><option value="ICD dual chamber">ICD dual chamber</option><option value="CRT-D">CRT-D</option><option value="Extravascular ICD">Extravascular ICD</option><option value="S-ICD (Sub Q)">S-ICD (Sub Q)</option><option value="Unknown">Unknown</option></select></div></div>
   </div>
 </div>
 
@@ -922,13 +922,9 @@ html,body{max-width:100vw;overflow-x:hidden;}
       </div>
       <div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">Inherited heart disease with increased risk of SCD</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'crtInherited','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'crtInherited','Yes')">Yes</button></div></div>
       <input type="hidden" name="crtInherited" id="val_crtInherited" value="">
-      <div id="sub_crtInherited" class="sub-reveal"><label class="lbl">Specify (check all that apply):</label>
-        <div class="g2 mt-1">
-          <label class="chk-item"><input type="checkbox" name="crtInh_longqt"> Long QT-syndrome</label>
-          <label class="chk-item"><input type="checkbox" name="crtInh_hcm"> HCM</label>
-          <label class="chk-item"><input type="checkbox" name="crtInh_brugada"> Brugada syndrome</label>
-          <label class="chk-item"><input type="checkbox" name="crtInh_arvd"> Arrhythmogenic RV Dysplasia/Cardiomyopathy (ARVD/C)</label>
-          <label class="chk-item"><input type="checkbox" name="crtInh_cpvt"> Catecholaminergic Polymorphic VT (CPVT)</label>
+      <div id="sub_crtInherited" class="sub-reveal"><label class="lbl">Specify:</label>
+        <div class="mt-1">
+          <select name="crtInh_type" class="inp"><option value="">Select…</option><option value="Long QT-syndrome">Long QT-syndrome</option><option value="HCM">HCM</option><option value="Brugada syndrome">Brugada syndrome</option><option value="Arrhythmogenic RV Dysplasia/Cardiomyopathy (ARVD/C)">Arrhythmogenic RV Dysplasia/Cardiomyopathy (ARVD/C)</option><option value="Catecholaminergic Polymorphic VT (CPVT)">Catecholaminergic Polymorphic VT (CPVT)</option></select>
         </div>
       </div>
     </div>
@@ -1094,16 +1090,9 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">9.7b Device implant</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'ppmDevImpl','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'ppmDevImpl','Yes')">Yes</button></div></div>
       <input type="hidden" name="ppmDevImpl" id="val_ppmDevImpl" value="">
       <div id="sub_ppmDevImpl" class="sub-reveal">
-        <label class="lbl">9.7.b.1 Device Type (check all that apply):</label>
-        <div class="g2 mt-1 mb-3">
-          <label class="chk-item"><input type="checkbox" name="ppmDev_singleTV"> Single chamber transvenous PPM</label>
-          <label class="chk-item"><input type="checkbox" name="ppmDev_dualTV"> Dual chamber transvenous PPM</label>
-          <label class="chk-item"><input type="checkbox" name="ppmDev_leadlessSingle"> Leadless single chamber PPM</label>
-          <label class="chk-item"><input type="checkbox" name="ppmDev_leadlessDual"> Leadless dual chamber PPM</label>
-          <label class="chk-item"><input type="checkbox" name="ppmDev_his"> His-bundle PPM</label>
-          <label class="chk-item"><input type="checkbox" name="ppmDev_leadlessLVEP"> Leadless LVEP</label>
-          <label class="chk-item"><input type="checkbox" name="ppmDev_ccm"> CCM</label>
-          <label class="chk-item"><input type="checkbox" name="ppmDev_lbbb" onchange="onPpmLbbb()"> LBBB PPM</label>
+        <label class="lbl">9.7.b.1 Device Type:</label>
+        <div class="mt-1 mb-3">
+          <select name="ppmDev_type" class="inp" onchange="onPpmLbbb()"><option value="">Select…</option><option value="Single chamber transvenous PPM">Single chamber transvenous PPM</option><option value="Dual chamber transvenous PPM">Dual chamber transvenous PPM</option><option value="Leadless single chamber PPM">Leadless single chamber PPM</option><option value="Leadless dual chamber PPM">Leadless dual chamber PPM</option><option value="His-bundle PPM">His-bundle PPM</option><option value="Leadless LVEP">Leadless LVEP</option><option value="CCM">CCM</option><option value="LBBB PPM">LBBB PPM</option></select>
         </div>
         <div id="ppmLbbbSub" class="sub-reveal"><label class="lbl">9.7.b.1.a QRS width post procedure (msec)</label><input type="number" name="ppmLbbbQRS" min="40" max="300" class="inp max-w-xs"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="ppmLbbbQRSna" class="w-3 h-3"> Not assessed</label></div>
       </div>
@@ -1139,12 +1128,8 @@ html,body{max-width:100vw;overflow-x:hidden;}
   </div>
   <div class="proc-section" id="proc_eps"><div class="card card-purple mb-3" style="border-left:4px solid #7c3aed;"><div style="font-weight:800;color:#4c1d95;font-size:14px;">9.8 — EPS / Ablation</div></div>
     <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.8a Reason for EPS/Ablation:</label>
-      <div class="g2">
-        <label class="chk-item"><input type="checkbox" name="eps_svt"> SVT</label>
-        <label class="chk-item"><input type="checkbox" name="eps_aflutter"> Atrial flutter</label>
-        <label class="chk-item"><input type="checkbox" name="eps_afib"> Atrial fibrillation</label>
-        <label class="chk-item"><input type="checkbox" name="eps_vt"> VT</label>
-        <label class="chk-item"><input type="checkbox" name="eps_pvcs"> PVCs</label>
+      <div class="mt-1">
+        <select name="eps_reason" class="inp"><option value="">Select…</option><option value="SVT">SVT</option><option value="Atrial flutter">Atrial flutter</option><option value="Atrial fibrillation">Atrial fibrillation</option><option value="VT">VT</option><option value="PVCs">PVCs</option></select>
       </div>
     </div>
 
@@ -2994,8 +2979,8 @@ function initApp() {
   window.onTpmPpmSameStay=function(){};
   // Permanent PM toggles
   window.onPpmLbbb=function(){
-    const cb=document.querySelector('input[name="ppmDev_lbbb"]');
-    _toggleSub(document.getElementById('ppmLbbbSub'), !!cb?.checked);
+    const sel=document.querySelector('select[name="ppmDev_type"]');
+    _toggleSub(document.getElementById('ppmLbbbSub'), sel?.value==='LBBB PPM');
   };
   window.onPpmLead=function(){
     const v=document.querySelector('select[name="ppmExistingLead"]')?.value;
@@ -3856,14 +3841,9 @@ function initApp() {
     // CHECKBOX GROUPS: each group requires at-least-one-checked when its container is shown.
     // Individual members are NOT required — un-ticked checkbox = "this option does not apply".
     const CHECKBOX_GROUPS = [
-      { label:'4.14a Syndrome type (SSD)', members:['ssd_brugada','ssd_cpvt','ssd_idiopathic','ssd_longqt','ssd_shortqt','ssd_unknown'] },
-      { label:'4.25a Prior CIED device type', members:['cied_single','cied_dual','cied_crtp','cied_leadlessSingle','cied_leadlessDual','cied_his','cied_lbbb','cied_icdSingle','cied_icdDual','cied_crtd','cied_evicd','cied_sicd','cied_unknown'] },
       { label:'9.5 CRT/AICD indications', members:['crtInd_surv','crtInd_eps','crtInd_icmEF','crtInd_nicmEF','crtInd_vtUnresp'] },
-      { label:'9.5 CRT inherited disease type', members:['crtInh_longqt','crtInh_hcm','crtInh_brugada','crtInh_arvd','crtInh_cpvt'] },
       { label:'9.5 CRT replacement reason', members:['crtRepl_relocation','crtRepl_battery','crtRepl_faulty','crtRepl_infection','crtRepl_leadrev','crtRepl_upgrade'] },
       { label:'9.6 Temporary PM cause', members:['tpmCause_electrolyte','tpmCause_drug','tpmCause_digitalis','tpmCause_antiarr','tpmCause_acuteMI','tpmCause_myocarditis','tpmCause_endocarditis','tpmCause_postArrest','tpmCause_degenerative','tpmCause_hypothermia','tpmCause_bridge','tpmCause_postTAVI','tpmCause_unknown'] },
-      { label:'9.7 Permanent PM device', members:['ppmDev_singleTV','ppmDev_dualTV','ppmDev_leadlessSingle','ppmDev_leadlessDual','ppmDev_his','ppmDev_leadlessLVEP','ppmDev_ccm','ppmDev_lbbb'] },
-      { label:'9.8 EPS arrhythmia mapped', members:['eps_svt','eps_aflutter','eps_afib','eps_vt','eps_pvcs'] },
       { label:'9.9a LAAO indication', members:['laao_nonvalvular','laao_highBleed','laao_contraOAC','laao_priorBleed','laao_patientPref'] },
       { label:'10.x Intervention type', members:['cx_intervEndo','cx_intervSurg','cx_intervThrombin'] },
       { label:'10.2.13.b Bleeding site', members:['bleedSite_gi','bleedSite_retro','bleedSite_genu','bleedSite_perc'] }
@@ -4277,6 +4257,31 @@ function initApp() {
       document.querySelectorAll('input[type="hidden"][id^="val_"]').forEach(h=>{h.value='';});
       document.querySelectorAll('.yn-btn.selected').forEach(b=>b.classList.remove('selected'));
 
+      // ---- Legacy migration ----------------------------------------------
+      // 4.17a / 4.25a / 9.5a / 9.7b.1 / 9.8a were multi-checkbox fields and are
+      // now single-select dropdowns. Older records store the old checkbox keys
+      // (e.g. ssd_brugada=true). Derive the new single value from the first
+      // ticked legacy checkbox so the dropdown shows correctly on edit.
+      (function migrateLegacySingleSelects(){
+        const MIGRATIONS=[
+          {newKey:'ssd_type', map:{ssd_brugada:'Brugada',ssd_cpvt:'Catecholaminergic polymorphic VT',ssd_idiopathic:'Idiopathic/Primary VT/VF',ssd_longqt:'Long QT',ssd_shortqt:'Short QT',ssd_unknown:'Unknown'}},
+          {newKey:'cied_type', map:{cied_single:'Single chamber transvenous PPM',cied_dual:'Dual chamber transvenous PPM',cied_crtp:'CRT-P',cied_leadlessSingle:'Leadless single chamber PPM',cied_leadlessDual:'Leadless dual chamber PPM',cied_his:'His bundle PPM',cied_lbbb:'Left bundle area PPM',cied_icdSingle:'ICD single chamber',cied_icdDual:'ICD dual chamber',cied_crtd:'CRT-D',cied_evicd:'Extravascular ICD',cied_sicd:'S-ICD (Sub Q)',cied_unknown:'Unknown'}},
+          {newKey:'crtInh_type', map:{crtInh_longqt:'Long QT-syndrome',crtInh_hcm:'HCM',crtInh_brugada:'Brugada syndrome',crtInh_arvd:'Arrhythmogenic RV Dysplasia/Cardiomyopathy (ARVD/C)',crtInh_cpvt:'Catecholaminergic Polymorphic VT (CPVT)'}},
+          {newKey:'ppmDev_type', map:{ppmDev_singleTV:'Single chamber transvenous PPM',ppmDev_dualTV:'Dual chamber transvenous PPM',ppmDev_leadlessSingle:'Leadless single chamber PPM',ppmDev_leadlessDual:'Leadless dual chamber PPM',ppmDev_his:'His-bundle PPM',ppmDev_leadlessLVEP:'Leadless LVEP',ppmDev_ccm:'CCM',ppmDev_lbbb:'LBBB PPM'}},
+          {newKey:'eps_reason', map:{eps_svt:'SVT',eps_aflutter:'Atrial flutter',eps_afib:'Atrial fibrillation',eps_vt:'VT',eps_pvcs:'PVCs'}},
+        ];
+        MIGRATIONS.forEach(({newKey,map})=>{
+          if(data[newKey]) return; // already has a new-format value
+          for(const oldKey of Object.keys(map)){
+            if(data[oldKey]===true||data[oldKey]==='true'||data[oldKey]==='Yes'){
+              data[newKey]=map[oldKey];
+              break; // first ticked option wins
+            }
+          }
+        });
+      })();
+      // --------------------------------------------------------------------
+
       let loaded=0;
       Object.keys(data).forEach(key=>{
         // Skip meta keys that aren't form fields
@@ -4634,18 +4639,14 @@ function initApp() {
     hx_valve:'Valvular HD',hx_cvd:'Cerebrovascular Disease',
     hx_lung:'Chronic Lung Disease',hx_dialysis:'On Dialysis',hx_dm:'Diabetes Mellitus',hx_htn:'Hypertension',
     hx_familialSyndrome:'Familial Syndrome',
-    hx_ssd:'Sudden Death Syndrome',ssd_brugada:'SSD: Brugada',ssd_cpvt:'SSD: CPVT',ssd_idiopathic:'SSD: Idiopathic',
-    ssd_longqt:'SSD: Long QT',ssd_shortqt:'SSD: Short QT',ssd_unknown:'SSD: Unknown',
+    hx_ssd:'Sudden Death Syndrome',ssd_type:'Sudden Death Syndrome Type',
     hx_struct:'Structural Abnormalities',struct_arvc:'Struct: ARVC',struct_congenital:'Struct: Congenital HD',
     struct_hcm:'Struct: HCM',struct_infiltrative:'Struct: Infiltrative',struct_lv:'Struct: LV Abnormality',
     hx_syncope:'Syncope',syncopeRecent:'Syncope within 6 months',
     hx_svt:'Paroxysmal SVT',hx_vf:'VF',hx_vt:'VT',
     hx_avp:'Aortic Valve Procedure',avpType:'AVP Type',avpRecent:'AVP within 6 months',
     hx_mvp:'Mitral Valve Procedure',mvpType:'MVP Type',mvpRecent:'MVP within 6 months',
-    hx_cied:'Prior CIED',cied_single:'CIED: Single PPM',cied_dual:'CIED: Dual PPM',cied_crtp:'CIED: CRT-P',
-    cied_leadlessSingle:'CIED: Leadless Single',cied_leadlessDual:'CIED: Leadless Dual',
-    cied_his:'CIED: His Bundle',cied_lbbb:'CIED: LBBA PPM',cied_icdSingle:'CIED: ICD Single',
-    cied_icdDual:'CIED: ICD Dual',cied_crtd:'CIED: CRT-D',cied_evicd:'CIED: EV-ICD',cied_sicd:'CIED: S-ICD',cied_unknown:'CIED: Unknown',
+    hx_cied:'Prior CIED',cied_type:'Prior CIED Device Type',
     inv_ecg:'ECG',ecgAtrialRhythm:'ECG Atrial Rhythm',ecgVentRhythm:'ECG Vent Rhythm',ecgQRS:'QRS (msec)',ecgQRSna:'QRS Not Assessed',
     inv_holter:'Holter',holterAtrialRhythm:'Holter Atrial Rhythm',holterVentRhythm:'Holter Vent Rhythm',
     inv_tte:'TTE',lvef:'LVEF (%)',lvefNA:'LVEF Not Assessed',lvesd:'LVESD (mm)',lvesdNA:'LVESD Not Assessed',lvedd:'LVEDD (mm)',lveddNA:'LVEDD Not Assessed',
@@ -4670,7 +4671,7 @@ function initApp() {
     tpm_chb:'TPM Ind: CHB',tpm_mobitz2:'TPM Ind: Mobitz II',tpm_altBBB:'TPM Ind: Alt BBB',tpm_sss:'TPM Ind: SSS',
     ppmGenerator:'PPM Generator Type',ppmDeviceName:'PPM Device Name',
     ppmInd_21block:'PPM Ind: 2:1 Block',ppmInd_mobitz2:'PPM Ind: Mobitz II',ppmInd_chb:'PPM Ind: CHB',ppmInd_sss:'PPM Ind: SSS',
-    eps_svt:'EPS: SVT',eps_aflutter:'EPS: AFl',eps_afib:'EPS: AFib',eps_vt:'EPS: VT',eps_pvcs:'EPS: PVCs',
+    eps_reason:'EPS/Ablation Reason',
     epsTransseptal:'EPS: Transseptal',epsICE:'EPS: ICE Used',epsFluoroTime:'EPS: Fluoro Time (min)',
     laao_nonvalvular:'LAAO Ind: Non-valvular AFib',laao_highBleed:'LAAO Ind: High Bleed Risk',
     laao_contraOAC:'LAAO Ind: Contra OAC',laao_priorBleed:'LAAO Ind: Prior Major Bleed',
@@ -4711,13 +4712,12 @@ function initApp() {
     // Other risk factors 4.10–4.16
     hx_valve:'HxValve',hx_cvd:'HxCVD',hx_lung:'HxLung',hx_dialysis:'HxDialys',hx_dm:'HxDM',hx_htn:'HxHTN',
     hx_familialSyndrome:'HxFamSyn',
-    hx_ssd:'HxSSD',ssd_brugada:'SSDbruga',ssd_cpvt:'SSDCPVT',ssd_idiopathic:'SSDIdio',ssd_longqt:'SSDLongQT',ssd_shortqt:'SSDShrtQT',ssd_unknown:'SSDUnk',
+    hx_ssd:'HxSSD',ssd_type:'SSDType',
     hx_struct:'HxStruct',struct_arvc:'StARVC',struct_congenital:'StCong',struct_hcm:'StHCM',struct_lv:'StLV',
     hx_syncope:'HxSyncop',syncopeRecent:'SyncRec',
     hx_svt:'HxSVT',hx_vf:'HxVF',hx_vt:'HxVT',
     hx_avp:'HxAVP',avpType:'AVPType',hx_mvp:'HxMVP',mvpType:'MVPType',
-    hx_cied:'HxCIED',cied_single:'CIEDSingl',cied_dual:'CIEDDual',cied_crtp:'CIEDCRTP',
-    cied_icdSingle:'CIEDIcdS',cied_icdDual:'CIEDIcdD',cied_crtd:'CIEDCRTD',cied_sicd:'CIEDSICD',
+    hx_cied:'HxCIED',cied_type:'CIEDType',
     inv_ecg:'InvECG',ecgAtrialRhythm:'ECGAtrR',ecgVentRhythm:'ECGVenR',ecgQRS:'ECGQRS',ecgQRSna:'ECGQRSna',
     inv_holter:'InvHoltr',holterAtrialRhythm:'HolAtrR',holterVentRhythm:'HolVenR',
     inv_tte:'InvTTE',lvef:'LVEF',lvefNA:'LVEFna',lvesd:'LVESD',lvesdNA:'LVESDna',lvedd:'LVEDD',lveddNA:'LVEDDna',rvsp:'RVSP',rvspNA:'RVSPna',
@@ -4732,7 +4732,7 @@ function initApp() {
     crtGenerator:'CRTGen',
     tpm_chb:'TPMindCHB',tpm_mobitz2:'TPMindM2',tpm_altBBB:'TPMindBBB',tpm_sss:'TPMindSSS',
     ppmGenerator:'PPMGen',ppmInd_21block:'PPMind21',ppmInd_mobitz2:'PPMindM2',ppmInd_chb:'PPMindCHB',ppmInd_sss:'PPMindSSS',
-    eps_svt:'EPSSVT',eps_aflutter:'EPSAFl',eps_afib:'EPSAFib',eps_vt:'EPSVT',eps_pvcs:'EPSPVCs',
+    eps_reason:'EPSReason',
     epsTransseptal:'EPSTrans',epsICE:'EPSICE',epsFluoroTime:'EPSFluro',
     laao_nonvalvular:'LAOIndNV',laao_highBleed:'LAOIndHB',laao_contraOAC:'LAOIndOAC',laao_priorBleed:'LAOIndPB',
     laaoDeviceType:'LAODType',laaoPASS:'LAOPASS',laaoOutcome:'LAOOutcm',
@@ -4807,9 +4807,7 @@ function initApp() {
 
     // 9.5 CRT/AICD additions
     crtInherited:'CRT: Inherited heart disease w/ SCD risk',
-    crtInh_longqt:'CRT Inh: Long QT', crtInh_hcm:'CRT Inh: HCM',
-    crtInh_brugada:'CRT Inh: Brugada', crtInh_arvd:'CRT Inh: ARVD/C',
-    crtInh_cpvt:'CRT Inh: CPVT',
+    crtInh_type:'CRT Inherited Heart Disease Type',
     crtRepl_relocation:'CRT Repl: Device relocation',
     crtRepl_battery:'CRT Repl: End of battery life',
     crtRepl_faulty:'CRT Repl: Faulty connector/header',
@@ -4853,14 +4851,7 @@ function initApp() {
     ppmReplReason:'PPM: Replacement reason',
     ppmReimplant:'PPM: Reimplant intended',
     ppmDevImpl:'PPM: Device implant',
-    ppmDev_singleTV:'PPM Device: Single chamber transvenous',
-    ppmDev_dualTV:'PPM Device: Dual chamber transvenous',
-    ppmDev_leadlessSingle:'PPM Device: Leadless single chamber',
-    ppmDev_leadlessDual:'PPM Device: Leadless dual chamber',
-    ppmDev_his:'PPM Device: His-bundle',
-    ppmDev_leadlessLVEP:'PPM Device: Leadless LVEP',
-    ppmDev_ccm:'PPM Device: CCM',
-    ppmDev_lbbb:'PPM Device: LBBB',
+    ppmDev_type:'PPM Device Implant Type',
     ppmLbbbQRS:'PPM LBBB: QRS width post (msec)',
     ppmLbbbQRSna:'PPM LBBB: QRS Not Assessed',
     ppmIndication:'PPM: Indication',
@@ -4951,8 +4942,6 @@ function initApp() {
     ppmNewLead:'PPM: New lead',
     ppmExistingLead:'PPM: Existing lead',
     ppmAdditionalLead:'PPM: Additional lead to existing',
-    // 9.8 EPS - SVT replaces AVNRT/WPW
-    eps_svt:'EPS: SVT',
     // 10.2.20 / 10.2.27
     cx_devMigration:'CX: Device Migration',
     cx_leadFracture:'CX: Lead Fracture',
@@ -4979,8 +4968,7 @@ function initApp() {
     struct_infiltrative:'StInfilt',
 
     // CRT/AICD
-    crtInherited:'CRTInher', crtInh_longqt:'CRTIhLQT', crtInh_hcm:'CRTIhHCM',
-    crtInh_brugada:'CRTIhBru', crtInh_arvd:'CRTIhARV', crtInh_cpvt:'CRTIhCPV',
+    crtInherited:'CRTInher', crtInh_type:'CRTInhTy',
     crtRepl_relocation:'CRTRplRel', crtRepl_battery:'CRTRplBat', crtRepl_faulty:'CRTRplFlt',
     crtRepl_infection:'CRTRplInf', crtRepl_leadrev:'CRTRplLdR', crtRepl_upgrade:'CRTRplUpg',
     crtReimplant:'CRTReImp', crtDevImpl:'CRTDevIm', crtDeviceType:'CRTDevTy',
@@ -4999,10 +4987,7 @@ function initApp() {
 
     // Perm PM
     ppmReplReason:'PPMRplRs', ppmReimplant:'PPMReImp', ppmDevImpl:'PPMDevIm',
-    ppmDev_singleTV:'PPMDvSgT', ppmDev_dualTV:'PPMDvDlT',
-    ppmDev_leadlessSingle:'PPMDvLLS', ppmDev_leadlessDual:'PPMDvLLD',
-    ppmDev_his:'PPMDvHis', ppmDev_leadlessLVEP:'PPMDvLVE',
-    ppmDev_ccm:'PPMDvCCM', ppmDev_lbbb:'PPMDvLBB',
+    ppmDev_type:'PPMDevTy',
     ppmLbbbQRS:'PPMLbQRS', ppmLbbbQRSna:'PPMLbQRSn',
     ppmIndication:'PPMInd', ppmNewLead:'PPMNewLd', ppmExistingLead:'PPMExLd', ppmAdditionalLead:'PPMAddLd', ppmLeadStatus:'PPMLdSt',
 
@@ -5046,7 +5031,6 @@ function initApp() {
     crtInd_vtUnresp:'CRTIndVT',
     crtNewLead:'CRTNewLd', crtExistingLead:'CRTExLd', crtAdditionalLead:'CRTAddLd',
     ppmNewLead:'PPMNewLd', ppmExistingLead:'PPMExLd', ppmAdditionalLead:'PPMAddLd',
-    eps_svt:'EPSSVT',
     cx_devMigration:'CXDevMig', cx_leadFracture:'CXLdFrc',
     homeMed_ivabradine:'HMIvab', dcMed_ivabradine:'DCIvab',
   });
@@ -5081,7 +5065,7 @@ function initApp() {
     hx_cardiacArrest:['arrestBradycardia','arrestVF','arrestVT','arrestAsystole'],
     hx_icm:['icmTimeframe','icmGDMT'],
     hx_hf:['hfType'],
-    hx_ssd:['ssd_brugada','ssd_cpvt','ssd_idiopathic','ssd_longqt','ssd_shortqt','ssd_unknown'],
+    hx_ssd:['ssd_type'],
     hx_struct:['struct_arvc','struct_congenital','struct_hcm','struct_infiltrative','struct_lv'],
     hx_syncope:['syncopeRecent'],
     hx_avp:['avpType','avpRecent'],
@@ -5089,7 +5073,7 @@ function initApp() {
     hx_ca:['caRecent','caAfterArrest'],
     hx_cabg:['cabgRecent'],
     hx_pci:['pciRecent'],
-    hx_cied:['cied_single','cied_dual','cied_crtp','cied_leadlessSingle','cied_leadlessDual','cied_his','cied_lbbb','cied_icdSingle','cied_icdDual','cied_crtd','cied_evicd','cied_sicd','cied_unknown'],
+    hx_cied:['cied_type'],
     inv_ecg:['ecgAtrialRhythm','ecgVentRhythm','ecgQRS','ecgQRSna','ecgNodal','ecgNodalType'],
     inv_holter:['holterAtrialRhythm','holterVentRhythm'],
     inv_tte:['lvef','lvefNA','lvesd','lvesdNA','lvedd','lveddNA','rvsp','rvspNA'],
@@ -5118,7 +5102,7 @@ function initApp() {
   const CRF_FIELDS={
     'CRT/AICD':[
       'crtInd_surv','crtInd_eps','crtInd_icmEF','crtInd_nicmEF','crtInd_vtUnresp','crtGenerator',
-      'crtInherited','crtInh_longqt','crtInh_hcm','crtInh_brugada','crtInh_arvd','crtInh_cpvt',
+      'crtInherited','crtInh_type',
       'crtRepl_relocation','crtRepl_battery','crtRepl_faulty','crtRepl_infection','crtRepl_leadrev','crtRepl_upgrade',
       'crtReimplant','crtDevImpl','crtDeviceType','crtPpmSame','crtPpmType',
       'crtLbbbQRS','crtLbbbQRSna','crtBrady','crtBradyReason',
@@ -5126,22 +5110,20 @@ function initApp() {
       'condSysPace','condSysPaceQRS','condSysPaceQRSna'
     ],
     'Pacemaker':[
-      'tpm_chb','tpm_mobitz2','tpm_altBBB','tpm_sss',
       'tpmIndication','tpmCause_electrolyte','tpmCause_drug','tpmCause_digitalis','tpmCause_antiarr',
       'tpmCause_acuteMI','tpmCause_myocarditis','tpmCause_endocarditis','tpmCause_postArrest',
       'tpmCause_degenerative','tpmCause_hypothermia','tpmCause_bridge','tpmCause_postTAVI','tpmCause_unknown',
       'tpmDrug_avBlock','tpmMIType',
       // tpmPpmSameStay removed (was 9.6c) — kept in FIELD_MAP/SPSS_VARS for legacy record export only
-      'ppmGenerator','ppmInd_21block','ppmInd_mobitz2','ppmInd_chb','ppmInd_sss',
+      'ppmGenerator',
       // ppmDeviceName removed (was 9.7.a.1) — device type captured in 9.7.b.1 (ppmDev_*); kept in FIELD_MAP/SPSS_VARS for legacy record export only
       'ppmReplReason','ppmReimplant','ppmDevImpl',
-      'ppmDev_singleTV','ppmDev_dualTV','ppmDev_leadlessSingle','ppmDev_leadlessDual',
-      'ppmDev_his','ppmDev_leadlessLVEP','ppmDev_ccm','ppmDev_lbbb',
+      'ppmDev_type',
       'ppmLbbbQRS','ppmLbbbQRSna','ppmIndication',
       'ppmNewLead','ppmExistingLead','ppmAdditionalLead','ppmLeadStatus'
     ],
     'EPS/Ablation':[
-      'eps_svt','eps_aflutter','eps_afib','eps_vt','eps_pvcs',
+      'eps_reason',
       'epsTransseptal','epsICE','epsFluoroTime',
       'epsSedation','epsAnticoag','epsUninterrupted','epsCathManip','epsInducedArr','epsMapSystem'
     ],
@@ -5344,7 +5326,7 @@ function initApp() {
       'patientContact','relativeContact','patientOrigin',
       'epReason','pacemakerType',
       'enrolledByName','enrolledByCode','updatedByName','updatedByCode',
-      'recordStatus','submissionType',
+      'recordStatus',
     ],
     'History & Vitals':[
       // Section 5 vitals
@@ -5359,12 +5341,11 @@ function initApp() {
       'hx_ca','caRecent','caAfterArrest',
       'hx_cad','hx_mi','hx_pci','pciRecent','hx_cabg','cabgRecent',
       'hx_valve','hx_cvd','hx_lung','hx_dialysis','hx_dm','hx_htn','hx_familialSyndrome',
-      'hx_ssd','ssd_brugada','ssd_cpvt','ssd_idiopathic','ssd_longqt','ssd_shortqt','ssd_unknown',
+      'hx_ssd','ssd_type',
       'hx_struct','struct_arvc','struct_congenital','struct_hcm','struct_infiltrative','struct_lv',
       'hx_syncope','syncopeRecent','hx_svt','hx_vf','hx_vt',
       'hx_avp','avpType','avpRecent','hx_mvp','mvpType','mvpRecent',
-      'hx_cied','cied_single','cied_dual','cied_crtp','cied_leadlessSingle','cied_leadlessDual',
-      'cied_his','cied_lbbb','cied_icdSingle','cied_icdDual','cied_crtd','cied_evicd','cied_sicd','cied_unknown',
+      'hx_cied','cied_type',
     ],
     'Medications':[
       // Home medications only (Step 3 in the CRF). Discharge medications appear
@@ -5389,26 +5370,24 @@ function initApp() {
       'procStartDate','procStartTime','procEndTime','operatorName',
       // 9.5 CRT/AICD
       'crtInd_surv','crtInd_eps','crtInd_icmEF','crtInd_nicmEF','crtInd_vtUnresp',
-      'crtInherited','crtInh_longqt','crtInh_hcm','crtInh_brugada','crtInh_arvd','crtInh_cpvt',
+      'crtInherited','crtInh_type',
       'crtGenerator','crtDeviceType','crtDevImpl',
       'crtRepl_relocation','crtRepl_battery','crtRepl_faulty','crtRepl_infection','crtRepl_leadrev','crtRepl_upgrade',
       'crtReimplant','crtPpmSame','crtPpmType','crtBrady','crtBradyReason',
       'crtNewLead','crtExistingLead','crtAdditionalLead','crtLeadStatus','crtLbbbQRS','crtLbbbQRSna',
       // 9.6 Temporary PM
-      'tpm_chb','tpm_mobitz2','tpm_altBBB','tpm_sss','tpmIndication',
+      'tpmIndication',
       'tpmCause_electrolyte','tpmCause_drug','tpmCause_digitalis','tpmCause_antiarr',
       'tpmCause_acuteMI','tpmCause_myocarditis','tpmCause_endocarditis','tpmCause_postArrest',
       'tpmCause_degenerative','tpmCause_hypothermia','tpmCause_bridge','tpmCause_postTAVI','tpmCause_unknown',
       'tpmDrug_avBlock','tpmMIType','tpmPpmSameStay',
       // 9.7 Permanent PM
       'ppmGenerator','ppmDeviceName','ppmDevImpl',
-      'ppmDev_singleTV','ppmDev_dualTV','ppmDev_leadlessSingle','ppmDev_leadlessDual',
-      'ppmDev_his','ppmDev_leadlessLVEP','ppmDev_ccm','ppmDev_lbbb',
-      'ppmInd_21block','ppmInd_mobitz2','ppmInd_chb','ppmInd_sss','ppmIndication',
-      'ppmReplReason','ppmReimplant',
+      'ppmDev_type',
+      'ppmIndication','ppmReplReason','ppmReimplant',
       'ppmNewLead','ppmExistingLead','ppmAdditionalLead','ppmLeadStatus','ppmLbbbQRS','ppmLbbbQRSna',
       // 9.8 EPS
-      'eps_svt','eps_aflutter','eps_afib','eps_vt','eps_pvcs',
+      'eps_reason',
       'epsTransseptal','epsICE','epsFluoroTime','epsSedation','epsAnticoag','epsUninterrupted',
       'epsCathManip','epsInducedArr','epsMapSystem',
       // 9.9 LAAO
@@ -5455,8 +5434,10 @@ function initApp() {
       if(!seen.has(f)){ seen.add(f); out.push(f); }
     }));
     // Safety net: append any FIELD_MAP key not captured above so nothing is
-    // ever silently dropped from the Complete sheet.
+    // ever silently dropped from the Complete sheet. submissionType is
+    // intentionally excluded from all exports per the data-model spec.
     Object.keys(FIELD_MAP).forEach(f=>{
+      if(f==='submissionType') return;
       if(!seen.has(f)){ seen.add(f); out.push(f); }
     });
     return out;
@@ -5471,7 +5452,7 @@ function initApp() {
     const spssSet=new Set(Object.keys(SPSS_VARS));
     const ordered=APP_FIELD_ORDER.filter(k=>spssSet.has(k));
     const orderedSet=new Set(ordered);
-    const extras=Object.keys(SPSS_VARS).filter(k=>!orderedSet.has(k));
+    const extras=Object.keys(SPSS_VARS).filter(k=>!orderedSet.has(k) && k!=='submissionType');
     const vars=[...ordered,...extras];
     const headerRow=vars.map(v=>SPSS_VARS[v]);
     const aoa=[headerRow];
@@ -5503,6 +5484,352 @@ function initApp() {
     XLSX.writeFile(wb,'EPS_SPSS_Export.xlsx');
   };
 
+  // ============================================================================
+  // MODEL EXPORT — single flat sheet matching EPS_Variable_model (May 18 2026).
+  // Each entry is [modelVariableName, internalFieldKey]. Column order and the
+  // exact variable-name spelling follow the provided model sheet. The
+  // SubmissionType column is intentionally omitted per the model's remark.
+  // ============================================================================
+  const MODEL_EXPORT=[
+    ["CaseNo","_no"],
+    ["PatientFirstName","nameFirst"],
+    ["PatientLastName","nameLast"],
+    ["Civil_ID","civilId"],
+    ["CRF_No","crfNo"],
+    ["FileNo","fileNumber"],
+    ["Investigator","enrolledByName"],
+    ["Invest_Code","enrolledByCode"],
+    ["Updated_By","updatedByName"],
+    ["Update_Code","updatedByCode"],
+    ["Gender","gender"],
+    ["Nationality","nationality"],
+    ["YOB","yob"],
+    ["EstimatedAge","estimatedAge"],
+    ["AdmissionDate","admissionDate"],
+    ["Status","recordStatus"],
+    ["Reason_EPlab","epReason"],
+    ["PacemakerType","pacemakerType"],
+    ["PatientOrigin","patientOrigin"],
+    ["Exam_SysBPmmHg","sysBp"],
+    ["Exam_SysBP_NA","sysBpUnrec"],
+    ["Exam_DiaBPmmHg","diaBp"],
+    ["Exam_DiaBP_NA","diaBpUnrec"],
+    ["Exam_PresentingHR","hr"],
+    ["Exam_HR_NA","hrUnrec"],
+    ["Exam_WeightKg","weight"],
+    ["Exam_Wt_NA","weightUnrec"],
+    ["Exam_HeightCm","height"],
+    ["Exam_Ht_NA","heightUnrec"],
+    ["Hx_AFib","hx_afib"],
+    ["Hx_AFibClass","afibClassification"],
+    ["Hx_AFib_EHRAclass","afibEHRA"],
+    ["Hx_AFib_Cardioversion","afibCardioversion"],
+    ["Hx_AFib_CHA2DS2","afibChads"],
+    ["Hx_AFib_HASBLED","afibHasBled"],
+    ["Hx_AFib_PriorAblation","afibPriorAblation"],
+    ["Hx_AFib_OACcontraind","afibContraOAC"],
+    ["Hx_AFib_PriorMajBleed","afibMajorBleed"],
+    ["Hx_CardiacArrest","hx_cardiacArrest"],
+    ["Hx_CardArest_Brady","arrestBradycardia"],
+    ["Hx_CardArest_VF","arrestVF"],
+    ["Hx_CardArest_VT","arrestVT"],
+    ["Hx_CardArest_Asystole","arrestAsystole"],
+    ["Hx_IschemicCM","hx_icm"],
+    ["Hx_IschemicCM_TimeFrame","icmTimeframe"],
+    ["Hx_IschemicCM_GDMTDose","icmGDMT"],
+    ["Hx_HF","hx_hf"],
+    ["Hx_HFtype","hfType"],
+    ["Hx_CoronaryAngio_CA","hx_ca"],
+    ["Hx_CA_6months","caRecent"],
+    ["Hx_CA_PerformAftrRecenCarArrest","caAfterArrest"],
+    ["Hx_CAD","hx_cad"],
+    ["Hx_MI","hx_mi"],
+    ["Hx_PriorPCI","hx_pci"],
+    ["Hx_PriorPCI_6months","pciRecent"],
+    ["Hx_PriorCABG","hx_cabg"],
+    ["Hx_PriorCABG_6months","cabgRecent"],
+    ["Hx_ValvularHeartDisease","hx_valve"],
+    ["Hx_CerebrovascularDisease","hx_cvd"],
+    ["Hx_ChronicLungDisease","hx_lung"],
+    ["Hx_OnDialysis","hx_dialysis"],
+    ["Hx_DiabetesMellitus","hx_dm"],
+    ["Hx_Hypertension","hx_htn"],
+    ["Hx_FamilialSyndrome","hx_familialSyndrome"],
+    ["Hx_SyndromSuddenDeath","hx_ssd"],
+    ["Hx_Syndrome_Type","ssd_type"],
+    ["Hx_StructurAbnormaliti_StAb","hx_struct"],
+    ["Hx_StAb_ARVC","struct_arvc"],
+    ["Hx_StAb_ CongenHD","struct_congenital"],
+    ["Hx_StAb_HCM","struct_hcm"],
+    ["Hx_StAb_Infiltrative","struct_infiltrative"],
+    ["Hx_StAb_LV_Abnormality","struct_lv"],
+    ["Hx_Syncope","hx_syncope"],
+    ["Hx_Syncop_6months","syncopeRecent"],
+    ["Hx_ParoxysmalSVT","hx_svt"],
+    ["Hx_VF","hx_vf"],
+    ["Hx_VT","hx_vt"],
+    ["Hx_AVP","hx_avp"],
+    ["Hx_AVPtype","avpType"],
+    ["Hx_AVP_6months","avpRecent"],
+    ["Hx_MVP","hx_mvp"],
+    ["Hx_MVPtype","mvpType"],
+    ["Hx_MVP_6months","mvpRecent"],
+    ["Hx_Prior_CIED","hx_cied"],
+    ["Hx_CIEDdevice_Type","cied_type"],
+    ["HomMed_Amiodarone","homeMed_amiodarone"],
+    ["HomMed_Disopyramide","homeMed_disopyramide"],
+    ["HomMed_Flecainide","homeMed_flecainide"],
+    ["HomMed_Procainamide","homeMed_procainamide"],
+    ["HomMed_Propafenone","homeMed_propafenone"],
+    ["HomMed_Sotalol","homeMed_sotalol"],
+    ["HomMed_Verapamil","homeMed_verapamil"],
+    ["HomMed_Diltiazem","homeMed_diltiazem"],
+    ["HomMed_Warfarin","homeMed_warfarin"],
+    ["HomMed_Dabigatran","homeMed_dabigatran"],
+    ["HomMed_Apixaban","homeMed_apixaban"],
+    ["HomMed_Rivaroxaban","homeMed_rivaroxaban"],
+    ["HomMed_Edoxaban","homeMed_edoxaban"],
+    ["HomMed_LMWH","homeMed_lmwh"],
+    ["HomMed_UnfractHep","homeMed_ufh"],
+    ["HomMed_Aspirin","homeMed_aspirin"],
+    ["HomMed_Prasugrel","homeMed_prasugrel"],
+    ["HomMed_Clopidogrel","homeMed_clopidogrel"],
+    ["HomMed_Ticagrelor","homeMed_ticagrelor"],
+    ["HomMed_Cangrelor","homeMed_cangrelor"],
+    ["HomMed_ACEi","homeMed_acei"],
+    ["HomMed_ARB","homeMed_arb"],
+    ["HomMed_ARNI","homeMed_arni"],
+    ["HomMed_SGLT2i","homeMed_sglt"],
+    ["HomMed_BetaBlock","homeMed_betablocker"],
+    ["HomMed_MRA","homeMed_mra"],
+    ["HomMed_Digoxin","homeMed_digoxin"],
+    ["HomMed_LoopDiuretics","homeMed_loopdiuretic"],
+    ["HomMed_Ivabradine","homeMed_ivabradine"],
+    ["Invest_ECG","inv_ecg"],
+    ["Invest_ECG_AtrialRhytm","ecgAtrialRhythm"],
+    ["Invest_ECG_NodalRhytm","ecgNodal"],
+    ["Invest_NodalRytm_type","ecgNodalType"],
+    ["Invest_ECG_VentriRhytm","ecgVentRhythm"],
+    ["Invest_VentriRytm_QRSDur","ecgQRS"],
+    ["Invest_VentriRytm_QRS_NA","ecgQRSna"],
+    ["Invest_Holter","inv_holter"],
+    ["Invest_Holtr_AtrialRhytm","holterAtrialRhythm"],
+    ["Invest_Holtr_VentriRhytm","holterVentRhythm"],
+    ["Invest_ThoracicEcho_TTE","inv_tte"],
+    ["Invest_TTE_LVEF","lvef"],
+    ["Invest_TTE_LVEF_NA","lvefNA"],
+    ["Invest_TTE_LVESD","lvesd"],
+    ["Invest_TTE_LVESD_NA","lvesdNA"],
+    ["Invest_TTE_LVEDD","lvedd"],
+    ["Invest_TTE_LVEDD_NA","lveddNA"],
+    ["Invest_TTE_RVSP","rvsp"],
+    ["Invest_TTE_RVSP_NA","rvspNA"],
+    ["Invest_TTE_SevereValvDis","inv_sevValve"],
+    ["Invest_TTE_SVD_MR","sevMR"],
+    ["Invest_TTE_SVD_AS","sevAS"],
+    ["Invest_TTE_SVD_AR","sevAR"],
+    ["Invest_TTE_SVD_TR","sevTR"],
+    ["Invest_TTE_IntrCardThrombus","intracardThrombus"],
+    ["Invest_EsophagEcho_TEE","inv_tee"],
+    ["Invest_TEE_Atrialthrombus","teeThrombus"],
+    ["Invest_TEE_LAAMorpho","inv_laa"],
+    ["Invest_TEE_LAA_OSTdia","laaOstial"],
+    ["Invest_TEE_LAA_Depth","laaDepth"],
+    ["Invest_Tiltingtabletest","inv_tiltTable"],
+    ["Invest_ImplantLoopRecorder","inv_loopRecorder"],
+    ["Invest_CardiacCT","inv_cardiacCT"],
+    ["Invest_CardiacMRI","inv_cmr"],
+    ["Lab_CreatininInitial","creatInit"],
+    ["Lab_CreatinInitial_NA","creatInitNA"],
+    ["Lab_CreatininPeak","creatPeak"],
+    ["Lab_CreatinPeak_NA","creatPeakNA"],
+    ["Lab_HemoglobinInitial","hgbInit"],
+    ["Lab_Hb_Initial_NA","hgbInitNA"],
+    ["Lab_HemoglobinLowest","hgbLowest"],
+    ["Lab_Hb_lowest_NA","hgbLowestNA"],
+    ["Lab_Sodium","sodium"],
+    ["Lab_Sodium_NA","sodiumNA"],
+    ["Lab_Potassium","potassium"],
+    ["Lab_Potassium_NA","potassiumNA"],
+    ["Lab_Magnesium_Initial","magnesium"],
+    ["Lab_MagnesiumInitial_NA","magnesiumNA"],
+    ["Lab_INR","inr"],
+    ["Lab_INR_NA","inrNA"],
+    ["Procedure_StartDate","procStartDate"],
+    ["Procedure_StartTime","procStartTime"],
+    ["Procedure_FinishTime","procEndTime"],
+    ["Procedure_Operator","operatorName"],
+    ["Proc_CRTIndi_SurvivorCA","crtInd_surv"],
+    ["Proc_CRTIndi_InducibleVT","crtInd_eps"],
+    ["Proc_CRTIndi_ICM","crtInd_icmEF"],
+    ["Proc_CRTIndi_nonICM","crtInd_nicmEF"],
+    ["Proc_CRTIndi_VTnotResponding","crtInd_vtUnresp"],
+    ["Proc_CRTIndi_InheritedHeartDis","crtInherited"],
+    ["Proc_CRTIndi_IHD_Type","crtInh_type"],
+    ["Proc_CRT_Generator","crtGenerator"],
+    ["Proc_CRT_GenReplace","crtDeviceType"],
+    ["Proc_CRT_GRreason_DeviceReloc","crtRepl_relocation"],
+    ["Proc_CRT_GRreason_BatteryEnd","crtRepl_battery"],
+    ["Proc_CRT_GRreason_FaultyConec","crtRepl_faulty"],
+    ["Proc_CRT_GRreason_Infection","crtRepl_infection"],
+    ["Proc_CRT_GRreason_Replaced","crtRepl_leadrev"],
+    ["Proc_CRT_GRreason_Upgrade","crtRepl_upgrade"],
+    ["Proc_CRT_GeneratorExplant","crtDevImpl"],
+    ["Proc_CRT_GE_Reimplantintend","crtReimplant"],
+    ["Proc_CRT_DeviceImplant","crtPpmSame"],
+    ["Proc_CRT_DevImplant_Type","crtPpmType"],
+    ["Proc_CRT_DevImpTyp_Pacemaker","crtBrady"],
+    ["Proc_CRT_DevImp_PPMtype","crtBradyReason"],
+    ["Proc_CRT_LBBB_QRS","crtLbbbQRS"],
+    ["Proc_CRT_LBBB_QRS_NA","crtLbbbQRSna"],
+    ["Proc_CRT_DevImpTyp_BradyIndi","crtNewLead"],
+    ["Proc_CRT_DevImp_BradyReason","crtExistingLead"],
+    ["Proc_CRT_LeadAssess_New","crtAdditionalLead"],
+    ["Proc_CRT_LeadAssess_Existing","crtLeadStatus"],
+    ["Proc_TPMIndications","tpmIndication"],
+    ["Proc_TPMcause_ElectroImbalance","tpmCause_electrolyte"],
+    ["Proc_TPMcause_Druginduce","tpmCause_drug"],
+    ["Proc_TPMdruginduc_AVblockingAgent","tpmDrug_avBlock"],
+    ["Proc_TPMcause_DigitaliToxicity","tpmCause_digitalis"],
+    ["Proc_TPMcause_AntiArrhythmic","tpmCause_antiarr"],
+    ["Proc_TPMcause_AcuteMI","tpmCause_acuteMI"],
+    ["Proc_TPMcause_AcuteMIType","tpmMIType"],
+    ["Proc_TPMcause_Myocarditis","tpmCause_myocarditis"],
+    ["Proc_TPMcause_Endocarditis","tpmCause_endocarditis"],
+    ["Proc_TPMcause_PostCardArrest","tpmCause_postArrest"],
+    ["Proc_TPMcause_Degenerative","tpmCause_degenerative"],
+    ["Proc_TPMcause_Hypothermia","tpmCause_hypothermia"],
+    ["Proc_TPMcause_BridgePPM","tpmCause_bridge"],
+    ["Proc_TPMcause_PostTAVI","tpmCause_postTAVI"],
+    ["Proc_TPMcause_Unknown","tpmCause_unknown"],
+    ["Proc_PPM_Generator","ppmGenerator"],
+    ["Proc_PPM_GenReplacReason","ppmReplReason"],
+    ["Proc_PPM_GenExpl_Reimplant","ppmReimplant"],
+    ["Proc_PPM_DeviceImplant","ppmDevImpl"],
+    ["Proc_PPM_DevImplant_Type","ppmDev_type"],
+    ["Proc_PPM_LBBB_QRS","ppmLbbbQRS"],
+    ["Proc_PPM_LBBB_QRS_NA","ppmLbbbQRSna"],
+    ["Proc_PPMIndications","ppmIndication"],
+    ["Proc_PPM_LeadAssess_New","ppmNewLead"],
+    ["Proc_PPM_LeadAssess_Existing","ppmExistingLead"],
+    ["Proc_PPM_Lead_ExistingStatus","ppmLeadStatus"],
+    ["Proc_PPM_Lead_Additional","ppmAdditionalLead"],
+    ["Proc_EPSReason","eps_reason"],
+    ["Proc_EPS_Sedation","epsSedation"],
+    ["Proc_EPS_TranseptalPuncture","epsTransseptal"],
+    ["Proc_EPS_IntracardiacEcho","epsICE"],
+    ["Proc_EPS_FluoroscopyTime","epsFluoroTime"],
+    ["Proc_EPS_IntraprocAnticoag","epsAnticoag"],
+    ["Proc_EPS_Anticoag_Uninterrupt","epsUninterrupted"],
+    ["Proc_EPS_CatheterManipulat","epsCathManip"],
+    ["Proc_EPS_PersisArrythmiaInd","epsInducedArr"],
+    ["Proc_EPS_MappingSystem","epsMapSystem"],
+    ["Proc_LAAOIndi_NonValvulrAFib","laao_nonvalvular"],
+    ["Proc_LAAOIndi_HighBleedRisk","laao_highBleed"],
+    ["Proc_LAAOIndi_ContraOAC","laao_contraOAC"],
+    ["Proc_LAAOIndi_PriorMajorBleed","laao_priorBleed"],
+    ["Proc_LAAOIndi_PatientPrefer","laao_patientPref"],
+    ["Proc_LAA_DeviceType","laaoDeviceType"],
+    ["Proc_LAA_DeploymentAttempt","laaoDeploy"],
+    ["Proc_LAA_TranseptalPuncture","laaoTransseptal"],
+    ["Proc_LAA_ImageGuidance","laaoImaging"],
+    ["Proc_LAA_PASScriteria","laaoPASS"],
+    ["Proc_LAA_PeriDeviceLeak","laaoLeak"],
+    ["Proc_LAA_IntraprocAnticoag","laaoAnticoag"],
+    ["Proc_LAA_ImmProceduOutcome","laaoOutcome"],
+    ["Compli_ProcedureCA","comp_ca"],
+    ["Compli_ProcedurePCI","comp_pci"],
+    ["Compli_ProcedureCABG","comp_cabg"],
+    ["Compli_ProcedureTAVR","comp_tavr"],
+    ["Compli_ResusCardiacArrest","cx_cardArrest"],
+    ["Compli_PulmonaryEdema","cx_pulEdema"],
+    ["Compli_RenalFailure","cx_renal"],
+    ["Compli_RF_Dialysis","cx_dialysis"],
+    ["Compli_Stroke","cx_stroke"],
+    ["Compli_StrokeType","strokeType"],
+    ["Compli_AccesSitecomplication","cx_accessVasc"],
+    ["Compli_AccesSite_Hematoma","cx_hematoma"],
+    ["Compli_AccesSite_Occlusion","cx_occlusion"],
+    ["Compli_AccesSite_Avfistula","cx_avfistula"],
+    ["Compli_AccesSite_PseudoAneur","cx_pseudoAneurysm"],
+    ["Compli_Intervention","cx_intervReq"],
+    ["Compli_InterventionType","cx_intervEndo"],
+    ["Compli_PerpheralEmboliz","cx_periphEmbol"],
+    ["Compli_Pericarditis","cx_pericarditis"],
+    ["Compli_CardiogenicShock","cx_cardShock"],
+    ["Compli_CS_SCAIstage","scaiStage"],
+    ["Compli_Ventilation","cx_vent"],
+    ["Compli_VentilationType","ventType"],
+    ["Compli_Inotropes","cx_inotropes"],
+    ["Compli_MechComplication","cx_mechComp"],
+    ["Compli_MechCompli_Type","mechCompType"],
+    ["Compli_AnyBleeding","cx_bleeding"],
+    ["Compli_AnyBleed_Type","bleedType"],
+    ["Compli_MajorBleed_Type","bleedSubType"],
+    ["Compli_Bleed_Site","bleedSite_gi"],
+    ["Compli_Bleed_Transfusion","cx_transfusion"],
+    ["Compli_Bleed_TransfusUnit","transfusionUnits"],
+    ["Compli_MI","cx_mi"],
+    ["Compli_UrgentCardiSurgery","cx_urgentSurg"],
+    ["Compli_PericardialEffusion","cx_pericEff"],
+    ["Compli_PeriEff_Intervention","cx_pericEffInterv"],
+    ["Compli_CardiacTamponade","cx_tamp2"],
+    ["Compli_CardTamp_Opensurgery","cx_tampOpenSurg"],
+    ["Compli_CardTamp_PercutDrainag","cx_tampPercDrain"],
+    ["Compli_Hemothorax","cx_hemothorax"],
+    ["Compli_HemothorDrainage","cx_hemoDrain"],
+    ["Compli_Pneumothorax","cx_pneumo"],
+    ["Compli_PneumothorIntervention","cx_pneumoInterv"],
+    ["Compli_DeviceMigration","cx_devMigration"],
+    ["Compli_PhrenicNervedamage","cx_phrenicDmg"],
+    ["Compli_PleuralEffusion","cx_pleuralEff"],
+    ["Compli_Infection_Antibio","cx_infection"],
+    ["Compli_BradyAdversEvents","cx_bradyAE"],
+    ["Compli_BradyAE_RequirPPM","cx_bradyAEppm"],
+    ["Compli_SetscrewProblem","cx_setScrew"],
+    ["Compli_LeadDislodgement","cx_leadDislodge"],
+    ["Compli_LeadFracture","cx_leadFracture"],
+    ["Outcom_ImmProcedSuccess","procSuccess"],
+    ["Outcom_PostProcECGRhythm","postECGrhythm"],
+    ["Outcom_ConductSystemPacing","condSysPace"],
+    ["Outcom_SystemPaci_QRSdura","condSysPaceQRS"],
+    ["Outcom_SystemPaci_QRSdura_NA","condSysPaceQRSna"],
+    ["Discharge_Date","dischargeDate"],
+    ["Discharge_Time","dischargeTime"],
+    ["Discharge_Status","dischargeStatus"],
+    ["Discharge_CauseofDeath","causeOfDeath"],
+    ["Discharge_Type","dischargeType"],
+    ["DiscMed_Amiodarone","dcMed_amiodarone"],
+    ["DiscMed_Disopyramide","dcMed_disopyramide"],
+    ["DiscMed_Flecainide","dcMed_flecainide"],
+    ["DiscMed_Procainamide","dcMed_procainamide"],
+    ["DiscMed_Propafenone","dcMed_propafenone"],
+    ["DiscMed_Sotalol","dcMed_sotalol"],
+    ["DiscMed_Verapamil","dcMed_verapamil"],
+    ["DiscMed_Diltiazem","dcMed_diltiazem"],
+    ["DiscMed_Warfarin","dcMed_warfarin"],
+    ["DiscMed_Dabigatran","dcMed_dabigatran"],
+    ["DiscMed_Apixaban","dcMed_apixaban"],
+    ["DiscMed_Rivaroxaban","dcMed_rivaroxaban"],
+    ["DiscMed_Edoxaban","dcMed_edoxaban"],
+    ["DiscMed_LMWH","dcMed_lmwh"],
+    ["DiscMed_UnfractHep","dcMed_ufh"],
+    ["DiscMed_Aspirin","dcMed_aspirin"],
+    ["DiscMed_Prasugrel","dcMed_prasugrel"],
+    ["DiscMed_Clopidogrel","dcMed_clopidogrel"],
+    ["DiscMed_Ticagrelor","dcMed_ticagrelor"],
+    ["DiscMed_Cangrelor","dcMed_cangrelor"],
+    ["DiscMed_ACEi","dcMed_acei"],
+    ["DiscMed_ARB","dcMed_arb"],
+    ["DiscMed_ARNI","dcMed_arni"],
+    ["DiscMed_SGLT2i","dcMed_sglt"],
+    ["DiscMed_BetaBlock","dcMed_betablocker"],
+    ["DiscMed_MRA","dcMed_mra"],
+    ["DiscMed_Digoxin","dcMed_digoxin"],
+    ["DiscMed_LoopDiuretics","dcMed_loopdiuretic"],
+    ["DiscMed_Ivabradine","dcMed_ivabradine"]
+  ];
+
   window.exportToExcel=async function(){
     const rawData=await getFilteredExportData();
     if(!rawData.length){alert('No data to export.');return;}
@@ -5522,7 +5849,19 @@ function initApp() {
     // form. The "Complete" sheet uses the full flat app order.
     const completeFields=APP_FIELD_ORDER;
 
+    // Model sheet — single flat sheet, model variable names, model order.
+    const mkModelSheet=()=>{
+      const hdr=MODEL_EXPORT.map(p=>p[0]);
+      const keys=MODEL_EXPORT.map(p=>p[1]);
+      const aoa=[hdr];
+      data.forEach(r=>{aoa.push(keys.map(k=>encodeForExcel(r,k)));});
+      const ws=XLSX.utils.aoa_to_sheet(aoa,{cellDates:true});
+      writeTypedSheet(ws, keys);
+      return ws;
+    };
+
     const wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,mkModelSheet(),'Model');
     XLSX.utils.book_append_sheet(wb,mkSheet(EXPORT_GROUPS['Demographics']),'Demographics');
     XLSX.utils.book_append_sheet(wb,mkSheet(EXPORT_GROUPS['History & Vitals']),'History & Vitals');
     XLSX.utils.book_append_sheet(wb,mkSheet(EXPORT_GROUPS['Medications']),'Medications');
