@@ -870,11 +870,11 @@ div[role=“dialog”]{width:calc(100% - 24px)!important;max-width:none!importan
         <div data-no-paint><label class="lbl">7.3d RVSP (mmHg)</label><input type="number" name="rvsp" min="10" max="120" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="rvspNA" class="w-3 h-3"> Not assessed</label></div>
       </div>
 
-```
   <!-- 7.3e Severe valve disease (Yes/No) + sub MR/AS/AR/TR. Uses the standard .card class so it
        gets the same border/background treatment as 7.1/7.2/7.4 (including the automatic ✖/✓
        badge from the hidden-input field-indicator painter, which finds the .card + span.font-bold).
        checkSevValveConsistency() adds an inline red ✖ badge + red border when 7.3e=Yes but no sub valve is Yes. -->
+
   <div id="sevValveCard" class="card mb-3" style="transition:border-color .15s,box-shadow .15s;">
     <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">7.3e Severe valve disease<span id="sevValveBadge" style="margin-left:6px;display:none;font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px;background:#fee2e2;color:#dc2626;">✖ Need at least one valve = Yes</span></span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'sevValve','No'); checkSevValveConsistency();">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'sevValve','Yes'); checkSevValveConsistency();">Yes</button></div></div>
     <input type="hidden" name="inv_sevValve" id="val_sevValve" value="">
@@ -882,9 +882,9 @@ div[role=“dialog”]{width:calc(100% - 24px)!important;max-width:none!importan
   </div>
 
   <!-- 7.3f Intracardiac thrombus, sits flush like 7.2a -->
+
   <div data-no-paint><label class="lbl">7.3f Intracardiac thrombus</label><select name="intracardThrombus" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
 </div>
-```
 
   </div>
   <div class="card mb-4">
@@ -945,7 +945,6 @@ div[role=“dialog”]{width:calc(100% - 24px)!important;max-width:none!importan
       </div>
     </div>
 
-```
 <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.5b Generator:</label>
   <div class="flex gap-2 flex-wrap mb-2">
     <label class="radio-item"><input type="radio" name="crtGenerator" value="Initial implant" onchange="onCrtGen()"> Initial implant</label>
@@ -979,45 +978,48 @@ div[role=“dialog”]{width:calc(100% - 24px)!important;max-width:none!importan
       <label class="radio-item"><input type="radio" name="crtDeviceType" value="CRT" onchange="onCrtDevType()"> CRT</label>
     </div>
 
-    <div id="crtDualHint" class="sub-reveal" style="margin-top:8px;padding:10px 12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;color:#1e40af;font-size:12px;font-weight:600;">
-      <i class="fas fa-info-circle mr-1"></i> If Device type is CRT-D or ICD-Dual chamber, specify below:
+```
+<div id="crtDualHint" class="sub-reveal" style="margin-top:8px;padding:10px 12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;color:#1e40af;font-size:12px;font-weight:600;">
+  <i class="fas fa-info-circle mr-1"></i> If Device type is CRT-D or ICD-Dual chamber, specify below:
+</div>
+
+<div id="crtDualSub" class="sub-reveal">
+  <div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">9.5.c.1.a Pacemaker (same procedure)</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'crtPpmSame','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'crtPpmSame','Yes')">Yes</button></div></div>
+  <input type="hidden" name="crtPpmSame" id="val_crtPpmSame" value="">
+  <div id="sub_crtPpmSame" class="sub-reveal">
+    <label class="lbl">c.1.a.1 Pacemaker type (Choose One Only):</label>
+    <div class="g2 mt-1 mb-3">
+      <label class="radio-item"><input type="radio" name="crtPpmType" value="Single chamber transvenous PPM"> Single chamber transvenous PPM</label>
+      <label class="radio-item"><input type="radio" name="crtPpmType" value="Dual chamber transvenous PPM"> Dual chamber transvenous PPM</label>
+      <label class="radio-item"><input type="radio" name="crtPpmType" value="Leadless single chamber PPM"> Leadless single chamber PPM</label>
+      <label class="radio-item"><input type="radio" name="crtPpmType" value="Leadless dual chamber PPM"> Leadless dual chamber PPM</label>
+      <label class="radio-item"><input type="radio" name="crtPpmType" value="CRT-P"> CRT-P</label>
+      <label class="radio-item"><input type="radio" name="crtPpmType" value="His-bundle PPM"> His-bundle PPM</label>
+      <label class="radio-item"><input type="radio" name="crtPpmType" value="Leadless LVEP"> Leadless LVEP</label>
+      <label class="radio-item"><input type="radio" name="crtPpmType" value="CCM"> CCM</label>
+      <label class="radio-item"><input type="radio" name="crtPpmType" value="LBBB PPM" onchange="onCrtPpmType()"> LBBB PPM</label>
     </div>
+    <div id="crtLbbbSub" class="sub-reveal mb-3"><label class="lbl">c.1.a.1.a QRS width post procedure (msec)</label><input type="number" name="crtLbbbQRS" min="40" max="300" class="inp max-w-xs"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="crtLbbbQRSna" class="w-3 h-3"> Not assessed</label></div>
 
-    <div id="crtDualSub" class="sub-reveal">
-      <div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">9.5.c.1.a Pacemaker (same procedure)</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'crtPpmSame','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'crtPpmSame','Yes')">Yes</button></div></div>
-      <input type="hidden" name="crtPpmSame" id="val_crtPpmSame" value="">
-      <div id="sub_crtPpmSame" class="sub-reveal">
-        <label class="lbl">c.1.a.1 Pacemaker type (Choose One Only):</label>
-        <div class="g2 mt-1 mb-3">
-          <label class="radio-item"><input type="radio" name="crtPpmType" value="Single chamber transvenous PPM"> Single chamber transvenous PPM</label>
-          <label class="radio-item"><input type="radio" name="crtPpmType" value="Dual chamber transvenous PPM"> Dual chamber transvenous PPM</label>
-          <label class="radio-item"><input type="radio" name="crtPpmType" value="Leadless single chamber PPM"> Leadless single chamber PPM</label>
-          <label class="radio-item"><input type="radio" name="crtPpmType" value="Leadless dual chamber PPM"> Leadless dual chamber PPM</label>
-          <label class="radio-item"><input type="radio" name="crtPpmType" value="CRT-P"> CRT-P</label>
-          <label class="radio-item"><input type="radio" name="crtPpmType" value="His-bundle PPM"> His-bundle PPM</label>
-          <label class="radio-item"><input type="radio" name="crtPpmType" value="Leadless LVEP"> Leadless LVEP</label>
-          <label class="radio-item"><input type="radio" name="crtPpmType" value="CCM"> CCM</label>
-          <label class="radio-item"><input type="radio" name="crtPpmType" value="LBBB PPM" onchange="onCrtPpmType()"> LBBB PPM</label>
-        </div>
-        <div id="crtLbbbSub" class="sub-reveal mb-3"><label class="lbl">c.1.a.1.a QRS width post procedure (msec)</label><input type="number" name="crtLbbbQRS" min="40" max="300" class="inp max-w-xs"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="crtLbbbQRSna" class="w-3 h-3"> Not assessed</label></div>
-
-        <div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">c.1.a.2 Any Bradycardia indications</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'crtBrady','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'crtBrady','Yes')">Yes</button></div></div>
-        <input type="hidden" name="crtBrady" id="val_crtBrady" value="">
-        <div id="sub_crtBrady" class="sub-reveal"><label class="lbl">c.1.a.2.a Reason for pacing (Choose One Only):</label>
-          <div class="g2 mt-1">
-            <label class="radio-item"><input type="radio" name="crtBradyReason" value="2:1 AV block"> 2:1 AV block</label>
-            <label class="radio-item"><input type="radio" name="crtBradyReason" value="2° AV block, Mobitz II"> 2° AV block, Mobitz II</label>
-            <label class="radio-item"><input type="radio" name="crtBradyReason" value="A-V mode ablation"> A-V mode ablation</label>
-            <label class="radio-item"><input type="radio" name="crtBradyReason" value=">50% RV pacing"> &gt;50% RV pacing</label>
-            <label class="radio-item"><input type="radio" name="crtBradyReason" value="Chronotropic incompetence"> Chronotropic incompetence</label>
-            <label class="radio-item"><input type="radio" name="crtBradyReason" value="CHB"> CHB</label>
-            <label class="radio-item"><input type="radio" name="crtBradyReason" value="HF unresponsive to GDMT"> HF unresponsive to GDMT</label>
-            <label class="radio-item"><input type="radio" name="crtBradyReason" value="SSS"> SSS</label>
-            <label class="radio-item"><input type="radio" name="crtBradyReason" value="Other"> Other</label>
-          </div>
-        </div>
+    <div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">c.1.a.2 Any Bradycardia indications</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'crtBrady','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'crtBrady','Yes')">Yes</button></div></div>
+    <input type="hidden" name="crtBrady" id="val_crtBrady" value="">
+    <div id="sub_crtBrady" class="sub-reveal"><label class="lbl">c.1.a.2.a Reason for pacing (Choose One Only):</label>
+      <div class="g2 mt-1">
+        <label class="radio-item"><input type="radio" name="crtBradyReason" value="2:1 AV block"> 2:1 AV block</label>
+        <label class="radio-item"><input type="radio" name="crtBradyReason" value="2° AV block, Mobitz II"> 2° AV block, Mobitz II</label>
+        <label class="radio-item"><input type="radio" name="crtBradyReason" value="A-V mode ablation"> A-V mode ablation</label>
+        <label class="radio-item"><input type="radio" name="crtBradyReason" value=">50% RV pacing"> &gt;50% RV pacing</label>
+        <label class="radio-item"><input type="radio" name="crtBradyReason" value="Chronotropic incompetence"> Chronotropic incompetence</label>
+        <label class="radio-item"><input type="radio" name="crtBradyReason" value="CHB"> CHB</label>
+        <label class="radio-item"><input type="radio" name="crtBradyReason" value="HF unresponsive to GDMT"> HF unresponsive to GDMT</label>
+        <label class="radio-item"><input type="radio" name="crtBradyReason" value="SSS"> SSS</label>
+        <label class="radio-item"><input type="radio" name="crtBradyReason" value="Other"> Other</label>
       </div>
     </div>
+  </div>
+</div>
+```
+
   </div>
 </div>
 
@@ -1035,7 +1037,6 @@ div[role=“dialog”]{width:calc(100% - 24px)!important;max-width:none!importan
   </div>
   <div><label class="lbl">9.5.d.3 Additional lead to the existing leads</label><select name="crtAdditionalLead" class="inp max-w-xs" onchange="checkCiedConsistency(this,'crtAdditionalLead','9.5.d.3')"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
 </div>
-```
 
   </div>
   <div class="proc-section" id="proc_temppm"><div class="card card-gray mb-3" style="border-left:4px solid #64748b;"><div style="font-weight:800;color:#334155;font-size:14px;">9.6 — Temporary Pacemaker</div></div>
@@ -1051,7 +1052,6 @@ div[role=“dialog”]{width:calc(100% - 24px)!important;max-width:none!importan
       </div>
     </div>
 
-```
 <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.6b Underlying causes (check all that apply):</label>
   <div class="g2 mb-3">
     <label class="chk-item"><input type="checkbox" name="tpmCause_electrolyte"> Electrolyte imbalance</label>
@@ -1083,7 +1083,6 @@ div[role=“dialog”]{width:calc(100% - 24px)!important;max-width:none!importan
     </div>
   </div>
 </div>
-```
 
   </div>
   <div class="proc-section" id="proc_permpm"><div class="card card-gray mb-3" style="border-left:4px solid #475569;"><div style="font-weight:800;color:#1e293b;font-size:14px;">9.7 — Permanent Pacemaker</div></div>
@@ -1107,7 +1106,6 @@ div[role=“dialog”]{width:calc(100% - 24px)!important;max-width:none!importan
       <div id="ppmGen_explant" class="sub-reveal mt-2"><label class="lbl">9.7.a.3 Reimplant intended</label><select name="ppmReimplant" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
     </div>
 
-```
 <div class="card mb-3">
   <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">9.7b Device implant</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'ppmDevImpl','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'ppmDevImpl','Yes')">Yes</button></div></div>
   <input type="hidden" name="ppmDevImpl" id="val_ppmDevImpl" value="">
@@ -1147,7 +1145,6 @@ div[role=“dialog”]{width:calc(100% - 24px)!important;max-width:none!importan
   </div>
   <div><label class="lbl">9.7.d.3 Additional lead to the existing leads</label><select name="ppmAdditionalLead" class="inp max-w-xs" onchange="checkCiedConsistency(this,'ppmAdditionalLead','9.7.d.3')"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
 </div>
-```
 
   </div>
   <div class="proc-section" id="proc_eps"><div class="card card-purple mb-3" style="border-left:4px solid #7c3aed;"><div style="font-weight:800;color:#4c1d95;font-size:14px;">9.8 — EPS / Ablation</div></div>
@@ -1157,7 +1154,6 @@ div[role=“dialog”]{width:calc(100% - 24px)!important;max-width:none!importan
       </div>
     </div>
 
-```
 <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.8b Sedation (Choose One Only):<button type="button" class="fn-btn" onclick="openFn('9.8b')" aria-label="Field information" title="Click for field information">i</button></label>
   <div class="g2">
     <label class="radio-item"><input type="radio" name="epsSedation" value="Minimal/Anxiolysis"> Minimal/Anxiolysis</label>
@@ -1203,7 +1199,6 @@ div[role=“dialog”]{width:calc(100% - 24px)!important;max-width:none!importan
     </div>
   </div>
 </div>
-```
 
   </div>
   <div class="proc-section" id="proc_laao"><div class="card card-green mb-3" style="border-left:4px solid #059669;"><div style="font-weight:800;color:#065f46;font-size:14px;">9.9 — LAAO</div></div>
@@ -1217,7 +1212,6 @@ div[role=“dialog”]{width:calc(100% - 24px)!important;max-width:none!importan
       </div>
     </div>
 
-```
 <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.9b LAA appendage occlusive Device type (Choose One Only):</label>
   <div class="flex gap-2 mt-1 flex-wrap">
     <label class="radio-item"><input type="radio" name="laaoDeviceType" value="Plug-based device (WATCHMAN)"> Plug-based device (WATCHMAN)</label>
@@ -1278,7 +1272,6 @@ div[role=“dialog”]{width:calc(100% - 24px)!important;max-width:none!importan
     </div>
   </div>
 </div>
-```
 
   </div>
 </div>
@@ -1292,7 +1285,6 @@ div[role=“dialog”]{width:calc(100% - 24px)!important;max-width:none!importan
     <div class="font-bold text-red-900 text-sm mb-3">10.2 Complications</div>
     <div class="g2 mb-3"><div><label class="lbl">10.2.1 Resuscitated cardiac arrest</label><select name="cx_cardArrest" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">10.2.2 Pulmonary edema/CHF<button type="button" class="fn-btn" onclick="openFn('10.2.2')" aria-label="Field information" title="Click for field information">i</button></label><select name="cx_pulEdema" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
 
-```
 <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.3 Renal impairment/failure (pre-discharge)<button type="button" class="fn-btn" onclick="openFn('10.2.3')" aria-label="Field information" title="Click for field information">i</button></span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'renal','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'renal','Yes')">Yes</button></div></div><input type="hidden" name="cx_renal" id="val_renal" value=""><div id="sub_renal" class="sub-reveal"><label class="lbl">10.2.3.a Dialysis required</label><select name="cx_dialysis" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div>
 
 <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.4 Stroke<button type="button" class="fn-btn" onclick="openFn('10.2.4')" aria-label="Field information" title="Click for field information">i</button></span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'stroke','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'stroke','Yes')">Yes</button></div></div><input type="hidden" name="cx_stroke" id="val_stroke" value=""><div id="sub_stroke" class="sub-reveal"><label class="lbl">10.2.4.a Type (Choose One Only):</label><div class="flex gap-2 mt-1 flex-wrap"><label class="radio-item"><input type="radio" name="strokeType" value="Hemorrhagic"> Hemorrhagic</label><label class="radio-item"><input type="radio" name="strokeType" value="Thrombotic"> Thrombotic</label><label class="radio-item"><input type="radio" name="strokeType" value="Unknown"> Unknown (CT not done)</label></div></div></div>
@@ -1406,7 +1398,6 @@ div[role=“dialog”]{width:calc(100% - 24px)!important;max-width:none!importan
   <div><label class="lbl">10.2.26 Lead Dislodgement</label><select name="cx_leadDislodge" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
   <div><label class="lbl">10.2.27 Lead fracture</label><select name="cx_leadFracture" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
 </div>
-```
 
   </div>
 </div>
@@ -4148,9 +4139,7 @@ function initApp() {
     if(w){
       w.document.write(`<html><head><title>Debug Info</title><style>body{font-family:monospace;padding:20px;background:#f8fafc;}pre{background:white;border:1px solid #cbd5e1;border-radius:8px;padding:16px;white-space:pre-wrap;word-break:break-all;font-size:12px;}button{background:#1d4ed8;color:white;border:0;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:700;margin-bottom:12px;}</style></head><body><h3>Diagnostic info</h3><button onclick="navigator.clipboard.writeText(document.getElementById('d').textContent).then(()=>alert('Copied!'))">Copy</button><pre id="d">${txt.replace(/</g,'&lt;')}</pre></body></html>`);
 
-```
 } else alert(txt);
-```
 
 };
 window.loadDashboard=async function(){
@@ -4196,7 +4185,7 @@ grid.innerHTML=data.map(d=>{
 const c=d._comp,st=d.recordStatus||‘draft’;
 const barCol=c.complete?’#059669’:c.pct>=70?’#d97706’:’#e11d48’;
 const invInfo = (currentRole===‘admin’||currentRole===‘cso’) ? `<span><i class="fas fa-user-md fa-xs mr-1"></i>${d.enrolledByName||'—'}</span>` : ‘’;
-return`<div class="dash-card" style="display:flex;align-items:center;gap:16px;padding:14px 18px;"> <div style="font-size:13px;font-weight:800;color:#94a3b8;min-width:32px;">#${d._no}</div> <div style="flex:1;min-width:0;"> <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;"> <span style="font-weight:800;font-size:14px;">${d.fullName||'Anonymous'}</span> ${statusBadge(st)} ${d._isDup?'<span class="dup-flag"><i class="fas fa-exclamation-circle"></i> Dup</span>':''} </div> <div style="font-size:12px;color:#64748b;display:flex;flex-wrap:wrap;gap:10px;"> <span>CID: <b>${d.civilId||'—'}</b></span> <span>${d.admissionDate||'—'}</span> <span>${d.epReason||'—'}</span> ${invInfo} </div> <div style="margin-top:8px;display:flex;align-items:center;gap:8px;"> <div style="flex:1;height:5px;background:#e2e8f0;border-radius:3px;overflow:hidden;"><div style="height:100%;width:${c.pct}%;background:${barCol};border-radius:3px;"></div></div> <span style="font-size:10px;font-weight:700;color:${barCol};min-width:32px;">${c.pct}%</span> </div> </div> <div style="display:flex;gap:6px;flex-shrink:0;"> ${canEdit ? `<button onclick=‘editRecord(${JSON.stringify(d).replace(/’/g,”\’”)})’ class=“btn btn-yellow text-xs px-3 py-1.5”><i class="fas fa-edit"></i></button>`:`<button onclick=‘viewRecord(${JSON.stringify(d).replace(/’/g,”\’”)})’ class=“btn btn-gray text-xs px-3 py-1.5”><i class="fas fa-eye"></i></button>`} </div> </div>`;
+return`<div class="dash-card" style="display:flex;align-items:center;gap:16px;padding:14px 18px;"> <div style="font-size:13px;font-weight:800;color:#94a3b8;min-width:32px;">#${d._no}</div> <div style="flex:1;min-width:0;"> <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;"> <span style="font-weight:800;font-size:14px;">${d.fullName||'Anonymous'}</span> ${statusBadge(st)} ${d._isDup?'<span class="dup-flag"><i class="fas fa-exclamation-circle"></i> Dup</span>':''} </div> <div style="font-size:12px;color:#64748b;display:flex;flex-wrap:wrap;gap:10px;"> <span>CID: <b>${d.civilId||'—'}</b></span> <span>${d.admissionDate||'—'}</span> <span>${d.epReason||'—'}</span> ${invInfo} </div> <div style="margin-top:8px;display:flex;align-items:center;gap:8px;"> <div style="flex:1;height:5px;background:#e2e8f0;border-radius:3px;overflow:hidden;"><div style="height:100%;width:${c.pct}%;background:${barCol};border-radius:3px;"></div></div> <span style="font-size:10px;font-weight:700;color:${barCol};min-width:32px;">${c.pct}%</span> </div> </div> <div style="display:flex;gap:6px;flex-shrink:0;"> ${canEdit ? `<button onclick=‘editRecord(${JSON.stringify(d).replace(/’/g,”'”)})’ class=“btn btn-yellow text-xs px-3 py-1.5”><i class="fas fa-edit"></i></button>`:`<button onclick=‘viewRecord(${JSON.stringify(d).replace(/’/g,”'”)})’ class=“btn btn-gray text-xs px-3 py-1.5”><i class="fas fa-eye"></i></button>`} </div> </div>`;
 }).join(’’);
 }
 
@@ -4256,149 +4245,153 @@ document.getElementById(‘hidOrigTimestamp’).value=origTs;
 }catch(_){ /* ignore ts parse issues */ }
 document.getElementById(‘editModeBanner’).classList.remove(‘hidden’);
 
-```
-  // Make sure the form section is visible BEFORE populating (so elements are laid out)
-  document.getElementById('section-form')?.classList.remove('hidden');
+// Make sure the form section is visible BEFORE populating (so elements are laid out)
+document.getElementById(‘section-form’)?.classList.remove(‘hidden’);
 
-  // Clear all Y/N hidden vals and selected buttons first (in case previous record left state)
-  document.querySelectorAll('input[type="hidden"][id^="val_"]').forEach(h=>{h.value='';});
-  document.querySelectorAll('.yn-btn.selected').forEach(b=>b.classList.remove('selected'));
+// Clear all Y/N hidden vals and selected buttons first (in case previous record left state)
+document.querySelectorAll(‘input[type=“hidden”][id^=“val_”]’).forEach(h=>{h.value=’’;});
+document.querySelectorAll(’.yn-btn.selected’).forEach(b=>b.classList.remove(‘selected’));
 
-  // ---- Legacy migration ----------------------------------------------
-  // 4.17a / 4.25a / 9.5a / 9.7b.1 / 9.8a were multi-checkbox fields and are
-  // now single-select dropdowns. Older records store the old checkbox keys
-  // (e.g. ssd_brugada=true). Derive the new single value from the first
-  // ticked legacy checkbox so the dropdown shows correctly on edit.
-  (function migrateLegacySingleSelects(){
-    const MIGRATIONS=[
-      {newKey:'ssd_type', map:{ssd_brugada:'Brugada',ssd_cpvt:'Catecholaminergic polymorphic VT',ssd_idiopathic:'Idiopathic/Primary VT/VF',ssd_longqt:'Long QT',ssd_shortqt:'Short QT',ssd_unknown:'Unknown'}},
-      {newKey:'cied_type', map:{cied_single:'Single chamber transvenous PPM',cied_dual:'Dual chamber transvenous PPM',cied_crtp:'CRT-P',cied_leadlessSingle:'Leadless single chamber PPM',cied_leadlessDual:'Leadless dual chamber PPM',cied_his:'His bundle PPM',cied_lbbb:'Left bundle area PPM',cied_icdSingle:'ICD single chamber',cied_icdDual:'ICD dual chamber',cied_crtd:'CRT-D',cied_evicd:'Extravascular ICD',cied_sicd:'S-ICD (Sub Q)',cied_unknown:'Unknown'}},
-      {newKey:'crtInh_type', map:{crtInh_longqt:'Long QT-syndrome',crtInh_hcm:'HCM',crtInh_brugada:'Brugada syndrome',crtInh_arvd:'Arrhythmogenic RV Dysplasia/Cardiomyopathy (ARVD/C)',crtInh_cpvt:'Catecholaminergic Polymorphic VT (CPVT)'}},
-      {newKey:'ppmDev_type', map:{ppmDev_singleTV:'Single chamber transvenous PPM',ppmDev_dualTV:'Dual chamber transvenous PPM',ppmDev_leadlessSingle:'Leadless single chamber PPM',ppmDev_leadlessDual:'Leadless dual chamber PPM',ppmDev_his:'His-bundle PPM',ppmDev_leadlessLVEP:'Leadless LVEP',ppmDev_ccm:'CCM',ppmDev_lbbb:'LBBB PPM'}},
-      {newKey:'eps_reason', map:{eps_svt:'SVT',eps_aflutter:'Atrial flutter',eps_afib:'Atrial fibrillation',eps_vt:'VT',eps_pvcs:'PVCs'}},
-    ];
-    MIGRATIONS.forEach(({newKey,map})=>{
-      if(data[newKey]) return; // already has a new-format value
-      for(const oldKey of Object.keys(map)){
-        if(data[oldKey]===true||data[oldKey]==='true'||data[oldKey]==='Yes'){
-          data[newKey]=map[oldKey];
-          break; // first ticked option wins
-        }
-      }
-    });
-  })();
-  // --------------------------------------------------------------------
-
-  let loaded=0;
-  Object.keys(data).forEach(key=>{
-    // Skip meta keys that aren't form fields
-    if(key==='id'||key==='timestamp'||key==='origTimestamp'||key==='lastModified')return;
-
-    const elList=document.getElementsByName(key);
-    if(!elList||elList.length===0)return;
-    const el=elList[0];
-
-    // Home/Discharge meds Y/N (hidden inputs)
-    if((key.startsWith('homeMed_')||key.startsWith('dcMed_')) && el.type==='hidden'){
-      let v=data[key];
-      if(v===true||v==='Yes') v='Yes';
-      else if(v===false||v==='No') v='No';
-      else v='';
-      el.value=v;
-      const row=el.closest('.med-row');
-      if(row){
-        row.querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('selected'));
-        if(v==='Yes') row.querySelector('.yn-btn.yn-yes')?.classList.add('selected');
-        else if(v==='No') row.querySelector('.yn-btn.yn-no')?.classList.add('selected');
-      }
-      loaded++;
-      return;
-    }
-
-    // Y/N toggle hidden vals (id starts with val_)
-    if(el.type==='hidden' && el.id && el.id.startsWith('val_')){
-      const v=data[key];
-      el.value=(v==='Yes'||v==='No')?v:'';
-      const ynKey=el.id.replace('val_','');
-      const btns=document.querySelectorAll(`.yn-btn[onclick*="'${ynKey}'"]`);
-      btns.forEach(b=>b.classList.remove('selected'));
-      if(v==='Yes'||v==='No'){
-        btns.forEach(b=>{ if(b.getAttribute('onclick')?.includes(`'${v}'`)) b.classList.add('selected'); });
-      }
-      const sub=document.getElementById('sub_'+ynKey);
-      if(sub){ sub.classList.toggle('show', v==='Yes'); }
-      loaded++;
-      return;
-    }
-
-    // Checkboxes: handle ALL elements with this name (could be multiple same-name checkboxes)
-    if(el.type==='checkbox'){
-      elList.forEach(c=>{ c.checked = !!data[key]; });
-      loaded++;
-      return;
-    }
-
-    // Radios: scan ALL elements with this name and check the matching value
-    if(el.type==='radio'){
-      const target=String(data[key]??'');
-      elList.forEach(r=>{ r.checked = (String(r.value)===target); });
-      loaded++;
-      return;
-    }
-
-    // Regular inputs/selects/textareas
-    el.value = data[key]==null ? '' : data[key];
-    loaded++;
-  });
-  console.log('[editRecord] Populated', loaded, 'fields');
-
-  // Reveal the correct procedure section. Suppress data-wiping during this load
-  // so legacy records (which may have stale data in sections that don't match the
-  // current EP reason) don't lose information just by opening them.
-  window._suppressClearOnHide = true;
-  try {
-    if(data.epReason && typeof onEPR==='function') onEPR();
-
-    // Re-trigger all conditional toggle handlers so sub-reveal sections open for loaded values
-    [
-      'onCrtGen','onCrtDevType','onCrtPpmType','onCrtLead',
-      'onPpmGen','onPpmLbbb','onPpmLead',
-      'onTpmDrug','onTpmMI','onTpmPpmSameStay','onBleedT','onDischSt'
-    ].forEach(fn=>{
-      try{ if(typeof window[fn]==='function') window[fn](); }
-      catch(e){ console.warn('[editRecord] Handler error:',fn,e); }
-    });
-  } finally {
-    window._suppressClearOnHide = false;
-  }
-
-  applyLock(st);
-  goToStep(0);
-  updateFieldIndicators();
-  onCivilIdInput();
-  // Re-sync NA paired-field state (value ↔ "Not assessed/collected" checkbox)
-  try {
-    if(typeof window._resyncNaPairs === 'function') window._resyncNaPairs();
-  } catch(e){ /* noop */ }
-  // Re-sync 4.3 ICM ↔ CAD/MI/PCI/CABG linkage based on the loaded value
-  try {
-    if(typeof window._applyIcmLinkage === 'function'){
-      const icmVal = (document.getElementById('val_icm')||{}).value || '';
-      window._applyIcmLinkage(icmVal);
-    }
-  } catch(e){ /* noop */ }
-  // Re-sync 10.2.5 Access site complications ↔ 10.2.6 Intervention linkage
-  try {
-    if(typeof window._applyAccessVascLinkage === 'function'){
-      const avVal = (document.getElementById('val_accessVasc')||{}).value || '';
-      window._applyAccessVascLinkage(avVal);
-    }
-  } catch(e){ /* noop */ }
-}catch(err){
-  console.error('[editRecord] FAILED:',err);
-  alert('Could not load record for editing. Check console for details.\n'+err.message);
+// –– Legacy migration –––––––––––––––––––––––
+// 4.17a / 4.25a / 9.5a / 9.7b.1 / 9.8a were multi-checkbox fields and are
+// now single-select dropdowns. Older records store the old checkbox keys
+// (e.g. ssd_brugada=true). Derive the new single value from the first
+// ticked legacy checkbox so the dropdown shows correctly on edit.
+(function migrateLegacySingleSelects(){
+const MIGRATIONS=[
+{newKey:‘ssd_type’, map:{ssd_brugada:‘Brugada’,ssd_cpvt:‘Catecholaminergic polymorphic VT’,ssd_idiopathic:‘Idiopathic/Primary VT/VF’,ssd_longqt:‘Long QT’,ssd_shortqt:‘Short QT’,ssd_unknown:‘Unknown’}},
+{newKey:‘cied_type’, map:{cied_single:‘Single chamber transvenous PPM’,cied_dual:‘Dual chamber transvenous PPM’,cied_crtp:‘CRT-P’,cied_leadlessSingle:‘Leadless single chamber PPM’,cied_leadlessDual:‘Leadless dual chamber PPM’,cied_his:‘His bundle PPM’,cied_lbbb:‘Left bundle area PPM’,cied_icdSingle:‘ICD single chamber’,cied_icdDual:‘ICD dual chamber’,cied_crtd:‘CRT-D’,cied_evicd:‘Extravascular ICD’,cied_sicd:‘S-ICD (Sub Q)’,cied_unknown:‘Unknown’}},
+{newKey:‘crtInh_type’, map:{crtInh_longqt:‘Long QT-syndrome’,crtInh_hcm:‘HCM’,crtInh_brugada:‘Brugada syndrome’,crtInh_arvd:‘Arrhythmogenic RV Dysplasia/Cardiomyopathy (ARVD/C)’,crtInh_cpvt:‘Catecholaminergic Polymorphic VT (CPVT)’}},
+{newKey:‘ppmDev_type’, map:{ppmDev_singleTV:‘Single chamber transvenous PPM’,ppmDev_dualTV:‘Dual chamber transvenous PPM’,ppmDev_leadlessSingle:‘Leadless single chamber PPM’,ppmDev_leadlessDual:‘Leadless dual chamber PPM’,ppmDev_his:‘His-bundle PPM’,ppmDev_leadlessLVEP:‘Leadless LVEP’,ppmDev_ccm:‘CCM’,ppmDev_lbbb:‘LBBB PPM’}},
+{newKey:‘eps_reason’, map:{eps_svt:‘SVT’,eps_aflutter:‘Atrial flutter’,eps_afib:‘Atrial fibrillation’,eps_vt:‘VT’,eps_pvcs:‘PVCs’}},
+];
+MIGRATIONS.forEach(({newKey,map})=>{
+if(data[newKey]) return; // already has a new-format value
+for(const oldKey of Object.keys(map)){
+if(data[oldKey]===true||data[oldKey]===‘true’||data[oldKey]===‘Yes’){
+data[newKey]=map[oldKey];
+break; // first ticked option wins
 }
+}
+});
+})();
+// ––––––––––––––––––––––––––––––––––
+
+let loaded=0;
+Object.keys(data).forEach(key=>{
+// Skip meta keys that aren’t form fields
+if(key===‘id’||key===‘timestamp’||key===‘origTimestamp’||key===‘lastModified’)return;
+
 ```
+const elList=document.getElementsByName(key);
+if(!elList||elList.length===0)return;
+const el=elList[0];
+
+// Home/Discharge meds Y/N (hidden inputs)
+if((key.startsWith('homeMed_')||key.startsWith('dcMed_')) && el.type==='hidden'){
+  let v=data[key];
+  if(v===true||v==='Yes') v='Yes';
+  else if(v===false||v==='No') v='No';
+  else v='';
+  el.value=v;
+  const row=el.closest('.med-row');
+  if(row){
+    row.querySelectorAll('.yn-btn').forEach(b=>b.classList.remove('selected'));
+    if(v==='Yes') row.querySelector('.yn-btn.yn-yes')?.classList.add('selected');
+    else if(v==='No') row.querySelector('.yn-btn.yn-no')?.classList.add('selected');
+  }
+  loaded++;
+  return;
+}
+
+// Y/N toggle hidden vals (id starts with val_)
+if(el.type==='hidden' && el.id && el.id.startsWith('val_')){
+  const v=data[key];
+  el.value=(v==='Yes'||v==='No')?v:'';
+  const ynKey=el.id.replace('val_','');
+  const btns=document.querySelectorAll(`.yn-btn[onclick*="'${ynKey}'"]`);
+  btns.forEach(b=>b.classList.remove('selected'));
+  if(v==='Yes'||v==='No'){
+    btns.forEach(b=>{ if(b.getAttribute('onclick')?.includes(`'${v}'`)) b.classList.add('selected'); });
+  }
+  const sub=document.getElementById('sub_'+ynKey);
+  if(sub){ sub.classList.toggle('show', v==='Yes'); }
+  loaded++;
+  return;
+}
+
+// Checkboxes: handle ALL elements with this name (could be multiple same-name checkboxes)
+if(el.type==='checkbox'){
+  elList.forEach(c=>{ c.checked = !!data[key]; });
+  loaded++;
+  return;
+}
+
+// Radios: scan ALL elements with this name and check the matching value
+if(el.type==='radio'){
+  const target=String(data[key]??'');
+  elList.forEach(r=>{ r.checked = (String(r.value)===target); });
+  loaded++;
+  return;
+}
+
+// Regular inputs/selects/textareas
+el.value = data[key]==null ? '' : data[key];
+loaded++;
+```
+
+});
+console.log(’[editRecord] Populated’, loaded, ‘fields’);
+
+// Reveal the correct procedure section. Suppress data-wiping during this load
+// so legacy records (which may have stale data in sections that don’t match the
+// current EP reason) don’t lose information just by opening them.
+window._suppressClearOnHide = true;
+try {
+if(data.epReason && typeof onEPR===‘function’) onEPR();
+
+```
+// Re-trigger all conditional toggle handlers so sub-reveal sections open for loaded values
+[
+  'onCrtGen','onCrtDevType','onCrtPpmType','onCrtLead',
+  'onPpmGen','onPpmLbbb','onPpmLead',
+  'onTpmDrug','onTpmMI','onTpmPpmSameStay','onBleedT','onDischSt'
+].forEach(fn=>{
+  try{ if(typeof window[fn]==='function') window[fn](); }
+  catch(e){ console.warn('[editRecord] Handler error:',fn,e); }
+});
+```
+
+} finally {
+window._suppressClearOnHide = false;
+}
+
+applyLock(st);
+goToStep(0);
+updateFieldIndicators();
+onCivilIdInput();
+// Re-sync NA paired-field state (value ↔ “Not assessed/collected” checkbox)
+try {
+if(typeof window._resyncNaPairs === ‘function’) window._resyncNaPairs();
+} catch(e){ /* noop */ }
+// Re-sync 4.3 ICM ↔ CAD/MI/PCI/CABG linkage based on the loaded value
+try {
+if(typeof window._applyIcmLinkage === ‘function’){
+const icmVal = (document.getElementById(‘val_icm’)||{}).value || ‘’;
+window._applyIcmLinkage(icmVal);
+}
+} catch(e){ /* noop */ }
+// Re-sync 10.2.5 Access site complications ↔ 10.2.6 Intervention linkage
+try {
+if(typeof window._applyAccessVascLinkage === ‘function’){
+const avVal = (document.getElementById(‘val_accessVasc’)||{}).value || ‘’;
+window._applyAccessVascLinkage(avVal);
+}
+} catch(e){ /* noop */ }
+}catch(err){
+console.error(’[editRecord] FAILED:’,err);
+alert(‘Could not load record for editing. Check console for details.\n’+err.message);
+}
 
 };
 
@@ -4780,154 +4773,152 @@ dcMed_mra:‘DC Med: MRA’,
 dcMed_digoxin:‘DC Med: Digoxin’,
 dcMed_loopdiuretic:‘DC Med: Loop diuretics’,
 
-```
 // 4.15 Structural abnormality (Y/N wrapper already in FIELD_MAP as hx_struct)
-struct_infiltrative:'Struct: Infiltrative',
+struct_infiltrative:‘Struct: Infiltrative’,
 
 // 9.5 CRT/AICD additions
-crtInherited:'CRT: Inherited heart disease w/ SCD risk',
-crtInh_type:'CRT Inherited Heart Disease Type',
-crtRepl_relocation:'CRT Repl: Device relocation',
-crtRepl_battery:'CRT Repl: End of battery life',
-crtRepl_faulty:'CRT Repl: Faulty connector/header',
-crtRepl_infection:'CRT Repl: Infection',
-crtRepl_leadrev:'CRT Repl: Replaced at lead revision',
-crtRepl_upgrade:'CRT Repl: Upgrade',
-crtReimplant:'CRT: Reimplant intended',
-crtDevImpl:'CRT: Device implant',
-crtDeviceType:'CRT: Device Type',
-crtPpmSame:'CRT: Pacemaker same procedure',
-crtPpmType:'CRT: Pacemaker type',
-crtLbbbQRS:'CRT LBBB: QRS width post (msec)',
-crtLbbbQRSna:'CRT LBBB: QRS Not Assessed',
-crtBrady:'CRT: Any Bradycardia indications',
-crtBradyReason:'CRT: Bradycardia pacing reason',
-crtNewLead:'CRT: New lead',
-crtExistingLead:'CRT: Existing lead',
-crtAdditionalLead:'CRT: Additional lead to existing',
-crtLeadStatus:'CRT: Lead status',
+crtInherited:‘CRT: Inherited heart disease w/ SCD risk’,
+crtInh_type:‘CRT Inherited Heart Disease Type’,
+crtRepl_relocation:‘CRT Repl: Device relocation’,
+crtRepl_battery:‘CRT Repl: End of battery life’,
+crtRepl_faulty:‘CRT Repl: Faulty connector/header’,
+crtRepl_infection:‘CRT Repl: Infection’,
+crtRepl_leadrev:‘CRT Repl: Replaced at lead revision’,
+crtRepl_upgrade:‘CRT Repl: Upgrade’,
+crtReimplant:‘CRT: Reimplant intended’,
+crtDevImpl:‘CRT: Device implant’,
+crtDeviceType:‘CRT: Device Type’,
+crtPpmSame:‘CRT: Pacemaker same procedure’,
+crtPpmType:‘CRT: Pacemaker type’,
+crtLbbbQRS:‘CRT LBBB: QRS width post (msec)’,
+crtLbbbQRSna:‘CRT LBBB: QRS Not Assessed’,
+crtBrady:‘CRT: Any Bradycardia indications’,
+crtBradyReason:‘CRT: Bradycardia pacing reason’,
+crtNewLead:‘CRT: New lead’,
+crtExistingLead:‘CRT: Existing lead’,
+crtAdditionalLead:‘CRT: Additional lead to existing’,
+crtLeadStatus:‘CRT: Lead status’,
 
 // 9.6 Temporary PM additions
-tpmIndication:'TPM: Indication',
-tpmCause_electrolyte:'TPM Cause: Electrolyte imbalance',
-tpmCause_drug:'TPM Cause: Drug induced',
-tpmCause_digitalis:'TPM Cause: Digitalis toxicity',
-tpmCause_antiarr:'TPM Cause: Anti-arrhythmic',
-tpmCause_acuteMI:'TPM Cause: Acute MI',
-tpmCause_myocarditis:'TPM Cause: Myocarditis',
-tpmCause_endocarditis:'TPM Cause: Endocarditis',
-tpmCause_postArrest:'TPM Cause: Post cardiac arrest',
-tpmCause_degenerative:'TPM Cause: Degenerative',
-tpmCause_hypothermia:'TPM Cause: Hypothermia',
-tpmCause_bridge:'TPM Cause: Bridge to PPM',
-tpmCause_postTAVI:'TPM Cause: Post TAVI/valve replacement',
-tpmCause_unknown:'TPM Cause: Unknown',
-tpmDrug_avBlock:'TPM Drug: AV blocking agent',
-tpmMIType:'TPM: Acute MI type',
-tpmPpmSameStay:'TPM: PPM during same hospital stay',
+tpmIndication:‘TPM: Indication’,
+tpmCause_electrolyte:‘TPM Cause: Electrolyte imbalance’,
+tpmCause_drug:‘TPM Cause: Drug induced’,
+tpmCause_digitalis:‘TPM Cause: Digitalis toxicity’,
+tpmCause_antiarr:‘TPM Cause: Anti-arrhythmic’,
+tpmCause_acuteMI:‘TPM Cause: Acute MI’,
+tpmCause_myocarditis:‘TPM Cause: Myocarditis’,
+tpmCause_endocarditis:‘TPM Cause: Endocarditis’,
+tpmCause_postArrest:‘TPM Cause: Post cardiac arrest’,
+tpmCause_degenerative:‘TPM Cause: Degenerative’,
+tpmCause_hypothermia:‘TPM Cause: Hypothermia’,
+tpmCause_bridge:‘TPM Cause: Bridge to PPM’,
+tpmCause_postTAVI:‘TPM Cause: Post TAVI/valve replacement’,
+tpmCause_unknown:‘TPM Cause: Unknown’,
+tpmDrug_avBlock:‘TPM Drug: AV blocking agent’,
+tpmMIType:‘TPM: Acute MI type’,
+tpmPpmSameStay:‘TPM: PPM during same hospital stay’,
 
 // 9.7 Permanent PM additions
-ppmReplReason:'PPM: Replacement reason',
-ppmReimplant:'PPM: Reimplant intended',
-ppmDevImpl:'PPM: Device implant',
-ppmDev_type:'PPM Device Implant Type',
-ppmLbbbQRS:'PPM LBBB: QRS width post (msec)',
-ppmLbbbQRSna:'PPM LBBB: QRS Not Assessed',
-ppmIndication:'PPM: Indication',
-ppmNewLead:'PPM: New lead',
-ppmExistingLead:'PPM: Existing lead',
-ppmAdditionalLead:'PPM: Additional lead to existing',
-ppmLeadStatus:'PPM: Lead status',
+ppmReplReason:‘PPM: Replacement reason’,
+ppmReimplant:‘PPM: Reimplant intended’,
+ppmDevImpl:‘PPM: Device implant’,
+ppmDev_type:‘PPM Device Implant Type’,
+ppmLbbbQRS:‘PPM LBBB: QRS width post (msec)’,
+ppmLbbbQRSna:‘PPM LBBB: QRS Not Assessed’,
+ppmIndication:‘PPM: Indication’,
+ppmNewLead:‘PPM: New lead’,
+ppmExistingLead:‘PPM: Existing lead’,
+ppmAdditionalLead:‘PPM: Additional lead to existing’,
+ppmLeadStatus:‘PPM: Lead status’,
 
 // 9.8 EPS additions
-epsSedation:'EPS: Sedation',
-epsAnticoag:'EPS: Intraprocedural anticoagulation',
-epsUninterrupted:'EPS: Uninterrupted anticoagulation',
-epsCathManip:'EPS: Catheter manipulation',
-epsInducedArr:'EPS: Induced arrhythmia during study',
-epsMapSystem:'EPS: Mapping system',
+epsSedation:‘EPS: Sedation’,
+epsAnticoag:‘EPS: Intraprocedural anticoagulation’,
+epsUninterrupted:‘EPS: Uninterrupted anticoagulation’,
+epsCathManip:‘EPS: Catheter manipulation’,
+epsInducedArr:‘EPS: Induced arrhythmia during study’,
+epsMapSystem:‘EPS: Mapping system’,
 
 // 9.9 LAAO additions
-laao_patientPref:'LAAO Ind: Patient preference',
-laaoDeploy:'LAAO: Deployment attempts',
-laaoTransseptal:'LAAO: Transseptal puncture',
-laaoImaging:'LAAO: Imaging guidance',
-laaoLeak:'LAAO: Final peri-device leak',
-laaoAnticoag:'LAAO: Intraprocedural anticoagulation',
+laao_patientPref:‘LAAO Ind: Patient preference’,
+laaoDeploy:‘LAAO: Deployment attempts’,
+laaoTransseptal:‘LAAO: Transseptal puncture’,
+laaoImaging:‘LAAO: Imaging guidance’,
+laaoLeak:‘LAAO: Final peri-device leak’,
+laaoAnticoag:‘LAAO: Intraprocedural anticoagulation’,
 
 // Section 10 complications additions
-cx_renal:'CX: Renal impairment/failure (pre-disch)',
-cx_dialysis:'CX: Dialysis required',
-cx_accessVasc:'CX: Access site vascular/bleeding',
-cx_hematoma:'CX: Hematoma',
-cx_occlusion:'CX: Vascular occlusion',
-cx_avfistula:'CX: AV fistula',
-cx_pseudoAneurysm:'CX: Pseudo-aneurysm',
-cx_intervReq:'CX: Intervention required',
-cx_intervEndo:'CX: Intervention - Endovascular repair',
-cx_intervSurg:'CX: Intervention - Surgical repair',
-cx_intervThrombin:'CX: Intervention - Thrombin injection',
-cx_periphEmbol:'CX: Peripheral embolization',
-cx_pericarditis:'CX: Pericarditis',
-cx_vent:'CX: Ventilation',
-ventType:'CX: Ventilation type',
-cx_inotropes:'CX: Inotropes',
-cx_mechComp:'CX: Mechanical complications',
-mechCompType:'CX: Mechanical complication type',
-bleedSite_gi:'Bleed Site: Gastrointestinal',
-bleedSite_retro:'Bleed Site: Retroperitoneal',
-bleedSite_genu:'Bleed Site: Genital-Urinary',
-bleedSite_perc:'Bleed Site: Percutaneous entry site',
-cx_transfusion:'CX: Transfusion',
-transfusionUnits:'CX: Transfusion units',
-cx_urgentSurg:'CX: Urgent cardiac surgery',
-cx_pericEff:'CX: Pericardial effusion',
-cx_pericEffInterv:'CX: Pericardial eff. - Requiring intervention',
-cx_tamp2:'CX: Cardiac tamponade (10.2.17)',
-cx_tampOpenSurg:'CX: Tamponade - Open cardiac surgery',
-cx_tampPercDrain:'CX: Tamponade - Percutaneous drainage',
-cx_hemothorax:'CX: Hemothorax',
-cx_hemoDrain:'CX: Hemothorax - Requiring drainage',
-cx_pneumo:'CX: Pneumothorax',
-cx_pneumoInterv:'CX: Pneumothorax - Requiring intervention',
-cx_phrenicDmg:'CX: Phrenic nerve damage',
-cx_infection:'CX: Infection requiring antibiotics',
-cx_setScrew:'CX: Set screw problem',
-cx_bradyAE:'CX: Bradycardia adverse events',
-cx_bradyAEppm:'CX: Bradycardia AE - Requiring PPM',
+cx_renal:‘CX: Renal impairment/failure (pre-disch)’,
+cx_dialysis:‘CX: Dialysis required’,
+cx_accessVasc:‘CX: Access site vascular/bleeding’,
+cx_hematoma:‘CX: Hematoma’,
+cx_occlusion:‘CX: Vascular occlusion’,
+cx_avfistula:‘CX: AV fistula’,
+cx_pseudoAneurysm:‘CX: Pseudo-aneurysm’,
+cx_intervReq:‘CX: Intervention required’,
+cx_intervEndo:‘CX: Intervention - Endovascular repair’,
+cx_intervSurg:‘CX: Intervention - Surgical repair’,
+cx_intervThrombin:‘CX: Intervention - Thrombin injection’,
+cx_periphEmbol:‘CX: Peripheral embolization’,
+cx_pericarditis:‘CX: Pericarditis’,
+cx_vent:‘CX: Ventilation’,
+ventType:‘CX: Ventilation type’,
+cx_inotropes:‘CX: Inotropes’,
+cx_mechComp:‘CX: Mechanical complications’,
+mechCompType:‘CX: Mechanical complication type’,
+bleedSite_gi:‘Bleed Site: Gastrointestinal’,
+bleedSite_retro:‘Bleed Site: Retroperitoneal’,
+bleedSite_genu:‘Bleed Site: Genital-Urinary’,
+bleedSite_perc:‘Bleed Site: Percutaneous entry site’,
+cx_transfusion:‘CX: Transfusion’,
+transfusionUnits:‘CX: Transfusion units’,
+cx_urgentSurg:‘CX: Urgent cardiac surgery’,
+cx_pericEff:‘CX: Pericardial effusion’,
+cx_pericEffInterv:‘CX: Pericardial eff. - Requiring intervention’,
+cx_tamp2:‘CX: Cardiac tamponade (10.2.17)’,
+cx_tampOpenSurg:‘CX: Tamponade - Open cardiac surgery’,
+cx_tampPercDrain:‘CX: Tamponade - Percutaneous drainage’,
+cx_hemothorax:‘CX: Hemothorax’,
+cx_hemoDrain:‘CX: Hemothorax - Requiring drainage’,
+cx_pneumo:‘CX: Pneumothorax’,
+cx_pneumoInterv:‘CX: Pneumothorax - Requiring intervention’,
+cx_phrenicDmg:‘CX: Phrenic nerve damage’,
+cx_infection:‘CX: Infection requiring antibiotics’,
+cx_setScrew:‘CX: Set screw problem’,
+cx_bradyAE:‘CX: Bradycardia adverse events’,
+cx_bradyAEppm:‘CX: Bradycardia AE - Requiring PPM’,
 
 // Section 11 Outcome additions
-condSysPace:'Conduction system pacing (LBB lead)',
-condSysPaceQRS:'Final pace QRS duration (msec)',
-condSysPaceQRSna:'Final pace QRS Not Assessed',
+condSysPace:‘Conduction system pacing (LBB lead)’,
+condSysPaceQRS:‘Final pace QRS duration (msec)’,
+condSysPaceQRSna:‘Final pace QRS Not Assessed’,
 
 // ==================== POST-PILOT REVISION FIELDS ====================
 // 4.1b AFib EHRA classification
-afibEHRA:'AFib EHRA classification',
+afibEHRA:‘AFib EHRA classification’,
 // 4.2d Asystole arrest
-arrestAsystole:'Asystole Arrest',
+arrestAsystole:‘Asystole Arrest’,
 // 7.1b Nodal Rhythm
-ecgNodal:'ECG Nodal Rhythm',
-ecgNodalType:'ECG Nodal Rhythm Type',
+ecgNodal:‘ECG Nodal Rhythm’,
+ecgNodalType:‘ECG Nodal Rhythm Type’,
 // 7.5/7.6 New investigations
-inv_tiltTable:'Tilting table test performed',
-inv_loopRecorder:'Implantable loop recorder performed',
+inv_tiltTable:‘Tilting table test performed’,
+inv_loopRecorder:‘Implantable loop recorder performed’,
 // 9.5 CRT/AICD additions
-crtInd_vtUnresp:'CRT Ind: VT not responding to ablation/medical therapy',
+crtInd_vtUnresp:‘CRT Ind: VT not responding to ablation/medical therapy’,
 // 9.5d / 9.7d Lead assessment restructure
-crtNewLead:'CRT: New lead',
-crtExistingLead:'CRT: Existing lead',
-crtAdditionalLead:'CRT: Additional lead to existing',
-ppmNewLead:'PPM: New lead',
-ppmExistingLead:'PPM: Existing lead',
-ppmAdditionalLead:'PPM: Additional lead to existing',
+crtNewLead:‘CRT: New lead’,
+crtExistingLead:‘CRT: Existing lead’,
+crtAdditionalLead:‘CRT: Additional lead to existing’,
+ppmNewLead:‘PPM: New lead’,
+ppmExistingLead:‘PPM: Existing lead’,
+ppmAdditionalLead:‘PPM: Additional lead to existing’,
 // 10.2.20 / 10.2.27
-cx_devMigration:'CX: Device Migration',
-cx_leadFracture:'CX: Lead Fracture',
+cx_devMigration:‘CX: Device Migration’,
+cx_leadFracture:‘CX: Lead Fracture’,
 // Ivabradine medication
-homeMed_ivabradine:'Home Med: Ivabradine',
-dcMed_ivabradine:'DC Med: Ivabradine',
-```
+homeMed_ivabradine:‘Home Med: Ivabradine’,
+dcMed_ivabradine:‘DC Med: Ivabradine’,
 
 });
 
@@ -4945,77 +4936,75 @@ dcMed_rivaroxaban:‘DCRiva’, dcMed_edoxaban:‘DCEdox’, dcMed_lmwh:‘DCLMW
 dcMed_ufh:‘DCUFH’, dcMed_prasugrel:‘DCPras’, dcMed_ticagrelor:‘DCTica’,
 dcMed_cangrelor:‘DCCang’, dcMed_arb:‘DCARB’, dcMed_arni:‘DCARNI’, dcMed_sglt:‘DCSGLT’,
 
-```
 // Structural
-struct_infiltrative:'StInfilt',
+struct_infiltrative:‘StInfilt’,
 
 // CRT/AICD
-crtInherited:'CRTInher', crtInh_type:'CRTInhTy',
-crtRepl_relocation:'CRTRplRel', crtRepl_battery:'CRTRplBat', crtRepl_faulty:'CRTRplFlt',
-crtRepl_infection:'CRTRplInf', crtRepl_leadrev:'CRTRplLdR', crtRepl_upgrade:'CRTRplUpg',
-crtReimplant:'CRTReImp', crtDevImpl:'CRTDevIm', crtDeviceType:'CRTDevTy',
-crtPpmSame:'CRTPpmSm', crtPpmType:'CRTPpmTy', crtLbbbQRS:'CRTLbQRS',
-crtLbbbQRSna:'CRTLbQRSn', crtBrady:'CRTBrady', crtBradyReason:'CRTBrRsn',
-crtNewLead:'CRTNewLd', crtExistingLead:'CRTExLd', crtAdditionalLead:'CRTAddLd', crtLeadStatus:'CRTLdSt',
+crtInherited:‘CRTInher’, crtInh_type:‘CRTInhTy’,
+crtRepl_relocation:‘CRTRplRel’, crtRepl_battery:‘CRTRplBat’, crtRepl_faulty:‘CRTRplFlt’,
+crtRepl_infection:‘CRTRplInf’, crtRepl_leadrev:‘CRTRplLdR’, crtRepl_upgrade:‘CRTRplUpg’,
+crtReimplant:‘CRTReImp’, crtDevImpl:‘CRTDevIm’, crtDeviceType:‘CRTDevTy’,
+crtPpmSame:‘CRTPpmSm’, crtPpmType:‘CRTPpmTy’, crtLbbbQRS:‘CRTLbQRS’,
+crtLbbbQRSna:‘CRTLbQRSn’, crtBrady:‘CRTBrady’, crtBradyReason:‘CRTBrRsn’,
+crtNewLead:‘CRTNewLd’, crtExistingLead:‘CRTExLd’, crtAdditionalLead:‘CRTAddLd’, crtLeadStatus:‘CRTLdSt’,
 
 // Temp PM
-tpmIndication:'TPMInd', tpmCause_electrolyte:'TPMCEl', tpmCause_drug:'TPMCDrg',
-tpmCause_digitalis:'TPMCDig', tpmCause_antiarr:'TPMCAntA', tpmCause_acuteMI:'TPMCMI',
-tpmCause_myocarditis:'TPMCMyo', tpmCause_endocarditis:'TPMCEnd',
-tpmCause_postArrest:'TPMCPCA', tpmCause_degenerative:'TPMCDeg', tpmCause_hypothermia:'TPMCHyp',
-tpmCause_bridge:'TPMCBrg', tpmCause_postTAVI:'TPMCTAVI',
-tpmCause_unknown:'TPMCUnk', tpmDrug_avBlock:'TPMDrgAV',
-tpmMIType:'TPMMITy', tpmPpmSameStay:'TPMPpmSm',
+tpmIndication:‘TPMInd’, tpmCause_electrolyte:‘TPMCEl’, tpmCause_drug:‘TPMCDrg’,
+tpmCause_digitalis:‘TPMCDig’, tpmCause_antiarr:‘TPMCAntA’, tpmCause_acuteMI:‘TPMCMI’,
+tpmCause_myocarditis:‘TPMCMyo’, tpmCause_endocarditis:‘TPMCEnd’,
+tpmCause_postArrest:‘TPMCPCA’, tpmCause_degenerative:‘TPMCDeg’, tpmCause_hypothermia:‘TPMCHyp’,
+tpmCause_bridge:‘TPMCBrg’, tpmCause_postTAVI:‘TPMCTAVI’,
+tpmCause_unknown:‘TPMCUnk’, tpmDrug_avBlock:‘TPMDrgAV’,
+tpmMIType:‘TPMMITy’, tpmPpmSameStay:‘TPMPpmSm’,
 
 // Perm PM
-ppmReplReason:'PPMRplRs', ppmReimplant:'PPMReImp', ppmDevImpl:'PPMDevIm',
-ppmDev_type:'PPMDevTy',
-ppmLbbbQRS:'PPMLbQRS', ppmLbbbQRSna:'PPMLbQRSn',
-ppmIndication:'PPMInd', ppmNewLead:'PPMNewLd', ppmExistingLead:'PPMExLd', ppmAdditionalLead:'PPMAddLd', ppmLeadStatus:'PPMLdSt',
+ppmReplReason:‘PPMRplRs’, ppmReimplant:‘PPMReImp’, ppmDevImpl:‘PPMDevIm’,
+ppmDev_type:‘PPMDevTy’,
+ppmLbbbQRS:‘PPMLbQRS’, ppmLbbbQRSna:‘PPMLbQRSn’,
+ppmIndication:‘PPMInd’, ppmNewLead:‘PPMNewLd’, ppmExistingLead:‘PPMExLd’, ppmAdditionalLead:‘PPMAddLd’, ppmLeadStatus:‘PPMLdSt’,
 
 // EPS
-epsSedation:'EPSSed', epsAnticoag:'EPSAntic', epsUninterrupted:'EPSUnin',
-epsCathManip:'EPSCatM', epsInducedArr:'EPSIndAr',
-epsMapSystem:'EPSMap',
+epsSedation:‘EPSSed’, epsAnticoag:‘EPSAntic’, epsUninterrupted:‘EPSUnin’,
+epsCathManip:‘EPSCatM’, epsInducedArr:‘EPSIndAr’,
+epsMapSystem:‘EPSMap’,
 
 // LAAO
-laao_patientPref:'LAOIndPP', laaoDeploy:'LAODepl', laaoTransseptal:'LAOTrSpt',
-laaoImaging:'LAOImg', laaoLeak:'LAOLeak', laaoAnticoag:'LAOAntic',
+laao_patientPref:‘LAOIndPP’, laaoDeploy:‘LAODepl’, laaoTransseptal:‘LAOTrSpt’,
+laaoImaging:‘LAOImg’, laaoLeak:‘LAOLeak’, laaoAnticoag:‘LAOAntic’,
 
 // Complications
-cx_renal:'CXRenal', cx_dialysis:'CXDialys', cx_accessVasc:'CXAccVas',
-cx_hematoma:'CXHemat', cx_occlusion:'CXOcclu', cx_avfistula:'CXAVFist',
-cx_pseudoAneurysm:'CXPseudo', cx_intervReq:'CXIntv',
-cx_intervEndo:'CXIntvEn', cx_intervSurg:'CXIntvSg', cx_intervThrombin:'CXIntvTh',
-cx_periphEmbol:'CXPerEmb', cx_pericarditis:'CXPeric',
-cx_vent:'CXVent', ventType:'CXVentTy',
-cx_inotropes:'CXInotr', cx_mechComp:'CXMech', mechCompType:'CXMechTy',
-bleedSite_gi:'BldStGI', bleedSite_retro:'BldStRet',
-bleedSite_genu:'BldStGU', bleedSite_perc:'BldStPer',
-cx_transfusion:'CXTrans', transfusionUnits:'CXTrU',
-cx_urgentSurg:'CXUrgSg',
-cx_pericEff:'CXPerEff', cx_pericEffInterv:'CXPEInv',
-cx_tamp2:'CXTmp2', cx_tampOpenSurg:'CXTmpOpS', cx_tampPercDrain:'CXTmpPcD',
-cx_hemothorax:'CXHemoTx', cx_hemoDrain:'CXHemoDr',
-cx_pneumo:'CXPneumo', cx_pneumoInterv:'CXPneuIv',
-cx_phrenicDmg:'CXPhrDmg', cx_infection:'CXInfect',
-cx_setScrew:'CXSetScr',
-cx_bradyAE:'CXBrdAE', cx_bradyAEppm:'CXBrdPpm',
+cx_renal:‘CXRenal’, cx_dialysis:‘CXDialys’, cx_accessVasc:‘CXAccVas’,
+cx_hematoma:‘CXHemat’, cx_occlusion:‘CXOcclu’, cx_avfistula:‘CXAVFist’,
+cx_pseudoAneurysm:‘CXPseudo’, cx_intervReq:‘CXIntv’,
+cx_intervEndo:‘CXIntvEn’, cx_intervSurg:‘CXIntvSg’, cx_intervThrombin:‘CXIntvTh’,
+cx_periphEmbol:‘CXPerEmb’, cx_pericarditis:‘CXPeric’,
+cx_vent:‘CXVent’, ventType:‘CXVentTy’,
+cx_inotropes:‘CXInotr’, cx_mechComp:‘CXMech’, mechCompType:‘CXMechTy’,
+bleedSite_gi:‘BldStGI’, bleedSite_retro:‘BldStRet’,
+bleedSite_genu:‘BldStGU’, bleedSite_perc:‘BldStPer’,
+cx_transfusion:‘CXTrans’, transfusionUnits:‘CXTrU’,
+cx_urgentSurg:‘CXUrgSg’,
+cx_pericEff:‘CXPerEff’, cx_pericEffInterv:‘CXPEInv’,
+cx_tamp2:‘CXTmp2’, cx_tampOpenSurg:‘CXTmpOpS’, cx_tampPercDrain:‘CXTmpPcD’,
+cx_hemothorax:‘CXHemoTx’, cx_hemoDrain:‘CXHemoDr’,
+cx_pneumo:‘CXPneumo’, cx_pneumoInterv:‘CXPneuIv’,
+cx_phrenicDmg:‘CXPhrDmg’, cx_infection:‘CXInfect’,
+cx_setScrew:‘CXSetScr’,
+cx_bradyAE:‘CXBrdAE’, cx_bradyAEppm:‘CXBrdPpm’,
 
 // Outcome
-condSysPace:'CndSysPc', condSysPaceQRS:'CSPQRS', condSysPaceQRSna:'CSPQRSna',
+condSysPace:‘CndSysPc’, condSysPaceQRS:‘CSPQRS’, condSysPaceQRSna:‘CSPQRSna’,
 
 // ==================== POST-PILOT REVISION FIELDS ====================
-afibEHRA:'AFEHRA',
-arrestAsystole:'ArrAsy',
-ecgNodal:'ECGNodal', ecgNodalType:'ECGNodTy',
-inv_tiltTable:'InvTilt', inv_loopRecorder:'InvLoop',
-crtInd_vtUnresp:'CRTIndVT',
-crtNewLead:'CRTNewLd', crtExistingLead:'CRTExLd', crtAdditionalLead:'CRTAddLd',
-ppmNewLead:'PPMNewLd', ppmExistingLead:'PPMExLd', ppmAdditionalLead:'PPMAddLd',
-cx_devMigration:'CXDevMig', cx_leadFracture:'CXLdFrc',
-homeMed_ivabradine:'HMIvab', dcMed_ivabradine:'DCIvab',
-```
+afibEHRA:‘AFEHRA’,
+arrestAsystole:‘ArrAsy’,
+ecgNodal:‘ECGNodal’, ecgNodalType:‘ECGNodTy’,
+inv_tiltTable:‘InvTilt’, inv_loopRecorder:‘InvLoop’,
+crtInd_vtUnresp:‘CRTIndVT’,
+crtNewLead:‘CRTNewLd’, crtExistingLead:‘CRTExLd’, crtAdditionalLead:‘CRTAddLd’,
+ppmNewLead:‘PPMNewLd’, ppmExistingLead:‘PPMExLd’, ppmAdditionalLead:‘PPMAddLd’,
+cx_devMigration:‘CXDevMig’, cx_leadFracture:‘CXLdFrc’,
+homeMed_ivabradine:‘HMIvab’, dcMed_ivabradine:‘DCIvab’,
 
 });
 // ==================== END NEW FIELDS ====================
@@ -5456,30 +5445,28 @@ data.forEach(r=>{aoa.push(vars.map(v=>encodeForSPSS(r,v)));});
 let ws=XLSX.utils.aoa_to_sheet(aoa,{cellDates:true});
 writeTypedSheet(ws, vars);
 
-```
-const codebook=[['Variable','Label','Type','Missing Code','Notes']];
+const codebook=[[‘Variable’,‘Label’,‘Type’,‘Missing Code’,‘Notes’]];
 vars.forEach(v=>{
-  const label=FIELD_MAP[v]||v;
-  let type='String';
-  if(v.endsWith('Unrec')||v.endsWith('NA'))type='Binary (1=Yes / blank=No or untouched)';
-  else if(NUMERIC_FIELDS.has(v))type='Numeric (int/double)';
-  else if(DATE_FIELDS.has(v))type='Date';
-  else if(TIME_FIELDS.has(v))type='Time';
-  else {
-    const sample=data.find(d=>d[v]!==undefined&&d[v]!==null&&d[v]!=='')?.[v];
-    if(sample===true||sample===false||sample==='Yes'||sample==='No')type='Binary (1=Yes, 0=No)';
-  }
-  // All fields use blank (system-missing) for missing data — including
-  // numeric fields flagged Unrecordable / Not assessed. No "9" sentinel.
-  const missing='blank (system-missing)';
-  const notes=NUMERIC_FIELDS.has(v)?'Unrecordable / Not assessed exported as blank':'';
-  codebook.push([SPSS_VARS[v]||v,label,type,missing,notes]);
+const label=FIELD_MAP[v]||v;
+let type=‘String’;
+if(v.endsWith(‘Unrec’)||v.endsWith(‘NA’))type=‘Binary (1=Yes / blank=No or untouched)’;
+else if(NUMERIC_FIELDS.has(v))type=‘Numeric (int/double)’;
+else if(DATE_FIELDS.has(v))type=‘Date’;
+else if(TIME_FIELDS.has(v))type=‘Time’;
+else {
+const sample=data.find(d=>d[v]!==undefined&&d[v]!==null&&d[v]!==’’)?.[v];
+if(sample===true||sample===false||sample===‘Yes’||sample===‘No’)type=‘Binary (1=Yes, 0=No)’;
+}
+// All fields use blank (system-missing) for missing data — including
+// numeric fields flagged Unrecordable / Not assessed. No “9” sentinel.
+const missing=‘blank (system-missing)’;
+const notes=NUMERIC_FIELDS.has(v)?‘Unrecordable / Not assessed exported as blank’:’’;
+codebook.push([SPSS_VARS[v]||v,label,type,missing,notes]);
 });
 const wb=XLSX.utils.book_new();
-XLSX.utils.book_append_sheet(wb,ws,'SPSS_Data');
-XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(codebook),'Codebook');
-XLSX.writeFile(wb,'EPS_SPSS_Export.xlsx');
-```
+XLSX.utils.book_append_sheet(wb,ws,‘SPSS_Data’);
+XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(codebook),‘Codebook’);
+XLSX.writeFile(wb,‘EPS_SPSS_Export.xlsx’);
 
 };
 
@@ -5841,7 +5828,6 @@ const rawData=await getFilteredExportData();
 if(!rawData.length){alert(‘No data to export.’);return;}
 const data=rawData.map(applyDefensiveBlanking);
 
-```
 // Every sheet uses the EXACT model variable names from EPS_Variable_model
 // (May 18 2026). MODEL_EXPORT is the single source of truth: [modelName,
 // internalKey] pairs in model order. Themed sheets are section slices of
@@ -5849,34 +5835,33 @@ const data=rawData.map(applyDefensiveBlanking);
 //
 // buildSheet(pairs): pairs = array of [modelName, internalKey].
 const buildSheet=(pairs)=>{
-  const hdr=pairs.map(p=>p[0]);
-  const keys=pairs.map(p=>p[1]);
-  const aoa=[hdr];
-  data.forEach(r=>{aoa.push(keys.map(k=>encodeForExcel(r,k)));});
-  const ws=XLSX.utils.aoa_to_sheet(aoa,{cellDates:true});
-  writeTypedSheet(ws, keys);
-  return ws;
+const hdr=pairs.map(p=>p[0]);
+const keys=pairs.map(p=>p[1]);
+const aoa=[hdr];
+data.forEach(r=>{aoa.push(keys.map(k=>encodeForExcel(r,k)));});
+const ws=XLSX.utils.aoa_to_sheet(aoa,{cellDates:true});
+writeTypedSheet(ws, keys);
+return ws;
 };
-// Section slices of MODEL_EXPORT — boundaries match the model's row order.
+// Section slices of MODEL_EXPORT — boundaries match the model’s row order.
 const sliceByModelName=(startName,endName)=>{
-  const s=MODEL_EXPORT.findIndex(p=>p[0]===startName);
-  const e=endName?MODEL_EXPORT.findIndex(p=>p[0]===endName):MODEL_EXPORT.length;
-  return MODEL_EXPORT.slice(s, e<0?MODEL_EXPORT.length:e);
+const s=MODEL_EXPORT.findIndex(p=>p[0]===startName);
+const e=endName?MODEL_EXPORT.findIndex(p=>p[0]===endName):MODEL_EXPORT.length;
+return MODEL_EXPORT.slice(s, e<0?MODEL_EXPORT.length:e);
 };
 
 const wb=XLSX.utils.book_new();
 // Model — full flat sheet, every variable in model order.
-XLSX.utils.book_append_sheet(wb,buildSheet(MODEL_EXPORT),'Model');
+XLSX.utils.book_append_sheet(wb,buildSheet(MODEL_EXPORT),‘Model’);
 // Themed sheets — section slices, same model variable names.
-XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName('CaseNo','Exam_SysBPmmHg')),'Demographics');
-XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName('Exam_SysBPmmHg','HomMed_Amiodarone')),'History & Vitals');
-XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName('HomMed_Amiodarone','Invest_ECG')),'Home Medications');
-XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName('Invest_ECG','Procedure_StartDate')),'Investigations & Labs');
-XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName('Procedure_StartDate','Compli_ProcedureCA')),'Procedure Details');
-XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName('Compli_ProcedureCA','Outcom_ImmProcedSuccess')),'Complications');
-XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName('Outcom_ImmProcedSuccess',null)),'Outcome & Discharge');
-XLSX.writeFile(wb,'EPS_Registry_Export.xlsx');
-```
+XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName(‘CaseNo’,‘Exam_SysBPmmHg’)),‘Demographics’);
+XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName(‘Exam_SysBPmmHg’,‘HomMed_Amiodarone’)),‘History & Vitals’);
+XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName(‘HomMed_Amiodarone’,‘Invest_ECG’)),‘Home Medications’);
+XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName(‘Invest_ECG’,‘Procedure_StartDate’)),‘Investigations & Labs’);
+XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName(‘Procedure_StartDate’,‘Compli_ProcedureCA’)),‘Procedure Details’);
+XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName(‘Compli_ProcedureCA’,‘Outcom_ImmProcedSuccess’)),‘Complications’);
+XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName(‘Outcom_ImmProcedSuccess’,null)),‘Outcome & Discharge’);
+XLSX.writeFile(wb,‘EPS_Registry_Export.xlsx’);
 
 };
 
@@ -6011,4 +5996,3 @@ document.addEventListener(‘DOMContentLoaded’, function() { _domReady = true;
 
 </body>
 </html>
-
