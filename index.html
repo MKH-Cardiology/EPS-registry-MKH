@@ -1514,7 +1514,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
         <i class="fas fa-chart-bar text-purple-600 text-xl"></i>
       </div>
       <div style="font-weight:800;font-size:15px;color:#0f172a;margin-bottom:6px;">SPSS Export</div>
-      <div style="font-size:12px;color:#64748b;margin-bottom:16px;">Statistical analysis-ready export with SPSS variable names (&lt;8 chars), binary coding, and full codebook sheet.</div>
+      <div style="font-size:12px;color:#64748b;margin-bottom:16px;">Statistical analysis-ready export using the same variable names as the Excel model sheet, with Yes/No → 1/0 binary coding and a full codebook sheet.</div>
       <div class="btn btn-purple text-sm w-full" style="justify-content:center;">
         <i class="fas fa-download"></i> Download SPSS
       </div>
@@ -5477,21 +5477,26 @@ function initApp() {
     const rawData=await getFilteredExportData();
     if(!rawData.length){alert('No data to export.');return;}
     const data=rawData.map(applyDefensiveBlanking);
-    // SPSS column order follows the MODEL (EPS_variable_names__Latest_May_20
-    // afternoon, 2026). submissionType is in the new model and is INCLUDED.
-    // Only truly orphan legacy fields not in the model are excluded.
+    // SPSS column order AND variable names now follow the MODEL exactly, so
+    // they match the Excel export 1:1 (analyst request, May 22 2026). The
+    // legacy short SPSS_VARS codes (e.g. CRTLdSt) are no longer used in the
+    // SPSS_Data header — instead we use the full model names from
+    // MODEL_EXPORT (e.g. Proc_CRT_Lead_ExistingStatus). Modern SPSS supports
+    // variable names up to 64 chars, so this is fully compatible.
     const EXCLUDED=new Set(['tpmPpmSameStay']);
-    const spssSet=new Set(Object.keys(SPSS_VARS));
-    const vars=MODEL_EXPORT.map(p=>p[1]).filter(k=>!EXCLUDED.has(k));
-    const headerRow=vars.map(v=>SPSS_VARS[v]||v);
+    // [modelName, internalKey] pairs in model order, with excluded keys dropped.
+    const pairs=MODEL_EXPORT.filter(p=>!EXCLUDED.has(p[1]));
+    const vars=pairs.map(p=>p[1]);                 // internal keys for data lookup
+    const headerRow=pairs.map(p=>p[0]);             // long model names for the header
     const aoa=[headerRow];
     data.forEach(r=>{aoa.push(vars.map(v=>encodeForSPSS(r,v)));});
     let ws=XLSX.utils.aoa_to_sheet(aoa,{cellDates:true});
     writeTypedSheet(ws, vars);
 
     const codebook=[['Variable','Label','Type','Missing Code','Notes']];
-    vars.forEach(v=>{
-      const label=FIELD_MAP[v]||v;
+    pairs.forEach(p=>{
+      const modelName=p[0]; const v=p[1];
+      const label=FIELD_MAP[v]||modelName;
       let type='String';
       if(v.endsWith('Unrec')||v.endsWith('NA'))type='Binary (1=Yes / blank=No or untouched)';
       else if(NUMERIC_FIELDS.has(v))type='Numeric (int/double)';
@@ -5505,7 +5510,7 @@ function initApp() {
       // numeric fields flagged Unrecordable / Not assessed. No "9" sentinel.
       const missing='blank (system-missing)';
       const notes=NUMERIC_FIELDS.has(v)?'Unrecordable / Not assessed exported as blank':'';
-      codebook.push([SPSS_VARS[v]||v,label,type,missing,notes]);
+      codebook.push([modelName,label,type,missing,notes]);
     });
     const wb=XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb,ws,'SPSS_Data');
