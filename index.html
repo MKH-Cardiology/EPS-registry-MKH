@@ -5477,17 +5477,27 @@ function initApp() {
     const rawData=await getFilteredExportData();
     if(!rawData.length){alert('No data to export.');return;}
     const data=rawData.map(applyDefensiveBlanking);
-    // SPSS column order AND variable names now follow the MODEL exactly, so
-    // they match the Excel export 1:1 (analyst request, May 22 2026). The
-    // legacy short SPSS_VARS codes (e.g. CRTLdSt) are no longer used in the
-    // SPSS_Data header — instead we use the full model names from
-    // MODEL_EXPORT (e.g. Proc_CRT_Lead_ExistingStatus). Modern SPSS supports
-    // variable names up to 64 chars, so this is fully compatible.
-    const EXCLUDED=new Set(['tpmPpmSameStay']);
-    // [modelName, internalKey] pairs in model order, with excluded keys dropped.
-    const pairs=MODEL_EXPORT.filter(p=>!EXCLUDED.has(p[1]));
-    const vars=pairs.map(p=>p[1]);                 // internal keys for data lookup
+    // SPSS column order AND variable names follow the MODEL exactly, so they
+    // match the Excel "Model" sheet 1:1. To prevent any future drift, the SPSS
+    // header row is built from the SAME MODEL_EXPORT array the Excel export
+    // uses (see exportToExcel → buildSheet(MODEL_EXPORT)). A guard at the
+    // bottom of this function aborts the export if the two header rows ever
+    // diverge for any reason.
+    const pairs=MODEL_EXPORT;                       // exact same array Excel Model sheet uses
+    const vars=pairs.map(p=>p[1]);                  // internal keys for data lookup
     const headerRow=pairs.map(p=>p[0]);             // long model names for the header
+    // Mirror exactly what exportToExcel does for the Model sheet header. If
+    // these two arrays are ever not identical, something is wrong and we
+    // should not write the file.
+    const excelModelHeader=MODEL_EXPORT.map(p=>p[0]);
+    if(headerRow.length!==excelModelHeader.length||headerRow.some((h,i)=>h!==excelModelHeader[i])){
+      const diffs=[];
+      for(let i=0;i<Math.max(headerRow.length,excelModelHeader.length);i++){
+        if(headerRow[i]!==excelModelHeader[i])diffs.push(`col ${i+1}: Excel="${excelModelHeader[i]||'(none)'}" vs SPSS="${headerRow[i]||'(none)'}"`);
+      }
+      alert('SPSS export aborted: SPSS variable names do not match Excel Model sheet.\n\n'+diffs.slice(0,10).join('\n'));
+      return;
+    }
     const aoa=[headerRow];
     data.forEach(r=>{aoa.push(vars.map(v=>encodeForSPSS(r,v)));});
     let ws=XLSX.utils.aoa_to_sheet(aoa,{cellDates:true});
