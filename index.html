@@ -512,6 +512,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <div style="font-size:20px;font-weight:900;color:#0f172a;">MKH EPS Registry</div>
       <div style="font-size:12px;color:#64748b;margin-top:4px;font-weight:500;">Advanced Electrophysiology Registry</div>
       <div style="font-size:11px;color:#94a3b8;margin-top:2px;">Mubarak Alkabeer Hospital</div>
+      <div style="font-size:10px;color:#cbd5e1;margin-top:6px;letter-spacing:.5px;">Build 2026-06-15 · SPSS value-coding + CRT single-select</div>
     </div>
     <div id="loginError" style="display:none;background:#fff1f2;color:#be123c;border:1px solid #fecdd3;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;margin-bottom:16px;"></div>
     <label class="lbl">Email Address</label>
@@ -935,14 +936,14 @@ html,body{max-width:100vw;overflow-x:hidden;}
         <label class="radio-item"><input type="radio" name="crtGenerator" value="Generator replacement" onchange="onCrtGen()"> Generator replacement</label>
         <label class="radio-item"><input type="radio" name="crtGenerator" value="Generator/device explant" onchange="onCrtGen()"> Generator/device explant</label>
       </div>
-      <div id="crtGen_replace" class="sub-reveal mt-2"><label class="lbl">9.5.b.1 Reasons for generator replacement (check all that apply):</label>
+      <div id="crtGen_replace" class="sub-reveal mt-2"><label class="lbl">9.5.b.1 Reasons for generator replacement (Choose One Only):</label>
         <div class="g2 mt-1">
-          <label class="chk-item"><input type="checkbox" name="crtRepl_relocation"> Device relocation</label>
-          <label class="chk-item"><input type="checkbox" name="crtRepl_battery"> End of battery life</label>
-          <label class="chk-item"><input type="checkbox" name="crtRepl_faulty"> Faulty connector/header</label>
-          <label class="chk-item"><input type="checkbox" name="crtRepl_infection"> Infection</label>
-          <label class="chk-item"><input type="checkbox" name="crtRepl_leadrev"> Replaced at time of lead revision</label>
-          <label class="chk-item"><input type="checkbox" name="crtRepl_upgrade"> Upgrade</label>
+          <label class="radio-item"><input type="radio" name="crtReplReason" value="Device relocation"> Device relocation</label>
+          <label class="radio-item"><input type="radio" name="crtReplReason" value="End of battery life"> End of battery life</label>
+          <label class="radio-item"><input type="radio" name="crtReplReason" value="Faulty connector/header"> Faulty connector/header</label>
+          <label class="radio-item"><input type="radio" name="crtReplReason" value="Infection"> Infection</label>
+          <label class="radio-item"><input type="radio" name="crtReplReason" value="Replaced at time of lead revision"> Replaced at time of lead revision</label>
+          <label class="radio-item"><input type="radio" name="crtReplReason" value="Upgrade"> Upgrade</label>
         </div>
       </div>
       <div id="crtGen_explant" class="sub-reveal mt-2"><label class="lbl">9.5.b.2 Reimplant intended</label><select name="crtReimplant" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
@@ -3842,7 +3843,6 @@ function initApp() {
     // Individual members are NOT required — un-ticked checkbox = "this option does not apply".
     const CHECKBOX_GROUPS = [
       { label:'9.5 CRT/AICD indications', members:['crtInd_surv','crtInd_eps','crtInd_icmEF','crtInd_nicmEF','crtInd_vtUnresp'] },
-      { label:'9.5 CRT replacement reason', members:['crtRepl_relocation','crtRepl_battery','crtRepl_faulty','crtRepl_infection','crtRepl_leadrev','crtRepl_upgrade'] },
       { label:'9.6 Temporary PM cause', members:['tpmCause_electrolyte','tpmCause_drug','tpmCause_digitalis','tpmCause_antiarr','tpmCause_acuteMI','tpmCause_myocarditis','tpmCause_endocarditis','tpmCause_postArrest','tpmCause_degenerative','tpmCause_hypothermia','tpmCause_bridge','tpmCause_postTAVI','tpmCause_unknown'] },
       { label:'9.9a LAAO indication', members:['laao_nonvalvular','laao_highBleed','laao_contraOAC','laao_priorBleed','laao_patientPref'] },
       { label:'10.x Intervention type', members:['cx_intervEndo','cx_intervSurg','cx_intervThrombin'] },
@@ -4269,6 +4269,7 @@ function initApp() {
           {newKey:'crtInh_type', map:{crtInh_longqt:'Long QT-syndrome',crtInh_hcm:'HCM',crtInh_brugada:'Brugada syndrome',crtInh_arvd:'Arrhythmogenic RV Dysplasia/Cardiomyopathy (ARVD/C)',crtInh_cpvt:'Catecholaminergic Polymorphic VT (CPVT)'}},
           {newKey:'ppmDev_type', map:{ppmDev_singleTV:'Single chamber transvenous PPM',ppmDev_dualTV:'Dual chamber transvenous PPM',ppmDev_leadlessSingle:'Leadless single chamber PPM',ppmDev_leadlessDual:'Leadless dual chamber PPM',ppmDev_his:'His-bundle PPM',ppmDev_leadlessLVEP:'Leadless LVEP',ppmDev_ccm:'CCM',ppmDev_lbbb:'LBBB PPM'}},
           {newKey:'eps_reason', map:{eps_svt:'SVT',eps_aflutter:'Atrial flutter',eps_afib:'Atrial fibrillation',eps_vt:'VT',eps_pvcs:'PVCs'}},
+          {newKey:'crtReplReason', map:{crtRepl_relocation:'Device relocation',crtRepl_battery:'End of battery life',crtRepl_faulty:'Faulty connector/header',crtRepl_infection:'Infection',crtRepl_leadrev:'Replaced at time of lead revision',crtRepl_upgrade:'Upgrade'}},
         ];
         MIGRATIONS.forEach(({newKey,map})=>{
           if(data[newKey]) return; // already has a new-format value
@@ -4822,12 +4823,7 @@ function initApp() {
     // 9.5 CRT/AICD additions
     crtInherited:'CRT: Inherited heart disease w/ SCD risk',
     crtInh_type:'CRT Inherited Heart Disease Type',
-    crtRepl_relocation:'CRT Repl: Device relocation',
-    crtRepl_battery:'CRT Repl: End of battery life',
-    crtRepl_faulty:'CRT Repl: Faulty connector/header',
-    crtRepl_infection:'CRT Repl: Infection',
-    crtRepl_leadrev:'CRT Repl: Replaced at lead revision',
-    crtRepl_upgrade:'CRT Repl: Upgrade',
+    crtReplReason:'CRT: Replacement reason',
     crtReimplant:'CRT: Reimplant intended',
     crtDevImpl:'CRT: Device implant',
     crtDeviceType:'CRT: Device Type',
@@ -4983,8 +4979,7 @@ function initApp() {
 
     // CRT/AICD
     crtInherited:'CRTInher', crtInh_type:'CRTInhTy',
-    crtRepl_relocation:'CRTRplRel', crtRepl_battery:'CRTRplBat', crtRepl_faulty:'CRTRplFlt',
-    crtRepl_infection:'CRTRplInf', crtRepl_leadrev:'CRTRplLdR', crtRepl_upgrade:'CRTRplUpg',
+    crtReplReason:'CRTRplRs',
     crtReimplant:'CRTReImp', crtDevImpl:'CRTDevIm', crtDeviceType:'CRTDevTy',
     crtPpmSame:'CRTPpmSm', crtPpmType:'CRTPpmTy', crtLbbbQRS:'CRTLbQRS',
     crtLbbbQRSna:'CRTLbQRSn', crtBrady:'CRTBrady', crtBradyReason:'CRTBrRsn',
@@ -5117,6 +5112,7 @@ function initApp() {
     'CRT/AICD':[
       'crtInd_surv','crtInd_eps','crtInd_icmEF','crtInd_nicmEF','crtInd_vtUnresp','crtGenerator',
       'crtInherited','crtInh_type',
+      'crtReplReason',
       'crtRepl_relocation','crtRepl_battery','crtRepl_faulty','crtRepl_infection','crtRepl_leadrev','crtRepl_upgrade',
       'crtReimplant','crtDevImpl','crtDeviceType','crtPpmSame','crtPpmType',
       'crtLbbbQRS','crtLbbbQRSna','crtBrady','crtBradyReason',
@@ -5210,6 +5206,89 @@ function initApp() {
   // audit. The raw record in Firebase is untouched — only the export is cleaned.
   // ============================================================================
 
+  // ============================================================================
+  // VALUE_CODES — numeric coding for categorical (single-select) variables in the
+  // SPSS sheet ONLY. Mirrors the existing Yes/No → 1/0 scheme and follows the
+  // analyst's variable dictionary (June 15 2026). Keyed by the EXACT option
+  // strings the form stores; codes follow the dictionary's numbering. The themed
+  // Excel workbook keeps human-readable strings (encodeForExcel) — only the
+  // dedicated SPSS export applies these codes (encodeForSPSS).
+  //
+  // NOTE on score fields: afibChads / afibHasBled / laaoDeploy are listed in
+  // NUMERIC_FIELDS, but their top category ("&gt;3" / "&#8805;3") is non-numeric and
+  // would otherwise export blank. VALUE_CODES is applied BEFORE the numeric path
+  // in encodeForSPSS so these code correctly (e.g. ">3" → 4, "≥3" → 3).
+  // ============================================================================
+  const VALUE_CODES={
+    gender:{'Male':1,'Female':2},
+    epReason:{'CRT/AICD':1,'Pacemaker':2,'EPS/Ablation':3,'LAAO':4},
+    pacemakerType:{'Temporary pacemaker':1,'Permanent pacemaker':2,'Temporary followed by permanent same hospitalization':3},
+    patientOrigin:{'Home':1,'Transferred from other hospital':2,'Same hospital Inpatient but another department':3,'Clinic (primary care / private / outpatient clinic)':4},
+    afibClassification:{'Persistent (>7 days)':1,'Paroxysmal (terminating spontaneously within 7 days)':2,'Long standing persistent (>1 year)':3,'Permanent':4},
+    afibEHRA:{'EHRA I':1,'EHRA II':2,'EHRA III':3,'EHRA IV':4},
+    afibChads:{'0':0,'1':1,'2':2,'3':3,'>3':4},
+    afibHasBled:{'0':0,'1':1,'2':2,'3':3,'>3':4},
+    ssd_type:{'Brugada':1,'Catecholaminergic polymorphic VT':2,'Idiopathic/Primary VT/VF':3,'Long QT':4,'Short QT':5,'Unknown':6},
+    icmTimeframe:{'< 3 months':1,'≥ 3 months':2},
+    icmGDMT:{'Yes (for 3 months)':1,'Not documented':2,'Not attempted':3,'Inability to complete':4},
+    hfType:{'HFrEF':1,'HFpEF':2,'HFmrEF':3},
+    avpType:{'TAVR':1,'SAVR':2},
+    mvpType:{'PMVR':1,'Mechanical mitral valve':2,'Bioprosthetic mitral valve':3,'Mitral clipping':4},
+    cied_type:{'Single chamber transvenous PPM':1,'Dual chamber transvenous PPM':2,'CRT-P':3,'Leadless single chamber PPM':4,'Leadless dual chamber PPM':5,'His bundle PPM':6,'Left bundle area PPM':7,'ICD single chamber':8,'ICD dual chamber':9,'CRT-D':10,'Extravascular ICD':11,'S-ICD (Sub Q)':12,'Unknown':13},
+    ecgAtrialRhythm:{'Sinus':1,'Atrial fibrillation':2,'Atrial flutter':3,'SVT':4,'Atrial tachycardia':5,'Atrial paced':6,'Sinus arrest':7,'Sinus pause':8,'1st degree AV block':9,'2nd degree AV block, Mobitz I':10,'2nd degree AV block, Mobitz II':11,'3rd degree AV block':12,'Unknown rhythm':13},
+    ecgNodalType:{'Junctional bradycardia (<40/min)':1,'Junctional escape (40-60/min)':2,'Accelerated junctional (60-100/min)':3,'Junctional tachycardia (>100/min)':4},
+    ecgVentRhythm:{'Normal':1,'VT':2,'VF':3,'LBBB':4,'RBBB':5,'Alternating LBBB/RBBB':6,'IVCD delay':7,'Frequent PVCs':8},
+    holterAtrialRhythm:{'Sinus':1,'Atrial fibrillation':2,'Atrial flutter':3,'SVT':4,'1st degree AV block':5,'2nd degree AV block':6,'3rd degree AV block':7,'Unknown rhythm':8},
+    holterVentRhythm:{'Normal':1,'Non-sustained VT':2,'Sustained VT':3,'Frequent PVCs':4,'PVCs burden >10%':5},
+    crtInh_type:{'Long QT-syndrome':1,'HCM':2,'Brugada syndrome':3,'Arrhythmogenic RV Dysplasia/Cardiomyopathy (ARVD/C)':4,'Catecholaminergic Polymorphic VT (CPVT)':5},
+    crtGenerator:{'Initial implant':1,'Generator replacement':2,'Generator/device explant':3},
+    crtReplReason:{'Device relocation':1,'End of battery life':2,'Faulty connector/header':3,'Infection':4,'Replaced at time of lead revision':5,'Upgrade':6},
+    crtDeviceType:{'CRT-D':1,'ICD-Dual chamber':2,'ICD-single chamber':3,'Extra vascular ICD':4,'Sub cutaneous ICD':5,'CRT':6},
+    crtPpmType:{'Single chamber transvenous PPM':1,'Dual chamber transvenous PPM':2,'Leadless single chamber PPM':3,'Leadless dual chamber PPM':4,'CRT-P':5,'His-bundle PPM':6,'Leadless LVEP':7,'CCM':8,'LBBB PPM':9},
+    crtBradyReason:{'2:1 AV block':1,'2° AV block, Mobitz II':2,'A-V mode ablation':3,'>50% RV pacing':4,'Chronotropic incompetence':5,'CHB':6,'HF unresponsive to GDMT':7,'SSS':8,'Other':9},
+    crtLeadStatus:{'Extracted':1,'Abandoned':2,'Reused':3},
+    tpmIndication:{'CHB (3° AV block)':1,'Mobitz type II AV block':2,'Alternating RBBB and LBBB':3,'Symptomatic sinus-node dysfunction':4,'Sinus arrest or Sinoatrial block':5,'Prolonged pause (>3s)':6,'Tachy-Brady syndrome':7},
+    ppmGenerator:{'Initial implant':1,'Generator replacement':2,'Generator/device explant':3},
+    ppmReplReason:{'Device relocation':1,'End of battery life':2,'Faulty connector/header':3,'Infection':4,'Replaced at time of lead revision':5,'Upgrade':6},
+    ppmDev_type:{'Single chamber transvenous PPM':1,'Dual chamber transvenous PPM':2,'Leadless single chamber PPM':3,'Leadless dual chamber PPM':4,'His-bundle PPM':5,'Leadless LVEP':6,'CCM':7,'LBBB PPM':8},
+    ppmIndication:{'2:1 AV block':1,'2° AV block, Mobitz II':2,'A-V node ablation':3,'>40% RV pacing':4,'Chronotropic incompetence':5,'CHB':6,'SSS':7,'Significant pause':8},
+    ppmLeadStatus:{'Extracted':1,'Abandoned':2,'Reused':3},
+    eps_reason:{'SVT':1,'Atrial flutter':2,'Atrial fibrillation':3,'VT':4,'PVCs':5},
+    epsSedation:{'Minimal/Anxiolysis':1,'Moderate/Analgesia':2,'Deep/Analgesia':3,'General Anesthesia':4},
+    epsTransseptal:{'Single':1,'Double':2},
+    epsCathManip:{'Manual':1,'Magnetic/Robotic':2,'Other':3},
+    epsMapSystem:{'Carto':1,'Ensite':2,'Rhythmia':3,'Conventional (Cryo/Radiofrequency) ablation':4},
+    laaoDeviceType:{'Plug-based device (WATCHMAN)':1,'Disc and lobe device':2,'Ligation/suture system device':3},
+    laaoTransseptal:{'Single':1,'Double':2},
+    laaoDeploy:{'1':1,'2':2,'≥3':3},
+    laaoImaging:{'TEE':1,'ICE':2,'Both':3},
+    laaoLeak:{'None':1,'<3 mm':2,'3-5 mm':3,'>5 mm':4},
+    laaoAnticoag:{'Heparin':1,'Bivalirudin':2},
+    laaoOutcome:{'Successful implantation':1,'Device repositioned':2,'Device retrieved/aborted':3},
+    strokeType:{'Hemorrhagic':1,'Thrombotic':2,'Unknown':3},
+    scaiStage:{'At risk':1,'Beginning':2,'Classic':3,'Deteriorating':4,'Extremis':5},
+    ventType:{'Non-invasive ventilation only':1,'Invasive ventilation only':2,'Both':3},
+    mechCompType:{'ASD':1,'Myocardial tear':2,'Aortic or vena-Caval laceration':3,'Arterial perforation':4,'Ventricular perforation':5},
+    bleedType:{'Type 1':1,'Type 2':2,'Type 3':3,'Type 4':4,'Type 5':5},
+    bleedSubType:{'Type 3a':1,'Type 3b':2,'Type 3c':3},
+    postECGrhythm:{'Sinus':1,'Paced rhythm':2,'Atrial fibrillation':3,'Atrial flutter':4,'Other':5},
+    dischargeStatus:{'Dead':1,'Alive':2},
+    causeOfDeath:{'Non-Cardiac':1,'Cardiac':2},
+    dischargeType:{'Home':1,'LAMA':2,'Transfer to cardiac surgery':3,'Transfer to other dept':4},
+  };
+
+  // CRT replacement reason is now a single-select (9.5.b.1). Older records were
+  // stored as six boolean checkboxes (crtRepl_*). For export, resolve the
+  // effective single value: prefer the new field, else first ticked legacy flag.
+  function resolveCrtReplReason(r){
+    if(r.crtReplReason) return r.crtReplReason;
+    const LEGACY=[['crtRepl_relocation','Device relocation'],['crtRepl_battery','End of battery life'],
+      ['crtRepl_faulty','Faulty connector/header'],['crtRepl_infection','Infection'],
+      ['crtRepl_leadrev','Replaced at time of lead revision'],['crtRepl_upgrade','Upgrade']];
+    for(const [k,label] of LEGACY){ if(r[k]===true||r[k]==='true'||r[k]==='Yes') return label; }
+    return '';
+  }
+
   // Encoder for EXCEL sheet — returns plain scalars (no {t,v,z} objects).
   // Numeric → Number, Date → JS Date, Time → fractional-day Number,
   // Yes/No / Unrec → "Yes" / "No" / blank, everything else → string.
@@ -5221,6 +5300,9 @@ function initApp() {
       const g=r['crtGenerator'];
       if(!g) return '';
       return g==='Generator/device explant'?'Yes':'No';
+    }
+    if(f==='crtReplReason'){
+      return resolveCrtReplReason(r);   // readable single value (handles legacy multi-checkbox records)
     }
     const val=r[f];
     if(f.endsWith('Unrec')||f.endsWith('NA')){
@@ -5259,7 +5341,9 @@ function initApp() {
       if(!g) return '';
       return g==='Generator/device explant'?1:0;
     }
-    const val=r[f];
+    // CRT replacement reason — resolve effective single value (incl. legacy
+    // multi-checkbox records), then fall through to VALUE_CODES below.
+    let val=(f==='crtReplReason') ? resolveCrtReplReason(r) : r[f];
     if(f.endsWith('Unrec')||f.endsWith('NA')){
       if(val===true||val==='true')return 1;
       return '';
@@ -5271,6 +5355,15 @@ function initApp() {
       return '';
     }
     if(val===undefined||val===null||val==='')return '';
+    // Categorical single-select → numeric code per the analyst dictionary.
+    // Applied BEFORE the numeric path so score fields whose top category is
+    // non-numeric (">3" / "≥3") still code correctly instead of exporting blank.
+    if(VALUE_CODES[f]){
+      const code=VALUE_CODES[f][String(val)];
+      if(code!==undefined) return code;
+      // Unmapped value (e.g. legacy option text) → leave raw so it isn't silently dropped.
+      return val;
+    }
     if(NUMERIC_FIELDS.has(f)){
       const n=Number(val);
       return isNaN(n)?'':n;
@@ -5400,7 +5493,7 @@ function initApp() {
       'crtInd_surv','crtInd_eps','crtInd_icmEF','crtInd_nicmEF','crtInd_vtUnresp',
       'crtInherited','crtInh_type',
       'crtGenerator','crtDeviceType','crtDevImpl',
-      'crtRepl_relocation','crtRepl_battery','crtRepl_faulty','crtRepl_infection','crtRepl_leadrev','crtRepl_upgrade',
+      'crtReplReason',
       'crtReimplant','crtPpmSame','crtPpmType','crtBrady','crtBradyReason',
       'crtNewLead','crtExistingLead','crtAdditionalLead','crtLeadStatus','crtLbbbQRS','crtLbbbQRSna',
       // 9.6 Temporary PM
@@ -5508,7 +5601,12 @@ function initApp() {
       const modelName=p[0]; const v=p[1];
       const label=FIELD_MAP[v]||modelName;
       let type='String';
-      if(v.endsWith('Unrec')||v.endsWith('NA'))type='Binary (1=Yes / blank=No or untouched)';
+      let notes=NUMERIC_FIELDS.has(v)?'Unrecordable / Not assessed exported as blank':'';
+      if(VALUE_CODES[v]){
+        type='Coded (numeric)';
+        notes=Object.entries(VALUE_CODES[v]).map(([k,c])=>c+'='+k).join('; ');
+      }
+      else if(v.endsWith('Unrec')||v.endsWith('NA'))type='Binary (1=Yes / blank=No or untouched)';
       else if(NUMERIC_FIELDS.has(v))type='Numeric (int/double)';
       else if(DATE_FIELDS.has(v))type='Date';
       else if(TIME_FIELDS.has(v))type='Time';
@@ -5519,7 +5617,6 @@ function initApp() {
       // All fields use blank (system-missing) for missing data — including
       // numeric fields flagged Unrecordable / Not assessed. No "9" sentinel.
       const missing='blank (system-missing)';
-      const notes=NUMERIC_FIELDS.has(v)?'Unrecordable / Not assessed exported as blank':'';
       codebook.push([modelName,label,type,missing,notes]);
     });
     const wb=XLSX.utils.book_new();
@@ -5713,12 +5810,7 @@ function initApp() {
     ["Proc_CRTIndi_InheritedHeartDis","crtInherited"],
     ["Proc_CRTIndi_IHDtype","crtInh_type"],
     ["Proc_CRT_Generator","crtGenerator"],
-    ["Proc_CRT_GRreason_DeviceReloc","crtRepl_relocation"],
-    ["Proc_CRT_GRreason_BatteryEnd","crtRepl_battery"],
-    ["Proc_CRT_GRreason_FaultyConec","crtRepl_faulty"],
-    ["Proc_CRT_GRreason_Infection","crtRepl_infection"],
-    ["Proc_CRT_GRreason_Replaced","crtRepl_leadrev"],
-    ["Proc_CRT_GRreason_Upgrade","crtRepl_upgrade"],
+    ["Proc_CRT_GenReplacReason","crtReplReason"],
     ["Proc_CRT_GeneratorExplant","__crtGeneratorExplant"],
     ["Proc_CRT_GE_Reimplantintend","crtReimplant"],
     ["Proc_CRT_DeviceImplant","crtDevImpl"],
