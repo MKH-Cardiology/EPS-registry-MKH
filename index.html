@@ -512,7 +512,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <div style="font-size:20px;font-weight:900;color:#0f172a;">MKH EPS Registry</div>
       <div style="font-size:12px;color:#64748b;margin-top:4px;font-weight:500;">Advanced Electrophysiology Registry</div>
       <div style="font-size:11px;color:#94a3b8;margin-top:2px;">Mubarak Alkabeer Hospital</div>
-      <div style="font-size:10px;color:#cbd5e1;margin-top:6px;letter-spacing:.5px;">Build 2026-06-15 · SPSS value-coding + CRT single-select</div>
+      <div style="font-size:10px;color:#cbd5e1;margin-top:6px;letter-spacing:.5px;">Build 2026-06-18 · SPSS value-coding (resilient) + CRT single-select</div>
     </div>
     <div id="loginError" style="display:none;background:#fff1f2;color:#be123c;border:1px solid #fecdd3;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;margin-bottom:16px;"></div>
     <label class="lbl">Email Address</label>
@@ -5277,6 +5277,52 @@ function initApp() {
     dischargeType:{'Home':1,'LAMA':2,'Transfer to cardiac surgery':3,'Transfer to other dept':4},
   };
 
+  // ----------------------------------------------------------------------------
+  // Robust code lookup. A single value that doesn't exactly match a VALUE_CODES
+  // key gets exported as raw text, which forces the WHOLE column to string
+  // (str#) in Stata/SPSS — exactly the Invest_ECG_AtrialRhytm = str19 case.
+  // To prevent that we match on a normalized key (trim + collapse whitespace +
+  // lowercase) so legacy records with minor spacing/case differences still code,
+  // and we register documented legacy spellings as aliases for the same code.
+  // Anything STILL unmapped is recorded so the SPSS export can report it.
+  // ----------------------------------------------------------------------------
+  const _normCode = s => String(s).trim().replace(/\s+/g,' ').toLowerCase();
+  const VALUE_CODES_NORM = {};
+  for(const f in VALUE_CODES){
+    VALUE_CODES_NORM[f] = {};
+    for(const k in VALUE_CODES[f]){ VALUE_CODES_NORM[f][_normCode(k)] = VALUE_CODES[f][k]; }
+  }
+  // Legacy wording aliases (older app option text / analyst-dictionary spellings)
+  // mapped to the SAME numeric codes. Harmless for current data; rescues old
+  // records that stored the previous wording. Keys are normalized below.
+  const LEGACY_CODE_ALIASES = {
+    ecgAtrialRhythm:{
+      'first degree a-v block':9,'first degree av block':9,
+      '2o av block, mobitz i':10,'2° av block, mobitz i':10,'second degree av block, mobitz i':10,
+      '2o av block, mobitz ii':11,'2° av block, mobitz ii':11,'second degree av block, mobitz ii':11,
+      'third degree a-v block':12,'third degree av block':12,
+    },
+    holterAtrialRhythm:{
+      'first degree a-v block':5,'first degree av block':5,
+      '2o av block, mobitz i':6,'2° av block, mobitz i':6,'second degree av block':6,
+      'third degree a-v block':7,'third degree av block':7,
+    },
+    ecgVentRhythm:{
+      'ventricular tachycardia':2,'ventricular fibrillation':3,'alternating lbbb and rbbb':6,
+    },
+  };
+  for(const f in LEGACY_CODE_ALIASES){
+    VALUE_CODES_NORM[f] = VALUE_CODES_NORM[f] || {};
+    for(const k in LEGACY_CODE_ALIASES[f]){ VALUE_CODES_NORM[f][_normCode(k)] = LEGACY_CODE_ALIASES[f][k]; }
+  }
+  // Resolve a categorical value to its code; returns undefined if truly unmapped.
+  function lookupCode(f, val){
+    const m = VALUE_CODES[f]; if(!m) return undefined;
+    const exact = m[String(val)]; if(exact!==undefined) return exact;
+    const norm = VALUE_CODES_NORM[f][_normCode(val)]; if(norm!==undefined) return norm;
+    return undefined;
+  }
+
   // CRT replacement reason is now a single-select (9.5.b.1). Older records were
   // stored as six boolean checkboxes (crtRepl_*). For export, resolve the
   // effective single value: prefer the new field, else first ticked legacy flag.
@@ -5359,9 +5405,12 @@ function initApp() {
     // Applied BEFORE the numeric path so score fields whose top category is
     // non-numeric (">3" / "≥3") still code correctly instead of exporting blank.
     if(VALUE_CODES[f]){
-      const code=VALUE_CODES[f][String(val)];
+      const code=lookupCode(f,val);
       if(code!==undefined) return code;
-      // Unmapped value (e.g. legacy option text) → leave raw so it isn't silently dropped.
+      // Unmapped value (unexpected/legacy option text). Record it so the export
+      // can report exactly which strings still need an alias, then leave it raw
+      // rather than silently dropping clinical data.
+      try{ (window.__spssUnmapped=window.__spssUnmapped||{}); (window.__spssUnmapped[f]=window.__spssUnmapped[f]||{})[String(val)]=(window.__spssUnmapped[f][String(val)]||0)+1; }catch(_){}
       return val;
     }
     if(NUMERIC_FIELDS.has(f)){
@@ -5569,6 +5618,7 @@ function initApp() {
     try{
     const rawData=await getFilteredExportData();
     if(!rawData.length){alert('No data to export.');return;}
+    window.__spssUnmapped={};   // reset coded-value diagnostics for this run
     const data=rawData.map(applyDefensiveBlanking);
     // SPSS column order AND variable names follow the MODEL exactly, so they
     // match the Excel "Model" sheet 1:1. To prevent any future drift, the SPSS
@@ -5593,6 +5643,19 @@ function initApp() {
     }
     const aoa=[headerRow];
     data.forEach(r=>{aoa.push(vars.map(v=>encodeForSPSS(r,v)));});
+    // Diagnostics: surface any categorical values that did not match a code.
+    // Even one such value forces its whole column to string (e.g. str19) in
+    // Stata/SPSS. The console lists the exact offending strings + counts so the
+    // value can be added as an alias; a short alert flags it on-device.
+    if(window.__spssUnmapped && Object.keys(window.__spssUnmapped).length){
+      const lbl=k=>{const p=MODEL_EXPORT.find(x=>x[1]===k);return p?p[0]:k;};
+      const lines=Object.entries(window.__spssUnmapped).map(([f,vals])=>
+        `${lbl(f)} (${f}): `+Object.entries(vals).map(([v,n])=>`"${v}" ×${n}`).join(', '));
+      console.warn('[SPSS export] Uncoded categorical values — these keep the column as text:\n'+lines.join('\n'));
+      alert('Heads up: some values could not be coded to numbers and will export as text (string columns in Stata):\n\n'+
+            lines.slice(0,12).join('\n')+
+            '\n\nThe full list is in the browser console (right-click → Inspect → Console). Send it over and I can map them.');
+    }
     let ws=XLSX.utils.aoa_to_sheet(aoa,{cellDates:true});
     writeTypedSheet(ws, vars);
 
