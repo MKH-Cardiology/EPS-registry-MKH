@@ -512,7 +512,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <div style="font-size:20px;font-weight:900;color:#0f172a;">MKH EPS Registry</div>
       <div style="font-size:12px;color:#64748b;margin-top:4px;font-weight:500;">Advanced Electrophysiology Registry</div>
       <div style="font-size:11px;color:#94a3b8;margin-top:2px;">Mubarak Alkabeer Hospital</div>
-      <div style="font-size:10px;color:#cbd5e1;margin-top:6px;letter-spacing:.5px;">Build 2026-06-18 · SPSS value-coding (resilient) + CRT single-select</div>
+      <div style="font-size:10px;color:#cbd5e1;margin-top:6px;letter-spacing:.5px;">Build 2026-06-18b · byte-coding in Excel + SPSS · CRT single-select</div>
     </div>
     <div id="loginError" style="display:none;background:#fff1f2;color:#be123c;border:1px solid #fecdd3;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;margin-bottom:16px;"></div>
     <label class="lbl">Email Address</label>
@@ -5207,12 +5207,13 @@ function initApp() {
   // ============================================================================
 
   // ============================================================================
-  // VALUE_CODES — numeric coding for categorical (single-select) variables in the
-  // SPSS sheet ONLY. Mirrors the existing Yes/No → 1/0 scheme and follows the
-  // analyst's variable dictionary (June 15 2026). Keyed by the EXACT option
-  // strings the form stores; codes follow the dictionary's numbering. The themed
-  // Excel workbook keeps human-readable strings (encodeForExcel) — only the
-  // dedicated SPSS export applies these codes (encodeForSPSS).
+  // VALUE_CODES — numeric coding for categorical (single-select) variables.
+  // Mirrors the existing Yes/No → 1/0 scheme and follows the analyst's variable
+  // dictionary (June 15 2026). Keyed by the EXACT option strings the form stores;
+  // codes follow the dictionary's numbering. As of the June 2026 analyst request
+  // BOTH exports are numerically coded: encodeForExcel delegates to encodeForSPSS,
+  // so the Excel workbook and the SPSS file are byte-coded and identical
+  // field-for-field. A Codebook sheet in each file documents every code.
   //
   // NOTE on score fields: afibChads / afibHasBled / laaoDeploy are listed in
   // NUMERIC_FIELDS, but their top category ("&gt;3" / "&#8805;3") is non-numeric and
@@ -5338,43 +5339,15 @@ function initApp() {
   // Encoder for EXCEL sheet — returns plain scalars (no {t,v,z} objects).
   // Numeric → Number, Date → JS Date, Time → fractional-day Number,
   // Yes/No / Unrec → "Yes" / "No" / blank, everything else → string.
+  // Encoder for the EXCEL workbook. Per analyst request (June 2026) the Excel
+  // export now uses the SAME numeric coding as the SPSS sheet — Yes/No → 1/0 and
+  // categorical single-selects → their dictionary codes — so both files are
+  // byte-coded and identical field-for-field. (Previously this returned
+  // human-readable strings.) All date/time/numeric handling is shared via
+  // encodeForSPSS, so there is a single source of truth and no drift. The
+  // accompanying Codebook sheet documents every code.
   function encodeForExcel(r,f){
-    // Virtual / derived fields — computed from other record fields.
-    if(f==='__crtGeneratorExplant'){
-      // Proc_CRT_GeneratorExplant — Yes when 9.5.b generator selection is
-      // "Generator/device explant", No otherwise (blank when generator not set).
-      const g=r['crtGenerator'];
-      if(!g) return '';
-      return g==='Generator/device explant'?'Yes':'No';
-    }
-    if(f==='crtReplReason'){
-      return resolveCrtReplReason(r);   // readable single value (handles legacy multi-checkbox records)
-    }
-    const val=r[f];
-    if(f.endsWith('Unrec')||f.endsWith('NA')){
-      if(val===true||val==='true')return 'Yes';
-      return '';
-    }
-    const unrecKey=f+'Unrec', naKey=f+'NA';
-    if(r[unrecKey]===true||r[unrecKey]==='true'||r[naKey]===true||r[naKey]==='true'){
-      return '';
-    }
-    if(val===undefined||val===null||val==='')return '';
-    if(NUMERIC_FIELDS.has(f)){
-      const n=Number(val);
-      return isNaN(n)?'':n;          // drop invalid numerics rather than emit a string
-    }
-    if(DATE_FIELDS.has(f)){
-      const d=toDateCell(val);
-      return (d instanceof Date && !isNaN(d)) ? d : '';
-    }
-    if(TIME_FIELDS.has(f)){
-      const tf=toTimeFraction(val);
-      return (tf===null) ? '' : tf;  // drop invalid times (e.g. "8") rather than emit a string
-    }
-    if(val===true||val==='true')return 'Yes';
-    if(val===false||val==='false')return 'No';
-    return val;
+    return encodeForSPSS(r,f);
   }
 
   // Encoder for SPSS sheet — Yes/No → 1/0. Ticked Unrec/NA numeric fields are
@@ -5613,6 +5586,48 @@ function initApp() {
     return out;
   })();
 
+  // Shared codebook builder — documents every exported column (type + value
+  // labels for coded fields). Used by BOTH the SPSS export and the now-coded
+  // Excel workbook so the numeric codes are always documented alongside the data.
+  function buildCodebookAoA(pairs, data){
+    const codebook=[['Variable','Label','Type','Missing Code','Notes']];
+    pairs.forEach(p=>{
+      const modelName=p[0]; const v=p[1];
+      const label=FIELD_MAP[v]||modelName;
+      let type='String';
+      let notes=NUMERIC_FIELDS.has(v)?'Unrecordable / Not assessed exported as blank':'';
+      if(VALUE_CODES[v]){
+        type='Coded (numeric)';
+        notes=Object.entries(VALUE_CODES[v]).map(([k,c])=>c+'='+k).join('; ');
+      }
+      else if(v.endsWith('Unrec')||v.endsWith('NA'))type='Binary (1=Yes / blank=No or untouched)';
+      else if(NUMERIC_FIELDS.has(v))type='Numeric (int/double)';
+      else if(DATE_FIELDS.has(v))type='Date';
+      else if(TIME_FIELDS.has(v))type='Time';
+      else {
+        const sample=data.find(d=>d[v]!==undefined&&d[v]!==null&&d[v]!=='')?.[v];
+        if(sample===true||sample===false||sample==='Yes'||sample==='No')type='Binary (1=Yes, 0=No)';
+      }
+      const missing='blank (system-missing)';
+      codebook.push([modelName,label,type,missing,notes]);
+    });
+    return codebook;
+  }
+
+  // Report any categorical values that could not be coded (would force a string
+  // column). Shared by both exports. Returns true if everything coded cleanly.
+  function reportUncodedValues(){
+    if(!(window.__spssUnmapped && Object.keys(window.__spssUnmapped).length)) return true;
+    const lbl=k=>{const p=MODEL_EXPORT.find(x=>x[1]===k);return p?p[0]:k;};
+    const lines=Object.entries(window.__spssUnmapped).map(([f,vals])=>
+      `${lbl(f)} (${f}): `+Object.entries(vals).map(([v,n])=>`"${v}" ×${n}`).join(', '));
+    console.warn('[export] Uncoded categorical values — these keep the column as text:\n'+lines.join('\n'));
+    alert('Heads up: some values could not be coded to numbers and will export as text (string columns):\n\n'+
+          lines.slice(0,12).join('\n')+
+          '\n\nFull list is in the browser console (right-click → Inspect → Console). Send it over and I can map them.');
+    return false;
+  }
+
   window.exportSPSS=async function(){
     if(!exportPreflight('spss'))return;
     try{
@@ -5643,45 +5658,13 @@ function initApp() {
     }
     const aoa=[headerRow];
     data.forEach(r=>{aoa.push(vars.map(v=>encodeForSPSS(r,v)));});
-    // Diagnostics: surface any categorical values that did not match a code.
-    // Even one such value forces its whole column to string (e.g. str19) in
-    // Stata/SPSS. The console lists the exact offending strings + counts so the
-    // value can be added as an alias; a short alert flags it on-device.
-    if(window.__spssUnmapped && Object.keys(window.__spssUnmapped).length){
-      const lbl=k=>{const p=MODEL_EXPORT.find(x=>x[1]===k);return p?p[0]:k;};
-      const lines=Object.entries(window.__spssUnmapped).map(([f,vals])=>
-        `${lbl(f)} (${f}): `+Object.entries(vals).map(([v,n])=>`"${v}" ×${n}`).join(', '));
-      console.warn('[SPSS export] Uncoded categorical values — these keep the column as text:\n'+lines.join('\n'));
-      alert('Heads up: some values could not be coded to numbers and will export as text (string columns in Stata):\n\n'+
-            lines.slice(0,12).join('\n')+
-            '\n\nThe full list is in the browser console (right-click → Inspect → Console). Send it over and I can map them.');
-    }
+    // Surface any categorical values that did not match a code (would force the
+    // column to text in Stata/SPSS). Console lists exact offending strings.
+    reportUncodedValues();
     let ws=XLSX.utils.aoa_to_sheet(aoa,{cellDates:true});
     writeTypedSheet(ws, vars);
 
-    const codebook=[['Variable','Label','Type','Missing Code','Notes']];
-    pairs.forEach(p=>{
-      const modelName=p[0]; const v=p[1];
-      const label=FIELD_MAP[v]||modelName;
-      let type='String';
-      let notes=NUMERIC_FIELDS.has(v)?'Unrecordable / Not assessed exported as blank':'';
-      if(VALUE_CODES[v]){
-        type='Coded (numeric)';
-        notes=Object.entries(VALUE_CODES[v]).map(([k,c])=>c+'='+k).join('; ');
-      }
-      else if(v.endsWith('Unrec')||v.endsWith('NA'))type='Binary (1=Yes / blank=No or untouched)';
-      else if(NUMERIC_FIELDS.has(v))type='Numeric (int/double)';
-      else if(DATE_FIELDS.has(v))type='Date';
-      else if(TIME_FIELDS.has(v))type='Time';
-      else {
-        const sample=data.find(d=>d[v]!==undefined&&d[v]!==null&&d[v]!=='')?.[v];
-        if(sample===true||sample===false||sample==='Yes'||sample==='No')type='Binary (1=Yes, 0=No)';
-      }
-      // All fields use blank (system-missing) for missing data — including
-      // numeric fields flagged Unrecordable / Not assessed. No "9" sentinel.
-      const missing='blank (system-missing)';
-      codebook.push([modelName,label,type,missing,notes]);
-    });
+    const codebook=buildCodebookAoA(pairs, data);
     const wb=XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb,ws,'SPSS_Data');
     XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(codebook),'Codebook');
@@ -6042,6 +6025,7 @@ function initApp() {
     try{
     const rawData=await getFilteredExportData();
     if(!rawData.length){alert('No data to export.');return;}
+    window.__spssUnmapped={};   // reset coded-value diagnostics for this run
     const data=rawData.map(applyDefensiveBlanking);
 
     // Every sheet uses the EXACT model variable names from EPS_Variable_model
@@ -6077,6 +6061,10 @@ function initApp() {
     XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName('Procedure_StartDate','Compli_ProcedureCA')),'Procedure Details');
     XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName('Compli_ProcedureCA','Outcom_ImmProcedSuccess')),'Complications');
     XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName('Outcom_ImmProcedSuccess',null)),'Outcome & Discharge');
+    // Codebook — documents the numeric codes now used throughout the workbook.
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(buildCodebookAoA(MODEL_EXPORT, data)),'Codebook');
+    // Surface any value that could not be coded (would land as text).
+    reportUncodedValues();
     XLSX.writeFile(wb,'EPS_Registry_Export.xlsx');
     }catch(e){console.error('Excel export failed:',e);alert('Excel export failed: '+(e&&e.message?e.message:e));}
   };
