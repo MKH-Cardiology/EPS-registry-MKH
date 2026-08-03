@@ -705,8 +705,8 @@ html,body{max-width:100vw;overflow-x:hidden;}
     <div class="g2">
       <div><label class="lbl">3.1 Patient Origin</label>
         <select name="patientOrigin" class="inp">
-          <option value="">Select...</option><option>Outpatient (Home/Cardiology clinic)</option><option>Transferred from other hospital</option>
-          <option>Same hospital Inpatient but another department</option>
+          <option value="">Select...</option><option>Outpatient (Home/Cardiology clinic)</option><option>Transferred from another hospital</option>
+          <option>Same hospital, inpatient, but another department</option>
         </select>
       </div>
     </div>
@@ -716,16 +716,6 @@ html,body{max-width:100vw;overflow-x:hidden;}
 <!-- STEP 2: HISTORY (with AFib classification fix) -->
 <div class="form-step" id="step-2">
   <div class="sec-title"><div class="icon-wrap bg-red-100"><i class="fas fa-heartbeat text-red-600"></i></div>4–5. History, Risk Factors &amp; Examination</div>
-  <div class="card card-gray mb-4">
-    <div class="font-bold text-gray-700 text-sm mb-3">5. Examination Vitals</div>
-    <div class="g4">
-      <div><label class="lbl">Systolic BP (mmHg)<button type="button" class="fn-btn" onclick="openFn('5.1')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="sysBp" id="inp_sysBp" class="inp inp-sm"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="sysBpUnrec" id="cb_sysBpUnrec" class="w-3 h-3" onchange="toggleUnrec('sysBp')"> Unrecordable</label></div>
-      <div><label class="lbl">Diastolic BP (mmHg)<button type="button" class="fn-btn" onclick="openFn('5.2')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="diaBp" id="inp_diaBp" class="inp inp-sm"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="diaBpUnrec" id="cb_diaBpUnrec" class="w-3 h-3" onchange="toggleUnrec('diaBp')"> Unrecordable</label></div>
-      <div><label class="lbl">Presenting HR (/min)<button type="button" class="fn-btn" onclick="openFn('5.3')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="hr" id="inp_hr" class="inp inp-sm"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="hrUnrec" id="cb_hrUnrec" class="w-3 h-3" onchange="toggleUnrec('hr')"> Unrecordable</label></div>
-      <div><label class="lbl">Weight (kg)<button type="button" class="fn-btn" onclick="openFn('5.4')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="weight" id="inp_weight" class="inp inp-sm"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="weightUnrec" id="cb_weightUnrec" class="w-3 h-3" onchange="toggleUnrec('weight')"> Unrecordable</label></div>
-      <div><label class="lbl">Height (cm)<button type="button" class="fn-btn" onclick="openFn('5.5')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="height" id="inp_height" class="inp inp-sm"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="heightUnrec" id="cb_heightUnrec" class="w-3 h-3" onchange="toggleUnrec('height')"> Unrecordable</label></div>
-    </div>
-  </div>
   <div class="card card-red mb-3">
     <div class="flex items-center justify-between mb-2"><span class="font-bold text-red-900 text-sm">4.1 Atrial Fibrillation</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'afib','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'afib','Yes')">Yes</button></div></div>
     <input type="hidden" name="hx_afib" id="val_afib" value="">
@@ -811,6 +801,16 @@ html,body{max-width:100vw;overflow-x:hidden;}
     <input type="hidden" name="hx_cied" id="val_cied" value="">
     <div id="sub_cied" class="sub-reveal"><label class="lbl">4.25a Prior CIED device type:</label><div class="mt-1"><select name="cied_type" class="inp"><option value="">Select…</option><option value="Single chamber transvenous PPM">Single chamber transvenous PPM</option><option value="Dual chamber transvenous PPM">Dual chamber transvenous PPM</option><option value="CRT-P">CRT-P</option><option value="Leadless single chamber PPM">Leadless single chamber PPM</option><option value="Leadless dual chamber PPM">Leadless dual chamber PPM</option><option value="His bundle PPM">His bundle PPM</option><option value="Left bundle area PPM">Left bundle area PPM</option><option value="ICD single chamber">ICD single chamber</option><option value="ICD dual chamber">ICD dual chamber</option><option value="CRT-D">CRT-D</option><option value="Extravascular ICD">Extravascular ICD</option><option value="S-ICD (Sub Q)">S-ICD (Sub Q)</option><option value="Unknown">Unknown</option></select></div></div>
   </div>
+  <div class="card card-gray mb-4">
+    <div class="font-bold text-gray-700 text-sm mb-3">5. Examination Vitals</div>
+    <div class="g4">
+      <div><label class="lbl">5.1 Systolic BP (mmHg)<button type="button" class="fn-btn" onclick="openFn('5.1')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="sysBp" id="inp_sysBp" class="inp inp-sm"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="sysBpUnrec" id="cb_sysBpUnrec" class="w-3 h-3" onchange="toggleUnrec('sysBp')"> Unrecordable</label></div>
+      <div><label class="lbl">5.2 Diastolic BP (mmHg)<button type="button" class="fn-btn" onclick="openFn('5.2')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="diaBp" id="inp_diaBp" class="inp inp-sm"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="diaBpUnrec" id="cb_diaBpUnrec" class="w-3 h-3" onchange="toggleUnrec('diaBp')"> Unrecordable</label></div>
+      <div><label class="lbl">5.3 Presenting HR (/min)<button type="button" class="fn-btn" onclick="openFn('5.3')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="hr" id="inp_hr" class="inp inp-sm"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="hrUnrec" id="cb_hrUnrec" class="w-3 h-3" onchange="toggleUnrec('hr')"> Unrecordable</label></div>
+      <div><label class="lbl">5.4 Weight (kg)<button type="button" class="fn-btn" onclick="openFn('5.4')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="weight" id="inp_weight" class="inp inp-sm"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="weightUnrec" id="cb_weightUnrec" class="w-3 h-3" onchange="toggleUnrec('weight')"> Unrecordable</label></div>
+      <div><label class="lbl">5.5 Height (cm)<button type="button" class="fn-btn" onclick="openFn('5.5')" aria-label="Field information" title="Click for field information">i</button></label><input type="number" name="height" id="inp_height" class="inp inp-sm"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="heightUnrec" id="cb_heightUnrec" class="w-3 h-3" onchange="toggleUnrec('height')"> Unrecordable</label></div>
+    </div>
+  </div>
 </div>
 
 <!-- STEP 3: HOME MEDICATIONS -->
@@ -844,7 +844,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
     <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">7.2 Holter / Event Monitor</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'holter','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'holter','Yes')">Yes</button></div></div>
     <input type="hidden" name="inv_holter" id="val_holter" value="">
     <div id="sub_holter" class="sub-reveal">
-      <label class="lbl">7.2a Atrial Rhythm (Choose One Only):</label><div class="g3 mt-1 mb-3"><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="Sinus"> Sinus</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="Atrial fibrillation"> Atrial fibrillation</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="Atrial flutter"> Atrial flutter</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="SVT"> SVT</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="1st degree AV block"> 1st degree AV block</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="2nd degree AV block"> 2nd degree AV block</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="3rd degree AV block"> 3rd degree AV block</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="Unknown rhythm"> Unknown rhythm</label></div>
+      <label class="lbl">7.2a Atrial Rhythm (Choose One Only):</label><div class="g3 mt-1 mb-3"><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="Sinus"> Sinus</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="Atrial fibrillation"> Atrial fibrillation</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="Atrial flutter"> Atrial flutter</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="SVT"> SVT</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="Atrial tachycardia"> Atrial tachycardia</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="Atrial paced"> Atrial paced</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="Sinus arrest"> Sinus arrest</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="Sinus pause"> Sinus pause</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="1st degree AV block"> 1st degree AV block</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="2nd degree AV block"> 2nd degree AV block</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="3rd degree AV block"> 3rd degree AV block</label><label class="radio-item"><input type="radio" name="holterAtrialRhythm" value="Unknown rhythm"> Unknown rhythm</label></div>
       <label class="lbl">7.2b Ventricular Rhythm (Choose One Only):</label><div class="g3 mt-1"><label class="radio-item"><input type="radio" name="holterVentRhythm" value="Normal"> Normal</label><label class="radio-item"><input type="radio" name="holterVentRhythm" value="Non-sustained VT"> Non-sustained VT</label><label class="radio-item"><input type="radio" name="holterVentRhythm" value="Sustained VT"> Sustained VT</label><label class="radio-item"><input type="radio" name="holterVentRhythm" value="Frequent PVCs"> Frequent PVCs</label><label class="radio-item"><input type="radio" name="holterVentRhythm" value="PVCs burden >10%"> PVCs burden &gt;10%</label></div>
     </div>
   </div>
@@ -855,8 +855,8 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <!-- 7.3 a/b/c/d — LV dimensions & RVSP, sit flush inside sub_tte (matches 7.2a styling) -->
       <div class="g4 mb-3">
         <div data-no-paint><label class="lbl">7.3a LVEF (%)</label><input type="number" name="lvef" class="inp" placeholder="%"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="lvefNA" class="w-3 h-3"> Not assessed</label></div>
-        <div data-no-paint><label class="lbl">7.3b LVESD (mm)</label><input type="number" name="lvesd" min="15" max="80" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="lvesdNA" class="w-3 h-3"> Not assessed</label></div>
-        <div data-no-paint><label class="lbl">7.3c LVEDD (mm)</label><input type="number" name="lvedd" min="25" max="90" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="lveddNA" class="w-3 h-3"> Not assessed</label></div>
+        <div data-no-paint><label class="lbl">7.3b LVESD (mm)</label><input type="number" name="lvesd" min="15" max="80" class="inp"></div>
+        <div data-no-paint><label class="lbl">7.3c LVEDD (mm)</label><input type="number" name="lvedd" min="25" max="90" class="inp"></div>
         <div data-no-paint><label class="lbl">7.3d RVSP (mmHg)</label><input type="number" name="rvsp" min="10" max="120" class="inp"><label class="flex items-center gap-1 mt-1 text-xs text-gray-500"><input type="checkbox" name="rvspNA" class="w-3 h-3"> Not assessed</label></div>
       </div>
 
@@ -924,9 +924,13 @@ html,body{max-width:100vw;overflow-x:hidden;}
       </div>
       <div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">Inherited heart disease with increased risk of SCD</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'crtInherited','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'crtInherited','Yes')">Yes</button></div></div>
       <input type="hidden" name="crtInherited" id="val_crtInherited" value="">
-      <div id="sub_crtInherited" class="sub-reveal"><label class="lbl">Specify:</label>
-        <div class="mt-1">
-          <select name="crtInh_type" class="inp"><option value="">Select…</option><option value="Long QT-syndrome">Long QT-syndrome</option><option value="HCM">HCM</option><option value="Brugada syndrome">Brugada syndrome</option><option value="Arrhythmogenic RV Dysplasia/Cardiomyopathy (ARVD/C)">Arrhythmogenic RV Dysplasia/Cardiomyopathy (ARVD/C)</option><option value="Catecholaminergic Polymorphic VT (CPVT)">Catecholaminergic Polymorphic VT (CPVT)</option></select>
+      <div id="sub_crtInherited" class="sub-reveal"><label class="lbl">Specify (select all that apply):</label>
+        <div class="g2 mt-1">
+          <label class="chk-item"><input type="checkbox" name="crtInh_longqt"> Long QT-syndrome</label>
+          <label class="chk-item"><input type="checkbox" name="crtInh_hcm"> HCM</label>
+          <label class="chk-item"><input type="checkbox" name="crtInh_brugada"> Brugada syndrome</label>
+          <label class="chk-item"><input type="checkbox" name="crtInh_arvd"> Arrhythmogenic RV Dysplasia/Cardiomyopathy (ARVD/C)</label>
+          <label class="chk-item"><input type="checkbox" name="crtInh_cpvt"> Catecholaminergic Polymorphic VT (CPVT)</label>
         </div>
       </div>
     </div>
@@ -936,14 +940,14 @@ html,body{max-width:100vw;overflow-x:hidden;}
         <label class="radio-item"><input type="radio" name="crtGenerator" value="Initial implant" onchange="onCrtGen()"> Initial implant</label>
         <label class="radio-item"><input type="radio" name="crtGenerator" value="Generator replacement" onchange="onCrtGen()"> Generator replacement</label>
       </div>
-      <div id="crtGen_replace" class="sub-reveal mt-2"><label class="lbl">9.5.b.1 Reasons for generator replacement (Choose One Only):</label>
+      <div id="crtGen_replace" class="sub-reveal mt-2"><label class="lbl">9.5.b.2 Reasons for generator replacement (select all that apply):</label>
         <div class="g2 mt-1">
-          <label class="radio-item"><input type="radio" name="crtReplReason" value="Device relocation"> Device relocation</label>
-          <label class="radio-item"><input type="radio" name="crtReplReason" value="End of battery life"> End of battery life</label>
-          <label class="radio-item"><input type="radio" name="crtReplReason" value="Faulty connector/header"> Faulty connector/header</label>
-          <label class="radio-item"><input type="radio" name="crtReplReason" value="Infection"> Infection</label>
-          <label class="radio-item"><input type="radio" name="crtReplReason" value="Replaced at time of lead revision"> Replaced at time of lead revision</label>
-          <label class="radio-item"><input type="radio" name="crtReplReason" value="Upgrade"> Upgrade</label>
+          <label class="chk-item"><input type="checkbox" name="crtRepl_relocation"> Device relocation</label>
+          <label class="chk-item"><input type="checkbox" name="crtRepl_battery"> End of battery life</label>
+          <label class="chk-item"><input type="checkbox" name="crtRepl_faulty"> Faulty connector/header</label>
+          <label class="chk-item"><input type="checkbox" name="crtRepl_infection"> Infection</label>
+          <label class="chk-item"><input type="checkbox" name="crtRepl_leadrev"> Replaced at time of lead revision</label>
+          <label class="chk-item"><input type="checkbox" name="crtRepl_upgrade"> Upgrade</label>
         </div>
       </div>
     </div>
@@ -1036,8 +1040,6 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <div class="g2 mb-3">
         <label class="chk-item"><input type="checkbox" name="tpmCause_electrolyte"> Electrolyte imbalance</label>
         <label class="chk-item"><input type="checkbox" name="tpmCause_drug" onchange="onTpmDrug()"> Drug induced</label>
-        <label class="chk-item"><input type="checkbox" name="tpmCause_digitalis"> Digitalis toxicity</label>
-        <label class="chk-item"><input type="checkbox" name="tpmCause_antiarr"> Anti-arrhythmic (Cordarone, Sotalol)</label>
         <label class="chk-item"><input type="checkbox" name="tpmCause_acuteMI" onchange="onTpmMI()"> Acute MI</label>
         <label class="chk-item"><input type="checkbox" name="tpmCause_myocarditis"> Myocarditis</label>
         <label class="chk-item"><input type="checkbox" name="tpmCause_endocarditis"> Endocarditis</label>
@@ -1048,9 +1050,11 @@ html,body{max-width:100vw;overflow-x:hidden;}
         <label class="chk-item"><input type="checkbox" name="tpmCause_postTAVI"> Post TAVI/valve replacement</label>
         <label class="chk-item"><input type="checkbox" name="tpmCause_unknown"> Unknown cause</label>
       </div>
-      <div id="tpmDrugSub" class="sub-reveal mb-3"><label class="lbl">9.6.b.1 Drug used — A-V blocking agent (BB, CCB)</label>
-        <div class="g2 mt-1">
-          <select name="tpmDrug_avBlock" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select>
+      <div id="tpmDrugSub" class="sub-reveal mb-3"><label class="lbl">9.6.b.1 Drug used:</label>
+        <div class="g3 mt-1">
+          <div><label class="lbl">A-V blocking agent (BB, CCB)</label><select name="tpmDrug_avBlock" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+          <div><label class="lbl">Digitalis toxicity</label><select name="tpmCause_digitalis" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+          <div><label class="lbl">Anti-arrhythmic (Cordarone, Sotalol)</label><select name="tpmCause_antiarr" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
         </div>
       </div>
       <div id="tpmMISub" class="sub-reveal"><label class="lbl">9.6.b.2 Acute MI type:</label>
@@ -1127,7 +1131,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
   <div class="proc-section" id="proc_eps"><div class="card card-purple mb-3" style="border-left:4px solid #7c3aed;"><div style="font-weight:800;color:#4c1d95;font-size:14px;">9.8 — EPS / Ablation</div></div>
     <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.8a Reason for EPS/Ablation:</label>
       <div class="mt-1">
-        <select name="eps_reason" class="inp"><option value="">Select…</option><option value="SVT">SVT</option><option value="Atrial flutter">Atrial flutter</option><option value="Atrial fibrillation">Atrial fibrillation</option><option value="VT">VT</option><option value="PVCs">PVCs</option></select>
+        <select name="eps_reason" class="inp"><option value="">Select…</option><option value="SVT">SVT</option><option value="Atrial flutter">Atrial flutter</option><option value="Atypical atrial flutter">Atypical atrial flutter</option><option value="Atrial fibrillation">Atrial fibrillation</option><option value="VT">VT</option><option value="PVCs">PVCs</option><option value="Atrial Tachycardia">Atrial Tachycardia</option><option value="AV node ablation">AV node ablation</option></select>
       </div>
     </div>
 
@@ -1171,6 +1175,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
             <label class="radio-item"><input type="radio" name="epsMapSystem" value="Carto"> Carto</label>
             <label class="radio-item"><input type="radio" name="epsMapSystem" value="Ensite"> Ensite</label>
             <label class="radio-item"><input type="radio" name="epsMapSystem" value="Rhythmia"> Rhythmia</label>
+            <label class="radio-item"><input type="radio" name="epsMapSystem" value="Affera"> Affera</label>
             <label class="radio-item"><input type="radio" name="epsMapSystem" value="Conventional (Cryo/Radiofrequency) ablation"> Conventional (Cryo/Radiofrequency) ablation</label>
           </div>
         </div>
@@ -1384,7 +1389,9 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <div><label class="lbl">10.2.11 Inotropes</label><select name="cx_inotropes" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
     </div>
 
-    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.12 Mechanical complications<button type="button" class="fn-btn" onclick="openFn('10.2.12')" aria-label="Field information" title="Click for field information">i</button></span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'mechComp','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'mechComp','Yes')">Yes</button></div></div><input type="hidden" name="cx_mechComp" id="val_mechComp" value=""><div id="sub_mechComp" class="sub-reveal"><label class="lbl">10.2.12.a Type of mechanical complications (Choose One Only):</label>
+    <div class="card mb-3"><div class="flex items-center justify-between mb-2"><span class="text-sm font-bold text-gray-700">10.2.12 Mechanical complications<button type="button" class="fn-btn" onclick="openFn('10.2.12')" aria-label="Field information" title="Click for field information">i</button></span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'mechComp','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'mechComp','Yes')">Yes</button></div></div><input type="hidden" name="cx_mechComp" id="val_mechComp" value=""><div id="sub_mechComp" class="sub-reveal">
+      <div class="mb-3"><label class="lbl">10.2.12.a Emergency cardiac surgery required</label><select name="cx_emergencySurg" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+      <label class="lbl">10.2.12.b Type of mechanical complications (Choose One Only):</label>
       <div class="flex gap-2 mt-1 flex-wrap">
         <label class="radio-item"><input type="radio" name="mechCompType" value="ASD"> ASD</label>
         <label class="radio-item"><input type="radio" name="mechCompType" value="Myocardial tear"> Myocardial tear</label>
@@ -1400,7 +1407,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
         <label class="radio-item"><input type="radio" name="bleedType" value="Type 1" onchange="onBleedT()"> Type 1 (Not actionable)</label>
         <label class="radio-item"><input type="radio" name="bleedType" value="Type 2" onchange="onBleedT()"> Type 2 (Actionable, requires further evaluation or nonsurgical intervention)</label>
         <label class="radio-item"><input type="radio" name="bleedType" value="Type 3" onchange="onBleedT()"> Type 3 (Major/Overt bleeding)</label>
-        <label class="radio-item"><input type="radio" name="bleedType" value="Type 4" onchange="onBleedT()"> Type 4 (CABG related bleeding)</label>
+        <label class="radio-item opacity-60" title="Not applicable in this CRF"><input type="radio" name="bleedType" value="Type 4" onchange="onBleedT()" disabled> Type 4 (CABG related bleeding) — not applicable in this CRF</label>
         <label class="radio-item"><input type="radio" name="bleedType" value="Type 5" onchange="onBleedT()"> Type 5 (Fatal bleeding)</label>
       </div>
       <div id="bleedType3sub" class="sub-reveal mb-3"><label class="lbl">a.1 Major bleeding type:</label>
@@ -1462,7 +1469,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
 
 <!-- STEP 7: OUTCOME -->
 <div class="form-step" id="step-7">
-  <div class="sec-title"><div class="icon-wrap bg-orange-100"><i class="fas fa-door-open text-orange-600"></i></div>11–13. Outcome &amp; Discharge</div>
+  <div class="sec-title"><div class="icon-wrap bg-orange-100"><i class="fas fa-door-open text-orange-600"></i></div>11–12. Outcome &amp; Discharge</div>
   <div class="card mb-4">
     <div class="font-bold text-gray-800 text-sm mb-3">11. Outcome</div>
     <div class="g2 mb-3">
@@ -1480,9 +1487,9 @@ html,body{max-width:100vw;overflow-x:hidden;}
   <div class="card mb-4">
     <div class="font-bold text-gray-800 text-sm mb-3">12. Discharge</div>
     <div class="g4 mb-3"><div><label class="lbl">12.1 Date of discharge/death</label><input type="date" name="dischargeDate" class="inp"></div><div><label class="lbl">12.2 Time (24h, HH:MM)</label><input type="text" name="dischargeTime" class="inp time24" inputmode="numeric" maxlength="5" placeholder="HH:MM" pattern="^([01]\d|2[0-3]):[0-5]\d$" title="Use 24-hour format, e.g. 09:15" autocomplete="off"></div></div>
-    <div><label class="lbl">12.3 Discharge status</label><div class="flex gap-2 flex-wrap mt-1"><label class="radio-item"><input type="radio" name="dischargeStatus" value="Dead" onchange="onDischSt()"> Dead</label><label class="radio-item"><input type="radio" name="dischargeStatus" value="Alive" onchange="onDischSt()"> Alive</label></div><div id="dischDead" class="sub-reveal mt-2"><label class="lbl">12.3a Cause of death</label><div class="flex gap-2 mt-1"><label class="radio-item"><input type="radio" name="causeOfDeath" value="Non-Cardiac"> Non-Cardiac</label><label class="radio-item"><input type="radio" name="causeOfDeath" value="Cardiac"> Cardiac</label></div></div><div id="dischAlive" class="sub-reveal mt-2"><label class="lbl">12.3b Discharge type</label><div class="g2 mt-1"><label class="radio-item"><input type="radio" name="dischargeType" value="Home"> Home</label><label class="radio-item"><input type="radio" name="dischargeType" value="LAMA"> LAMA</label><label class="radio-item"><input type="radio" name="dischargeType" value="Transfer to cardiac surgery"> Transfer to cardiac surgery</label><label class="radio-item"><input type="radio" name="dischargeType" value="Transfer to other dept"> Transfer to other dept</label></div></div></div>
+    <div><label class="lbl">12.3 Discharge status</label><div class="flex gap-2 flex-wrap mt-1"><label class="radio-item"><input type="radio" name="dischargeStatus" value="Dead" onchange="onDischSt()"> Dead</label><label class="radio-item"><input type="radio" name="dischargeStatus" value="Alive" onchange="onDischSt()"> Alive</label></div><div id="dischDead" class="sub-reveal mt-2"><label class="lbl">12.3a Cause of death</label><div class="flex gap-2 mt-1"><label class="radio-item"><input type="radio" name="causeOfDeath" value="Non-Cardiac"> Non-Cardiac</label><label class="radio-item"><input type="radio" name="causeOfDeath" value="Cardiac"> Cardiac</label></div></div><div id="dischAlive" class="sub-reveal mt-2"><label class="lbl">12.3b Discharge type</label><div class="g2 mt-1"><label class="radio-item"><input type="radio" name="dischargeType" value="Home"> Home</label><label class="radio-item"><input type="radio" name="dischargeType" value="Left against Medical Advice (LAMA)"> Left against Medical Advice (LAMA)</label><label class="radio-item"><input type="radio" name="dischargeType" value="Transfer to cardiac surgery department"> Transfer to cardiac surgery department</label><label class="radio-item"><input type="radio" name="dischargeType" value="Transfer to another Medical/general surgery department"> Transfer to another Medical/general surgery department</label></div></div></div>
   </div>
-  <div id="section13Card" class="card card-green"><div class="font-bold text-green-900 text-sm mb-3">13. Discharge Medications</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;" id="dischargeMedsGrid"></div></div>
+  <div id="section12MedsCard" class="card card-green"><div class="font-bold text-green-900 text-sm mb-3">12. Discharge Medications</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;" id="dischargeMedsGrid"></div></div>
 </div>
 
   </div><!-- end formScrollArea -->
@@ -2387,9 +2394,9 @@ function initApp() {
   // MEDS
   const medsList=[
     {name:"Amiodarone",f:"amiodarone"},{name:"Disopyramide",f:"disopyramide"},{name:"Flecainide",f:"flecainide"},{name:"Procainamide",f:"procainamide"},{name:"Propafenone",f:"propafenone"},{name:"Sotalol",f:"sotalol"},
-    {name:"Verapamil",f:"verapamil"},{name:"Diltiazem",f:"diltiazem"},{name:"Warfarin",f:"warfarin"},{name:"Dabigatran",f:"dabigatran"},{name:"Apixaban",f:"apixaban"},
-    {name:"Rivaroxaban",f:"rivaroxaban"},{name:"Edoxaban",f:"edoxaban"},{name:"LMWH",f:"lmwh"},{name:"Unfractionated Heparin",f:"ufh"},{name:"Aspirin",f:"aspirin"},{name:"Prasugrel",f:"prasugrel"},{name:"Clopidogrel",f:"clopidogrel"},
-    {name:"Ticagrelor",f:"ticagrelor"},{name:"Cangrelor",f:"cangrelor"},{name:"ACE-I",f:"acei"},{name:"ARB",f:"arb"},{name:"ARNI",f:"arni"},{name:"SGLT inhibitor",f:"sglt"},
+    {name:"Dofetilide",f:"dofetilide"},{name:"Dronaderone",f:"dronaderone"},{name:"Verapamil",f:"verapamil"},{name:"Diltiazem",f:"diltiazem"},{name:"Warfarin",f:"warfarin"},{name:"Dabigatran",f:"dabigatran"},{name:"Apixaban",f:"apixaban"},
+    {name:"Rivaroxaban",f:"rivaroxaban"},{name:"Edoxaban",f:"edoxaban"},{name:"Low MW heparin",f:"lmwh"},{name:"Aspirin",f:"aspirin"},{name:"Prasugrel",f:"prasugrel"},{name:"Clopidogrel",f:"clopidogrel"},
+    {name:"Ticagrelor",f:"ticagrelor"},{name:"ACE-I",f:"acei"},{name:"ARB",f:"arb"},{name:"ARNI",f:"arni"},{name:"SGLT2-inhibitor",f:"sglt"},
     {name:"Beta Blockers",f:"betablocker"},{name:"MRA",f:"mra"},{name:"Digoxin",f:"digoxin"},{name:"Loop diuretics",f:"loopdiuretic"},{name:"Ivabradine",f:"ivabradine"},
   ];
   const hMG=document.getElementById('homeMedsGrid'), dMG=document.getElementById('dischargeMedsGrid');
@@ -2404,39 +2411,6 @@ function initApp() {
     btn.classList.add('selected');
     const hid=row.querySelector(`input[type="hidden"][name="${medName}"]`);
     if(hid)hid.value=val;
-    // Mutual-exclusion groups: choosing YES for one drug auto-sets the others in
-    // the same group to NO. Same rule applies to home (homeMed_*) and discharge
-    // (dcMed_*) medication lists.
-    //   • Oral anticoagulants: apixaban / dabigatran / edoxaban / rivaroxaban / warfarin
-    //   • P2Y12 inhibitors:    clopidogrel / prasugrel / ticagrelor
-    //   • RAAS modulators:     ACE-I (acei) / ARB / ARNI
-    const MED_EXCLUSIVE_GROUPS = [
-      ['apixaban','dabigatran','edoxaban','rivaroxaban','warfarin'],
-      ['clopidogrel','prasugrel','ticagrelor'],
-      ['acei','arb','arni']
-    ];
-    if(val === 'Yes'){
-      // Detect prefix (homeMed_ or dcMed_) and short drug key
-      const m = medName.match(/^(homeMed_|dcMed_)(.+)$/);
-      if(m){
-        const prefix = m[1], drugKey = m[2];
-        const group = MED_EXCLUSIVE_GROUPS.find(g => g.includes(drugKey));
-        if(group){
-          group.forEach(other => {
-            if(other === drugKey) return;
-            const otherName = prefix + other;
-            const otherRow = document.querySelector(`.med-row[data-med-key="${otherName}"]`);
-            if(!otherRow) return;
-            // Set the other drug to "No"
-            otherRow.querySelectorAll('.yn-btn').forEach(b => b.classList.remove('selected'));
-            const noBtn = otherRow.querySelector('.yn-btn.yn-no');
-            if(noBtn) noBtn.classList.add('selected');
-            const otherHid = otherRow.querySelector(`input[type="hidden"][name="${otherName}"]`);
-            if(otherHid) otherHid.value = 'No';
-          });
-        }
-      }
-    }
     updateFieldIndicators();
   };
   setTimeout(updateFieldIndicators, 100);
@@ -2551,7 +2525,7 @@ function initApp() {
   // ============================================================================
   const NA_PAIRS = {
     // ECG / Echo
-    ecgQRS:'ecgQRSna', lvef:'lvefNA', lvesd:'lvesdNA', lvedd:'lveddNA', rvsp:'rvspNA',
+    ecgQRS:'ecgQRSna', lvef:'lvefNA', rvsp:'rvspNA',
     // Lab section 8
     creatInit:'creatInitNA', creatPeak:'creatPeakNA',
     hgbInit:'hgbInitNA', hgbLowest:'hgbLowestNA',
@@ -2875,6 +2849,23 @@ function initApp() {
   // Expose for editRecord() re-sync
   window._applyAccessVascLinkage = _applyAccessVascLinkage;
 
+  // Keep standard numerical order for ordinary procedure choices. During CIED
+  // Extraction, selected immediate-reimplantation follow-up sections are moved
+  // directly below 9.10 while retaining their original 9.5 and 9.7 numbering.
+  function positionProcedureSections(isExtraction,wanted){
+    const canonical=['proc_crtaicd','proc_temppm','proc_permpm','proc_eps','proc_laao','proc_ciedx'];
+    const container=document.getElementById('proc_ciedx')?.parentElement;
+    if(!container)return;
+    canonical.forEach(id=>{const section=document.getElementById(id);if(section)container.appendChild(section);});
+    if(!isExtraction)return;
+    let cursor=document.getElementById('proc_ciedx');
+    ['proc_crtaicd','proc_permpm'].forEach(id=>{
+      if(!wanted.has(id))return;
+      const section=document.getElementById(id);
+      if(section&&cursor){cursor.after(section);cursor=section;}
+    });
+  }
+
   // EP REASON
   window.onEPR=function(){
     const v=document.querySelector('input[name="epReason"]:checked')?.value;
@@ -2902,6 +2893,8 @@ function initApp() {
         if(document.querySelector('[name="ciedxReimplantPPM"]')?.value==='Yes') wanted.add('proc_permpm');
       }
     }
+
+    positionProcedureSections(v==='CIED Extraction',wanted);
 
     // For any procedure section currently showing but no longer wanted, WIPE its data so stale
     // entries from a prior choice don't get saved. Sections that remain wanted keep their data.
@@ -3017,16 +3010,16 @@ function initApp() {
         el.classList.remove('show');
       }
     });
-    // If patient is Dead, hide section 13 (Discharge Medications) entirely and
+    // If patient is Dead, hide section 12 (Discharge Medications) entirely and
     // clear any previously selected Yes/No values + dose inputs, since giving
     // discharge medications to a deceased patient is not meaningful.
     // During edit-record load we hide the section but do NOT wipe data — legacy
     // records may have both dischargeStatus="Dead" and saved dcMed_* values; we
     // preserve them so the record displays as it was saved.
-    const sec13 = document.getElementById('section13Card');
-    if(sec13){
+    const sec12Meds = document.getElementById('section12MedsCard');
+    if(sec12Meds){
       if(v === 'Dead'){
-        sec13.style.display = 'none';
+        sec12Meds.style.display = 'none';
         if(!window._suppressClearOnHide){
           // Wipe selections in the discharge meds grid
           const grid = document.getElementById('dischargeMedsGrid');
@@ -3038,7 +3031,7 @@ function initApp() {
           try{ if(typeof updateFieldIndicators==='function') updateFieldIndicators(); }catch(e){}
         }
       } else {
-        sec13.style.display = '';
+        sec12Meds.style.display = '';
       }
     }
   };
@@ -3426,7 +3419,7 @@ function initApp() {
   const PAIRED_FIELDS = {
     'sysBp':'sysBpUnrec','diaBp':'diaBpUnrec','hr':'hrUnrec','weight':'weightUnrec','height':'heightUnrec',
     'creatInit':'creatInitNA','creatPeak':'creatPeakNA','hgbInit':'hgbInitNA','hgbLowest':'hgbLowestNA',
-    'sodium':'sodiumNA','potassium':'potassiumNA','magnesium':'magnesiumNA','inr':'inrNA','ecgQRS':'ecgQRSna','lvef':'lvefNA','lvesd':'lvesdNA','lvedd':'lveddNA','rvsp':'rvspNA',
+    'sodium':'sodiumNA','potassium':'potassiumNA','magnesium':'magnesiumNA','inr':'inrNA','ecgQRS':'ecgQRSna','lvef':'lvefNA','rvsp':'rvspNA',
   };
   const PAIRED_COMPANIONS = new Set(Object.values(PAIRED_FIELDS));
   const EITHER_OR_GROUPS = [
@@ -3930,7 +3923,7 @@ function initApp() {
       // Companion checkbox fields (Unrec/NA) — always validated via their parent
       'sysBpUnrec','diaBpUnrec','hrUnrec','weightUnrec','heightUnrec',
       'creatInitNA','creatPeakNA','hgbInitNA','hgbLowestNA',
-      'sodiumNA','potassiumNA','magnesiumNA','inrNA','ecgQRSna','lvefNA','lvesdNA','lveddNA','rvspNA',
+      'sodiumNA','potassiumNA','magnesiumNA','inrNA','ecgQRSna','lvefNA','rvspNA',
       'crtLbbbQRSna','ppmLbbbQRSna','condSysPaceQRSna'
     ]);
 
@@ -3950,7 +3943,9 @@ function initApp() {
     // Individual members are NOT required — un-ticked checkbox = "this option does not apply".
     const CHECKBOX_GROUPS = [
       { label:'9.5 CRT/AICD indications', members:['crtInd_surv','crtInd_eps','crtInd_icmEF','crtInd_nicmEF','crtInd_vtUnresp'] },
-      { label:'9.6 Temporary PM cause', members:['tpmCause_electrolyte','tpmCause_drug','tpmCause_digitalis','tpmCause_antiarr','tpmCause_acuteMI','tpmCause_myocarditis','tpmCause_endocarditis','tpmCause_postArrest','tpmCause_degenerative','tpmCause_hypothermia','tpmCause_bridge','tpmCause_postTAVI','tpmCause_unknown'] },
+      { label:'9.5 Inherited heart disease type', members:['crtInh_longqt','crtInh_hcm','crtInh_brugada','crtInh_arvd','crtInh_cpvt'] },
+      { label:'9.5 Generator replacement reason', members:['crtRepl_relocation','crtRepl_battery','crtRepl_faulty','crtRepl_infection','crtRepl_leadrev','crtRepl_upgrade'] },
+      { label:'9.6 Temporary PM cause', members:['tpmCause_electrolyte','tpmCause_drug','tpmCause_acuteMI','tpmCause_myocarditis','tpmCause_endocarditis','tpmCause_postArrest','tpmCause_degenerative','tpmCause_hypothermia','tpmCause_bridge','tpmCause_postTAVI','tpmCause_unknown'] },
       { label:'9.9a LAAO indication', members:['laao_nonvalvular','laao_highBleed','laao_contraOAC','laao_priorBleed','laao_patientPref'] },
       { label:'9.10a CIED extraction indication', members:['ciedxInd_pocketInfection','ciedxInd_leadEndocarditis','ciedxInd_ieNoPocket','ciedxInd_leadMalfunction','ciedxInd_leadFracture','ciedxInd_insulationFailure','ciedxInd_venousOcclusion','ciedxInd_chronicPain','ciedxInd_upgradeRemoval','ciedxInd_recalledLead','ciedxInd_abandonedLead','ciedxInd_leadPerforation','ciedxInd_tricuspidRegurg','ciedxInd_mriCompatibility','ciedxInd_other'] },
       { label:'9.10c CIED leads extracted', members:['ciedxLead_ra','ciedxLead_rvPacing','ciedxLead_rvIcd','ciedxLead_csLv','ciedxLead_his','ciedxLead_lbba','ciedxLead_sicd','ciedxLead_other'] },
@@ -4373,13 +4368,46 @@ function initApp() {
       // (e.g. ssd_brugada=true). Derive the new single value from the first
       // ticked legacy checkbox so the dropdown shows correctly on edit.
       (function migrateLegacySingleSelects(){
+        const LEGACY_TEXT_VALUES={
+          patientOrigin:{
+            'Transferred from other hospital':'Transferred from another hospital',
+            'Same hospital Inpatient but another department':'Same hospital, inpatient, but another department',
+            'Home':'Outpatient (Home/Cardiology clinic)',
+            'Clinic (primary care / private / outpatient clinic)':'Outpatient (Home/Cardiology clinic)'
+          },
+          dischargeType:{
+            'LAMA':'Left against Medical Advice (LAMA)',
+            'Transfer to cardiac surgery':'Transfer to cardiac surgery department',
+            'Transfer to other dept':'Transfer to another Medical/general surgery department'
+          }
+        };
+        Object.entries(LEGACY_TEXT_VALUES).forEach(([key,map])=>{
+          if(map[data[key]])data[key]=map[data[key]];
+        });
+        // Draft 17 records the inherited-heart-disease and CRT generator-
+        // replacement reasons as independent binary variables. Convert records
+        // saved by the previous single-select UI back to those binary fields.
+        const LEGACY_BINARY={
+          crtInh_type:{
+            'Long QT-syndrome':'crtInh_longqt','HCM':'crtInh_hcm','Brugada syndrome':'crtInh_brugada',
+            'Arrhythmogenic RV Dysplasia/Cardiomyopathy (ARVD/C)':'crtInh_arvd',
+            'Catecholaminergic Polymorphic VT (CPVT)':'crtInh_cpvt'
+          },
+          crtReplReason:{
+            'Device relocation':'crtRepl_relocation','End of battery life':'crtRepl_battery',
+            'Faulty connector/header':'crtRepl_faulty','Infection':'crtRepl_infection',
+            'Replaced at time of lead revision':'crtRepl_leadrev','Upgrade':'crtRepl_upgrade'
+          }
+        };
+        Object.entries(LEGACY_BINARY).forEach(([oldKey,map])=>{
+          const target=map[data[oldKey]];
+          if(target && data[target]===undefined)data[target]=true;
+        });
         const MIGRATIONS=[
           {newKey:'ssd_type', map:{ssd_brugada:'Brugada',ssd_cpvt:'Catecholaminergic polymorphic VT',ssd_idiopathic:'Idiopathic/Primary VT/VF',ssd_longqt:'Long QT',ssd_shortqt:'Short QT',ssd_unknown:'Unknown'}},
           {newKey:'cied_type', map:{cied_single:'Single chamber transvenous PPM',cied_dual:'Dual chamber transvenous PPM',cied_crtp:'CRT-P',cied_leadlessSingle:'Leadless single chamber PPM',cied_leadlessDual:'Leadless dual chamber PPM',cied_his:'His bundle PPM',cied_lbbb:'Left bundle area PPM',cied_icdSingle:'ICD single chamber',cied_icdDual:'ICD dual chamber',cied_crtd:'CRT-D',cied_evicd:'Extravascular ICD',cied_sicd:'S-ICD (Sub Q)',cied_unknown:'Unknown'}},
-          {newKey:'crtInh_type', map:{crtInh_longqt:'Long QT-syndrome',crtInh_hcm:'HCM',crtInh_brugada:'Brugada syndrome',crtInh_arvd:'Arrhythmogenic RV Dysplasia/Cardiomyopathy (ARVD/C)',crtInh_cpvt:'Catecholaminergic Polymorphic VT (CPVT)'}},
           {newKey:'ppmDev_type', map:{ppmDev_singleTV:'Single chamber transvenous PPM',ppmDev_dualTV:'Dual chamber transvenous PPM',ppmDev_leadlessSingle:'Leadless single chamber PPM',ppmDev_leadlessDual:'Leadless dual chamber PPM',ppmDev_his:'His-bundle PPM',ppmDev_leadlessLVEP:'Leadless LVEP',ppmDev_ccm:'CCM',ppmDev_lbbb:'LBBB PPM'}},
           {newKey:'eps_reason', map:{eps_svt:'SVT',eps_aflutter:'Atrial flutter',eps_afib:'Atrial fibrillation',eps_vt:'VT',eps_pvcs:'PVCs'}},
-          {newKey:'crtReplReason', map:{crtRepl_relocation:'Device relocation',crtRepl_battery:'End of battery life',crtRepl_faulty:'Faulty connector/header',crtRepl_infection:'Infection',crtRepl_leadrev:'Replaced at time of lead revision',crtRepl_upgrade:'Upgrade'}},
         ];
         MIGRATIONS.forEach(({newKey,map})=>{
           if(data[newKey]) return; // already has a new-format value
@@ -4818,9 +4846,9 @@ function initApp() {
   };
 
   const SPSS_VARS={
-    _no:'CaseNo',nameFirst:'PtFirst',nameLast:'PtLast',civilId:'CivilID',crfNo:'CRFNo',fileNumber:'FileNo',
+    _no:'CaseNo',nameFirst:'PtFirst',nameMiddle:'PtMid',nameLast:'PtLast',civilId:'CivilID',crfNo:'CRFNo',fileNumber:'FileNo',
     enrolledByName:'Investigator',enrolledByCode:'InvCode',updatedByName:'UpdatedBy',updatedByCode:'UpdCode',
-    gender:'Gender',nationality:'Natl',yob:'YOB',estimatedAge:'Age',admissionDate:'AdmDate',recordStatus:'Status',submissionType:'SubType',
+    gender:'Gender',nationality:'Natl',yob:'YOB',estimatedAge:'Age',admissionDate:'AdmDate',patientContact:'PtContact',relativeContact:'RelContact',recordStatus:'Status',submissionType:'SubType',
     epReason:'EPReason',pacemakerType:'PmType',patientOrigin:'PtOrigin',
     sysBp:'SysBP',sysBpUnrec:'SysBPUnrec',diaBp:'DiaBP',diaBpUnrec:'DiaBPUnrec',
     hr:'HR',hrUnrec:'HRUnrec',weight:'Weight',weightUnrec:'WtUnrec',height:'Height',heightUnrec:'HtUnrec',
@@ -4884,6 +4912,7 @@ function initApp() {
     // New meds (Home + Discharge)
     homeMed_disopyramide:'Home Med: Disopyramide', homeMed_procainamide:'Home Med: Procainamide',
     homeMed_propafenone:'Home Med: Propafenone', homeMed_verapamil:'Home Med: Verapamil',
+    homeMed_dofetilide:'Home Med: Dofetilide', homeMed_dronaderone:'Home Med: Dronaderone',
     homeMed_diltiazem:'Home Med: Diltiazem', homeMed_rivaroxaban:'Home Med: Rivaroxaban',
     homeMed_edoxaban:'Home Med: Edoxaban', homeMed_lmwh:'Home Med: LMWH',
     homeMed_ufh:'Home Med: Unfractionated Heparin', homeMed_prasugrel:'Home Med: Prasugrel',
@@ -4891,6 +4920,7 @@ function initApp() {
     dcMed_amiodarone:'DC Med: Amiodarone', dcMed_disopyramide:'DC Med: Disopyramide',
     dcMed_flecainide:'DC Med: Flecainide', dcMed_procainamide:'DC Med: Procainamide',
     dcMed_propafenone:'DC Med: Propafenone', dcMed_sotalol:'DC Med: Sotalol',
+    dcMed_dofetilide:'DC Med: Dofetilide', dcMed_dronaderone:'DC Med: Dronaderone',
     dcMed_verapamil:'DC Med: Verapamil', dcMed_diltiazem:'DC Med: Diltiazem',
     dcMed_dabigatran:'DC Med: Dabigatran', dcMed_rivaroxaban:'DC Med: Rivaroxaban',
     dcMed_edoxaban:'DC Med: Edoxaban', dcMed_lmwh:'DC Med: LMWH',
@@ -4933,7 +4963,18 @@ function initApp() {
     // 9.5 CRT/AICD additions
     crtInherited:'CRT: Inherited heart disease w/ SCD risk',
     crtInh_type:'CRT Inherited Heart Disease Type',
+    crtInh_longqt:'CRT Inherited HD: Long QT syndrome',
+    crtInh_hcm:'CRT Inherited HD: HCM',
+    crtInh_brugada:'CRT Inherited HD: Brugada syndrome',
+    crtInh_arvd:'CRT Inherited HD: ARVD/C',
+    crtInh_cpvt:'CRT Inherited HD: CPVT',
     crtReplReason:'CRT: Replacement reason',
+    crtRepl_relocation:'CRT Replacement: Device relocation',
+    crtRepl_battery:'CRT Replacement: End of battery life',
+    crtRepl_faulty:'CRT Replacement: Faulty connector/header',
+    crtRepl_infection:'CRT Replacement: Infection',
+    crtRepl_leadrev:'CRT Replacement: Replaced at lead revision',
+    crtRepl_upgrade:'CRT Replacement: Upgrade',
     crtReimplant:'Legacy CRT: Reimplant intended (removed in Draft 17)',
     crtDevImpl:'CRT: Device implant',
     crtDeviceType:'CRT: Device Type',
@@ -5056,6 +5097,7 @@ function initApp() {
     ventType:'CX: Ventilation type',
     cx_inotropes:'CX: Inotropes',
     cx_mechComp:'CX: Mechanical complications',
+    cx_emergencySurg:'CX: Emergency cardiac surgery required',
     mechCompType:'CX: Mechanical complication type',
     bleedSite_gi:'Bleed Site: Gastrointestinal',
     bleedSite_retro:'Bleed Site: Retroperitoneal',
@@ -5116,11 +5158,13 @@ function initApp() {
   Object.assign(SPSS_VARS, {
     // New meds
     homeMed_disopyramide:'HMDiso', homeMed_procainamide:'HMProc', homeMed_propafenone:'HMProp',
+    homeMed_dofetilide:'HMDofe', homeMed_dronaderone:'HMDrone',
     homeMed_verapamil:'HMVera', homeMed_diltiazem:'HMDilt', homeMed_rivaroxaban:'HMRiva',
     homeMed_edoxaban:'HMEdox', homeMed_lmwh:'HMLMWH', homeMed_ufh:'HMUFH',
     homeMed_prasugrel:'HMPras', homeMed_ticagrelor:'HMTica', homeMed_cangrelor:'HMCang',
     dcMed_amiodarone:'DCAmio', dcMed_disopyramide:'DCDiso', dcMed_flecainide:'DCFlec',
     dcMed_procainamide:'DCProc', dcMed_propafenone:'DCProp', dcMed_sotalol:'DCSot',
+    dcMed_dofetilide:'DCDofe', dcMed_dronaderone:'DCDrone',
     dcMed_verapamil:'DCVera', dcMed_diltiazem:'DCDilt', dcMed_dabigatran:'DCDabi',
     dcMed_rivaroxaban:'DCRiva', dcMed_edoxaban:'DCEdox', dcMed_lmwh:'DCLMWH',
     dcMed_ufh:'DCUFH', dcMed_prasugrel:'DCPras', dcMed_ticagrelor:'DCTica',
@@ -5131,7 +5175,11 @@ function initApp() {
 
     // CRT/AICD
     crtInherited:'CRTInher', crtInh_type:'CRTInhTy',
+    crtInh_longqt:'CRTIhLQT', crtInh_hcm:'CRTIhHCM', crtInh_brugada:'CRTIhBrg',
+    crtInh_arvd:'CRTIhARV', crtInh_cpvt:'CRTIhCPV',
     crtReplReason:'CRTRplRs',
+    crtRepl_relocation:'CRTReloc', crtRepl_battery:'CRTBatt', crtRepl_faulty:'CRTFault',
+    crtRepl_infection:'CRTInfec', crtRepl_leadrev:'CRTLdRev', crtRepl_upgrade:'CRTUpgr',
     crtReimplant:'CRTReImp', crtDevImpl:'CRTDevIm', crtDeviceType:'CRTDevTy',
     crtPpmSame:'CRTPpmSm', crtPpmType:'CRTPpmTy', crtLbbbQRS:'CRTLbQRS',
     crtLbbbQRSna:'CRTLbQRSn', crtBrady:'CRTBrady', crtBradyReason:'CRTBrRsn',
@@ -5189,7 +5237,7 @@ function initApp() {
     cx_intervEndo:'CXIntvEn', cx_intervSurg:'CXIntvSg', cx_intervThrombin:'CXIntvTh',
     cx_periphEmbol:'CXPerEmb', cx_pericarditis:'CXPeric',
     cx_vent:'CXVent', ventType:'CXVentTy',
-    cx_inotropes:'CXInotr', cx_mechComp:'CXMech', mechCompType:'CXMechTy',
+    cx_inotropes:'CXInotr', cx_mechComp:'CXMech', cx_emergencySurg:'CXEmSurg', mechCompType:'CXMechTy',
     bleedSite_gi:'BldStGI', bleedSite_retro:'BldStRet',
     bleedSite_genu:'BldStGU', bleedSite_perc:'BldStPer',
     cx_transfusion:'CXTrans', transfusionUnits:'CXTrU',
@@ -5258,7 +5306,7 @@ function initApp() {
     hx_cied:['cied_type'],
     inv_ecg:['ecgAtrialRhythm','ecgVentRhythm','ecgQRS','ecgQRSna','ecgNodal','ecgNodalType'],
     inv_holter:['holterAtrialRhythm','holterVentRhythm'],
-    inv_tte:['lvef','lvefNA','lvesd','lvesdNA','lvedd','lveddNA','rvsp','rvspNA'],
+    inv_tte:['lvef','lvefNA','lvesd','lvedd','rvsp','rvspNA'],
     inv_sevValve:['sevMR','sevAS','sevAR','sevTR'],
     inv_tee:['teeThrombus'],
     inv_laa:['laaOstial','laaDepth'],
@@ -5266,7 +5314,9 @@ function initApp() {
     cx_cardShock:['scaiStage'],
     cx_bleeding:['bleedType','bleedSubType','bleedSite_gi','bleedSite_retro','bleedSite_genu','bleedSite_perc'],
     cx_vent:['ventType'],
-    cx_mechComp:['mechCompType'],
+    cx_mechComp:['cx_emergencySurg','mechCompType'],
+    crtInherited:['crtInh_longqt','crtInh_hcm','crtInh_brugada','crtInh_arvd','crtInh_cpvt'],
+    tpmCause_drug:['tpmDrug_avBlock','tpmCause_digitalis','tpmCause_antiarr'],
     cx_transfusion:['transfusionUnits'],
     cx_pericEff:['cx_pericEffInterv'],
     cx_tamp2:['cx_tampOpenSurg','cx_tampPercDrain'],
@@ -5283,8 +5333,7 @@ function initApp() {
   const CRF_FIELDS={
     'CRT/AICD':[
       'crtInd_surv','crtInd_eps','crtInd_icmEF','crtInd_nicmEF','crtInd_vtUnresp','crtGenerator',
-      'crtInherited','crtInh_type',
-      'crtReplReason',
+      'crtInherited','crtInh_longqt','crtInh_hcm','crtInh_brugada','crtInh_arvd','crtInh_cpvt',
       'crtRepl_relocation','crtRepl_battery','crtRepl_faulty','crtRepl_infection','crtRepl_leadrev','crtRepl_upgrade',
       'crtReimplant','crtDevImpl','crtDeviceType','crtPpmSame','crtPpmType',
       'crtLbbbQRS','crtLbbbQRSna','crtBrady','crtBradyReason',
@@ -5357,6 +5406,9 @@ function initApp() {
         children.forEach(c=>{cleaned[c]='';});
       }
     }
+    if(cleaned.crtGenerator!=='Generator replacement'){
+      ['crtRepl_relocation','crtRepl_battery','crtRepl_faulty','crtRepl_infection','crtRepl_leadrev','crtRepl_upgrade'].forEach(c=>{cleaned[c]='';});
+    }
     if(cleaned.epReason!=='Pacemaker') cleaned.pacemakerType='';
     // CRF-scoped blanking — set fields belonging to hidden/non-selected CRFs to blank.
     const ep=cleaned.epReason;
@@ -5424,7 +5476,7 @@ function initApp() {
     gender:{'Male':1,'Female':2},
     epReason:{'CRT/AICD':1,'Pacemaker':2,'EPS/Ablation':3,'LAAO':4,'CIED Extraction':5},
     pacemakerType:{'Temporary pacemaker':1,'Permanent pacemaker':2,'Temporary followed by permanent same hospitalization':3},
-    patientOrigin:{'Outpatient (Home/Cardiology clinic)':1,'Transferred from other hospital':2,'Same hospital Inpatient but another department':3,'Home':1,'Clinic (primary care / private / outpatient clinic)':1},
+    patientOrigin:{'Outpatient (Home/Cardiology clinic)':1,'Transferred from another hospital':2,'Same hospital, inpatient, but another department':3},
     afibClassification:{'Persistent (>7 days)':1,'Paroxysmal (terminating spontaneously within 7 days)':2,'Long standing persistent (>1 year)':3,'Permanent':4},
     afibEHRA:{'EHRA I':1,'EHRA II':2,'EHRA III':3,'EHRA IV':4},
     afibChads:{'0':0,'1':1,'2':2,'3':3,'>3':4},
@@ -5439,7 +5491,7 @@ function initApp() {
     ecgAtrialRhythm:{'Sinus':1,'Atrial fibrillation':2,'Atrial flutter':3,'SVT':4,'Atrial tachycardia':5,'Atrial paced':6,'Sinus arrest':7,'Sinus pause':8,'1st degree AV block':9,'2nd degree AV block, Mobitz I':10,'2nd degree AV block, Mobitz II':11,'3rd degree AV block':12,'Unknown rhythm':13},
     ecgNodalType:{'Junctional bradycardia (<40/min)':1,'Junctional escape (40-60/min)':2,'Accelerated junctional (60-100/min)':3,'Junctional tachycardia (>100/min)':4},
     ecgVentRhythm:{'Normal':1,'VT':2,'VF':3,'LBBB':4,'RBBB':5,'Alternating LBBB/RBBB':6,'IVCD delay':7,'Frequent PVCs':8},
-    holterAtrialRhythm:{'Sinus':1,'Atrial fibrillation':2,'Atrial flutter':3,'SVT':4,'1st degree AV block':5,'2nd degree AV block':6,'3rd degree AV block':7,'Unknown rhythm':8},
+    holterAtrialRhythm:{'Sinus':1,'Atrial fibrillation':2,'Atrial flutter':3,'SVT':4,'Atrial tachycardia':5,'Atrial paced':6,'Sinus arrest':7,'Sinus pause':8,'1st degree AV block':9,'2nd degree AV block':10,'3rd degree AV block':11,'Unknown rhythm':12},
     holterVentRhythm:{'Normal':1,'Non-sustained VT':2,'Sustained VT':3,'Frequent PVCs':4,'PVCs burden >10%':5},
     crtInh_type:{'Long QT-syndrome':1,'HCM':2,'Brugada syndrome':3,'Arrhythmogenic RV Dysplasia/Cardiomyopathy (ARVD/C)':4,'Catecholaminergic Polymorphic VT (CPVT)':5},
     crtGenerator:{'Initial implant':1,'Generator replacement':2,'Generator/device explant':3},
@@ -5454,11 +5506,11 @@ function initApp() {
     ppmDev_type:{'Single chamber transvenous PPM':1,'Dual chamber transvenous PPM':2,'Leadless single chamber PPM':3,'Leadless dual chamber PPM':4,'His-bundle PPM':5,'Leadless LVEP':6,'CCM':7,'LBBB PPM':8},
     ppmIndication:{'2:1 AV block':1,'2° AV block, Mobitz II':2,'A-V node ablation':3,'>40% RV pacing':4,'Chronotropic incompetence':5,'CHB':6,'SSS':7,'Significant pause':8},
     ppmLeadStatus:{'Extracted':1,'Abandoned':2,'Reused':3},
-    eps_reason:{'SVT':1,'Atrial flutter':2,'Atrial fibrillation':3,'VT':4,'PVCs':5},
+    eps_reason:{'SVT':1,'Atrial flutter':2,'Atrial fibrillation':3,'VT':4,'PVCs':5,'Atypical atrial flutter':6,'Atrial Tachycardia':7,'AV node ablation':8},
     epsSedation:{'Minimal/Anxiolysis':1,'Moderate/Analgesia':2,'Deep/Analgesia':3,'General Anesthesia':4},
     epsTransseptal:{'Single':1,'Double':2},
     epsCathManip:{'Manual':1,'Magnetic/Robotic':2,'Other':3},
-    epsMapSystem:{'Carto':1,'Ensite':2,'Rhythmia':3,'Conventional (Cryo/Radiofrequency) ablation':4},
+    epsMapSystem:{'Carto':1,'Ensite':2,'Rhythmia':3,'Conventional (Cryo/Radiofrequency) ablation':4,'Affera':5},
     laaoDeviceType:{'Plug-based device (WATCHMAN)':1,'Disc and lobe device':2,'Ligation/suture system device':3},
     laaoTransseptal:{'Single':1,'Double':2},
     laaoDeploy:{'1':1,'2':2,'≥3':3},
@@ -5476,7 +5528,7 @@ function initApp() {
     postECGrhythm:{'Sinus':1,'Paced rhythm':2,'Atrial fibrillation':3,'Atrial flutter':4,'Other':5},
     dischargeStatus:{'Dead':1,'Alive':2},
     causeOfDeath:{'Non-Cardiac':1,'Cardiac':2},
-    dischargeType:{'Home':1,'LAMA':2,'Transfer to cardiac surgery':3,'Transfer to other dept':4},
+    dischargeType:{'Home':1,'Left against Medical Advice (LAMA)':2,'Transfer to cardiac surgery department':3,'Transfer to another Medical/general surgery department':4},
   };
 
   // ----------------------------------------------------------------------------
@@ -5498,6 +5550,10 @@ function initApp() {
   // mapped to the SAME numeric codes. Harmless for current data; rescues old
   // records that stored the previous wording. Keys are normalized below.
   const LEGACY_CODE_ALIASES = {
+    patientOrigin:{
+      'transferred from other hospital':2,'same hospital inpatient but another department':3,
+      'home':1,'clinic (primary care / private / outpatient clinic)':1,
+    },
     ecgAtrialRhythm:{
       'first degree a-v block':9,'first degree av block':9,
       '2o av block, mobitz i':10,'2° av block, mobitz i':10,'second degree av block, mobitz i':10,
@@ -5505,12 +5561,15 @@ function initApp() {
       'third degree a-v block':12,'third degree av block':12,
     },
     holterAtrialRhythm:{
-      'first degree a-v block':5,'first degree av block':5,
-      '2o av block, mobitz i':6,'2° av block, mobitz i':6,'second degree av block':6,
-      'third degree a-v block':7,'third degree av block':7,
+      'first degree a-v block':9,'first degree av block':9,
+      '2o av block, mobitz i':10,'2° av block, mobitz i':10,'second degree av block':10,
+      'third degree a-v block':11,'third degree av block':11,
     },
     ecgVentRhythm:{
       'ventricular tachycardia':2,'ventricular fibrillation':3,'alternating lbbb and rbbb':6,
+    },
+    dischargeType:{
+      'lama':2,'transfer to cardiac surgery':3,'transfer to other dept':4,
     },
   };
   for(const f in LEGACY_CODE_ALIASES){
@@ -5673,9 +5732,6 @@ function initApp() {
       'recordStatus',
     ],
     'History & Vitals':[
-      // Section 5 vitals
-      'sysBp','sysBpUnrec','diaBp','diaBpUnrec','hr','hrUnrec',
-      'weight','weightUnrec','height','heightUnrec',
       // Section 4 history
       'hx_afib','afibClassification','afibEHRA','afibChads','afibHasBled',
       'afibCardioversion','afibPriorAblation','afibContraOAC','afibMajorBleed',
@@ -5690,18 +5746,21 @@ function initApp() {
       'hx_syncope','syncopeRecent','hx_svt','hx_vf','hx_vt',
       'hx_avp','avpType','avpRecent','hx_mvp','mvpType','mvpRecent',
       'hx_cied','cied_type',
+      // Section 5 vitals
+      'sysBp','sysBpUnrec','diaBp','diaBpUnrec','hr','hrUnrec',
+      'weight','weightUnrec','height','heightUnrec',
     ],
     'Medications':[
       // Home medications only (Step 3 in the CRF). Discharge medications appear
       // in the "Outcome & Discharge" sheet after Discharge Type, mirroring
-      // section 13's position in the form.
+      // section 12's position in the form.
       ...HOME_MEDS_ORDER,
     ],
     'Investigations & Labs':[
       // Section 7 investigations
       'inv_ecg','ecgAtrialRhythm','ecgVentRhythm','ecgNodal','ecgNodalType','ecgQRS','ecgQRSna',
       'inv_holter','holterAtrialRhythm','holterVentRhythm',
-      'inv_tte','lvef','lvefNA','lvesd','lvesdNA','lvedd','lveddNA','rvsp','rvspNA',
+      'inv_tte','lvef','lvefNA','lvesd','lvedd','rvsp','rvspNA',
       'inv_sevValve','sevMR','sevAS','sevAR','sevTR','intracardThrombus',
       'inv_tee','teeThrombus','inv_laa','laaOstial','laaDepth',
       'inv_cardiacCT','inv_cmr','inv_tiltTable','inv_loopRecorder',
@@ -5714,10 +5773,10 @@ function initApp() {
       'procStartDate','procStartTime','procEndTime','operatorName',
       // 9.5 CRT/AICD
       'crtInd_surv','crtInd_eps','crtInd_icmEF','crtInd_nicmEF','crtInd_vtUnresp',
-      'crtInherited','crtInh_type',
+      'crtInherited','crtInh_longqt','crtInh_hcm','crtInh_brugada','crtInh_arvd','crtInh_cpvt',
       'crtGenerator','crtDeviceType','crtDevImpl',
-      'crtReplReason',
-      'crtReimplant','crtPpmSame','crtPpmType','crtBrady','crtBradyReason',
+      'crtRepl_relocation','crtRepl_battery','crtRepl_faulty','crtRepl_infection','crtRepl_leadrev','crtRepl_upgrade',
+      'crtPpmSame','crtPpmType','crtBrady','crtBradyReason',
       'crtNewLead','crtExistingLead','crtAdditionalLead','crtLeadStatus','crtLbbbQRS','crtLbbbQRSna',
       // 9.6 Temporary PM
       'tpmIndication',
@@ -5728,7 +5787,7 @@ function initApp() {
       // 9.7 Permanent PM
       'ppmGenerator','ppmDeviceName','ppmDevImpl',
       'ppmDev_type',
-      'ppmIndication','ppmReplReason','ppmReimplant',
+      'ppmIndication','ppmReplReason',
       'ppmNewLead','ppmExistingLead','ppmAdditionalLead','ppmLeadStatus','ppmLbbbQRS','ppmLbbbQRSna',
       // 9.8 EPS
       'eps_reason',
@@ -5764,7 +5823,7 @@ function initApp() {
       'cx_periphEmbol','cx_pericarditis',
       'cx_cardShock','scaiStage',
       'cx_vent','ventType','cx_inotropes',
-      'cx_mechComp','mechCompType',
+      'cx_mechComp','cx_emergencySurg','mechCompType',
       'cx_bleeding','bleedType','bleedSubType',
       'bleedSite_gi','bleedSite_retro','bleedSite_genu','bleedSite_perc',
       'cx_transfusion','transfusionUnits',
@@ -5780,7 +5839,7 @@ function initApp() {
       'procSuccess','postECGrhythm',
       'condSysPace','condSysPaceQRS','condSysPaceQRSna',
       'dischargeDate','dischargeTime','dischargeStatus','causeOfDeath','dischargeType',
-      // Section 13 Discharge Medications — placed right after Discharge Type,
+      // Section 12 Discharge Medications — placed right after Discharge Type,
       // matching the form's order.
       ...DC_MEDS_ORDER,
     ],
@@ -5896,6 +5955,7 @@ function initApp() {
   const MODEL_EXPORT=[
     ["CaseNo","_no"],
     ["PatientFirstName","nameFirst"],
+    ["PatientMiddleName","nameMiddle"],
     ["PatientLastName","nameLast"],
     ["Civil_ID","civilId"],
     ["CRF_No","crfNo"],
@@ -5909,6 +5969,8 @@ function initApp() {
     ["YOB","yob"],
     ["EstimatedAge","estimatedAge"],
     ["AdmissionDate","admissionDate"],
+    ["PatientContact","patientContact"],
+    ["RelativeContact","relativeContact"],
     ["Status","recordStatus"],
     ["SubmissionType","submissionType"],
     ["Reason_EPlab","epReason"],
@@ -5938,9 +6000,9 @@ function initApp() {
     ["Hx_CardArest_VF","arrestVF"],
     ["Hx_CardArest_VT","arrestVT"],
     ["Hx_CardArest_Asystole","arrestAsystole"],
-    ["Hx_IschemicCM","hx_icm"],
-    ["Hx_IschemicCM_TimeFrame","icmTimeframe"],
-    ["Hx_IschemicCM_GDMTDose","icmGDMT"],
+    ["Hx_Cardiomyopathy","hx_icm"],
+    ["Hx_Cardiomyopathy_TimeFrame","icmTimeframe"],
+    ["Hx_Cardiomyopathy_GDMTDose","icmGDMT"],
     ["Hx_HF","hx_hf"],
     ["Hx_HFtype","hfType"],
     ["Hx_CoronaryAngio_CA","hx_ca"],
@@ -5986,6 +6048,8 @@ function initApp() {
     ["HomMed_Procainamide","homeMed_procainamide"],
     ["HomMed_Propafenone","homeMed_propafenone"],
     ["HomMed_Sotalol","homeMed_sotalol"],
+    ["HomMed_Dofetilide","homeMed_dofetilide"],
+    ["HomMed_Dronaderone","homeMed_dronaderone"],
     ["HomMed_Verapamil","homeMed_verapamil"],
     ["HomMed_Diltiazem","homeMed_diltiazem"],
     ["HomMed_Warfarin","homeMed_warfarin"],
@@ -5994,12 +6058,10 @@ function initApp() {
     ["HomMed_Rivaroxaban","homeMed_rivaroxaban"],
     ["HomMed_Edoxaban","homeMed_edoxaban"],
     ["HomMed_LMWH","homeMed_lmwh"],
-    ["HomMed_UnfractHep","homeMed_ufh"],
     ["HomMed_Aspirin","homeMed_aspirin"],
     ["HomMed_Prasugrel","homeMed_prasugrel"],
     ["HomMed_Clopidogrel","homeMed_clopidogrel"],
     ["HomMed_Ticagrelor","homeMed_ticagrelor"],
-    ["HomMed_Cangrelor","homeMed_cangrelor"],
     ["HomMed_ACEi","homeMed_acei"],
     ["HomMed_ARB","homeMed_arb"],
     ["HomMed_ARNI","homeMed_arni"],
@@ -6023,9 +6085,7 @@ function initApp() {
     ["Invest_TTE_LVEF","lvef"],
     ["Invest_TTE_LVEF_NA","lvefNA"],
     ["Invest_TTE_LVESD","lvesd"],
-    ["Invest_TTE_LVESD_NA","lvesdNA"],
     ["Invest_TTE_LVEDD","lvedd"],
-    ["Invest_TTE_LVEDD_NA","lveddNA"],
     ["Invest_TTE_RVSP","rvsp"],
     ["Invest_TTE_RVSP_NA","rvspNA"],
     ["Invest_TTE_SevereValvDis","inv_sevValve"],
@@ -6069,11 +6129,18 @@ function initApp() {
     ["Proc_CRTIndi_nonICM","crtInd_nicmEF"],
     ["Proc_CRTIndi_VTnotResponding","crtInd_vtUnresp"],
     ["Proc_CRTIndi_InheritedHeartDis","crtInherited"],
-    ["Proc_CRTIndi_IHDtype","crtInh_type"],
+    ["Proc_CRTIndi_IHD_LongQT","crtInh_longqt"],
+    ["Proc_CRTIndi_IHD_HCM","crtInh_hcm"],
+    ["Proc_CRTIndi_IHD_Brugada","crtInh_brugada"],
+    ["Proc_CRTIndi_IHD_ARVDC","crtInh_arvd"],
+    ["Proc_CRTIndi_IHD_CPVT","crtInh_cpvt"],
     ["Proc_CRT_Generator","crtGenerator"],
-    ["Proc_CRT_GenReplacReason","crtReplReason"],
-    ["Proc_CRT_GeneratorExplant","__crtGeneratorExplant"],
-    ["Proc_CRT_GE_Reimplantintend","crtReimplant"],
+    ["Proc_CRT_GenRepl_Relocation","crtRepl_relocation"],
+    ["Proc_CRT_GenRepl_Battery","crtRepl_battery"],
+    ["Proc_CRT_GenRepl_Connector","crtRepl_faulty"],
+    ["Proc_CRT_GenRepl_Infection","crtRepl_infection"],
+    ["Proc_CRT_GenRepl_LeadRevision","crtRepl_leadrev"],
+    ["Proc_CRT_GenRepl_Upgrade","crtRepl_upgrade"],
     ["Proc_CRT_DeviceImplant","crtDevImpl"],
     ["Proc_CRT_DevImplant_Type","crtDeviceType"],
     ["Proc_CRT_DevImpTyp_Pacemaker","crtPpmSame"],
@@ -6104,7 +6171,6 @@ function initApp() {
     ["Proc_TPMcause_Unknown","tpmCause_unknown"],
     ["Proc_PPM_Generator","ppmGenerator"],
     ["Proc_PPM_GenReplacReason","ppmReplReason"],
-    ["Proc_PPM_GenExpl_Reimplant","ppmReimplant"],
     ["Proc_PPM_DeviceImplant","ppmDevImpl"],
     ["Proc_PPM_DevImpl_Type","ppmDev_type"],
     ["Proc_PPM_LBBB_QRS","ppmLbbbQRS"],
@@ -6204,6 +6270,7 @@ function initApp() {
     ["Compli_VentilationType","ventType"],
     ["Compli_Inotropes","cx_inotropes"],
     ["Compli_MechComplication","cx_mechComp"],
+    ["Compli_MechCompli_EmergSurgery","cx_emergencySurg"],
     ["Compli_MechCompli_Type","mechCompType"],
     ["Compli_AnyBleeding","cx_bleeding"],
     ["Compli_AnyBleed_Type","bleedType"],
@@ -6250,6 +6317,8 @@ function initApp() {
     ["DiscMed_Procainamide","dcMed_procainamide"],
     ["DiscMed_Propafenone","dcMed_propafenone"],
     ["DiscMed_Sotalol","dcMed_sotalol"],
+    ["DiscMed_Dofetilide","dcMed_dofetilide"],
+    ["DiscMed_Dronaderone","dcMed_dronaderone"],
     ["DiscMed_Verapamil","dcMed_verapamil"],
     ["DiscMed_Diltiazem","dcMed_diltiazem"],
     ["DiscMed_Warfarin","dcMed_warfarin"],
@@ -6258,12 +6327,10 @@ function initApp() {
     ["DiscMed_Rivaroxaban","dcMed_rivaroxaban"],
     ["DiscMed_Edoxaban","dcMed_edoxaban"],
     ["DiscMed_LMWH","dcMed_lmwh"],
-    ["DiscMed_UnfractHep","dcMed_ufh"],
     ["DiscMed_Aspirin","dcMed_aspirin"],
     ["DiscMed_Prasugrel","dcMed_prasugrel"],
     ["DiscMed_Clopidogrel","dcMed_clopidogrel"],
     ["DiscMed_Ticagrelor","dcMed_ticagrelor"],
-    ["DiscMed_Cangrelor","dcMed_cangrelor"],
     ["DiscMed_ACEi","dcMed_acei"],
     ["DiscMed_ARB","dcMed_arb"],
     ["DiscMed_ARNI","dcMed_arni"],
@@ -6411,7 +6478,10 @@ function initApp() {
     mk('comorbChart','bar',cm.map(c=>c[0]),cm.map(c=>c[1]),['#e11d48','#f97316','#f59e0b','#84cc16','#06b6d4','#6366f1']);
     const cxp=[['Stroke',filtered.filter(r=>r.cx_stroke==='Yes').length],['Shock',filtered.filter(r=>r.cx_cardShock==='Yes').length],['Bleeding',filtered.filter(r=>r.cx_bleeding==='Yes').length],['Lead Dislodge',filtered.filter(r=>r.cx_leadDislodge==='Yes').length]].filter(c=>c[1]>0);
     if(cxp.length)mk('compChart','bar',cxp.map(c=>c[0]),cxp.map(c=>c[1]),['#dc2626','#e11d48','#f43f5e','#fb7185']);
-    const meds=[['BB',filtered.filter(r=>r.homeMed_betablocker===true||r.homeMed_betablocker==='true').length],['Amiodarone',filtered.filter(r=>r.homeMed_amiodarone===true||r.homeMed_amiodarone==='true').length],['Warfarin',filtered.filter(r=>r.homeMed_warfarin===true||r.homeMed_warfarin==='true').length],['Apixaban',filtered.filter(r=>r.homeMed_apixaban===true||r.homeMed_apixaban==='true').length],['ACE-I',filtered.filter(r=>r.homeMed_acei===true||r.homeMed_acei==='true').length]].filter(c=>c[1]>0).sort((a,b)=>b[1]-a[1]);
+    const meds=medsList.map(m=>[m.name,filtered.filter(r=>{
+      const v=r['homeMed_'+m.f];
+      return v===true||v==='true'||v==='Yes';
+    }).length]).filter(c=>c[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,10);
     if(meds.length)mk('medsChart','bar',meds.map(c=>c[0]),meds.map(c=>c[1]),['#059669','#10b981','#34d399','#6ee7b7','#a7f3d0']);
     if(currentRole==='admin'||currentRole==='cso'){
       const invMap={};allRecs.forEach(r=>{if(r.enrolledByName)invMap[r.enrolledByName]=(invMap[r.enrolledByName]||0)+1;});
@@ -6457,4 +6527,3 @@ document.addEventListener('DOMContentLoaded', function() { _domReady = true; _tr
 </script>
 </body>
 </html>
-```
