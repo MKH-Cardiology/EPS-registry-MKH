@@ -512,7 +512,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <div style="font-size:20px;font-weight:900;color:#0f172a;">MKH EPS Registry</div>
       <div style="font-size:12px;color:#64748b;margin-top:4px;font-weight:500;">Advanced Electrophysiology Registry</div>
       <div style="font-size:11px;color:#94a3b8;margin-top:2px;">Mubarak Alkabeer Hospital</div>
-      <div style="font-size:10px;color:#cbd5e1;margin-top:6px;letter-spacing:.5px;">Build 2026-06-18b · byte-coding in Excel + SPSS · CRT single-select</div>
+      <div style="font-size:10px;color:#cbd5e1;margin-top:6px;letter-spacing:.5px;">Build 2026-08-03 · Draft 17 · CIED extraction + matched Excel/SPSS</div>
     </div>
     <div id="loginError" style="display:none;background:#fff1f2;color:#be123c;border:1px solid #fecdd3;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;margin-bottom:16px;"></div>
     <label class="lbl">Email Address</label>
@@ -697,6 +697,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
       </div>
       <label class="radio-item"><input type="radio" name="epReason" value="EPS/Ablation" onchange="onEPR(); updateFieldIndicators();"> EPS/Ablation</label>
       <label class="radio-item"><input type="radio" name="epReason" value="LAAO" onchange="onEPR(); updateFieldIndicators();"> Left Atrial Appendage Occlusion (LAAO)</label>
+      <label class="radio-item"><input type="radio" name="epReason" value="CIED Extraction" onchange="onEPR(); updateFieldIndicators();"> Cardiac Implantable Electronic Device (CIED) Extraction</label>
     </div>
   </div>
   <div class="card card-gray">
@@ -704,8 +705,8 @@ html,body{max-width:100vw;overflow-x:hidden;}
     <div class="g2">
       <div><label class="lbl">3.1 Patient Origin</label>
         <select name="patientOrigin" class="inp">
-          <option value="">Select...</option><option>Home</option><option>Transferred from other hospital</option>
-          <option>Same hospital Inpatient but another department</option><option>Clinic (primary care / private / outpatient clinic)</option>
+          <option value="">Select...</option><option>Outpatient (Home/Cardiology clinic)</option><option>Transferred from other hospital</option>
+          <option>Same hospital Inpatient but another department</option>
         </select>
       </div>
     </div>
@@ -747,7 +748,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
     <div id="sub_cardArrest" class="sub-reveal"><div class="g4"><div><label class="lbl">4.2a Bradycardia Arrest</label><select name="arrestBradycardia" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.2b VF Arrest</label><select name="arrestVF" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.2c VT Arrest</label><select name="arrestVT" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div><div><label class="lbl">4.2d Asystole</label><select name="arrestAsystole" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div></div></div>
   </div>
   <div class="card mb-3">
-    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.3 Cardiomyopathy - Ischemic</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'icm','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'icm','Yes')">Yes</button></div></div>
+    <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">4.3 Cardiomyopathy</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'icm','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'icm','Yes')">Yes</button></div></div>
     <input type="hidden" name="hx_icm" id="val_icm" value="">
     <div id="sub_icm" class="sub-reveal"><div class="g2"><div><label class="lbl">4.3a Timeframe</label><select name="icmTimeframe" class="inp"><option value="">Select</option><option>&lt; 3 months</option><option>&#x2265; 3 months</option></select></div><div><label class="lbl">4.3b GDMT Max Dose</label><select name="icmGDMT" class="inp"><option value="">Select</option><option>Yes (for 3 months)</option><option>Not documented</option><option>Not attempted</option><option>Inability to complete</option></select></div></div></div>
   </div>
@@ -934,7 +935,6 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <div class="flex gap-2 flex-wrap mb-2">
         <label class="radio-item"><input type="radio" name="crtGenerator" value="Initial implant" onchange="onCrtGen()"> Initial implant</label>
         <label class="radio-item"><input type="radio" name="crtGenerator" value="Generator replacement" onchange="onCrtGen()"> Generator replacement</label>
-        <label class="radio-item"><input type="radio" name="crtGenerator" value="Generator/device explant" onchange="onCrtGen()"> Generator/device explant</label>
       </div>
       <div id="crtGen_replace" class="sub-reveal mt-2"><label class="lbl">9.5.b.1 Reasons for generator replacement (Choose One Only):</label>
         <div class="g2 mt-1">
@@ -946,7 +946,6 @@ html,body{max-width:100vw;overflow-x:hidden;}
           <label class="radio-item"><input type="radio" name="crtReplReason" value="Upgrade"> Upgrade</label>
         </div>
       </div>
-      <div id="crtGen_explant" class="sub-reveal mt-2"><label class="lbl">9.5.b.2 Reimplant intended</label><select name="crtReimplant" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
     </div>
 
     <div class="card mb-3">
@@ -1071,7 +1070,6 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <div class="flex gap-2 flex-wrap mb-2">
         <label class="radio-item"><input type="radio" name="ppmGenerator" value="Initial implant" onchange="onPpmGen()"> Initial implant</label>
         <label class="radio-item"><input type="radio" name="ppmGenerator" value="Generator replacement" onchange="onPpmGen()"> Generator replacement</label>
-        <label class="radio-item"><input type="radio" name="ppmGenerator" value="Generator/device explant" onchange="onPpmGen()"> Generator/device explant</label>
       </div>
       <div id="ppmGen_initial" class="sub-reveal mt-2"><div class="text-xs text-gray-600" style="padding:8px 12px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;"><i class="fas fa-info-circle mr-1" style="color:#0369a1;"></i>Initial implant selected — specify the device type in <b>9.7.b.1</b> below.</div></div>
       <div id="ppmGen_replace" class="sub-reveal mt-2"><label class="lbl">9.7.a.2 Reasons for generator replacement (Choose One Only):</label>
@@ -1084,7 +1082,6 @@ html,body{max-width:100vw;overflow-x:hidden;}
           <label class="radio-item"><input type="radio" name="ppmReplReason" value="Upgrade"> Upgrade</label>
         </div>
       </div>
-      <div id="ppmGen_explant" class="sub-reveal mt-2"><label class="lbl">9.7.a.3 Reimplant intended</label><select name="ppmReimplant" class="inp max-w-xs"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
     </div>
 
     <div class="card mb-3">
@@ -1249,6 +1246,91 @@ html,body{max-width:100vw;overflow-x:hidden;}
             <option>Device retrieved/aborted</option>
           </select>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="proc-section" id="proc_ciedx"><div class="card card-yellow mb-3" style="border-left:4px solid #d97706;"><div style="font-weight:800;color:#92400e;font-size:14px;">9.10 — CIED Extraction</div></div>
+    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.10a Indication for Extraction (select all that apply):</label>
+      <div class="g2">
+        <label class="chk-item"><input type="checkbox" name="ciedxInd_pocketInfection"> Pocket infection</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxInd_leadEndocarditis"> Lead endocarditis</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxInd_ieNoPocket"> Infective endocarditis without pocket infection</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxInd_leadMalfunction"> Lead malfunction</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxInd_leadFracture"> Lead fracture</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxInd_insulationFailure"> Lead insulation failure</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxInd_venousOcclusion"> Venous occlusion</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxInd_chronicPain"> Chronic pain</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxInd_upgradeRemoval"> Device upgrade requiring lead removal</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxInd_recalledLead"> Recalled lead</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxInd_abandonedLead"> Abandoned lead</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxInd_leadPerforation"> Lead perforation</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxInd_tricuspidRegurg"> Severe tricuspid regurgitation related to lead</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxInd_mriCompatibility"> MRI compatibility</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxInd_other" onchange="onCiedxOther()"> Other</label>
+      </div>
+      <div id="ciedxIndOtherSub" class="sub-reveal mt-2"><label class="lbl">9.10.a.1 Other indication</label><input type="text" name="ciedxInd_otherText" class="inp" maxlength="160" placeholder="Specify other indication"></div>
+    </div>
+
+    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.10b Device Being Extracted (Choose One Only):</label>
+      <div class="g2">
+        <label class="radio-item"><input type="radio" name="ciedxDevice" value="Single chamber pacemaker"> Single chamber pacemaker</label>
+        <label class="radio-item"><input type="radio" name="ciedxDevice" value="Dual chamber pacemaker"> Dual chamber pacemaker</label>
+        <label class="radio-item"><input type="radio" name="ciedxDevice" value="CRT-P"> CRT-P</label>
+        <label class="radio-item"><input type="radio" name="ciedxDevice" value="Single chamber ICD"> Single chamber ICD</label>
+        <label class="radio-item"><input type="radio" name="ciedxDevice" value="Dual chamber ICD"> Dual chamber ICD</label>
+        <label class="radio-item"><input type="radio" name="ciedxDevice" value="CRT-D"> CRT-D</label>
+        <label class="radio-item"><input type="radio" name="ciedxDevice" value="S-ICD"> S-ICD</label>
+        <label class="radio-item"><input type="radio" name="ciedxDevice" value="Leadless pacemaker"> Leadless pacemaker</label>
+        <label class="radio-item"><input type="radio" name="ciedxDevice" value="Other"> Other</label>
+      </div>
+    </div>
+
+    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.10c Leads Extracted (select all that apply):</label>
+      <div class="g2">
+        <label class="chk-item"><input type="checkbox" name="ciedxLead_ra"> Right atrial lead</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxLead_rvPacing"> Right ventricular pacing lead</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxLead_rvIcd"> Right ventricular ICD lead</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxLead_csLv"> Coronary sinus/LV lead</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxLead_his"> His bundle lead</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxLead_lbba"> Left bundle branch area pacing lead</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxLead_sicd"> S-ICD lead</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxLead_other"> Other</label>
+      </div>
+    </div>
+
+    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.10d Extraction Technique (select all that apply):</label>
+      <div class="g2">
+        <label class="chk-item"><input type="checkbox" name="ciedxTech_simpleTraction"> Simple traction</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxTech_lockingStylet"> Locking stylet</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxTech_rotationalSheath"> Mechanical rotational sheath</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxTech_telescopingSheath"> Mechanical telescoping sheath</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxTech_laserSheath"> Excimer laser sheath</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxTech_femoralSnare"> Femoral snare</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxTech_hybridSurgical"> Hybrid surgical extraction</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxTech_openSurgical"> Open surgical extraction</label>
+      </div>
+    </div>
+
+    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.10e Extraction Outcome:</label>
+      <div class="g2">
+        <div><label class="lbl">9.10.e.1 Complete procedural success</label><select name="ciedxCompleteSuccess" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+        <div><label class="lbl">9.10.e.2 Lead fragment retained</label><select name="ciedxFragmentRetained" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+      </div>
+    </div>
+
+    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.10f Reimplantation:</label>
+      <div class="g3">
+        <div><label class="lbl">9.10.f.1 No reimplantation required</label><select name="ciedxNoReimplant" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+        <div><label class="lbl">9.10.f.2 Delayed reimplantation planned</label><select name="ciedxDelayedReimplant" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+        <div><label class="lbl">9.10.f.3 Immediate reimplantation</label><select name="ciedxImmediateReimplant" class="inp" onchange="onCiedxReimplant()"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+      </div>
+      <div id="ciedxReimplantSub" class="sub-reveal mt-3">
+        <div class="g2">
+          <div><label class="lbl">9.10.f.3.a AICD/CRT</label><select name="ciedxReimplantCRT" class="inp" onchange="onEPR()"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+          <div><label class="lbl">9.10.f.3.b Permanent pacemaker</label><select name="ciedxReimplantPPM" class="inp" onchange="onEPR()"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+        </div>
+        <div class="text-xs text-gray-600 mt-2" style="padding:8px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;"><i class="fas fa-info-circle mr-1" style="color:#475569;"></i>Selecting Yes opens the matching 9.5 CRT/AICD or 9.7 Permanent Pacemaker fields.</div>
       </div>
     </div>
   </div>
@@ -1486,7 +1568,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
     </div>
     <div class="g2">
       <div><label class="lbl">Investigator</label><select id="exportInvestigator" class="inp inp-sm"><option value="">All Investigators</option></select></div>
-      <div><label class="lbl">EP Reason</label><select id="exportEpReason" class="inp inp-sm"><option value="">All Procedures</option><option>CRT/AICD</option><option>Pacemaker</option><option>EPS/Ablation</option><option>LAAO</option></select></div>
+      <div><label class="lbl">EP Reason</label><select id="exportEpReason" class="inp inp-sm"><option value="">All Procedures</option><option>CRT/AICD</option><option>Pacemaker</option><option>EPS/Ablation</option><option>LAAO</option><option>CIED Extraction</option></select></div>
     </div>
   </div>
   <div class="g3 mb-4">
@@ -1504,8 +1586,8 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <div style="width:48px;height:48px;background:#f0fdf4;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
         <i class="fas fa-file-excel text-green-600 text-xl"></i>
       </div>
-      <div style="font-weight:800;font-size:15px;color:#0f172a;margin-bottom:6px;">Excel Workbook (4 Sheets)</div>
-      <div style="font-size:12px;color:#64748b;margin-bottom:16px;">Complete data export across 4 sheets: Demographics, History & Vitals, Investigations & Labs, Procedure & Outcome.</div>
+      <div style="font-weight:800;font-size:15px;color:#0f172a;margin-bottom:6px;">Excel Workbook (9 Sheets)</div>
+      <div style="font-size:12px;color:#64748b;margin-bottom:16px;">Complete coded data export with a full model sheet, clinical section sheets, procedure variables, and codebook.</div>
       <div class="btn btn-green text-sm w-full" style="justify-content:center;">
         <i class="fas fa-download"></i> Download Excel
       </div>
@@ -2798,6 +2880,9 @@ function initApp() {
     const v=document.querySelector('input[name="epReason"]:checked')?.value;
     const pm=document.querySelector('input[name="pacemakerType"]:checked')?.value;
     document.getElementById('pmTypeDiv').classList.toggle('hidden',v!=='Pacemaker');
+    if(v!=='Pacemaker' && !window._suppressClearOnHide){
+      document.querySelectorAll('input[name="pacemakerType"]').forEach(r=>{r.checked=false;});
+    }
     // Determine which procedure sections SHOULD be visible for this EP-reason / pacemaker-type combo.
     const wanted = new Set();
     if(v==='CRT/AICD') wanted.add('proc_crtaicd');
@@ -2809,6 +2894,14 @@ function initApp() {
       }
     } else if(v==='EPS/Ablation') wanted.add('proc_eps');
     else if(v==='LAAO') wanted.add('proc_laao');
+    else if(v==='CIED Extraction'){
+      wanted.add('proc_ciedx');
+      const immediate=document.querySelector('[name="ciedxImmediateReimplant"]')?.value;
+      if(immediate==='Yes'){
+        if(document.querySelector('[name="ciedxReimplantCRT"]')?.value==='Yes') wanted.add('proc_crtaicd');
+        if(document.querySelector('[name="ciedxReimplantPPM"]')?.value==='Yes') wanted.add('proc_permpm');
+      }
+    }
 
     // For any procedure section currently showing but no longer wanted, WIPE its data so stale
     // entries from a prior choice don't get saved. Sections that remain wanted keep their data.
@@ -2831,14 +2924,11 @@ function initApp() {
     updateFieldIndicators();
   };
 
-  // CRT generator branch toggle. Wipes data in the previously-shown branch when user
-  // switches between Initial implant / Generator replacement / Generator/device explant.
+  // CRT generator branch toggle. Draft 17 keeps Initial implant and Generator replacement.
   window.onCrtGen=function(){
     const v=document.querySelector('input[name="crtGenerator"]:checked')?.value;
-    const wantedKey = v==='Generator replacement' ? 'replace'
-                    : v==='Generator/device explant' ? 'explant'
-                    : null;
-    ['replace','explant'].forEach(k=>{
+    const wantedKey = v==='Generator replacement' ? 'replace' : null;
+    ['replace'].forEach(k=>{
       const el=document.getElementById(`crtGen_${k}`);
       if(!el) return;
       if(k===wantedKey){
@@ -2850,15 +2940,13 @@ function initApp() {
       }
     });
   };
-  // PPM generator branch toggle. Same principle as onCrtGen, but with three branches
-  // (initial / replace / explant). 'initial' branch is now informational-only (no inputs).
+  // PPM generator branch toggle. Draft 17 keeps Initial implant and Generator replacement.
   window.onPpmGen=function(){
     const v=document.querySelector('input[name="ppmGenerator"]:checked')?.value;
     const wantedKey = v==='Initial implant' ? 'initial'
                     : v==='Generator replacement' ? 'replace'
-                    : v==='Generator/device explant' ? 'explant'
                     : null;
-    ['initial','replace','explant'].forEach(k=>{
+    ['initial','replace'].forEach(k=>{
       const el=document.getElementById(`ppmGen_${k}`);
       if(!el) return;
       if(k===wantedKey){
@@ -2869,6 +2957,22 @@ function initApp() {
         el.classList.remove('show');
       }
     });
+  };
+  // 9.10 nested logic: only reveal the "Other" text field and immediate-
+  // reimplantation targets when their respective parent values are selected.
+  window.onCiedxOther=function(){
+    const sub=document.getElementById('ciedxIndOtherSub');
+    const show=!!document.querySelector('input[name="ciedxInd_other"]')?.checked;
+    if(show) sub?.classList.add('show');
+    else if(sub?.classList.contains('show')) clearSubReveal(sub);
+    updateFieldIndicators();
+  };
+  window.onCiedxReimplant=function(){
+    const sub=document.getElementById('ciedxReimplantSub');
+    const show=document.querySelector('[name="ciedxImmediateReimplant"]')?.value==='Yes';
+    if(show) sub?.classList.add('show');
+    else if(sub?.classList.contains('show')) clearSubReveal(sub);
+    onEPR();
   };
   window.onBleedT=function(){
     const sub=document.getElementById('bleedType3sub');
@@ -3564,6 +3668,9 @@ function initApp() {
       }
     });
   }
+  // Inline onchange attributes execute in window scope; expose the shared
+  // indicator updater so procedure selectors do not raise a ReferenceError.
+  window.updateFieldIndicators = updateFieldIndicators;
 
   function attachFieldIndicatorListeners(){
     const form = document.getElementById('epsForm');
@@ -3845,6 +3952,9 @@ function initApp() {
       { label:'9.5 CRT/AICD indications', members:['crtInd_surv','crtInd_eps','crtInd_icmEF','crtInd_nicmEF','crtInd_vtUnresp'] },
       { label:'9.6 Temporary PM cause', members:['tpmCause_electrolyte','tpmCause_drug','tpmCause_digitalis','tpmCause_antiarr','tpmCause_acuteMI','tpmCause_myocarditis','tpmCause_endocarditis','tpmCause_postArrest','tpmCause_degenerative','tpmCause_hypothermia','tpmCause_bridge','tpmCause_postTAVI','tpmCause_unknown'] },
       { label:'9.9a LAAO indication', members:['laao_nonvalvular','laao_highBleed','laao_contraOAC','laao_priorBleed','laao_patientPref'] },
+      { label:'9.10a CIED extraction indication', members:['ciedxInd_pocketInfection','ciedxInd_leadEndocarditis','ciedxInd_ieNoPocket','ciedxInd_leadMalfunction','ciedxInd_leadFracture','ciedxInd_insulationFailure','ciedxInd_venousOcclusion','ciedxInd_chronicPain','ciedxInd_upgradeRemoval','ciedxInd_recalledLead','ciedxInd_abandonedLead','ciedxInd_leadPerforation','ciedxInd_tricuspidRegurg','ciedxInd_mriCompatibility','ciedxInd_other'] },
+      { label:'9.10c CIED leads extracted', members:['ciedxLead_ra','ciedxLead_rvPacing','ciedxLead_rvIcd','ciedxLead_csLv','ciedxLead_his','ciedxLead_lbba','ciedxLead_sicd','ciedxLead_other'] },
+      { label:'9.10d CIED extraction technique', members:['ciedxTech_simpleTraction','ciedxTech_lockingStylet','ciedxTech_rotationalSheath','ciedxTech_telescopingSheath','ciedxTech_laserSheath','ciedxTech_femoralSnare','ciedxTech_hybridSurgical','ciedxTech_openSurgical'] },
       { label:'10.x Intervention type', members:['cx_intervEndo','cx_intervSurg','cx_intervThrombin'] },
       { label:'10.2.13.b Bleeding site', members:['bleedSite_gi','bleedSite_retro','bleedSite_genu','bleedSite_perc'] }
     ];
@@ -4356,7 +4466,7 @@ function initApp() {
         // Re-trigger all conditional toggle handlers so sub-reveal sections open for loaded values
         [
           'onCrtGen','onCrtDevType','onCrtPpmType','onCrtLead',
-          'onPpmGen','onPpmLbbb','onPpmLead',
+          'onPpmGen','onPpmLbbb','onPpmLead','onCiedxOther','onCiedxReimplant',
           'onTpmDrug','onTpmMI','onTpmPpmSameStay','onBleedT','onDischSt'
         ].forEach(fn=>{
           try{ if(typeof window[fn]==='function') window[fn](); }
@@ -4644,7 +4754,7 @@ function initApp() {
     afibCardioversion:'Plans for Cardioversion',afibPriorAblation:'Prior Ablation Attempt',
     afibContraOAC:'Contraindication to OAC',afibMajorBleed:'Prior Major Bleeding',
     hx_cardiacArrest:'Cardiac Arrest',arrestBradycardia:'Arrest: Bradycardia',arrestVF:'Arrest: VF',arrestVT:'Arrest: VT',
-    hx_icm:'Ischemic CMP',icmTimeframe:'ICM Timeframe',icmGDMT:'ICM GDMT',
+    hx_icm:'Cardiomyopathy',icmTimeframe:'Cardiomyopathy Timeframe',icmGDMT:'Cardiomyopathy GDMT',
     hx_hf:'Heart Failure',hfType:'HF Type',
     // Section 4 coronary-event chain (sequential clinical order)
     hx_ca:'Coronary Angiography',caRecent:'CA within 6 months',caAfterArrest:'CA After Arrest',
@@ -4684,7 +4794,7 @@ function initApp() {
     crtInd_surv:'CRT Ind: Cardiac Arrest Survivors',crtInd_eps:'CRT Ind: Inducible VT by EPS',
     crtInd_icmEF:'CRT Ind: ICM EF≤35%',crtInd_nicmEF:'CRT Ind: Non-ICM EF≤35%',
     crtGenerator:'CRT Generator Type',
-    __crtGeneratorExplant:'CRT Generator Explant (derived)',
+    __crtGeneratorExplant:'Legacy CRT Generator Explant (removed in Draft 17)',
     ppmGenerator:'PPM Generator Type',ppmDeviceName:'PPM Device Name',
     eps_reason:'EPS/Ablation Reason',
     epsTransseptal:'EPS: Transseptal',epsICE:'EPS: ICE Used',epsFluoroTime:'EPS: Fluoro Time (min)',
@@ -4824,7 +4934,7 @@ function initApp() {
     crtInherited:'CRT: Inherited heart disease w/ SCD risk',
     crtInh_type:'CRT Inherited Heart Disease Type',
     crtReplReason:'CRT: Replacement reason',
-    crtReimplant:'CRT: Reimplant intended',
+    crtReimplant:'Legacy CRT: Reimplant intended (removed in Draft 17)',
     crtDevImpl:'CRT: Device implant',
     crtDeviceType:'CRT: Device Type',
     crtPpmSame:'CRT: Pacemaker same procedure',
@@ -4859,7 +4969,7 @@ function initApp() {
 
     // 9.7 Permanent PM additions
     ppmReplReason:'PPM: Replacement reason',
-    ppmReimplant:'PPM: Reimplant intended',
+    ppmReimplant:'Legacy PPM: Reimplant intended (removed in Draft 17)',
     ppmDevImpl:'PPM: Device implant',
     ppmDev_type:'PPM Device Implant Type',
     ppmLbbbQRS:'PPM LBBB: QRS width post (msec)',
@@ -4885,6 +4995,48 @@ function initApp() {
     laaoImaging:'LAAO: Imaging guidance',
     laaoLeak:'LAAO: Final peri-device leak',
     laaoAnticoag:'LAAO: Intraprocedural anticoagulation',
+
+    // 9.10 CIED Extraction (Draft 17)
+    ciedxInd_pocketInfection:'CIED Extraction Indication: Pocket infection',
+    ciedxInd_leadEndocarditis:'CIED Extraction Indication: Lead endocarditis',
+    ciedxInd_ieNoPocket:'CIED Extraction Indication: Infective endocarditis without pocket infection',
+    ciedxInd_leadMalfunction:'CIED Extraction Indication: Lead malfunction',
+    ciedxInd_leadFracture:'CIED Extraction Indication: Lead fracture',
+    ciedxInd_insulationFailure:'CIED Extraction Indication: Lead insulation failure',
+    ciedxInd_venousOcclusion:'CIED Extraction Indication: Venous occlusion',
+    ciedxInd_chronicPain:'CIED Extraction Indication: Chronic pain',
+    ciedxInd_upgradeRemoval:'CIED Extraction Indication: Device upgrade requiring lead removal',
+    ciedxInd_recalledLead:'CIED Extraction Indication: Recalled lead',
+    ciedxInd_abandonedLead:'CIED Extraction Indication: Abandoned lead',
+    ciedxInd_leadPerforation:'CIED Extraction Indication: Lead perforation',
+    ciedxInd_tricuspidRegurg:'CIED Extraction Indication: Severe TR related to lead',
+    ciedxInd_mriCompatibility:'CIED Extraction Indication: MRI compatibility',
+    ciedxInd_other:'CIED Extraction Indication: Other',
+    ciedxInd_otherText:'CIED Extraction: Other indication details',
+    ciedxDevice:'CIED Extraction: Device being extracted',
+    ciedxLead_ra:'CIED Extraction Lead: Right atrial',
+    ciedxLead_rvPacing:'CIED Extraction Lead: RV pacing',
+    ciedxLead_rvIcd:'CIED Extraction Lead: RV ICD',
+    ciedxLead_csLv:'CIED Extraction Lead: Coronary sinus/LV',
+    ciedxLead_his:'CIED Extraction Lead: His bundle',
+    ciedxLead_lbba:'CIED Extraction Lead: Left bundle branch area pacing',
+    ciedxLead_sicd:'CIED Extraction Lead: S-ICD',
+    ciedxLead_other:'CIED Extraction Lead: Other',
+    ciedxTech_simpleTraction:'CIED Extraction Technique: Simple traction',
+    ciedxTech_lockingStylet:'CIED Extraction Technique: Locking stylet',
+    ciedxTech_rotationalSheath:'CIED Extraction Technique: Mechanical rotational sheath',
+    ciedxTech_telescopingSheath:'CIED Extraction Technique: Mechanical telescoping sheath',
+    ciedxTech_laserSheath:'CIED Extraction Technique: Excimer laser sheath',
+    ciedxTech_femoralSnare:'CIED Extraction Technique: Femoral snare',
+    ciedxTech_hybridSurgical:'CIED Extraction Technique: Hybrid surgical extraction',
+    ciedxTech_openSurgical:'CIED Extraction Technique: Open surgical extraction',
+    ciedxCompleteSuccess:'CIED Extraction: Complete procedural success',
+    ciedxFragmentRetained:'CIED Extraction: Lead fragment retained',
+    ciedxNoReimplant:'CIED Extraction: No reimplantation required',
+    ciedxDelayedReimplant:'CIED Extraction: Delayed reimplantation planned',
+    ciedxImmediateReimplant:'CIED Extraction: Immediate reimplantation',
+    ciedxReimplantCRT:'CIED Extraction Reimplant: AICD/CRT',
+    ciedxReimplantPPM:'CIED Extraction Reimplant: Permanent pacemaker',
 
     // Section 10 complications additions
     cx_renal:'CX: Renal impairment/failure (pre-disch)',
@@ -5009,6 +5161,27 @@ function initApp() {
     laao_patientPref:'LAOIndPP', laaoDeploy:'LAODepl', laaoTransseptal:'LAOTrSpt',
     laaoImaging:'LAOImg', laaoLeak:'LAOLeak', laaoAnticoag:'LAOAntic',
 
+    // CIED Extraction
+    ciedxInd_pocketInfection:'CEIPock', ciedxInd_leadEndocarditis:'CEIEndo',
+    ciedxInd_ieNoPocket:'CEIEnNP', ciedxInd_leadMalfunction:'CEILdMal',
+    ciedxInd_leadFracture:'CEILdFrc', ciedxInd_insulationFailure:'CEIInsFl',
+    ciedxInd_venousOcclusion:'CEIVenOc', ciedxInd_chronicPain:'CEIChrPn',
+    ciedxInd_upgradeRemoval:'CEIUpgRm', ciedxInd_recalledLead:'CEIRecLd',
+    ciedxInd_abandonedLead:'CEIAbnLd', ciedxInd_leadPerforation:'CEILdPer',
+    ciedxInd_tricuspidRegurg:'CEITrReg', ciedxInd_mriCompatibility:'CEIMRI',
+    ciedxInd_other:'CEIOther', ciedxInd_otherText:'CEIOthTx',
+    ciedxDevice:'CEDevice',
+    ciedxLead_ra:'CELdRA', ciedxLead_rvPacing:'CELdRVP', ciedxLead_rvIcd:'CELdRVI',
+    ciedxLead_csLv:'CELdCSLV', ciedxLead_his:'CELdHis', ciedxLead_lbba:'CELdLBBA',
+    ciedxLead_sicd:'CELdSICD', ciedxLead_other:'CELdOthr',
+    ciedxTech_simpleTraction:'CETSmTr', ciedxTech_lockingStylet:'CETLock',
+    ciedxTech_rotationalSheath:'CETRotSh', ciedxTech_telescopingSheath:'CETTelSh',
+    ciedxTech_laserSheath:'CETLaser', ciedxTech_femoralSnare:'CETFemSn',
+    ciedxTech_hybridSurgical:'CETHybSg', ciedxTech_openSurgical:'CETOpenS',
+    ciedxCompleteSuccess:'CECompSu', ciedxFragmentRetained:'CEFragRt',
+    ciedxNoReimplant:'CENoReim', ciedxDelayedReimplant:'CEDelRei',
+    ciedxImmediateReimplant:'CEImmRei', ciedxReimplantCRT:'CEReCRT', ciedxReimplantPPM:'CERePPM',
+
     // Complications
     cx_renal:'CXRenal', cx_dialysis:'CXDialys', cx_accessVasc:'CXAccVas',
     cx_hematoma:'CXHemat', cx_occlusion:'CXOcclu', cx_avfistula:'CXAVFist',
@@ -5100,14 +5273,13 @@ function initApp() {
     cx_hemothorax:['cx_hemoDrain'],
     cx_pneumo:['cx_pneumoInterv'],
     cx_bradyAE:['cx_bradyAEppm'],
+    ciedxInd_other:['ciedxInd_otherText'],
+    ciedxImmediateReimplant:['ciedxReimplantCRT','ciedxReimplantPPM'],
     condSysPace:['condSysPaceQRS','condSysPaceQRSna']
   };
 
-  // CRF-scoped blanking. Fields belonging to a specific procedure CRF — must be blank
-  // if epReason does not match. Prevents EPS/CRT/PPM/TPM/LAAO column cross-contamination.
-  // NOTE: prefix 'eps' is intentionally narrow ('eps_' or 'eps' followed by Capital) since
-  // 'epReason' itself starts with 'ep' (already different prefix), but to be safe we list
-  // explicit field names rather than relying purely on prefix.
+  // CRF-scoped blanking. Draft 17 allows 9.5 and/or 9.7 as nested follow-up CRFs
+  // only when 9.10 immediate reimplantation selects the matching device family.
   const CRF_FIELDS={
     'CRT/AICD':[
       'crtInd_surv','crtInd_eps','crtInd_icmEF','crtInd_nicmEF','crtInd_vtUnresp','crtGenerator',
@@ -5119,13 +5291,15 @@ function initApp() {
       'crtNewLead','crtExistingLead','crtAdditionalLead','crtLeadStatus',
       'condSysPace','condSysPaceQRS','condSysPaceQRSna'
     ],
-    'Pacemaker':[
+    'Temporary Pacemaker':[
       'tpmIndication','tpmCause_electrolyte','tpmCause_drug','tpmCause_digitalis','tpmCause_antiarr',
       'tpmCause_acuteMI','tpmCause_myocarditis','tpmCause_endocarditis','tpmCause_postArrest',
       'tpmCause_degenerative','tpmCause_hypothermia','tpmCause_bridge','tpmCause_postTAVI','tpmCause_unknown',
-      'tpmDrug_avBlock','tpmMIType',
+      'tpmDrug_avBlock','tpmMIType','tpmPpmSameStay'
+    ],
+    'Permanent Pacemaker':[
       // tpmPpmSameStay removed (was 9.6c) — kept in FIELD_MAP/SPSS_VARS for legacy record export only
-      'ppmGenerator',
+      'ppmGenerator','ppmDeviceName',
       // ppmDeviceName removed (was 9.7.a.1) — device type captured in 9.7.b.1 (ppmDev_*); kept in FIELD_MAP/SPSS_VARS for legacy record export only
       'ppmReplReason','ppmReimplant','ppmDevImpl',
       'ppmDev_type',
@@ -5141,12 +5315,37 @@ function initApp() {
       'laao_nonvalvular','laao_highBleed','laao_contraOAC','laao_priorBleed','laao_patientPref',
       'laaoDeviceType','laaoPASS','laaoOutcome',
       'laaoDeploy','laaoTransseptal','laaoImaging','laaoLeak','laaoAnticoag'
+    ],
+    'CIED Extraction':[
+      'ciedxInd_pocketInfection','ciedxInd_leadEndocarditis','ciedxInd_ieNoPocket',
+      'ciedxInd_leadMalfunction','ciedxInd_leadFracture','ciedxInd_insulationFailure',
+      'ciedxInd_venousOcclusion','ciedxInd_chronicPain','ciedxInd_upgradeRemoval',
+      'ciedxInd_recalledLead','ciedxInd_abandonedLead','ciedxInd_leadPerforation',
+      'ciedxInd_tricuspidRegurg','ciedxInd_mriCompatibility','ciedxInd_other','ciedxInd_otherText',
+      'ciedxDevice',
+      'ciedxLead_ra','ciedxLead_rvPacing','ciedxLead_rvIcd','ciedxLead_csLv',
+      'ciedxLead_his','ciedxLead_lbba','ciedxLead_sicd','ciedxLead_other',
+      'ciedxTech_simpleTraction','ciedxTech_lockingStylet','ciedxTech_rotationalSheath',
+      'ciedxTech_telescopingSheath','ciedxTech_laserSheath','ciedxTech_femoralSnare',
+      'ciedxTech_hybridSurgical','ciedxTech_openSurgical',
+      'ciedxCompleteSuccess','ciedxFragmentRetained','ciedxNoReimplant','ciedxDelayedReimplant',
+      'ciedxImmediateReimplant','ciedxReimplantCRT','ciedxReimplantPPM'
     ]
   };
 
   // Returns true if parent's stored value indicates "No" (or blank).
   function parentIsNoOrBlank(rawVal){
     return rawVal===false||rawVal==='false'||rawVal==='No'||rawVal===undefined||rawVal===null||rawVal==='';
+  }
+
+  function procedureGroupAllowed(group,r){
+    const ep=r.epReason;
+    const pm=r.pacemakerType;
+    const ciedImmediate=r.ciedxImmediateReimplant==='Yes';
+    if(group==='CRT/AICD') return ep==='CRT/AICD' || (ep==='CIED Extraction' && ciedImmediate && r.ciedxReimplantCRT==='Yes');
+    if(group==='Temporary Pacemaker') return ep==='Pacemaker' && (pm==='Temporary pacemaker' || pm==='Temporary followed by permanent same hospitalization');
+    if(group==='Permanent Pacemaker') return (ep==='Pacemaker' && (pm==='Permanent pacemaker' || pm==='Temporary followed by permanent same hospitalization')) || (ep==='CIED Extraction' && ciedImmediate && r.ciedxReimplantPPM==='Yes');
+    return ep===group;
   }
 
   // Returns the cleaned record: applies parent-child + CRF-scoped blanking BEFORE encoding.
@@ -5158,11 +5357,12 @@ function initApp() {
         children.forEach(c=>{cleaned[c]='';});
       }
     }
-    // CRF-scoped blanking — set fields belonging to OTHER CRFs to blank
+    if(cleaned.epReason!=='Pacemaker') cleaned.pacemakerType='';
+    // CRF-scoped blanking — set fields belonging to hidden/non-selected CRFs to blank.
     const ep=cleaned.epReason;
     if(ep){
-      for(const [crf,fields] of Object.entries(CRF_FIELDS)){
-        if(crf!==ep){
+      for(const [group,fields] of Object.entries(CRF_FIELDS)){
+        if(!procedureGroupAllowed(group,cleaned)){
           fields.forEach(f=>{cleaned[f]='';});
         }
       }
@@ -5222,9 +5422,9 @@ function initApp() {
   // ============================================================================
   const VALUE_CODES={
     gender:{'Male':1,'Female':2},
-    epReason:{'CRT/AICD':1,'Pacemaker':2,'EPS/Ablation':3,'LAAO':4},
+    epReason:{'CRT/AICD':1,'Pacemaker':2,'EPS/Ablation':3,'LAAO':4,'CIED Extraction':5},
     pacemakerType:{'Temporary pacemaker':1,'Permanent pacemaker':2,'Temporary followed by permanent same hospitalization':3},
-    patientOrigin:{'Home':1,'Transferred from other hospital':2,'Same hospital Inpatient but another department':3,'Clinic (primary care / private / outpatient clinic)':4},
+    patientOrigin:{'Outpatient (Home/Cardiology clinic)':1,'Transferred from other hospital':2,'Same hospital Inpatient but another department':3,'Home':1,'Clinic (primary care / private / outpatient clinic)':1},
     afibClassification:{'Persistent (>7 days)':1,'Paroxysmal (terminating spontaneously within 7 days)':2,'Long standing persistent (>1 year)':3,'Permanent':4},
     afibEHRA:{'EHRA I':1,'EHRA II':2,'EHRA III':3,'EHRA IV':4},
     afibChads:{'0':0,'1':1,'2':2,'3':3,'>3':4},
@@ -5266,6 +5466,7 @@ function initApp() {
     laaoLeak:{'None':1,'<3 mm':2,'3-5 mm':3,'>5 mm':4},
     laaoAnticoag:{'Heparin':1,'Bivalirudin':2},
     laaoOutcome:{'Successful implantation':1,'Device repositioned':2,'Device retrieved/aborted':3},
+    ciedxDevice:{'Single chamber pacemaker':1,'Dual chamber pacemaker':2,'CRT-P':3,'Single chamber ICD':4,'Dual chamber ICD':5,'CRT-D':6,'S-ICD':7,'Leadless pacemaker':8,'Other':9},
     strokeType:{'Hemorrhagic':1,'Thrombotic':2,'Unknown':3},
     scaiStage:{'At risk':1,'Beginning':2,'Classic':3,'Deteriorating':4,'Extremis':5},
     ventType:{'Non-invasive ventilation only':1,'Invasive ventilation only':2,'Both':3},
@@ -5537,6 +5738,20 @@ function initApp() {
       'laao_nonvalvular','laao_highBleed','laao_contraOAC','laao_priorBleed','laao_patientPref',
       'laaoDeviceType','laaoPASS','laaoOutcome','laaoDeploy','laaoTransseptal','laaoImaging',
       'laaoLeak','laaoAnticoag',
+      // 9.10 CIED Extraction
+      'ciedxInd_pocketInfection','ciedxInd_leadEndocarditis','ciedxInd_ieNoPocket',
+      'ciedxInd_leadMalfunction','ciedxInd_leadFracture','ciedxInd_insulationFailure',
+      'ciedxInd_venousOcclusion','ciedxInd_chronicPain','ciedxInd_upgradeRemoval',
+      'ciedxInd_recalledLead','ciedxInd_abandonedLead','ciedxInd_leadPerforation',
+      'ciedxInd_tricuspidRegurg','ciedxInd_mriCompatibility','ciedxInd_other','ciedxInd_otherText',
+      'ciedxDevice',
+      'ciedxLead_ra','ciedxLead_rvPacing','ciedxLead_rvIcd','ciedxLead_csLv',
+      'ciedxLead_his','ciedxLead_lbba','ciedxLead_sicd','ciedxLead_other',
+      'ciedxTech_simpleTraction','ciedxTech_lockingStylet','ciedxTech_rotationalSheath',
+      'ciedxTech_telescopingSheath','ciedxTech_laserSheath','ciedxTech_femoralSnare',
+      'ciedxTech_hybridSurgical','ciedxTech_openSurgical',
+      'ciedxCompleteSuccess','ciedxFragmentRetained','ciedxNoReimplant','ciedxDelayedReimplant',
+      'ciedxImmediateReimplant','ciedxReimplantCRT','ciedxReimplantPPM',
     ],
     'Complications':[
       'comp_ca','comp_pci','comp_cabg','comp_tavr',
@@ -5922,6 +6137,46 @@ function initApp() {
     ["Proc_LAA_PeriDeviceLeak","laaoLeak"],
     ["Proc_LAA_IntraprocAnticoag","laaoAnticoag"],
     ["Proc_LAA_ImmProceduOutcome","laaoOutcome"],
+    ["Proc_CIEDX_IndPocketInf","ciedxInd_pocketInfection"],
+    ["Proc_CIEDX_IndLeadEndocard","ciedxInd_leadEndocarditis"],
+    ["Proc_CIEDX_IndIE_NoPocket","ciedxInd_ieNoPocket"],
+    ["Proc_CIEDX_IndLeadMalfunc","ciedxInd_leadMalfunction"],
+    ["Proc_CIEDX_IndLeadFracture","ciedxInd_leadFracture"],
+    ["Proc_CIEDX_IndInsulFail","ciedxInd_insulationFailure"],
+    ["Proc_CIEDX_IndVenousOccl","ciedxInd_venousOcclusion"],
+    ["Proc_CIEDX_IndChronicPain","ciedxInd_chronicPain"],
+    ["Proc_CIEDX_IndUpgradeRemoval","ciedxInd_upgradeRemoval"],
+    ["Proc_CIEDX_IndRecalledLead","ciedxInd_recalledLead"],
+    ["Proc_CIEDX_IndAbandonedLead","ciedxInd_abandonedLead"],
+    ["Proc_CIEDX_IndLeadPerfor","ciedxInd_leadPerforation"],
+    ["Proc_CIEDX_IndLeadTR","ciedxInd_tricuspidRegurg"],
+    ["Proc_CIEDX_IndMRIcompat","ciedxInd_mriCompatibility"],
+    ["Proc_CIEDX_IndOther","ciedxInd_other"],
+    ["Proc_CIEDX_IndOtherText","ciedxInd_otherText"],
+    ["Proc_CIEDX_Device","ciedxDevice"],
+    ["Proc_CIEDX_Lead_RA","ciedxLead_ra"],
+    ["Proc_CIEDX_Lead_RVPacing","ciedxLead_rvPacing"],
+    ["Proc_CIEDX_Lead_RVICD","ciedxLead_rvIcd"],
+    ["Proc_CIEDX_Lead_CSLV","ciedxLead_csLv"],
+    ["Proc_CIEDX_Lead_His","ciedxLead_his"],
+    ["Proc_CIEDX_Lead_LBBA","ciedxLead_lbba"],
+    ["Proc_CIEDX_Lead_SICD","ciedxLead_sicd"],
+    ["Proc_CIEDX_Lead_Other","ciedxLead_other"],
+    ["Proc_CIEDX_Tech_SimpleTraction","ciedxTech_simpleTraction"],
+    ["Proc_CIEDX_Tech_LockingStylet","ciedxTech_lockingStylet"],
+    ["Proc_CIEDX_Tech_RotationalSheath","ciedxTech_rotationalSheath"],
+    ["Proc_CIEDX_Tech_TelescopingSheath","ciedxTech_telescopingSheath"],
+    ["Proc_CIEDX_Tech_LaserSheath","ciedxTech_laserSheath"],
+    ["Proc_CIEDX_Tech_FemoralSnare","ciedxTech_femoralSnare"],
+    ["Proc_CIEDX_Tech_HybridSurgical","ciedxTech_hybridSurgical"],
+    ["Proc_CIEDX_Tech_OpenSurgical","ciedxTech_openSurgical"],
+    ["Proc_CIEDX_CompleteSuccess","ciedxCompleteSuccess"],
+    ["Proc_CIEDX_FragmentRetained","ciedxFragmentRetained"],
+    ["Proc_CIEDX_NoReimplant","ciedxNoReimplant"],
+    ["Proc_CIEDX_DelayedReimplant","ciedxDelayedReimplant"],
+    ["Proc_CIEDX_ImmediateReimplant","ciedxImmediateReimplant"],
+    ["Proc_CIEDX_Reimplant_CRT","ciedxReimplantCRT"],
+    ["Proc_CIEDX_Reimplant_PPM","ciedxReimplantPPM"],
     ["Compli_ProcedureCA","comp_ca"],
     ["Compli_ProcedurePCI","comp_pci"],
     ["Compli_ProcedureCABG","comp_cabg"],
