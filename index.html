@@ -509,6 +509,11 @@ html,body{max-width:100vw;overflow-x:hidden;}
 .fu-lock.open{background:#ecfdf5;border:1px solid #6ee7b7;color:#047857;}
 .fu-med-reference{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:6px;margin-top:8px;}
 .fu-med-reference span{background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;padding:6px 8px;font-size:11px;color:#475569;}
+.fu-field,.fu-required-group{border:1px solid transparent;border-radius:9px;padding:8px;transition:background .15s,border-color .15s;}
+.fu-field.fu-required-pending,.fu-required-group.fu-required-pending{background:#fef2f2;border-color:#fca5a5;}
+.fu-field.fu-required-complete,.fu-required-group.fu-required-complete{background:transparent;border-color:transparent;}
+.fu-group-label{font-size:12px;font-weight:800;color:#475569;margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.fu-fi-badge{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;font-size:11px;font-weight:900;margin-left:6px;vertical-align:middle;flex-shrink:0;line-height:1;}
 .fu-hidden{display:none!important;}
 @media(max-width:640px){
   .followup-modal-shell{padding:0;align-items:stretch;}
@@ -4327,10 +4332,10 @@ function initApp() {
       const text=Array.isArray(v)?v[1]:v;
       return'<option value="'+escapeHtml(value)+'">'+escapeHtml(text)+'</option>';
     }));
-    return'<div><label class="lbl">'+escapeHtml(label)+(required?' <span style="color:#dc2626">*</span>':'')+'</label><select name="'+name+'" class="inp" onchange="onFollowupChange(event)">'+opts.join('')+'</select></div>';
+    return'<div class="fu-field"><label class="lbl">'+escapeHtml(label)+(required?' <span style="color:#dc2626">*</span>':'')+'</label><select name="'+name+'" class="inp" onchange="onFollowupChange(event)">'+opts.join('')+'</select></div>';
   }
   function fuInput(name,label,type,attrs){
-    return'<div><label class="lbl">'+escapeHtml(label)+'</label><input type="'+(type||'text')+'" name="'+name+'" class="inp" '+(attrs||'')+' oninput="onFollowupChange(event)" onchange="onFollowupChange(event)"></div>';
+    return'<div class="fu-field"><label class="lbl">'+escapeHtml(label)+'</label><input type="'+(type||'text')+'" name="'+name+'" class="inp" '+(attrs||'')+' oninput="onFollowupChange(event)" onchange="onFollowupChange(event)"></div>';
   }
   function fuCheck(name,label){
     return'<label style="display:flex;gap:8px;align-items:flex-start;font-size:12px;font-weight:650;color:#334155;"><input type="checkbox" name="'+name+'" onchange="onFollowupChange(event)" style="margin-top:2px;"> <span>'+escapeHtml(label)+'</span></label>';
@@ -4366,17 +4371,17 @@ function initApp() {
       '<div id="'+p+'_syncopeDateSub" class="fu-hidden">'+fuInput(p+'_syncopeDate','Date of syncope','date','')+'</div>'+
       fuSelect(p+'_palpitations','Palpitations since discharge',['No','Yes'],true)+
       '</div>';
-    const complications='<div style="font-size:12px;font-weight:800;color:#475569;margin-bottom:8px;">Device-related complications (select all that apply)</div>'+
+    const complications='<div class="fu-required-group" id="'+p+'_deviceCompRequired"><div class="fu-group-label">Device-related complications (select all that apply)</div>'+
       '<div class="g2" id="'+p+'_deviceCompGroup">'+
       fuCheck(p+'_devComp_none','None')+
       fuCheck(p+'_devComp_leadDislodgement','Lead dislodgement')+
       fuCheck(p+'_devComp_infection','Device/pocket infection')+
       fuCheck(p+'_devComp_pocketHematoma','Pocket hematoma')+
       fuCheck(p+'_devComp_shockTherapy','Shock therapy (ICD)')+
-      '</div><div style="margin-top:16px;" class="g2">'+
+      '</div></div><div style="margin-top:16px;" class="g2">'+
       fuSelect(p+'_readmission','Hospital readmission since discharge',['No','Yes'],true)+
       '</div><div id="'+p+'_readmissionSub" class="fu-hidden" style="margin-top:12px;">'+
-      '<div style="font-size:12px;font-weight:800;color:#475569;margin-bottom:8px;">Reason for readmission (select all that apply)</div><div class="g2">'+
+      '<div class="fu-required-group" id="'+p+'_readmissionReasonsRequired"><div class="fu-group-label">Reason for readmission (select all that apply)</div><div class="g2">'+
       fuCheck(p+'_readm_arrhythmia','Arrhythmia recurrence')+
       fuCheck(p+'_readm_heartFailure','Heart failure')+
       fuCheck(p+'_readm_bleeding','Bleeding')+
@@ -4386,7 +4391,7 @@ function initApp() {
       fuCheck(p+'_readm_repeatProcedure','Repeat procedure')+
       fuCheck(p+'_readm_pericardialTamponade','Pericardial effusion/tamponade')+
       fuCheck(p+'_readm_other','Other')+
-      '</div><div id="'+p+'_readmissionOtherSub" class="fu-hidden" style="margin-top:10px;">'+fuInput(p+'_readm_otherText','Other reason','text','maxlength="250"')+'</div></div>';
+      '</div></div><div id="'+p+'_readmissionOtherSub" class="fu-hidden" style="margin-top:10px;">'+fuInput(p+'_readm_otherText','Other reason','text','maxlength="250"')+'</div></div>';
     const deviceEval='<div class="g2">'+
       fuSelect(p+'_deviceInterrogation','Device interrogation performed',['No','Yes'],true)+
       '</div><div id="'+p+'_deviceInterrogationSub" class="fu-hidden" style="margin-top:12px;"><div class="g2">'+
@@ -4402,7 +4407,7 @@ function initApp() {
       fuSelect(p+'_medAdherence','Medication adherence',['Good','Partial','Poor','Unknown'],true)+
       '</div><div id="'+p+'_medChangesSub" class="fu-hidden" style="margin-top:12px;">'+
       '<div class="fu-med-reference"><strong>Saved discharge/home medications:</strong><br>'+escapeHtml(medicationReference(record))+'</div>'+
-      '<div style="margin-top:10px;"><label class="lbl">Specify medication changes <span style="color:#dc2626">*</span></label><textarea name="'+p+'_medChanges" class="inp" rows="3" maxlength="1000" oninput="onFollowupChange(event)" placeholder="Document starts, stops, dose changes, or other medication changes."></textarea></div></div>';
+      '<div class="fu-field" style="margin-top:10px;"><label class="lbl">Specify medication changes <span style="color:#dc2626">*</span></label><textarea name="'+p+'_medChanges" class="inp" rows="3" maxlength="1000" oninput="onFollowupChange(event)" placeholder="Document starts, stops, dose changes, or other medication changes."></textarea></div></div>';
     const investigations='<div class="g2">'+
       fuSelect(p+'_ecgDone','ECG performed',['No','Yes'],true)+
       '<div id="'+p+'_ecgSub" class="fu-hidden">'+fuSelect(p+'_ecgRhythm','ECG rhythm',['Sinus rhythm','Paced rhythm','Atrial fibrillation','Atrial flutter','Supraventricular tachycardia','Atrial tachycardia','Ventricular tachycardia','Other','Unknown'],true)+'</div>'+
@@ -4428,6 +4433,93 @@ function initApp() {
   function followupValue(prefix,suffix){
     return document.querySelector('#followupForm [name="'+prefix+'_'+suffix+'"]')?.value||'';
   }
+  function followupHasValue(name){
+    const el=document.querySelector('#followupForm [name="'+name+'"]');
+    if(!el)return false;
+    if(el.type==='checkbox')return el.checked;
+    return String(el.value||'').trim()!=='';
+  }
+  function followupPercentValid(name){
+    const el=document.querySelector('#followupForm [name="'+name+'"]');
+    if(!el||String(el.value||'').trim()==='')return false;
+    const n=Number(el.value);
+    return Number.isFinite(n)&&n>=0&&n<=100;
+  }
+  function paintFollowupBadge(target,key,complete){
+    if(!target)return;
+    let badge=target.querySelector('.fu-fi-badge[data-key="'+key+'"]');
+    if(!badge){
+      badge=document.createElement('span');
+      badge.className='fi-badge fu-fi-badge';
+      badge.dataset.key=key;
+      const label=target.querySelector(':scope > .lbl, :scope > label.lbl, :scope > .fu-group-label');
+      if(label)label.appendChild(badge);
+      else target.prepend(badge);
+    }
+    _setBadge(badge,complete);
+    target.classList.toggle('fu-required-complete',complete);
+    target.classList.toggle('fu-required-pending',!complete);
+  }
+  function paintFollowupField(name,complete){
+    const el=document.querySelector('#followupForm [name="'+name+'"]');
+    const field=el?.closest('.fu-field');
+    paintFollowupBadge(field,name,complete);
+  }
+  function paintFollowupGroup(id,key,complete){
+    paintFollowupBadge(document.getElementById(id),key,complete);
+  }
+  function updateFollowupIndicators(){
+    const form=document.getElementById('followupForm');
+    const p=document.getElementById('followupPeriod')?.dataset.prefix;
+    if(!form||!p)return;
+    form.querySelectorAll('.fu-fi-badge').forEach(function(b){b.remove();});
+    form.querySelectorAll('.fu-required-pending,.fu-required-complete').forEach(function(el){
+      el.classList.remove('fu-required-pending','fu-required-complete');
+    });
+    const mark=function(suffix,complete){paintFollowupField(p+'_'+suffix,complete===undefined?followupHasValue(p+'_'+suffix):complete);};
+    const checked=function(suffix){return document.querySelector('[name="'+p+'_'+suffix+'"]')?.checked===true;};
+    mark('entryDate');
+    mark('followupType');
+    const type=followupValue(p,'followupType');
+    if(type==='Phone call')mark('interviewee');
+    if(type==='Lost to follow-up')return;
+    mark('patientStatus');
+    const vital=followupValue(p,'patientStatus');
+    if(vital==='Dead'){
+      mark('deathDate');
+      mark('deathCause');
+      return;
+    }
+    if(vital!=='Alive')return;
+    mark('nyha');
+    mark('overallStatus');
+    mark('syncope');
+    if(followupValue(p,'syncope')==='Yes')mark('syncopeDate');
+    mark('palpitations');
+    const deviceComp=['devComp_none','devComp_leadDislodgement','devComp_infection','devComp_pocketHematoma','devComp_shockTherapy'];
+    paintFollowupGroup(p+'_deviceCompRequired',p+'_deviceCompGroup',deviceComp.some(checked));
+    mark('readmission');
+    if(followupValue(p,'readmission')==='Yes'){
+      const reasons=['readm_arrhythmia','readm_heartFailure','readm_bleeding','readm_strokeTIA','readm_deviceComplication','readm_thromboembolism','readm_repeatProcedure','readm_pericardialTamponade','readm_other'];
+      paintFollowupGroup(p+'_readmissionReasonsRequired',p+'_readmissionReasons',reasons.some(checked));
+      if(checked('readm_other'))mark('readm_otherText');
+    }
+    mark('deviceInterrogation');
+    if(followupValue(p,'deviceInterrogation')==='Yes'){
+      mark('batteryLife',followupHasValue(p+'_batteryLife')||checked('batteryNA'));
+      mark('pacingPercent',followupPercentValid(p+'_pacingPercent')||checked('pacingNA'));
+      mark('leadAbnormality');
+      mark('reprogramming');
+    }
+    mark('medsUnchanged');
+    mark('medAdherence');
+    if(followupValue(p,'medsUnchanged')==='No')mark('medChanges');
+    mark('ecgDone');
+    if(followupValue(p,'ecgDone')==='Yes')mark('ecgRhythm');
+    mark('echoDone');
+    if(followupValue(p,'echoDone')==='Yes')mark('lvef',followupPercentValid(p+'_lvef'));
+  }
+  window.updateFollowupIndicators=updateFollowupIndicators;
   window.onFollowupChange=function(event){
     const p=document.getElementById('followupPeriod')?.dataset.prefix;
     if(!p)return;
@@ -4450,6 +4542,7 @@ function initApp() {
         document.querySelectorAll('[name^="'+p+'_devComp_"]').forEach(function(el){if(el!==none)el.checked=false;});
       }else if(none)none.checked=false;
     }
+    updateFollowupIndicators();
   };
   function populateFollowupForm(record,prefix){
     document.querySelectorAll('#followupForm [name^="'+prefix+'_"]').forEach(function(el){
@@ -4552,8 +4645,7 @@ function initApp() {
   function requireFollowup(payload,key,label,errors){
     if(payload[key]===undefined||payload[key]===null||String(payload[key]).trim()==='')errors.push(label);
   }
-  function validateFollowup(payload,p,complete){
-    if(!complete)return[];
+  function validateFollowup(payload,p){
     const errors=[];
     requireFollowup(payload,p+'_entryDate','Entry date',errors);
     requireFollowup(payload,p+'_followupType','Type of follow-up',errors);
@@ -4606,8 +4698,15 @@ function initApp() {
       alert(state.due?'This follow-up remains locked until '+formatFollowupDateTime(state.due)+'.':'A discharge date/time is required.');return;
     }
     const payload=cleanFollowupPayload(collectFollowupData(period.prefix),period.prefix);
-    const errors=validateFollowup(payload,period.prefix,markComplete);
-    if(errors.length){alert('Please complete:\n• '+errors.join('\n• '));return;}
+    const errors=validateFollowup(payload,period.prefix);
+    if(errors.length){
+      updateFollowupIndicators();
+      const firstPending=document.querySelector('#followupForm .fu-required-pending');
+      firstPending?.scrollIntoView({behavior:'smooth',block:'center'});
+      firstPending?.querySelector('input,select,textarea')?.focus({preventScroll:true});
+      alert('Cannot save this follow-up until all applicable fields are completed:\n\n• '+errors.join('\n• '));
+      return;
+    }
     payload[period.prefix+'_recordStatus']=markComplete?'completed':'draft';
     payload[period.prefix+'_lastUpdatedAt']=new Date().toISOString();
     payload[period.prefix+'_lastUpdatedBy']=currentUser?.uid||'';
