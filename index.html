@@ -484,6 +484,40 @@ html,body{max-width:100vw;overflow-x:hidden;}
 @media (max-width: 768px){
   *{-webkit-tap-highlight-color:rgba(37,99,235,.12);}
 }
+
+/* --- Scheduled 1/6/12-month follow-ups --- */
+.followup-alarm{background:#fff7ed;border:1.5px solid #fdba74;border-left:5px solid #ea580c;border-radius:14px;padding:14px 16px;color:#9a3412;}
+.followup-strip{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:10px;padding-top:9px;border-top:1px solid #e2e8f0;}
+.followup-chip{border:1.5px solid #cbd5e1;background:#f8fafc;color:#475569;border-radius:9px;padding:6px 9px;font-size:10px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s;}
+.followup-chip:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(15,23,42,.1);}
+.followup-chip.locked{background:#f8fafc;color:#64748b;border-color:#cbd5e1;cursor:not-allowed;}
+.followup-chip.due-soon{background:#fff7ed;color:#c2410c;border-color:#fdba74;}
+.followup-chip.due{background:#eff6ff;color:#1d4ed8;border-color:#93c5fd;}
+.followup-chip.overdue{background:#fff1f2;color:#be123c;border-color:#fda4af;}
+.followup-chip.completed{background:#ecfdf5;color:#047857;border-color:#6ee7b7;}
+.followup-chip.admin-open{box-shadow:inset 0 0 0 1px #7c3aed;}
+.followup-modal-shell{display:none;position:fixed;inset:0;background:rgba(15,23,42,.68);z-index:9997;align-items:flex-start;justify-content:center;padding:22px;overflow-y:auto;}
+.followup-modal-card{width:min(1050px,100%);background:#f8fafc;border-radius:20px;box-shadow:0 28px 80px rgba(15,23,42,.38);overflow:hidden;}
+.followup-modal-head{background:linear-gradient(135deg,#1d4ed8,#312e81);color:#fff;padding:18px 22px;display:flex;justify-content:space-between;gap:16px;align-items:flex-start;}
+.followup-modal-body{padding:18px 20px;max-height:calc(100vh - 180px);overflow-y:auto;}
+.followup-modal-foot{background:#fff;border-top:1px solid #e2e8f0;padding:13px 20px;display:flex;gap:9px;justify-content:flex-end;flex-wrap:wrap;}
+.fu-section{background:#fff;border:1px solid #e2e8f0;border-radius:13px;padding:15px;margin-bottom:13px;}
+.fu-section-title{font-size:14px;font-weight:900;color:#1e3a8a;margin-bottom:11px;}
+.fu-lock{border-radius:11px;padding:11px 13px;font-size:12px;font-weight:700;margin-bottom:12px;}
+.fu-lock.locked{background:#f1f5f9;border:1px solid #cbd5e1;color:#475569;}
+.fu-lock.warning{background:#fff7ed;border:1px solid #fdba74;color:#9a3412;}
+.fu-lock.open{background:#ecfdf5;border:1px solid #6ee7b7;color:#047857;}
+.fu-med-reference{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:6px;margin-top:8px;}
+.fu-med-reference span{background:#f8fafc;border:1px solid #e2e8f0;border-radius:7px;padding:6px 8px;font-size:11px;color:#475569;}
+.fu-hidden{display:none!important;}
+@media(max-width:640px){
+  .followup-modal-shell{padding:0;align-items:stretch;}
+  .followup-modal-card{border-radius:0;min-height:100vh;}
+  .followup-modal-body{max-height:none;}
+  .followup-modal-foot{position:sticky;bottom:0;}
+  .followup-strip{align-items:stretch;}
+  .followup-chip{flex:1;justify-content:center;min-width:88px;}
+}
 </style>
 </head>
 <body class="min-h-screen">
@@ -935,27 +969,9 @@ html,body{max-width:100vw;overflow-x:hidden;}
       </div>
     </div>
 
-    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.5b Generator:</label>
-      <div class="flex gap-2 flex-wrap mb-2">
-        <label class="radio-item"><input type="radio" name="crtGenerator" value="Initial implant" onchange="onCrtGen()"> Initial implant</label>
-        <label class="radio-item"><input type="radio" name="crtGenerator" value="Generator replacement" onchange="onCrtGen()"> Generator replacement</label>
-      </div>
-      <div id="crtGen_replace" class="sub-reveal mt-2"><label class="lbl">9.5.b.2 Reasons for generator replacement (select all that apply):</label>
-        <div class="g2 mt-1">
-          <label class="chk-item"><input type="checkbox" name="crtRepl_relocation"> Device relocation</label>
-          <label class="chk-item"><input type="checkbox" name="crtRepl_battery"> End of battery life</label>
-          <label class="chk-item"><input type="checkbox" name="crtRepl_faulty"> Faulty connector/header</label>
-          <label class="chk-item"><input type="checkbox" name="crtRepl_infection"> Infection</label>
-          <label class="chk-item"><input type="checkbox" name="crtRepl_leadrev"> Replaced at time of lead revision</label>
-          <label class="chk-item"><input type="checkbox" name="crtRepl_upgrade"> Upgrade</label>
-        </div>
-      </div>
-    </div>
-
     <div class="card mb-3">
-      <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">9.5c Device implant</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'crtDevImpl','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'crtDevImpl','Yes')">Yes</button></div></div>
-      <input type="hidden" name="crtDevImpl" id="val_crtDevImpl" value="">
-      <div id="sub_crtDevImpl" class="sub-reveal">
+      <div class="font-bold text-gray-800 text-sm mb-2">9.5c Device implant</div>
+      <div>
         <label class="lbl">9.5.c.1 Device Type (Choose One Only):</label>
         <div class="g2 mt-1 mb-3">
           <label class="radio-item"><input type="radio" name="crtDeviceType" value="CRT-D" onchange="onCrtDevType()"> CRT-D</label>
@@ -1070,28 +1086,9 @@ html,body{max-width:100vw;overflow-x:hidden;}
 
   </div>
   <div class="proc-section" id="proc_permpm"><div class="card card-gray mb-3" style="border-left:4px solid #475569;"><div style="font-weight:800;color:#1e293b;font-size:14px;">9.7 — Permanent Pacemaker</div></div>
-    <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.7a Generator:</label>
-      <div class="flex gap-2 flex-wrap mb-2">
-        <label class="radio-item"><input type="radio" name="ppmGenerator" value="Initial implant" onchange="onPpmGen()"> Initial implant</label>
-        <label class="radio-item"><input type="radio" name="ppmGenerator" value="Generator replacement" onchange="onPpmGen()"> Generator replacement</label>
-      </div>
-      <div id="ppmGen_initial" class="sub-reveal mt-2"><div class="text-xs text-gray-600" style="padding:8px 12px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;"><i class="fas fa-info-circle mr-1" style="color:#0369a1;"></i>Initial implant selected — specify the device type in <b>9.7.b.1</b> below.</div></div>
-      <div id="ppmGen_replace" class="sub-reveal mt-2"><label class="lbl">9.7.a.2 Reasons for generator replacement (Choose One Only):</label>
-        <div class="g2 mt-1">
-          <label class="radio-item"><input type="radio" name="ppmReplReason" value="Device relocation"> Device relocation</label>
-          <label class="radio-item"><input type="radio" name="ppmReplReason" value="End of battery life"> End of battery life</label>
-          <label class="radio-item"><input type="radio" name="ppmReplReason" value="Faulty connector/header"> Faulty connector/header</label>
-          <label class="radio-item"><input type="radio" name="ppmReplReason" value="Infection"> Infection</label>
-          <label class="radio-item"><input type="radio" name="ppmReplReason" value="Replaced at time of lead revision"> Replaced at time of lead revision</label>
-          <label class="radio-item"><input type="radio" name="ppmReplReason" value="Upgrade"> Upgrade</label>
-        </div>
-      </div>
-    </div>
-
     <div class="card mb-3">
-      <div class="flex items-center justify-between mb-2"><span class="font-bold text-gray-800 text-sm">9.7b Device implant</span><div class="yn-group"><button type="button" class="yn-btn yn-no" onclick="setYN(this,'ppmDevImpl','No')">No</button><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'ppmDevImpl','Yes')">Yes</button></div></div>
-      <input type="hidden" name="ppmDevImpl" id="val_ppmDevImpl" value="">
-      <div id="sub_ppmDevImpl" class="sub-reveal">
+      <div class="font-bold text-gray-800 text-sm mb-2">9.7b Device implant</div>
+      <div>
         <label class="lbl">9.7.b.1 Device Type:</label>
         <div class="mt-1 mb-3">
           <select name="ppmDev_type" class="inp" onchange="onPpmLbbb()"><option value="">Select…</option><option value="Single chamber transvenous PPM">Single chamber transvenous PPM</option><option value="Dual chamber transvenous PPM">Dual chamber transvenous PPM</option><option value="Leadless single chamber PPM">Leadless single chamber PPM</option><option value="Leadless dual chamber PPM">Leadless dual chamber PPM</option><option value="His-bundle PPM">His-bundle PPM</option><option value="Leadless LVEP">Leadless LVEP</option><option value="CCM">CCM</option><option value="LBBB PPM">LBBB PPM</option></select>
@@ -1272,6 +1269,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
         <label class="chk-item"><input type="checkbox" name="ciedxInd_leadPerforation"> Lead perforation</label>
         <label class="chk-item"><input type="checkbox" name="ciedxInd_tricuspidRegurg"> Severe tricuspid regurgitation related to lead</label>
         <label class="chk-item"><input type="checkbox" name="ciedxInd_mriCompatibility"> MRI compatibility</label>
+        <label class="chk-item"><input type="checkbox" name="ciedxInd_endBattery"> End of battery life</label>
         <label class="chk-item"><input type="checkbox" name="ciedxInd_other" onchange="onCiedxOther()"> Other</label>
       </div>
       <div id="ciedxIndOtherSub" class="sub-reveal mt-2"><label class="lbl">9.10.a.1 Other indication</label><input type="text" name="ciedxInd_otherText" class="inp" maxlength="160" placeholder="Specify other indication"></div>
@@ -1319,8 +1317,7 @@ html,body{max-width:100vw;overflow-x:hidden;}
 
     <div class="card mb-3"><label class="lbl" style="font-weight:700;margin-bottom:10px;">9.10e Extraction Outcome:</label>
       <div class="g2">
-        <div><label class="lbl">9.10.e.1 Complete procedural success</label><select name="ciedxCompleteSuccess" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
-        <div><label class="lbl">9.10.e.2 Lead fragment retained</label><select name="ciedxFragmentRetained" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+        <div><label class="lbl">9.10.e.1 Lead fragment retained</label><select name="ciedxFragmentRetained" class="inp"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
       </div>
     </div>
 
@@ -1332,10 +1329,10 @@ html,body{max-width:100vw;overflow-x:hidden;}
       </div>
       <div id="ciedxReimplantSub" class="sub-reveal mt-3">
         <div class="g2">
-          <div><label class="lbl">9.10.f.3.a AICD/CRT</label><select name="ciedxReimplantCRT" class="inp" onchange="onEPR()"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
-          <div><label class="lbl">9.10.f.3.b Permanent pacemaker</label><select name="ciedxReimplantPPM" class="inp" onchange="onEPR()"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+          <div id="ciedxReimplantCRTBox"><label class="lbl">9.10.f.3.a AICD/CRT</label><select name="ciedxReimplantCRT" class="inp" onchange="onCiedxReimplantChoice('CRT')"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
+          <div id="ciedxReimplantPPMBox"><label class="lbl">9.10.f.3.b Permanent pacemaker</label><select name="ciedxReimplantPPM" class="inp" onchange="onCiedxReimplantChoice('PPM')"><option value="">Select…</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
         </div>
-        <div class="text-xs text-gray-600 mt-2" style="padding:8px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;"><i class="fas fa-info-circle mr-1" style="color:#475569;"></i>Selecting Yes opens the matching 9.5 CRT/AICD or 9.7 Permanent Pacemaker fields.</div>
+        <div class="text-xs text-gray-600 mt-2" style="padding:8px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;"><i class="fas fa-info-circle mr-1" style="color:#475569;"></i>Selecting Yes opens the matching 9.5 CRT/AICD or 9.7 Permanent Pacemaker fields and hides the other reimplantation choice.</div>
       </div>
     </div>
   </div>
@@ -1523,6 +1520,12 @@ html,body{max-width:100vw;overflow-x:hidden;}
     <div class="dash-card" style="border-left:4px solid #d97706;"><div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;">Incomplete</div><div style="font-size:32px;font-weight:900;color:#d97706;" id="dash_incomplete">—</div></div>
     <div class="dash-card" style="border-left:4px solid #7c3aed;"><div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;">Reviewed</div><div style="font-size:32px;font-weight:900;color:#7c3aed;" id="dash_reviewed">—</div></div>
   </div>
+  <div id="followupAlarmPanel" class="followup-alarm mb-4" style="display:none;">
+    <div style="display:flex;gap:10px;align-items:flex-start;">
+      <i class="fas fa-bell" style="font-size:18px;margin-top:1px;"></i>
+      <div style="flex:1;min-width:0;"><div style="font-weight:900;font-size:13px;">Follow-up alert</div><div id="followupAlarmSummary" style="font-size:12px;margin-top:3px;line-height:1.45;"></div></div>
+    </div>
+  </div>
   <div class="bg-white rounded-2xl border border-gray-200 shadow-sm px-5 py-3 mb-4 flex flex-wrap gap-2 items-center justify-between">
     <div class="flex gap-2 flex-wrap">
       <button class="dash-filter-btn active" onclick="setDashFilter('all',this)">All</button>
@@ -1532,11 +1535,36 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <button class="dash-filter-btn" onclick="setDashFilter('complete',this)">Complete</button>
       <button class="dash-filter-btn" onclick="setDashFilter('incomplete',this)">Incomplete</button>
       <button class="dash-filter-btn" onclick="setDashFilter('duplicate',this)"><i class="fas fa-exclamation-circle mr-1"></i>Duplicates</button>
+      <button class="dash-filter-btn" onclick="setDashFilter('followup-alerts',this)"><i class="fas fa-bell mr-1"></i>Follow-up Alerts</button>
+      <button class="dash-filter-btn" onclick="setDashFilter('followup-overdue',this)"><i class="fas fa-clock mr-1"></i>Overdue</button>
     </div>
     <button onclick="loadDashboard()" class="btn btn-primary text-sm px-4 py-2"><i class="fas fa-sync-alt"></i> Refresh</button>
   </div>
   <div id="dashGrid" class="space-y-3"></div>
 </section>
+
+<!-- SCHEDULED FOLLOW-UP MODAL -->
+<div id="followupModal" class="followup-modal-shell" role="dialog" aria-modal="true" aria-labelledby="followupModalTitle">
+  <div class="followup-modal-card">
+    <div class="followup-modal-head">
+      <div><div id="followupModalTitle" style="font-size:18px;font-weight:900;">Scheduled Follow-up</div><div id="followupPatientSummary" style="font-size:12px;opacity:.88;margin-top:4px;"></div></div>
+      <button type="button" onclick="closeFollowupModal()" aria-label="Close follow-up" style="background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.3);width:34px;height:34px;border-radius:9px;cursor:pointer;"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="followup-modal-body">
+      <div id="followupAccessMessage" class="fu-lock"></div>
+      <form id="followupForm" novalidate>
+        <input type="hidden" id="followupPatientId" value="">
+        <input type="hidden" id="followupPeriod" value="">
+        <div id="followupFormBody"></div>
+      </form>
+    </div>
+    <div class="followup-modal-foot">
+      <button type="button" onclick="closeFollowupModal()" class="btn btn-gray text-sm">Close</button>
+      <button type="button" id="followupSaveDraftBtn" onclick="saveFollowup(false)" class="btn btn-yellow text-sm"><i class="fas fa-save"></i> Save</button>
+      <button type="button" id="followupCompleteBtn" onclick="saveFollowup(true)" class="btn btn-green text-sm"><i class="fas fa-check-circle"></i> Mark Complete</button>
+    </div>
+  </div>
+</div>
 
 <!-- ANALYTICS SECTION -->
 <section id="section-analytics" class="hidden bg-white rounded-2xl shadow-lg p-4 md:p-6 border border-gray-100 min-h-[80vh]">
@@ -1593,8 +1621,8 @@ html,body{max-width:100vw;overflow-x:hidden;}
       <div style="width:48px;height:48px;background:#f0fdf4;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
         <i class="fas fa-file-excel text-green-600 text-xl"></i>
       </div>
-      <div style="font-weight:800;font-size:15px;color:#0f172a;margin-bottom:6px;">Excel Workbook (9 Sheets)</div>
-      <div style="font-size:12px;color:#64748b;margin-bottom:16px;">Complete coded data export with a full model sheet, clinical section sheets, procedure variables, and codebook.</div>
+      <div style="font-weight:800;font-size:15px;color:#0f172a;margin-bottom:6px;">Excel Workbook (10 Sheets)</div>
+      <div style="font-size:12px;color:#64748b;margin-bottom:16px;">Complete coded data export with a full model sheet, clinical section sheets, timed follow-up variables, procedure variables, and codebook.</div>
       <div class="btn btn-green text-sm w-full" style="justify-content:center;">
         <i class="fas fa-download"></i> Download Excel
       </div>
@@ -2917,40 +2945,6 @@ function initApp() {
     updateFieldIndicators();
   };
 
-  // CRT generator branch toggle. Draft 17 keeps Initial implant and Generator replacement.
-  window.onCrtGen=function(){
-    const v=document.querySelector('input[name="crtGenerator"]:checked')?.value;
-    const wantedKey = v==='Generator replacement' ? 'replace' : null;
-    ['replace'].forEach(k=>{
-      const el=document.getElementById(`crtGen_${k}`);
-      if(!el) return;
-      if(k===wantedKey){
-        el.classList.add('show');
-      } else if(el.classList.contains('show')){
-        clearSubReveal(el);
-      } else {
-        el.classList.remove('show');
-      }
-    });
-  };
-  // PPM generator branch toggle. Draft 17 keeps Initial implant and Generator replacement.
-  window.onPpmGen=function(){
-    const v=document.querySelector('input[name="ppmGenerator"]:checked')?.value;
-    const wantedKey = v==='Initial implant' ? 'initial'
-                    : v==='Generator replacement' ? 'replace'
-                    : null;
-    ['initial','replace'].forEach(k=>{
-      const el=document.getElementById(`ppmGen_${k}`);
-      if(!el) return;
-      if(k===wantedKey){
-        el.classList.add('show');
-      } else if(el.classList.contains('show')){
-        clearSubReveal(el);
-      } else {
-        el.classList.remove('show');
-      }
-    });
-  };
   // 9.10 nested logic: only reveal the "Other" text field and immediate-
   // reimplantation targets when their respective parent values are selected.
   window.onCiedxOther=function(){
@@ -2963,9 +2957,37 @@ function initApp() {
   window.onCiedxReimplant=function(){
     const sub=document.getElementById('ciedxReimplantSub');
     const show=document.querySelector('[name="ciedxImmediateReimplant"]')?.value==='Yes';
-    if(show) sub?.classList.add('show');
-    else if(sub?.classList.contains('show')) clearSubReveal(sub);
+    if(show){
+      sub?.classList.add('show');
+      window.onCiedxReimplantChoice();
+    } else if(sub?.classList.contains('show')){
+      clearSubReveal(sub);
+      const crtBox=document.getElementById('ciedxReimplantCRTBox');
+      const ppmBox=document.getElementById('ciedxReimplantPPMBox');
+      if(crtBox)crtBox.style.display='';
+      if(ppmBox)ppmBox.style.display='';
+    }
     onEPR();
+  };
+  // Immediate reimplantation is mutually exclusive by device family. Selecting
+  // AICD/CRT hides PPM, and selecting PPM hides AICD/CRT. The selected 9.5 or
+  // 9.7 section is still moved directly below 9.10 by onEPR().
+  window.onCiedxReimplantChoice=function(chosen=''){
+    const crt=document.querySelector('[name="ciedxReimplantCRT"]');
+    const ppm=document.querySelector('[name="ciedxReimplantPPM"]');
+    const crtBox=document.getElementById('ciedxReimplantCRTBox');
+    const ppmBox=document.getElementById('ciedxReimplantPPMBox');
+    if(!crt||!ppm||!crtBox||!ppmBox)return;
+    if(chosen==='CRT'&&crt.value==='Yes')ppm.value='';
+    if(chosen==='PPM'&&ppm.value==='Yes')crt.value='';
+    // Repair impossible legacy records that had both families selected.
+    if(crt.value==='Yes'&&ppm.value==='Yes')ppm.value='';
+    const crtSelected=crt.value==='Yes';
+    const ppmSelected=ppm.value==='Yes';
+    crtBox.style.display=ppmSelected?'none':'';
+    ppmBox.style.display=crtSelected?'none':'';
+    onEPR();
+    updateFieldIndicators();
   };
   window.onBleedT=function(){
     const sub=document.getElementById('bleedType3sub');
@@ -3944,10 +3966,9 @@ function initApp() {
     const CHECKBOX_GROUPS = [
       { label:'9.5 CRT/AICD indications', members:['crtInd_surv','crtInd_eps','crtInd_icmEF','crtInd_nicmEF','crtInd_vtUnresp'] },
       { label:'9.5 Inherited heart disease type', members:['crtInh_longqt','crtInh_hcm','crtInh_brugada','crtInh_arvd','crtInh_cpvt'] },
-      { label:'9.5 Generator replacement reason', members:['crtRepl_relocation','crtRepl_battery','crtRepl_faulty','crtRepl_infection','crtRepl_leadrev','crtRepl_upgrade'] },
       { label:'9.6 Temporary PM cause', members:['tpmCause_electrolyte','tpmCause_drug','tpmCause_acuteMI','tpmCause_myocarditis','tpmCause_endocarditis','tpmCause_postArrest','tpmCause_degenerative','tpmCause_hypothermia','tpmCause_bridge','tpmCause_postTAVI','tpmCause_unknown'] },
       { label:'9.9a LAAO indication', members:['laao_nonvalvular','laao_highBleed','laao_contraOAC','laao_priorBleed','laao_patientPref'] },
-      { label:'9.10a CIED extraction indication', members:['ciedxInd_pocketInfection','ciedxInd_leadEndocarditis','ciedxInd_ieNoPocket','ciedxInd_leadMalfunction','ciedxInd_leadFracture','ciedxInd_insulationFailure','ciedxInd_venousOcclusion','ciedxInd_chronicPain','ciedxInd_upgradeRemoval','ciedxInd_recalledLead','ciedxInd_abandonedLead','ciedxInd_leadPerforation','ciedxInd_tricuspidRegurg','ciedxInd_mriCompatibility','ciedxInd_other'] },
+      { label:'9.10a CIED extraction indication', members:['ciedxInd_pocketInfection','ciedxInd_leadEndocarditis','ciedxInd_ieNoPocket','ciedxInd_leadMalfunction','ciedxInd_leadFracture','ciedxInd_insulationFailure','ciedxInd_venousOcclusion','ciedxInd_chronicPain','ciedxInd_upgradeRemoval','ciedxInd_recalledLead','ciedxInd_abandonedLead','ciedxInd_leadPerforation','ciedxInd_tricuspidRegurg','ciedxInd_mriCompatibility','ciedxInd_endBattery','ciedxInd_other'] },
       { label:'9.10c CIED leads extracted', members:['ciedxLead_ra','ciedxLead_rvPacing','ciedxLead_rvIcd','ciedxLead_csLv','ciedxLead_his','ciedxLead_lbba','ciedxLead_sicd','ciedxLead_other'] },
       { label:'9.10d CIED extraction technique', members:['ciedxTech_simpleTraction','ciedxTech_lockingStylet','ciedxTech_rotationalSheath','ciedxTech_telescopingSheath','ciedxTech_laserSheath','ciedxTech_femoralSnare','ciedxTech_hybridSurgical','ciedxTech_openSurgical'] },
       { label:'10.x Intervention type', members:['cx_intervEndo','cx_intervSurg','cx_intervThrombin'] },
@@ -4178,6 +4199,439 @@ function initApp() {
     } catch(e){ /* noop */ }
   }
 
+  // ==================== SCHEDULED 1-, 6-, AND 12-MONTH FOLLOW-UP ====================
+  // The schedule is anchored to discharge date/time. If an old record has no
+  // discharge date, the procedure date/time is used as a documented fallback.
+  // Calendar-month addition is clamped at month end (e.g. 31 January + 1 month
+  // becomes 28/29 February) so clinical anniversary dates stay predictable.
+  const FOLLOWUP_PERIODS=[
+    {months:1,prefix:'fu1',label:'1-Month Follow-up'},
+    {months:6,prefix:'fu6',label:'6-Month Follow-up'},
+    {months:12,prefix:'fu12',label:'12-Month Follow-up'}
+  ];
+  const FOLLOWUP_ALERT_MS=7*24*60*60*1000;
+
+  function escapeHtml(v){
+    return String(v===undefined||v===null?'':v).replace(/[&<>"']/g,function(ch){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];
+    });
+  }
+  function localISODate(d){
+    if(!(d instanceof Date)||isNaN(d.getTime()))return'';
+    const pad=function(n){return String(n).padStart(2,'0');};
+    return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+  }
+  function parseLocalDateTime(dateValue,timeValue){
+    if(!dateValue||!/^\d{4}-\d{2}-\d{2}$/.test(String(dateValue)))return null;
+    const dp=String(dateValue).split('-').map(Number);
+    const tm=/^\d{2}:\d{2}$/.test(String(timeValue||''))?String(timeValue).split(':').map(Number):[0,0];
+    const d=new Date(dp[0],dp[1]-1,dp[2],tm[0],tm[1],0,0);
+    return isNaN(d.getTime())?null:d;
+  }
+  function addMonthsClamped(d,months){
+    const day=d.getDate();
+    const targetMonth=d.getMonth()+months;
+    const first=new Date(d.getFullYear(),targetMonth,1,d.getHours(),d.getMinutes(),0,0);
+    const lastDay=new Date(first.getFullYear(),first.getMonth()+1,0).getDate();
+    first.setDate(Math.min(day,lastDay));
+    return first;
+  }
+  function getFollowupAnchor(record){
+    let d=parseLocalDateTime(record.dischargeDate,record.dischargeTime);
+    if(d)return{date:d,source:'Discharge'};
+    d=parseLocalDateTime(record.procStartDate,record.procEndTime||record.procStartTime);
+    if(d)return{date:d,source:'Procedure fallback'};
+    d=parseLocalDateTime(record.admissionDate,'00:00');
+    return d?{date:d,source:'Admission fallback'}:null;
+  }
+  function formatFollowupDateTime(d){
+    if(!(d instanceof Date)||isNaN(d.getTime()))return'Not scheduled';
+    return d.toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:false});
+  }
+  function getFollowupState(record,period,now){
+    now=now||new Date();
+    const key=period.prefix;
+    const anchor=getFollowupAnchor(record);
+    const due=anchor?addMonthsClamped(anchor.date,period.months):null;
+    const completed=record[key+'_recordStatus']==='completed';
+    let status='no-anchor';
+    if(completed)status='completed';
+    else if(due){
+      const delta=due.getTime()-now.getTime();
+      if(delta>FOLLOWUP_ALERT_MS)status='locked';
+      else if(delta>0)status='due-soon';
+      else if(delta>-24*60*60*1000)status='due';
+      else status='overdue';
+    }
+    return{
+      months:period.months,prefix:key,label:period.label,status:status,
+      due:due,dueDate:localISODate(due),dueDateTime:due?due.toISOString():'',
+      anchorSource:anchor?anchor.source:'',completed:completed,
+      daysUntil:due?Math.ceil((due.getTime()-now.getTime())/(24*60*60*1000)):null
+    };
+  }
+  function enrichFollowupSchedule(record){
+    const out=Object.assign({},record);
+    FOLLOWUP_PERIODS.forEach(function(period){
+      const s=getFollowupState(record,period);
+      out[period.prefix+'_dueDate']=s.dueDate;
+      out[period.prefix+'_dueDateTime']=s.dueDateTime;
+      out[period.prefix+'_scheduleStatus']=s.status;
+    });
+    return out;
+  }
+  function followupStatusLabel(state){
+    if(state.status==='locked')return'Locked';
+    if(state.status==='due-soon')return'Due in '+Math.max(1,state.daysUntil)+' day'+(state.daysUntil===1?'':'s');
+    if(state.status==='due')return'Due now';
+    if(state.status==='overdue')return'Overdue';
+    if(state.status==='completed')return'Completed';
+    return'No schedule date';
+  }
+  function renderFollowupAlarm(){
+    const panel=document.getElementById('followupAlarmPanel');
+    const summary=document.getElementById('followupAlarmSummary');
+    if(!panel||!summary)return;
+    const states=[];
+    _dashData.forEach(function(record){
+      (record._followups||[]).forEach(function(s){
+        if(s.status==='due-soon'||s.status==='due'||s.status==='overdue')states.push(s);
+      });
+    });
+    if(!states.length){panel.style.display='none';summary.textContent='';return;}
+    const soon=states.filter(function(s){return s.status==='due-soon';}).length;
+    const due=states.filter(function(s){return s.status==='due';}).length;
+    const overdue=states.filter(function(s){return s.status==='overdue';}).length;
+    const parts=[];
+    if(soon)parts.push(soon+' due within 7 days');
+    if(due)parts.push(due+' due now');
+    if(overdue)parts.push(overdue+' overdue');
+    summary.textContent=parts.join(' · ')+'. Open the highlighted follow-up from the patient card.';
+    panel.style.display='block';
+  }
+  function renderFollowupStrip(record){
+    const states=record._followups||FOLLOWUP_PERIODS.map(function(p){return getFollowupState(record,p);});
+    return'<div class="followup-strip"><span style="font-size:10px;font-weight:900;color:#475569;text-transform:uppercase;letter-spacing:.04em;"><i class="fas fa-calendar-check mr-1"></i>Follow-ups</span>'+
+      states.map(function(s){
+        const adminOverride=currentRole==='admin'&&(s.status==='locked'||s.status==='due-soon'||s.status==='no-anchor');
+        const cls=s.status+(adminOverride?' admin-open':'');
+        const title=s.due?'Due '+formatFollowupDateTime(s.due):'Discharge date/time required';
+        const icon=s.status==='completed'?'fa-check-circle':s.status==='overdue'?'fa-exclamation-circle':s.status==='locked'?'fa-lock':'fa-bell';
+        return'<button type="button" class="followup-chip '+cls+'" title="'+escapeHtml(title)+'" onclick="openFollowup(\''+escapeHtml(record.id)+'\','+s.months+')"><i class="fas '+icon+'"></i><span>'+s.months+'M · '+escapeHtml(followupStatusLabel(s))+'</span></button>';
+      }).join('')+'</div>';
+  }
+
+  function fuSelect(name,label,options,required){
+    const opts=['<option value="">Select…</option>'].concat(options.map(function(v){
+      const value=Array.isArray(v)?v[0]:v;
+      const text=Array.isArray(v)?v[1]:v;
+      return'<option value="'+escapeHtml(value)+'">'+escapeHtml(text)+'</option>';
+    }));
+    return'<div><label class="lbl">'+escapeHtml(label)+(required?' <span style="color:#dc2626">*</span>':'')+'</label><select name="'+name+'" class="inp" onchange="onFollowupChange(event)">'+opts.join('')+'</select></div>';
+  }
+  function fuInput(name,label,type,attrs){
+    return'<div><label class="lbl">'+escapeHtml(label)+'</label><input type="'+(type||'text')+'" name="'+name+'" class="inp" '+(attrs||'')+' oninput="onFollowupChange(event)" onchange="onFollowupChange(event)"></div>';
+  }
+  function fuCheck(name,label){
+    return'<label style="display:flex;gap:8px;align-items:flex-start;font-size:12px;font-weight:650;color:#334155;"><input type="checkbox" name="'+name+'" onchange="onFollowupChange(event)" style="margin-top:2px;"> <span>'+escapeHtml(label)+'</span></label>';
+  }
+  function fuSection(title,body,id){
+    return'<section class="fu-section"'+(id?' id="'+id+'"':'')+'><div class="fu-section-title">'+title+'</div>'+body+'</section>';
+  }
+  function medicationReference(record){
+    const active=medsList.filter(function(m){
+      return record['dcMed_'+m.f]==='Yes'||(!record['dcMed_'+m.f]&&record['homeMed_'+m.f]==='Yes');
+    }).map(function(m){return m.name;});
+    return active.length?active.join(' · '):'No active discharge/home medication was recorded in the baseline CRF.';
+  }
+  function buildFollowupForm(record,period){
+    const p=period.prefix;
+    const encounter=fuSelect(p+'_followupType','Type of follow-up',[
+      ['Patient visit','Patient visit'],
+      ['Phone call','Phone call'],
+      ['Lost to follow-up','Lost to follow-up (after at least 3 contact attempts)']
+    ],true)+
+      '<div id="'+p+'_phoneSub" class="g2 fu-hidden" style="margin-top:12px;">'+
+      fuSelect(p+'_interviewee','Phone interview completed with',['Patient','Relative'],true)+'</div>';
+    const vital='<div class="g2">'+
+      fuSelect(p+'_patientStatus','Patient vital status',['Alive','Dead'],true)+
+      '<div id="'+p+'_deathSub" class="g2 fu-hidden">'+
+      fuInput(p+'_deathDate','Date of death','date','')+
+      fuSelect(p+'_deathCause','Cause of death',['Cardiac','Non-Cardiac','Unknown'],true)+
+      '</div></div>';
+    const symptoms='<div class="g2">'+
+      fuSelect(p+'_nyha','NYHA functional class',['I','II','III','IV','Not Applicable'],true)+
+      fuSelect(p+'_overallStatus','Overall clinical status',['Improved','Worsened','No Change'],true)+
+      fuSelect(p+'_syncope','Syncope since discharge',['No','Yes'],true)+
+      '<div id="'+p+'_syncopeDateSub" class="fu-hidden">'+fuInput(p+'_syncopeDate','Date of syncope','date','')+'</div>'+
+      fuSelect(p+'_palpitations','Palpitations since discharge',['No','Yes'],true)+
+      '</div>';
+    const complications='<div style="font-size:12px;font-weight:800;color:#475569;margin-bottom:8px;">Device-related complications (select all that apply)</div>'+
+      '<div class="g2" id="'+p+'_deviceCompGroup">'+
+      fuCheck(p+'_devComp_none','None')+
+      fuCheck(p+'_devComp_leadDislodgement','Lead dislodgement')+
+      fuCheck(p+'_devComp_infection','Device/pocket infection')+
+      fuCheck(p+'_devComp_pocketHematoma','Pocket hematoma')+
+      fuCheck(p+'_devComp_shockTherapy','Shock therapy (ICD)')+
+      '</div><div style="margin-top:16px;" class="g2">'+
+      fuSelect(p+'_readmission','Hospital readmission since discharge',['No','Yes'],true)+
+      '</div><div id="'+p+'_readmissionSub" class="fu-hidden" style="margin-top:12px;">'+
+      '<div style="font-size:12px;font-weight:800;color:#475569;margin-bottom:8px;">Reason for readmission (select all that apply)</div><div class="g2">'+
+      fuCheck(p+'_readm_arrhythmia','Arrhythmia recurrence')+
+      fuCheck(p+'_readm_heartFailure','Heart failure')+
+      fuCheck(p+'_readm_bleeding','Bleeding')+
+      fuCheck(p+'_readm_strokeTIA','Stroke/TIA')+
+      fuCheck(p+'_readm_deviceComplication','Device complication')+
+      fuCheck(p+'_readm_thromboembolism','Thromboembolism')+
+      fuCheck(p+'_readm_repeatProcedure','Repeat procedure')+
+      fuCheck(p+'_readm_pericardialTamponade','Pericardial effusion/tamponade')+
+      fuCheck(p+'_readm_other','Other')+
+      '</div><div id="'+p+'_readmissionOtherSub" class="fu-hidden" style="margin-top:10px;">'+fuInput(p+'_readm_otherText','Other reason','text','maxlength="250"')+'</div></div>';
+    const deviceEval='<div class="g2">'+
+      fuSelect(p+'_deviceInterrogation','Device interrogation performed',['No','Yes'],true)+
+      '</div><div id="'+p+'_deviceInterrogationSub" class="fu-hidden" style="margin-top:12px;"><div class="g2">'+
+      fuInput(p+'_batteryLife','Estimated battery life','text','maxlength="60" placeholder="e.g. 8 years"')+
+      fuCheck(p+'_batteryNA','Battery life not applicable / unavailable')+
+      fuInput(p+'_pacingPercent','Pacing percentage (%)','number','min="0" max="100" step="0.1"')+
+      fuCheck(p+'_pacingNA','Pacing percentage not applicable / unavailable')+
+      fuSelect(p+'_leadAbnormality','Lead abnormality',['No','Yes','Not Applicable'],true)+
+      fuSelect(p+'_reprogramming','Device reprogramming performed',['No','Yes','Not Applicable'],true)+
+      '</div></div>';
+    const therapy='<div class="g2">'+
+      fuSelect(p+'_medsUnchanged','Medications unchanged from discharge',['Yes','No'],true)+
+      fuSelect(p+'_medAdherence','Medication adherence',['Good','Partial','Poor','Unknown'],true)+
+      '</div><div id="'+p+'_medChangesSub" class="fu-hidden" style="margin-top:12px;">'+
+      '<div class="fu-med-reference"><strong>Saved discharge/home medications:</strong><br>'+escapeHtml(medicationReference(record))+'</div>'+
+      '<div style="margin-top:10px;"><label class="lbl">Specify medication changes <span style="color:#dc2626">*</span></label><textarea name="'+p+'_medChanges" class="inp" rows="3" maxlength="1000" oninput="onFollowupChange(event)" placeholder="Document starts, stops, dose changes, or other medication changes."></textarea></div></div>';
+    const investigations='<div class="g2">'+
+      fuSelect(p+'_ecgDone','ECG performed',['No','Yes'],true)+
+      '<div id="'+p+'_ecgSub" class="fu-hidden">'+fuSelect(p+'_ecgRhythm','ECG rhythm',['Sinus rhythm','Paced rhythm','Atrial fibrillation','Atrial flutter','Supraventricular tachycardia','Atrial tachycardia','Ventricular tachycardia','Other','Unknown'],true)+'</div>'+
+      fuSelect(p+'_echoDone','Echocardiogram performed',['No','Yes'],true)+
+      '<div id="'+p+'_echoSub" class="fu-hidden">'+fuInput(p+'_lvef','LVEF (%)','number','min="0" max="100" step="0.1"')+'</div>'+
+      '</div>';
+    return fuSection('1. Follow-up encounter',
+      '<div class="g2">'+fuInput(p+'_entryDate','Entry date','date','')+encounter+'</div>')+
+      '<div id="'+p+'_clinicalBlocks">'+
+      fuSection('2. Vital status',vital)+
+      '<div id="'+p+'_aliveSections">'+
+      fuSection('3. Symptoms and functional status',symptoms)+
+      fuSection('4. Device complications and readmission',complications)+
+      fuSection('5. Device evaluation (if a device is implanted)',deviceEval)+
+      fuSection('6. Therapy',therapy)+
+      fuSection('7. Investigations',investigations)+
+      '</div></div>';
+  }
+  function setVisible(id,show){
+    const el=document.getElementById(id);
+    if(el)el.classList.toggle('fu-hidden',!show);
+  }
+  function followupValue(prefix,suffix){
+    return document.querySelector('#followupForm [name="'+prefix+'_'+suffix+'"]')?.value||'';
+  }
+  window.onFollowupChange=function(event){
+    const p=document.getElementById('followupPeriod')?.dataset.prefix;
+    if(!p)return;
+    const type=followupValue(p,'followupType');
+    const vital=followupValue(p,'patientStatus');
+    setVisible(p+'_phoneSub',type==='Phone call');
+    setVisible(p+'_clinicalBlocks',type!=='Lost to follow-up');
+    setVisible(p+'_deathSub',vital==='Dead');
+    setVisible(p+'_aliveSections',vital==='Alive');
+    setVisible(p+'_syncopeDateSub',followupValue(p,'syncope')==='Yes');
+    setVisible(p+'_readmissionSub',followupValue(p,'readmission')==='Yes');
+    setVisible(p+'_readmissionOtherSub',document.querySelector('[name="'+p+'_readm_other"]')?.checked===true);
+    setVisible(p+'_deviceInterrogationSub',followupValue(p,'deviceInterrogation')==='Yes');
+    setVisible(p+'_medChangesSub',followupValue(p,'medsUnchanged')==='No');
+    setVisible(p+'_ecgSub',followupValue(p,'ecgDone')==='Yes');
+    setVisible(p+'_echoSub',followupValue(p,'echoDone')==='Yes');
+    if(event&&event.target&&event.target.type==='checkbox'&&event.target.name.indexOf(p+'_devComp_')===0&&event.target.checked){
+      const none=document.querySelector('[name="'+p+'_devComp_none"]');
+      if(event.target===none){
+        document.querySelectorAll('[name^="'+p+'_devComp_"]').forEach(function(el){if(el!==none)el.checked=false;});
+      }else if(none)none.checked=false;
+    }
+  };
+  function populateFollowupForm(record,prefix){
+    document.querySelectorAll('#followupForm [name^="'+prefix+'_"]').forEach(function(el){
+      const value=record[el.name];
+      if(el.type==='checkbox')el.checked=value===true||value==='true'||value==='Yes'||value===1;
+      else el.value=value===undefined||value===null?'':value;
+    });
+    const entry=document.querySelector('[name="'+prefix+'_entryDate"]');
+    if(entry&&!entry.value)entry.value=localISODate(new Date());
+    window.onFollowupChange();
+  }
+  function findFollowupRecord(id){
+    return _dashData.find(function(d){return d.id===id;})||
+      _allRecordsCache.find(function(d){return d.id===id;})||
+      allData.find(function(d){return d.id===id;});
+  }
+  window.openFollowup=function(patientId,months){
+    const record=findFollowupRecord(patientId);
+    const period=FOLLOWUP_PERIODS.find(function(p){return p.months===Number(months);});
+    if(!record||!period){alert('Unable to locate this patient follow-up. Refresh the dashboard and try again.');return;}
+    const assigned=record.enrolledBy===currentUser?.uid;
+    if(currentRole==='investigator'&&!assigned){alert('This follow-up belongs to another investigator.');return;}
+    const state=getFollowupState(record,period);
+    const admin=currentRole==='admin';
+    const readonly=currentRole==='cso';
+    if(!admin&&!readonly&&(state.status==='locked'||state.status==='due-soon'||state.status==='no-anchor')){
+      const msg=state.due?'This follow-up opens exactly on '+formatFollowupDateTime(state.due)+'. The reminder is visible now, but early entry is locked.':'A discharge date/time is required before this follow-up can be opened.';
+      alert(msg);return;
+    }
+    if(readonly&&(state.status==='locked'||state.status==='due-soon'||state.status==='no-anchor')){
+      alert(state.due?'This read-only follow-up opens on '+formatFollowupDateTime(state.due)+'.':'This record has no calculable follow-up date.');return;
+    }
+    const modal=document.getElementById('followupModal');
+    const periodInput=document.getElementById('followupPeriod');
+    document.getElementById('followupPatientId').value=patientId;
+    periodInput.value=String(period.months);
+    periodInput.dataset.prefix=period.prefix;
+    document.getElementById('followupModalTitle').textContent=period.label;
+    document.getElementById('followupPatientSummary').textContent=(record.fullName||'Anonymous')+' · CID '+(record.civilId||'—')+' · CRF '+(record.crfNo||'—')+' · Due '+(state.due?formatFollowupDateTime(state.due):'not calculable');
+    document.getElementById('followupFormBody').innerHTML=buildFollowupForm(record,period);
+    populateFollowupForm(record,period.prefix);
+    const access=document.getElementById('followupAccessMessage');
+    if(admin&&(state.status==='locked'||state.status==='due-soon'||state.status==='no-anchor')){
+      access.style.display='block';
+      access.innerHTML='<strong>Admin override:</strong> this follow-up is available to you before its investigator opening time.';
+    }else if(readonly){
+      access.style.display='block';
+      access.innerHTML='<strong>Read-only access:</strong> CSO users can review this follow-up but cannot change it.';
+    }else{
+      access.style.display='none';access.textContent='';
+    }
+    document.querySelectorAll('#followupForm input,#followupForm select,#followupForm textarea').forEach(function(el){el.disabled=readonly;});
+    document.getElementById('followupSaveDraftBtn').style.display=readonly?'none':'inline-flex';
+    document.getElementById('followupCompleteBtn').style.display=readonly?'none':'inline-flex';
+    modal.style.display='flex';
+    document.body.style.overflow='hidden';
+  };
+  window.closeFollowupModal=function(){
+    const modal=document.getElementById('followupModal');
+    if(modal)modal.style.display='none';
+    document.body.style.overflow='';
+  };
+  function collectFollowupData(prefix){
+    const payload={};
+    document.querySelectorAll('#followupForm [name^="'+prefix+'_"]').forEach(function(el){
+      payload[el.name]=el.type==='checkbox'?el.checked:el.value.trim();
+    });
+    return payload;
+  }
+  function cleanFollowupPayload(payload,p){
+    const blank=function(suffixes){suffixes.forEach(function(s){payload[p+'_'+s]='';});};
+    if(payload[p+'_followupType']!=='Phone call')blank(['interviewee']);
+    if(payload[p+'_followupType']==='Lost to follow-up'){
+      FOLLOWUP_EXPORT_FIELDS.filter(function(def){
+        return !['EntryDate','Type','RecordStatus','CompletedAt','CompletedByName','CompletedByCode','LastUpdatedAt'].includes(def[0]);
+      }).forEach(function(def){payload[p+'_'+def[1]]='';});
+      return payload;
+    }
+    if(payload[p+'_patientStatus']!=='Dead')blank(['deathDate','deathCause']);
+    if(payload[p+'_patientStatus']!=='Alive'){
+      FOLLOWUP_EXPORT_FIELDS.slice(9,45).forEach(function(def){payload[p+'_'+def[1]]='';});
+      return payload;
+    }
+    if(payload[p+'_syncope']!=='Yes')blank(['syncopeDate']);
+    if(payload[p+'_devComp_none']===true){
+      blank(['devComp_leadDislodgement','devComp_infection','devComp_pocketHematoma','devComp_shockTherapy']);
+    }
+    if(payload[p+'_readmission']!=='Yes')blank(['readm_arrhythmia','readm_heartFailure','readm_bleeding','readm_strokeTIA','readm_deviceComplication','readm_thromboembolism','readm_repeatProcedure','readm_pericardialTamponade','readm_other','readm_otherText']);
+    else if(payload[p+'_readm_other']!==true)blank(['readm_otherText']);
+    if(payload[p+'_deviceInterrogation']!=='Yes')blank(['batteryLife','batteryNA','pacingPercent','pacingNA','leadAbnormality','reprogramming']);
+    else{
+      if(payload[p+'_batteryNA']===true)blank(['batteryLife']);
+      if(payload[p+'_pacingNA']===true)blank(['pacingPercent']);
+    }
+    if(payload[p+'_medsUnchanged']!=='No')blank(['medChanges']);
+    if(payload[p+'_ecgDone']!=='Yes')blank(['ecgRhythm']);
+    if(payload[p+'_echoDone']!=='Yes')blank(['lvef']);
+    return payload;
+  }
+  function requireFollowup(payload,key,label,errors){
+    if(payload[key]===undefined||payload[key]===null||String(payload[key]).trim()==='')errors.push(label);
+  }
+  function validateFollowup(payload,p,complete){
+    if(!complete)return[];
+    const errors=[];
+    requireFollowup(payload,p+'_entryDate','Entry date',errors);
+    requireFollowup(payload,p+'_followupType','Type of follow-up',errors);
+    const type=payload[p+'_followupType'];
+    if(type==='Phone call')requireFollowup(payload,p+'_interviewee','Phone interviewee',errors);
+    if(type==='Lost to follow-up')return errors;
+    requireFollowup(payload,p+'_patientStatus','Patient vital status',errors);
+    if(payload[p+'_patientStatus']==='Dead'){
+      requireFollowup(payload,p+'_deathDate','Date of death',errors);
+      requireFollowup(payload,p+'_deathCause','Cause of death',errors);
+      return errors;
+    }
+    if(payload[p+'_patientStatus']!=='Alive')return errors;
+    [['_nyha','NYHA functional class'],['_overallStatus','Overall clinical status'],['_syncope','Syncope'],['_palpitations','Palpitations'],['_readmission','Readmission'],['_deviceInterrogation','Device interrogation'],['_medsUnchanged','Medication change status'],['_medAdherence','Medication adherence'],['_ecgDone','ECG status'],['_echoDone','Echocardiogram status']].forEach(function(pair){
+      requireFollowup(payload,p+pair[0],pair[1],errors);
+    });
+    if(payload[p+'_syncope']==='Yes')requireFollowup(payload,p+'_syncopeDate','Syncope date',errors);
+    const compKeys=['devComp_none','devComp_leadDislodgement','devComp_infection','devComp_pocketHematoma','devComp_shockTherapy'];
+    if(!compKeys.some(function(k){return payload[p+'_'+k]===true;}))errors.push('At least one device-complication option (including None)');
+    if(payload[p+'_readmission']==='Yes'){
+      const readm=['readm_arrhythmia','readm_heartFailure','readm_bleeding','readm_strokeTIA','readm_deviceComplication','readm_thromboembolism','readm_repeatProcedure','readm_pericardialTamponade','readm_other'];
+      if(!readm.some(function(k){return payload[p+'_'+k]===true;}))errors.push('At least one readmission reason');
+      if(payload[p+'_readm_other']===true)requireFollowup(payload,p+'_readm_otherText','Other readmission reason',errors);
+    }
+    if(payload[p+'_deviceInterrogation']==='Yes'){
+      if(!payload[p+'_batteryNA'])requireFollowup(payload,p+'_batteryLife','Battery life (or mark not applicable)',errors);
+      if(!payload[p+'_pacingNA'])requireFollowup(payload,p+'_pacingPercent','Pacing percentage (or mark not applicable)',errors);
+      requireFollowup(payload,p+'_leadAbnormality','Lead abnormality',errors);
+      requireFollowup(payload,p+'_reprogramming','Device reprogramming',errors);
+    }
+    if(payload[p+'_medsUnchanged']==='No')requireFollowup(payload,p+'_medChanges','Medication changes',errors);
+    if(payload[p+'_ecgDone']==='Yes')requireFollowup(payload,p+'_ecgRhythm','ECG rhythm',errors);
+    if(payload[p+'_echoDone']==='Yes')requireFollowup(payload,p+'_lvef','LVEF',errors);
+    const pctKeys=[p+'_pacingPercent',p+'_lvef'];
+    pctKeys.forEach(function(key){
+      if(payload[key]!==''&&(Number(payload[key])<0||Number(payload[key])>100))errors.push(key===p+'_lvef'?'LVEF must be 0–100%':'Pacing percentage must be 0–100%');
+    });
+    return errors;
+  }
+  window.saveFollowup=async function(markComplete){
+    const id=document.getElementById('followupPatientId').value;
+    const months=Number(document.getElementById('followupPeriod').value);
+    const period=FOLLOWUP_PERIODS.find(function(x){return x.months===months;});
+    const record=findFollowupRecord(id);
+    if(!record||!period)return;
+    if(currentRole==='cso'){alert('CSO access is read-only.');return;}
+    if(currentRole==='investigator'&&record.enrolledBy!==currentUser?.uid){alert('This follow-up belongs to another investigator.');return;}
+    const state=getFollowupState(record,period);
+    if(currentRole!=='admin'&&(state.status==='locked'||state.status==='due-soon'||state.status==='no-anchor')){
+      alert(state.due?'This follow-up remains locked until '+formatFollowupDateTime(state.due)+'.':'A discharge date/time is required.');return;
+    }
+    const payload=cleanFollowupPayload(collectFollowupData(period.prefix),period.prefix);
+    const errors=validateFollowup(payload,period.prefix,markComplete);
+    if(errors.length){alert('Please complete:\n• '+errors.join('\n• '));return;}
+    payload[period.prefix+'_recordStatus']=markComplete?'completed':'draft';
+    payload[period.prefix+'_lastUpdatedAt']=new Date().toISOString();
+    payload[period.prefix+'_lastUpdatedBy']=currentUser?.uid||'';
+    payload[period.prefix+'_lastUpdatedByName']=currentUserName||currentUser?.email||'';
+    payload[period.prefix+'_lastUpdatedByCode']=getDoctorCode(currentUserName)||'';
+    if(markComplete){
+      payload[period.prefix+'_completedAt']=new Date().toISOString();
+      payload[period.prefix+'_completedBy']=currentUser?.uid||'';
+      payload[period.prefix+'_completedByName']=currentUserName||currentUser?.email||'';
+      payload[period.prefix+'_completedByCode']=getDoctorCode(currentUserName)||'';
+    }
+    try{
+      await updateDoc(doc(db,'patients_full',id),Object.assign({},payload,{updatedAt:new Date(),updatedByName:currentUserName||currentUser?.email||'',updatedByCode:getDoctorCode(currentUserName)||''}));
+      Object.assign(record,payload);
+      window.closeFollowupModal();
+      await loadDashboard();
+      if(currentRole==='admin')try{await fetchData();}catch(_){}
+      showToast(markComplete?period.label+' completed.':period.label+' draft saved.','#059669');
+    }catch(err){
+      console.error('[FOLLOW-UP SAVE]',err);
+      alert('Follow-up could not be saved: '+(err.message||err));
+    }
+  };
+
   // DASHBOARD
   let _dashFilter='all',_dashData=[];
   window.setDashFilter=function(f,btn){_dashFilter=f;document.querySelectorAll('.dash-filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderDashboard();};
@@ -4226,6 +4680,7 @@ function initApp() {
         d.fullName=`${d.nameFirst||''} ${d.nameMiddle||''} ${d.nameLast||''}`.trim();
         try { d._comp=calcCompletion(d); } catch(e) { d._comp={score:0,total:1,pct:0,complete:false}; }
         try { d._ts = d.timestamp?.toDate?.().getTime() || new Date(d.timestamp).getTime(); } catch(e) { d._ts=0; }
+        d._followups=FOLLOWUP_PERIODS.map(function(period){return getFollowupState(d,period);});
         _dashData.push(d);
         civIds[d.civilId]=(civIds[d.civilId]||0)+1;
       });
@@ -4237,6 +4692,7 @@ function initApp() {
       document.getElementById('dash_complete').textContent=_dashData.filter(d=>d._comp.complete).length;
       document.getElementById('dash_incomplete').textContent=_dashData.filter(d=>!d._comp.complete).length;
       document.getElementById('dash_reviewed').textContent=_dashData.filter(d=>d.recordStatus==='reviewed').length;
+      renderFollowupAlarm();
       renderDashboard();
     } catch(err) {
       console.error('[DASH]', err);
@@ -4251,6 +4707,8 @@ function initApp() {
     if(_dashFilter==='complete')data=data.filter(d=>d._comp.complete);
     if(_dashFilter==='incomplete')data=data.filter(d=>!d._comp.complete);
     if(_dashFilter==='duplicate')data=data.filter(d=>d._isDup);
+    if(_dashFilter==='followup-alerts')data=data.filter(d=>(d._followups||[]).some(s=>s.status==='due-soon'||s.status==='due'||s.status==='overdue'));
+    if(_dashFilter==='followup-overdue')data=data.filter(d=>(d._followups||[]).some(s=>s.status==='overdue'));
     const grid=document.getElementById('dashGrid');
     if(!data.length){grid.innerHTML='<div class="bg-white rounded-2xl border border-gray-200 p-12 text-center text-gray-400"><i class="fas fa-inbox text-4xl mb-3 block"></i>No records match this filter</div>';return;}
     const canEdit = currentRole !== 'cso';
@@ -4276,6 +4734,7 @@ function initApp() {
             <div style="flex:1;height:5px;background:#e2e8f0;border-radius:3px;overflow:hidden;"><div style="height:100%;width:${c.pct}%;background:${barCol};border-radius:3px;"></div></div>
             <span style="font-size:10px;font-weight:700;color:${barCol};min-width:32px;">${c.pct}%</span>
           </div>
+          ${renderFollowupStrip(d)}
         </div>
         <div style="display:flex;gap:6px;flex-shrink:0;">
           ${canEdit ? `<button onclick='editRecord(${JSON.stringify(d).replace(/'/g,"\\'")})' class="btn btn-yellow text-xs px-3 py-1.5"><i class="fas fa-edit"></i></button>` : `<button onclick='viewRecord(${JSON.stringify(d).replace(/'/g,"\\'")})' class="btn btn-gray text-xs px-3 py-1.5"><i class="fas fa-eye"></i></button>`}
@@ -4283,6 +4742,17 @@ function initApp() {
       </div>`;
     }).join('');
   }
+  // Keep the countdown and lock state aligned with the exact due minute even
+  // when the dashboard remains open for a long session.
+  setInterval(function(){
+    const dashboard=document.getElementById('section-dashboard');
+    if(!dashboard||dashboard.classList.contains('hidden')||!_dashData.length)return;
+    _dashData.forEach(function(record){
+      record._followups=FOLLOWUP_PERIODS.map(function(period){return getFollowupState(record,period);});
+    });
+    renderFollowupAlarm();
+    renderDashboard();
+  },60*1000);
 
   // ADMIN FETCH
   let allData=[];
@@ -4384,19 +4854,13 @@ function initApp() {
         Object.entries(LEGACY_TEXT_VALUES).forEach(([key,map])=>{
           if(map[data[key]])data[key]=map[data[key]];
         });
-        // Draft 17 records the inherited-heart-disease and CRT generator-
-        // replacement reasons as independent binary variables. Convert records
-        // saved by the previous single-select UI back to those binary fields.
+        // Draft 17 records inherited-heart-disease reasons as independent
+        // binary variables. Convert older single-select records on edit.
         const LEGACY_BINARY={
           crtInh_type:{
             'Long QT-syndrome':'crtInh_longqt','HCM':'crtInh_hcm','Brugada syndrome':'crtInh_brugada',
             'Arrhythmogenic RV Dysplasia/Cardiomyopathy (ARVD/C)':'crtInh_arvd',
             'Catecholaminergic Polymorphic VT (CPVT)':'crtInh_cpvt'
-          },
-          crtReplReason:{
-            'Device relocation':'crtRepl_relocation','End of battery life':'crtRepl_battery',
-            'Faulty connector/header':'crtRepl_faulty','Infection':'crtRepl_infection',
-            'Replaced at time of lead revision':'crtRepl_leadrev','Upgrade':'crtRepl_upgrade'
           }
         };
         Object.entries(LEGACY_BINARY).forEach(([oldKey,map])=>{
@@ -4493,8 +4957,8 @@ function initApp() {
 
         // Re-trigger all conditional toggle handlers so sub-reveal sections open for loaded values
         [
-          'onCrtGen','onCrtDevType','onCrtPpmType','onCrtLead',
-          'onPpmGen','onPpmLbbb','onPpmLead','onCiedxOther','onCiedxReimplant',
+          'onCrtDevType','onCrtPpmType','onCrtLead',
+          'onPpmLbbb','onPpmLead','onCiedxOther','onCiedxReimplant','onCiedxReimplantChoice',
           'onTpmDrug','onTpmMI','onTpmPpmSameStay','onBleedT','onDischSt'
         ].forEach(fn=>{
           try{ if(typeof window[fn]==='function') window[fn](); }
@@ -4734,7 +5198,7 @@ function initApp() {
       if(inv&&d.enrolledBy!==inv)return false;
       if(ep&&d.epReason!==ep)return false;
       return true;
-    });
+    }).map(enrichFollowupSchedule);
   }
 
   // Pre-flight check shared by all three exports. Returns true if it is safe
@@ -4821,9 +5285,6 @@ function initApp() {
     procStartDate:'Procedure Date',procStartTime:'Proc Start Time',procEndTime:'Proc End Time',operatorName:'Operator',
     crtInd_surv:'CRT Ind: Cardiac Arrest Survivors',crtInd_eps:'CRT Ind: Inducible VT by EPS',
     crtInd_icmEF:'CRT Ind: ICM EF≤35%',crtInd_nicmEF:'CRT Ind: Non-ICM EF≤35%',
-    crtGenerator:'CRT Generator Type',
-    __crtGeneratorExplant:'Legacy CRT Generator Explant (removed in Draft 17)',
-    ppmGenerator:'PPM Generator Type',ppmDeviceName:'PPM Device Name',
     eps_reason:'EPS/Ablation Reason',
     epsTransseptal:'EPS: Transseptal',epsICE:'EPS: ICE Used',epsFluoroTime:'EPS: Fluoro Time (min)',
     laao_nonvalvular:'LAAO Ind: Non-valvular AFib',laao_highBleed:'LAAO Ind: High Bleed Risk',
@@ -4882,9 +5343,6 @@ function initApp() {
     sodium:'Na',sodiumNA:'NaNA',potassium:'K',potassiumNA:'KNA',magnesium:'Mg',magnesiumNA:'MgNA',inr:'INR',inrNA:'INRNA',
     procStartDate:'ProcDate',procStartTime:'ProcStart',procEndTime:'ProcEnd',operatorName:'Operator',
     crtInd_surv:'CRTIndSrv',crtInd_eps:'CRTIndEPS',crtInd_icmEF:'CRTIndICM',crtInd_nicmEF:'CRTIndNIC',
-    crtGenerator:'CRTGen',
-    __crtGeneratorExplant:'CRTGenEx',
-    ppmGenerator:'PPMGen',
     eps_reason:'EPSReason',
     epsTransseptal:'EPSTrans',epsICE:'EPSICE',epsFluoroTime:'EPSFluro',
     laao_nonvalvular:'LAOIndNV',laao_highBleed:'LAOIndHB',laao_contraOAC:'LAOIndOAC',laao_priorBleed:'LAOIndPB',
@@ -4968,15 +5426,6 @@ function initApp() {
     crtInh_brugada:'CRT Inherited HD: Brugada syndrome',
     crtInh_arvd:'CRT Inherited HD: ARVD/C',
     crtInh_cpvt:'CRT Inherited HD: CPVT',
-    crtReplReason:'CRT: Replacement reason',
-    crtRepl_relocation:'CRT Replacement: Device relocation',
-    crtRepl_battery:'CRT Replacement: End of battery life',
-    crtRepl_faulty:'CRT Replacement: Faulty connector/header',
-    crtRepl_infection:'CRT Replacement: Infection',
-    crtRepl_leadrev:'CRT Replacement: Replaced at lead revision',
-    crtRepl_upgrade:'CRT Replacement: Upgrade',
-    crtReimplant:'Legacy CRT: Reimplant intended (removed in Draft 17)',
-    crtDevImpl:'CRT: Device implant',
     crtDeviceType:'CRT: Device Type',
     crtPpmSame:'CRT: Pacemaker same procedure',
     crtPpmType:'CRT: Pacemaker type',
@@ -5009,9 +5458,6 @@ function initApp() {
     tpmPpmSameStay:'TPM: PPM during same hospital stay',
 
     // 9.7 Permanent PM additions
-    ppmReplReason:'PPM: Replacement reason',
-    ppmReimplant:'Legacy PPM: Reimplant intended (removed in Draft 17)',
-    ppmDevImpl:'PPM: Device implant',
     ppmDev_type:'PPM Device Implant Type',
     ppmLbbbQRS:'PPM LBBB: QRS width post (msec)',
     ppmLbbbQRSna:'PPM LBBB: QRS Not Assessed',
@@ -5052,6 +5498,7 @@ function initApp() {
     ciedxInd_leadPerforation:'CIED Extraction Indication: Lead perforation',
     ciedxInd_tricuspidRegurg:'CIED Extraction Indication: Severe TR related to lead',
     ciedxInd_mriCompatibility:'CIED Extraction Indication: MRI compatibility',
+    ciedxInd_endBattery:'CIED Extraction Indication: End of battery life',
     ciedxInd_other:'CIED Extraction Indication: Other',
     ciedxInd_otherText:'CIED Extraction: Other indication details',
     ciedxDevice:'CIED Extraction: Device being extracted',
@@ -5071,7 +5518,6 @@ function initApp() {
     ciedxTech_femoralSnare:'CIED Extraction Technique: Femoral snare',
     ciedxTech_hybridSurgical:'CIED Extraction Technique: Hybrid surgical extraction',
     ciedxTech_openSurgical:'CIED Extraction Technique: Open surgical extraction',
-    ciedxCompleteSuccess:'CIED Extraction: Complete procedural success',
     ciedxFragmentRetained:'CIED Extraction: Lead fragment retained',
     ciedxNoReimplant:'CIED Extraction: No reimplantation required',
     ciedxDelayedReimplant:'CIED Extraction: Delayed reimplantation planned',
@@ -5177,10 +5623,7 @@ function initApp() {
     crtInherited:'CRTInher', crtInh_type:'CRTInhTy',
     crtInh_longqt:'CRTIhLQT', crtInh_hcm:'CRTIhHCM', crtInh_brugada:'CRTIhBrg',
     crtInh_arvd:'CRTIhARV', crtInh_cpvt:'CRTIhCPV',
-    crtReplReason:'CRTRplRs',
-    crtRepl_relocation:'CRTReloc', crtRepl_battery:'CRTBatt', crtRepl_faulty:'CRTFault',
-    crtRepl_infection:'CRTInfec', crtRepl_leadrev:'CRTLdRev', crtRepl_upgrade:'CRTUpgr',
-    crtReimplant:'CRTReImp', crtDevImpl:'CRTDevIm', crtDeviceType:'CRTDevTy',
+    crtDeviceType:'CRTDevTy',
     crtPpmSame:'CRTPpmSm', crtPpmType:'CRTPpmTy', crtLbbbQRS:'CRTLbQRS',
     crtLbbbQRSna:'CRTLbQRSn', crtBrady:'CRTBrady', crtBradyReason:'CRTBrRsn',
     crtNewLead:'CRTNewLd', crtExistingLead:'CRTExLd', crtAdditionalLead:'CRTAddLd', crtLeadStatus:'CRTLdSt',
@@ -5195,7 +5638,6 @@ function initApp() {
     tpmMIType:'TPMMITy', tpmPpmSameStay:'TPMPpmSm',
 
     // Perm PM
-    ppmReplReason:'PPMRplRs', ppmReimplant:'PPMReImp', ppmDevImpl:'PPMDevIm',
     ppmDev_type:'PPMDevTy',
     ppmLbbbQRS:'PPMLbQRS', ppmLbbbQRSna:'PPMLbQRSn',
     ppmIndication:'PPMInd', ppmNewLead:'PPMNewLd', ppmExistingLead:'PPMExLd', ppmAdditionalLead:'PPMAddLd', ppmLeadStatus:'PPMLdSt',
@@ -5216,7 +5658,7 @@ function initApp() {
     ciedxInd_venousOcclusion:'CEIVenOc', ciedxInd_chronicPain:'CEIChrPn',
     ciedxInd_upgradeRemoval:'CEIUpgRm', ciedxInd_recalledLead:'CEIRecLd',
     ciedxInd_abandonedLead:'CEIAbnLd', ciedxInd_leadPerforation:'CEILdPer',
-    ciedxInd_tricuspidRegurg:'CEITrReg', ciedxInd_mriCompatibility:'CEIMRI',
+    ciedxInd_tricuspidRegurg:'CEITrReg', ciedxInd_mriCompatibility:'CEIMRI', ciedxInd_endBattery:'CEIEndBt',
     ciedxInd_other:'CEIOther', ciedxInd_otherText:'CEIOthTx',
     ciedxDevice:'CEDevice',
     ciedxLead_ra:'CELdRA', ciedxLead_rvPacing:'CELdRVP', ciedxLead_rvIcd:'CELdRVI',
@@ -5226,7 +5668,7 @@ function initApp() {
     ciedxTech_rotationalSheath:'CETRotSh', ciedxTech_telescopingSheath:'CETTelSh',
     ciedxTech_laserSheath:'CETLaser', ciedxTech_femoralSnare:'CETFemSn',
     ciedxTech_hybridSurgical:'CETHybSg', ciedxTech_openSurgical:'CETOpenS',
-    ciedxCompleteSuccess:'CECompSu', ciedxFragmentRetained:'CEFragRt',
+    ciedxFragmentRetained:'CEFragRt',
     ciedxNoReimplant:'CENoReim', ciedxDelayedReimplant:'CEDelRei',
     ciedxImmediateReimplant:'CEImmRei', ciedxReimplantCRT:'CEReCRT', ciedxReimplantPPM:'CERePPM',
 
@@ -5332,10 +5774,9 @@ function initApp() {
   // only when 9.10 immediate reimplantation selects the matching device family.
   const CRF_FIELDS={
     'CRT/AICD':[
-      'crtInd_surv','crtInd_eps','crtInd_icmEF','crtInd_nicmEF','crtInd_vtUnresp','crtGenerator',
+      'crtInd_surv','crtInd_eps','crtInd_icmEF','crtInd_nicmEF','crtInd_vtUnresp',
       'crtInherited','crtInh_longqt','crtInh_hcm','crtInh_brugada','crtInh_arvd','crtInh_cpvt',
-      'crtRepl_relocation','crtRepl_battery','crtRepl_faulty','crtRepl_infection','crtRepl_leadrev','crtRepl_upgrade',
-      'crtReimplant','crtDevImpl','crtDeviceType','crtPpmSame','crtPpmType',
+      'crtDeviceType','crtPpmSame','crtPpmType',
       'crtLbbbQRS','crtLbbbQRSna','crtBrady','crtBradyReason',
       'crtNewLead','crtExistingLead','crtAdditionalLead','crtLeadStatus',
       'condSysPace','condSysPaceQRS','condSysPaceQRSna'
@@ -5347,10 +5788,6 @@ function initApp() {
       'tpmDrug_avBlock','tpmMIType','tpmPpmSameStay'
     ],
     'Permanent Pacemaker':[
-      // tpmPpmSameStay removed (was 9.6c) — kept in FIELD_MAP/SPSS_VARS for legacy record export only
-      'ppmGenerator','ppmDeviceName',
-      // ppmDeviceName removed (was 9.7.a.1) — device type captured in 9.7.b.1 (ppmDev_*); kept in FIELD_MAP/SPSS_VARS for legacy record export only
-      'ppmReplReason','ppmReimplant','ppmDevImpl',
       'ppmDev_type',
       'ppmLbbbQRS','ppmLbbbQRSna','ppmIndication',
       'ppmNewLead','ppmExistingLead','ppmAdditionalLead','ppmLeadStatus'
@@ -5370,14 +5807,14 @@ function initApp() {
       'ciedxInd_leadMalfunction','ciedxInd_leadFracture','ciedxInd_insulationFailure',
       'ciedxInd_venousOcclusion','ciedxInd_chronicPain','ciedxInd_upgradeRemoval',
       'ciedxInd_recalledLead','ciedxInd_abandonedLead','ciedxInd_leadPerforation',
-      'ciedxInd_tricuspidRegurg','ciedxInd_mriCompatibility','ciedxInd_other','ciedxInd_otherText',
+      'ciedxInd_tricuspidRegurg','ciedxInd_mriCompatibility','ciedxInd_endBattery','ciedxInd_other','ciedxInd_otherText',
       'ciedxDevice',
       'ciedxLead_ra','ciedxLead_rvPacing','ciedxLead_rvIcd','ciedxLead_csLv',
       'ciedxLead_his','ciedxLead_lbba','ciedxLead_sicd','ciedxLead_other',
       'ciedxTech_simpleTraction','ciedxTech_lockingStylet','ciedxTech_rotationalSheath',
       'ciedxTech_telescopingSheath','ciedxTech_laserSheath','ciedxTech_femoralSnare',
       'ciedxTech_hybridSurgical','ciedxTech_openSurgical',
-      'ciedxCompleteSuccess','ciedxFragmentRetained','ciedxNoReimplant','ciedxDelayedReimplant',
+      'ciedxFragmentRetained','ciedxNoReimplant','ciedxDelayedReimplant',
       'ciedxImmediateReimplant','ciedxReimplantCRT','ciedxReimplantPPM'
     ]
   };
@@ -5406,8 +5843,8 @@ function initApp() {
         children.forEach(c=>{cleaned[c]='';});
       }
     }
-    if(cleaned.crtGenerator!=='Generator replacement'){
-      ['crtRepl_relocation','crtRepl_battery','crtRepl_faulty','crtRepl_infection','crtRepl_leadrev','crtRepl_upgrade'].forEach(c=>{cleaned[c]='';});
+    if(cleaned.ciedxReimplantCRT==='Yes'&&cleaned.ciedxReimplantPPM==='Yes'){
+      cleaned.ciedxReimplantPPM='';
     }
     if(cleaned.epReason!=='Pacemaker') cleaned.pacemakerType='';
     // CRF-scoped blanking — set fields belonging to hidden/non-selected CRFs to blank.
@@ -5419,6 +5856,31 @@ function initApp() {
         }
       }
     }
+    // Follow-up conditional blanking mirrors the modal reveal logic, preventing
+    // stale values from a changed answer from leaking into Excel/SPSS.
+    FOLLOWUP_PERIODS.forEach(function(period){
+      const p=period.prefix+'_';
+      const blank=function(suffixes){suffixes.forEach(function(s){cleaned[p+s]='';});};
+      if(cleaned[p+'followupType']!=='Phone call')blank(['interviewee']);
+      if(cleaned[p+'followupType']==='Lost to follow-up'){
+        FOLLOWUP_EXPORT_FIELDS.filter(function(def){
+          return !['DueDate','DueDateTime','ScheduleStatus','EntryDate','Type','RecordStatus','CompletedAt','CompletedByName','CompletedByCode','LastUpdatedAt'].includes(def[0]);
+        }).forEach(function(def){cleaned[p+def[1]]='';});
+        return;
+      }
+      if(cleaned[p+'patientStatus']!=='Dead')blank(['deathDate','deathCause']);
+      if(cleaned[p+'patientStatus']!=='Alive'){
+        FOLLOWUP_EXPORT_FIELDS.slice(9,45).forEach(function(def){cleaned[p+def[1]]='';});
+        return;
+      }
+      if(cleaned[p+'syncope']!=='Yes')blank(['syncopeDate']);
+      if(cleaned[p+'readmission']!=='Yes')blank(['readm_arrhythmia','readm_heartFailure','readm_bleeding','readm_strokeTIA','readm_deviceComplication','readm_thromboembolism','readm_repeatProcedure','readm_pericardialTamponade','readm_other','readm_otherText']);
+      else if(!cleaned[p+'readm_other'])blank(['readm_otherText']);
+      if(cleaned[p+'deviceInterrogation']!=='Yes')blank(['batteryLife','batteryNA','pacingPercent','pacingNA','leadAbnormality','reprogramming']);
+      if(cleaned[p+'medsUnchanged']!=='No')blank(['medChanges']);
+      if(cleaned[p+'ecgDone']!=='Yes')blank(['ecgRhythm']);
+      if(cleaned[p+'echoDone']!=='Yes')blank(['lvef']);
+    });
     return cleaned;
   }
 
@@ -5494,15 +5956,11 @@ function initApp() {
     holterAtrialRhythm:{'Sinus':1,'Atrial fibrillation':2,'Atrial flutter':3,'SVT':4,'Atrial tachycardia':5,'Atrial paced':6,'Sinus arrest':7,'Sinus pause':8,'1st degree AV block':9,'2nd degree AV block':10,'3rd degree AV block':11,'Unknown rhythm':12},
     holterVentRhythm:{'Normal':1,'Non-sustained VT':2,'Sustained VT':3,'Frequent PVCs':4,'PVCs burden >10%':5},
     crtInh_type:{'Long QT-syndrome':1,'HCM':2,'Brugada syndrome':3,'Arrhythmogenic RV Dysplasia/Cardiomyopathy (ARVD/C)':4,'Catecholaminergic Polymorphic VT (CPVT)':5},
-    crtGenerator:{'Initial implant':1,'Generator replacement':2,'Generator/device explant':3},
-    crtReplReason:{'Device relocation':1,'End of battery life':2,'Faulty connector/header':3,'Infection':4,'Replaced at time of lead revision':5,'Upgrade':6},
     crtDeviceType:{'CRT-D':1,'ICD-Dual chamber':2,'ICD-single chamber':3,'Extra vascular ICD':4,'Sub cutaneous ICD':5,'CRT':6},
     crtPpmType:{'Single chamber transvenous PPM':1,'Dual chamber transvenous PPM':2,'Leadless single chamber PPM':3,'Leadless dual chamber PPM':4,'CRT-P':5,'His-bundle PPM':6,'Leadless LVEP':7,'CCM':8,'LBBB PPM':9},
     crtBradyReason:{'2:1 AV block':1,'2° AV block, Mobitz II':2,'A-V mode ablation':3,'>50% RV pacing':4,'Chronotropic incompetence':5,'CHB':6,'HF unresponsive to GDMT':7,'SSS':8,'Other':9},
     crtLeadStatus:{'Extracted':1,'Abandoned':2,'Reused':3},
     tpmIndication:{'CHB (3° AV block)':1,'Mobitz type II AV block':2,'Alternating RBBB and LBBB':3,'Symptomatic sinus-node dysfunction':4,'Sinus arrest or Sinoatrial block':5,'Prolonged pause (>3s)':6,'Tachy-Brady syndrome':7},
-    ppmGenerator:{'Initial implant':1,'Generator replacement':2,'Generator/device explant':3},
-    ppmReplReason:{'Device relocation':1,'End of battery life':2,'Faulty connector/header':3,'Infection':4,'Replaced at time of lead revision':5,'Upgrade':6},
     ppmDev_type:{'Single chamber transvenous PPM':1,'Dual chamber transvenous PPM':2,'Leadless single chamber PPM':3,'Leadless dual chamber PPM':4,'His-bundle PPM':5,'Leadless LVEP':6,'CCM':7,'LBBB PPM':8},
     ppmIndication:{'2:1 AV block':1,'2° AV block, Mobitz II':2,'A-V node ablation':3,'>40% RV pacing':4,'Chronotropic incompetence':5,'CHB':6,'SSS':7,'Significant pause':8},
     ppmLeadStatus:{'Extracted':1,'Abandoned':2,'Reused':3},
@@ -5584,18 +6042,6 @@ function initApp() {
     return undefined;
   }
 
-  // CRT replacement reason is now a single-select (9.5.b.1). Older records were
-  // stored as six boolean checkboxes (crtRepl_*). For export, resolve the
-  // effective single value: prefer the new field, else first ticked legacy flag.
-  function resolveCrtReplReason(r){
-    if(r.crtReplReason) return r.crtReplReason;
-    const LEGACY=[['crtRepl_relocation','Device relocation'],['crtRepl_battery','End of battery life'],
-      ['crtRepl_faulty','Faulty connector/header'],['crtRepl_infection','Infection'],
-      ['crtRepl_leadrev','Replaced at time of lead revision'],['crtRepl_upgrade','Upgrade']];
-    for(const [k,label] of LEGACY){ if(r[k]===true||r[k]==='true'||r[k]==='Yes') return label; }
-    return '';
-  }
-
   // Encoder for EXCEL sheet — returns plain scalars (no {t,v,z} objects).
   // Numeric → Number, Date → JS Date, Time → fractional-day Number,
   // Yes/No / Unrec → "Yes" / "No" / blank, everything else → string.
@@ -5614,15 +6060,7 @@ function initApp() {
   // exported as BLANK (empty), not a 9 sentinel, so analysts treat them as
   // standard system-missing rather than a real value.
   function encodeForSPSS(r,f){
-    // Virtual / derived fields — computed from other record fields.
-    if(f==='__crtGeneratorExplant'){
-      const g=r['crtGenerator'];
-      if(!g) return '';
-      return g==='Generator/device explant'?1:0;
-    }
-    // CRT replacement reason — resolve effective single value (incl. legacy
-    // multi-checkbox records), then fall through to VALUE_CODES below.
-    let val=(f==='crtReplReason') ? resolveCrtReplReason(r) : r[f];
+    let val=r[f];
     if(f.endsWith('Unrec')||f.endsWith('NA')){
       if(val===true||val==='true')return 1;
       return '';
@@ -5774,8 +6212,7 @@ function initApp() {
       // 9.5 CRT/AICD
       'crtInd_surv','crtInd_eps','crtInd_icmEF','crtInd_nicmEF','crtInd_vtUnresp',
       'crtInherited','crtInh_longqt','crtInh_hcm','crtInh_brugada','crtInh_arvd','crtInh_cpvt',
-      'crtGenerator','crtDeviceType','crtDevImpl',
-      'crtRepl_relocation','crtRepl_battery','crtRepl_faulty','crtRepl_infection','crtRepl_leadrev','crtRepl_upgrade',
+      'crtDeviceType',
       'crtPpmSame','crtPpmType','crtBrady','crtBradyReason',
       'crtNewLead','crtExistingLead','crtAdditionalLead','crtLeadStatus','crtLbbbQRS','crtLbbbQRSna',
       // 9.6 Temporary PM
@@ -5785,9 +6222,8 @@ function initApp() {
       'tpmCause_degenerative','tpmCause_hypothermia','tpmCause_bridge','tpmCause_postTAVI','tpmCause_unknown',
       'tpmDrug_avBlock','tpmMIType','tpmPpmSameStay',
       // 9.7 Permanent PM
-      'ppmGenerator','ppmDeviceName','ppmDevImpl',
       'ppmDev_type',
-      'ppmIndication','ppmReplReason',
+      'ppmIndication',
       'ppmNewLead','ppmExistingLead','ppmAdditionalLead','ppmLeadStatus','ppmLbbbQRS','ppmLbbbQRSna',
       // 9.8 EPS
       'eps_reason',
@@ -5802,14 +6238,14 @@ function initApp() {
       'ciedxInd_leadMalfunction','ciedxInd_leadFracture','ciedxInd_insulationFailure',
       'ciedxInd_venousOcclusion','ciedxInd_chronicPain','ciedxInd_upgradeRemoval',
       'ciedxInd_recalledLead','ciedxInd_abandonedLead','ciedxInd_leadPerforation',
-      'ciedxInd_tricuspidRegurg','ciedxInd_mriCompatibility','ciedxInd_other','ciedxInd_otherText',
+      'ciedxInd_tricuspidRegurg','ciedxInd_mriCompatibility','ciedxInd_endBattery','ciedxInd_other','ciedxInd_otherText',
       'ciedxDevice',
       'ciedxLead_ra','ciedxLead_rvPacing','ciedxLead_rvIcd','ciedxLead_csLv',
       'ciedxLead_his','ciedxLead_lbba','ciedxLead_sicd','ciedxLead_other',
       'ciedxTech_simpleTraction','ciedxTech_lockingStylet','ciedxTech_rotationalSheath',
       'ciedxTech_telescopingSheath','ciedxTech_laserSheath','ciedxTech_femoralSnare',
       'ciedxTech_hybridSurgical','ciedxTech_openSurgical',
-      'ciedxCompleteSuccess','ciedxFragmentRetained','ciedxNoReimplant','ciedxDelayedReimplant',
+      'ciedxFragmentRetained','ciedxNoReimplant','ciedxDelayedReimplant',
       'ciedxImmediateReimplant','ciedxReimplantCRT','ciedxReimplantPPM',
     ],
     'Complications':[
@@ -5874,6 +6310,7 @@ function initApp() {
         type='Coded (numeric)';
         notes=Object.entries(VALUE_CODES[v]).map(([k,c])=>c+'='+k).join('; ');
       }
+      else if(FOLLOWUP_BINARY_FIELDS.has(v))type='Binary (1=Yes/checked, 0=No/unchecked)';
       else if(v.endsWith('Unrec')||v.endsWith('NA'))type='Binary (1=Yes / blank=No or untouched)';
       else if(NUMERIC_FIELDS.has(v))type='Numeric (int/double)';
       else if(DATE_FIELDS.has(v))type='Date';
@@ -6134,14 +6571,6 @@ function initApp() {
     ["Proc_CRTIndi_IHD_Brugada","crtInh_brugada"],
     ["Proc_CRTIndi_IHD_ARVDC","crtInh_arvd"],
     ["Proc_CRTIndi_IHD_CPVT","crtInh_cpvt"],
-    ["Proc_CRT_Generator","crtGenerator"],
-    ["Proc_CRT_GenRepl_Relocation","crtRepl_relocation"],
-    ["Proc_CRT_GenRepl_Battery","crtRepl_battery"],
-    ["Proc_CRT_GenRepl_Connector","crtRepl_faulty"],
-    ["Proc_CRT_GenRepl_Infection","crtRepl_infection"],
-    ["Proc_CRT_GenRepl_LeadRevision","crtRepl_leadrev"],
-    ["Proc_CRT_GenRepl_Upgrade","crtRepl_upgrade"],
-    ["Proc_CRT_DeviceImplant","crtDevImpl"],
     ["Proc_CRT_DevImplant_Type","crtDeviceType"],
     ["Proc_CRT_DevImpTyp_Pacemaker","crtPpmSame"],
     ["Proc_CRT_DevImp_PPMtype","crtPpmType"],
@@ -6169,9 +6598,6 @@ function initApp() {
     ["Proc_TPMcause_BridgePPM","tpmCause_bridge"],
     ["Proc_TPMcause_PostTAVI","tpmCause_postTAVI"],
     ["Proc_TPMcause_Unknown","tpmCause_unknown"],
-    ["Proc_PPM_Generator","ppmGenerator"],
-    ["Proc_PPM_GenReplacReason","ppmReplReason"],
-    ["Proc_PPM_DeviceImplant","ppmDevImpl"],
     ["Proc_PPM_DevImpl_Type","ppmDev_type"],
     ["Proc_PPM_LBBB_QRS","ppmLbbbQRS"],
     ["Proc_PPM_LBBB_QRS_NA","ppmLbbbQRSna"],
@@ -6217,6 +6643,7 @@ function initApp() {
     ["Proc_CIEDX_IndLeadPerfor","ciedxInd_leadPerforation"],
     ["Proc_CIEDX_IndLeadTR","ciedxInd_tricuspidRegurg"],
     ["Proc_CIEDX_IndMRIcompat","ciedxInd_mriCompatibility"],
+    ["Proc_CIEDX_IndEndBattery","ciedxInd_endBattery"],
     ["Proc_CIEDX_IndOther","ciedxInd_other"],
     ["Proc_CIEDX_IndOtherText","ciedxInd_otherText"],
     ["Proc_CIEDX_Device","ciedxDevice"],
@@ -6236,7 +6663,6 @@ function initApp() {
     ["Proc_CIEDX_Tech_FemoralSnare","ciedxTech_femoralSnare"],
     ["Proc_CIEDX_Tech_HybridSurgical","ciedxTech_hybridSurgical"],
     ["Proc_CIEDX_Tech_OpenSurgical","ciedxTech_openSurgical"],
-    ["Proc_CIEDX_CompleteSuccess","ciedxCompleteSuccess"],
     ["Proc_CIEDX_FragmentRetained","ciedxFragmentRetained"],
     ["Proc_CIEDX_NoReimplant","ciedxNoReimplant"],
     ["Proc_CIEDX_DelayedReimplant","ciedxDelayedReimplant"],
@@ -6342,6 +6768,105 @@ function initApp() {
     ["DiscMed_Ivabradine","dcMed_ivabradine"],
   ];
 
+  // Follow-up variables are generated from one canonical list for all three
+  // time points. Excel and SPSS therefore receive the same 147 follow-up
+  // columns in the same order, in addition to the baseline registry columns.
+  const FOLLOWUP_EXPORT_FIELDS=[
+    ['DueDate','dueDate','Calculated due date'],
+    ['DueDateTime','dueDateTime','Calculated due date and time'],
+    ['ScheduleStatus','scheduleStatus','Schedule status at export'],
+    ['EntryDate','entryDate','Entry date'],
+    ['Type','followupType','Type of follow-up'],
+    ['Interviewee','interviewee','Phone interviewee'],
+    ['VitalStatus','patientStatus','Patient vital status'],
+    ['DeathDate','deathDate','Date of death'],
+    ['DeathCause','deathCause','Cause of death'],
+    ['NYHA','nyha','NYHA functional class'],
+    ['OverallStatus','overallStatus','Overall clinical status'],
+    ['Syncope','syncope','Syncope since discharge'],
+    ['SyncopeDate','syncopeDate','Date of syncope'],
+    ['Palpitations','palpitations','Palpitations since discharge'],
+    ['DevComp_None','devComp_none','Device complication: None'],
+    ['DevComp_LeadDislodgement','devComp_leadDislodgement','Device complication: Lead dislodgement'],
+    ['DevComp_Infection','devComp_infection','Device complication: Infection'],
+    ['DevComp_PocketHematoma','devComp_pocketHematoma','Device complication: Pocket hematoma'],
+    ['DevComp_ShockTherapy','devComp_shockTherapy','Device complication: Shock therapy (ICD)'],
+    ['Readmission','readmission','Hospital readmission'],
+    ['Readm_Arrhythmia','readm_arrhythmia','Readmission reason: Arrhythmia recurrence'],
+    ['Readm_HeartFailure','readm_heartFailure','Readmission reason: Heart failure'],
+    ['Readm_Bleeding','readm_bleeding','Readmission reason: Bleeding'],
+    ['Readm_StrokeTIA','readm_strokeTIA','Readmission reason: Stroke/TIA'],
+    ['Readm_DeviceComplication','readm_deviceComplication','Readmission reason: Device complication'],
+    ['Readm_Thromboembolism','readm_thromboembolism','Readmission reason: Thromboembolism'],
+    ['Readm_RepeatProcedure','readm_repeatProcedure','Readmission reason: Repeat procedure'],
+    ['Readm_PericardialTamponade','readm_pericardialTamponade','Readmission reason: Pericardial effusion/tamponade'],
+    ['Readm_Other','readm_other','Readmission reason: Other'],
+    ['Readm_OtherText','readm_otherText','Other readmission reason'],
+    ['DeviceInterrogation','deviceInterrogation','Device interrogation performed'],
+    ['BatteryLife','batteryLife','Estimated battery life'],
+    ['Battery_NA','batteryNA','Battery life unavailable/not applicable'],
+    ['PacingPercent','pacingPercent','Pacing percentage'],
+    ['Pacing_NA','pacingNA','Pacing percentage unavailable/not applicable'],
+    ['LeadAbnormality','leadAbnormality','Lead abnormality'],
+    ['Reprogramming','reprogramming','Device reprogramming'],
+    ['MedsUnchanged','medsUnchanged','Medications unchanged from discharge'],
+    ['MedicationChanges','medChanges','Medication changes'],
+    ['MedicationAdherence','medAdherence','Medication adherence'],
+    ['ECGDone','ecgDone','ECG performed'],
+    ['ECGRhythm','ecgRhythm','ECG rhythm'],
+    ['EchoDone','echoDone','Echocardiogram performed'],
+    ['LVEF','lvef','LVEF (%)'],
+    ['RecordStatus','recordStatus','Follow-up record status'],
+    ['CompletedAt','completedAt','Follow-up completion timestamp'],
+    ['CompletedByName','completedByName','Completed by'],
+    ['CompletedByCode','completedByCode','Completed by investigator code'],
+    ['LastUpdatedAt','lastUpdatedAt','Last update timestamp']
+  ];
+  const FOLLOWUP_BINARY_SUFFIXES=new Set([
+    'syncope','palpitations','devComp_none','devComp_leadDislodgement',
+    'devComp_infection','devComp_pocketHematoma','devComp_shockTherapy',
+    'readmission','readm_arrhythmia','readm_heartFailure','readm_bleeding',
+    'readm_strokeTIA','readm_deviceComplication','readm_thromboembolism',
+    'readm_repeatProcedure','readm_pericardialTamponade','readm_other',
+    'deviceInterrogation','batteryNA','pacingNA','medsUnchanged','ecgDone','echoDone'
+  ]);
+  const FOLLOWUP_BINARY_FIELDS=new Set();
+  FOLLOWUP_PERIODS.forEach(function(period){
+    FOLLOWUP_EXPORT_FIELDS.forEach(function(def){
+      const modelName='FU'+period.months+'_'+def[0];
+      const fieldKey=period.prefix+'_'+def[1];
+      MODEL_EXPORT.push([modelName,fieldKey]);
+      FIELD_MAP[fieldKey]=period.label+': '+def[2];
+      if(FOLLOWUP_BINARY_SUFFIXES.has(def[1]))FOLLOWUP_BINARY_FIELDS.add(fieldKey);
+    });
+    DATE_FIELDS.add(period.prefix+'_dueDate');
+    DATE_FIELDS.add(period.prefix+'_entryDate');
+    DATE_FIELDS.add(period.prefix+'_deathDate');
+    DATE_FIELDS.add(period.prefix+'_syncopeDate');
+    NUMERIC_FIELDS.add(period.prefix+'_pacingPercent');
+    NUMERIC_FIELDS.add(period.prefix+'_lvef');
+    const maps={
+      scheduleStatus:{'locked':1,'due-soon':2,'due':3,'overdue':4,'completed':5,'no-anchor':9},
+      followupType:{'Patient visit':1,'Phone call':2,'Lost to follow-up':3},
+      interviewee:{'Patient':1,'Relative':2},
+      patientStatus:{'Alive':1,'Dead':2},
+      deathCause:{'Cardiac':1,'Non-Cardiac':2,'Unknown':3},
+      nyha:{'I':1,'II':2,'III':3,'IV':4,'Not Applicable':9},
+      overallStatus:{'Improved':1,'Worsened':2,'No Change':3},
+      leadAbnormality:{'No':0,'Yes':1,'Not Applicable':9},
+      reprogramming:{'No':0,'Yes':1,'Not Applicable':9},
+      medAdherence:{'Good':1,'Partial':2,'Poor':3,'Unknown':9},
+      ecgRhythm:{'Sinus rhythm':1,'Paced rhythm':2,'Atrial fibrillation':3,'Atrial flutter':4,'Supraventricular tachycardia':5,'Atrial tachycardia':6,'Ventricular tachycardia':7,'Other':8,'Unknown':9},
+      recordStatus:{'draft':1,'completed':2}
+    };
+    Object.keys(maps).forEach(function(suffix){
+      const key=period.prefix+'_'+suffix;
+      VALUE_CODES[key]=maps[suffix];
+      VALUE_CODES_NORM[key]={};
+      Object.keys(maps[suffix]).forEach(function(label){VALUE_CODES_NORM[key][_normCode(label)]=maps[suffix][label];});
+    });
+  });
+
   window.exportToExcel=async function(){
     if(!exportPreflight('excel'))return;
     try{
@@ -6382,7 +6907,8 @@ function initApp() {
     XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName('Invest_ECG','Procedure_StartDate')),'Investigations & Labs');
     XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName('Procedure_StartDate','Compli_ProcedureCA')),'Procedure Details');
     XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName('Compli_ProcedureCA','Outcom_ImmProcedSuccess')),'Complications');
-    XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName('Outcom_ImmProcedSuccess',null)),'Outcome & Discharge');
+    XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName('Outcom_ImmProcedSuccess','FU1_DueDate')),'Outcome & Discharge');
+    XLSX.utils.book_append_sheet(wb,buildSheet(sliceByModelName('FU1_DueDate',null)),'Follow-ups');
     // Codebook — documents the numeric codes now used throughout the workbook.
     XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(buildCodebookAoA(MODEL_EXPORT, data)),'Codebook');
     // Surface any value that could not be coded (would land as text).
