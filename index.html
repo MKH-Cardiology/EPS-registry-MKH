@@ -4275,6 +4275,17 @@ function initApp() {
       daysUntil:due?Math.ceil((due.getTime()-now.getTime())/(24*60*60*1000)):null
     };
   }
+  function deriveFollowupDeviceComplications(record,prefix){
+    const current=record[prefix+'_deviceComplications'];
+    if(current==='Yes'||current==='No')return current;
+    const truthy=function(v){return v===true||v==='true'||v==='Yes'||v===1;};
+    // Compatibility with follow-ups saved before the parent Yes/No question
+    // was introduced: legacy "None" means No; any selected complication means Yes.
+    if(truthy(record[prefix+'_devComp_none']))return'No';
+    const childKeys=['devComp_leadDislodgement','devComp_infection','devComp_pocketHematoma','devComp_shockTherapy'];
+    if(childKeys.some(function(key){return truthy(record[prefix+'_'+key]);}))return'Yes';
+    return'';
+  }
   function enrichFollowupSchedule(record){
     const out=Object.assign({},record);
     FOLLOWUP_PERIODS.forEach(function(period){
@@ -4282,6 +4293,7 @@ function initApp() {
       out[period.prefix+'_dueDate']=s.dueDate;
       out[period.prefix+'_dueDateTime']=s.dueDateTime;
       out[period.prefix+'_scheduleStatus']=s.status;
+      out[period.prefix+'_deviceComplications']=deriveFollowupDeviceComplications(record,period.prefix);
     });
     return out;
   }
@@ -4371,14 +4383,16 @@ function initApp() {
       '<div id="'+p+'_syncopeDateSub" class="fu-hidden">'+fuInput(p+'_syncopeDate','Date of syncope','date','')+'</div>'+
       fuSelect(p+'_palpitations','Palpitations since discharge',['No','Yes'],true)+
       '</div>';
-    const complications='<div class="fu-required-group" id="'+p+'_deviceCompRequired"><div class="fu-group-label">Device-related complications (select all that apply)</div>'+
+    const complications='<div class="g2">'+
+      fuSelect(p+'_deviceComplications','Any device-related complications',['No','Yes'],true)+
+      '</div><div id="'+p+'_deviceComplicationsSub" class="fu-hidden" style="margin-top:12px;">'+
+      '<div class="fu-required-group" id="'+p+'_deviceCompRequired"><div class="fu-group-label">Device-related complications (select all that apply)</div>'+
       '<div class="g2" id="'+p+'_deviceCompGroup">'+
-      fuCheck(p+'_devComp_none','None')+
       fuCheck(p+'_devComp_leadDislodgement','Lead dislodgement')+
       fuCheck(p+'_devComp_infection','Device/pocket infection')+
       fuCheck(p+'_devComp_pocketHematoma','Pocket hematoma')+
       fuCheck(p+'_devComp_shockTherapy','Shock therapy (ICD)')+
-      '</div></div><div style="margin-top:16px;" class="g2">'+
+      '</div></div></div><div style="margin-top:16px;" class="g2">'+
       fuSelect(p+'_readmission','Hospital readmission since discharge',['No','Yes'],true)+
       '</div><div id="'+p+'_readmissionSub" class="fu-hidden" style="margin-top:12px;">'+
       '<div class="fu-required-group" id="'+p+'_readmissionReasonsRequired"><div class="fu-group-label">Reason for readmission (select all that apply)</div><div class="g2">'+
@@ -4496,8 +4510,11 @@ function initApp() {
     mark('syncope');
     if(followupValue(p,'syncope')==='Yes')mark('syncopeDate');
     mark('palpitations');
-    const deviceComp=['devComp_none','devComp_leadDislodgement','devComp_infection','devComp_pocketHematoma','devComp_shockTherapy'];
-    paintFollowupGroup(p+'_deviceCompRequired',p+'_deviceCompGroup',deviceComp.some(checked));
+    mark('deviceComplications');
+    if(followupValue(p,'deviceComplications')==='Yes'){
+      const deviceComp=['devComp_leadDislodgement','devComp_infection','devComp_pocketHematoma','devComp_shockTherapy'];
+      paintFollowupGroup(p+'_deviceCompRequired',p+'_deviceCompGroup',deviceComp.some(checked));
+    }
     mark('readmission');
     if(followupValue(p,'readmission')==='Yes'){
       const reasons=['readm_arrhythmia','readm_heartFailure','readm_bleeding','readm_strokeTIA','readm_deviceComplication','readm_thromboembolism','readm_repeatProcedure','readm_pericardialTamponade','readm_other'];
@@ -4530,23 +4547,24 @@ function initApp() {
     setVisible(p+'_deathSub',vital==='Dead');
     setVisible(p+'_aliveSections',vital==='Alive');
     setVisible(p+'_syncopeDateSub',followupValue(p,'syncope')==='Yes');
+    const deviceCompYes=followupValue(p,'deviceComplications')==='Yes';
+    setVisible(p+'_deviceComplicationsSub',deviceCompYes);
+    if(!deviceCompYes){
+      document.querySelectorAll('[name^="'+p+'_devComp_"]').forEach(function(el){el.checked=false;});
+    }
     setVisible(p+'_readmissionSub',followupValue(p,'readmission')==='Yes');
     setVisible(p+'_readmissionOtherSub',document.querySelector('[name="'+p+'_readm_other"]')?.checked===true);
     setVisible(p+'_deviceInterrogationSub',followupValue(p,'deviceInterrogation')==='Yes');
     setVisible(p+'_medChangesSub',followupValue(p,'medsUnchanged')==='No');
     setVisible(p+'_ecgSub',followupValue(p,'ecgDone')==='Yes');
     setVisible(p+'_echoSub',followupValue(p,'echoDone')==='Yes');
-    if(event&&event.target&&event.target.type==='checkbox'&&event.target.name.indexOf(p+'_devComp_')===0&&event.target.checked){
-      const none=document.querySelector('[name="'+p+'_devComp_none"]');
-      if(event.target===none){
-        document.querySelectorAll('[name^="'+p+'_devComp_"]').forEach(function(el){if(el!==none)el.checked=false;});
-      }else if(none)none.checked=false;
-    }
     updateFollowupIndicators();
   };
   function populateFollowupForm(record,prefix){
     document.querySelectorAll('#followupForm [name^="'+prefix+'_"]').forEach(function(el){
-      const value=record[el.name];
+      const value=el.name===prefix+'_deviceComplications'
+        ?deriveFollowupDeviceComplications(record,prefix)
+        :record[el.name];
       if(el.type==='checkbox')el.checked=value===true||value==='true'||value==='Yes'||value===1;
       else el.value=value===undefined||value===null?'':value;
     });
@@ -4627,7 +4645,10 @@ function initApp() {
       return payload;
     }
     if(payload[p+'_syncope']!=='Yes')blank(['syncopeDate']);
-    if(payload[p+'_devComp_none']===true){
+    // Neutralize the former "None" checkbox in legacy records. The new parent
+    // Yes/No field is the authoritative indicator.
+    payload[p+'_devComp_none']=false;
+    if(payload[p+'_deviceComplications']!=='Yes'){
       blank(['devComp_leadDislodgement','devComp_infection','devComp_pocketHematoma','devComp_shockTherapy']);
     }
     if(payload[p+'_readmission']!=='Yes')blank(['readm_arrhythmia','readm_heartFailure','readm_bleeding','readm_strokeTIA','readm_deviceComplication','readm_thromboembolism','readm_repeatProcedure','readm_pericardialTamponade','readm_other','readm_otherText']);
@@ -4659,12 +4680,12 @@ function initApp() {
       return errors;
     }
     if(payload[p+'_patientStatus']!=='Alive')return errors;
-    [['_nyha','NYHA functional class'],['_overallStatus','Overall clinical status'],['_syncope','Syncope'],['_palpitations','Palpitations'],['_readmission','Readmission'],['_deviceInterrogation','Device interrogation'],['_medsUnchanged','Medication change status'],['_medAdherence','Medication adherence'],['_ecgDone','ECG status'],['_echoDone','Echocardiogram status']].forEach(function(pair){
+    [['_nyha','NYHA functional class'],['_overallStatus','Overall clinical status'],['_syncope','Syncope'],['_palpitations','Palpitations'],['_deviceComplications','Device-related complications'],['_readmission','Readmission'],['_deviceInterrogation','Device interrogation'],['_medsUnchanged','Medication change status'],['_medAdherence','Medication adherence'],['_ecgDone','ECG status'],['_echoDone','Echocardiogram status']].forEach(function(pair){
       requireFollowup(payload,p+pair[0],pair[1],errors);
     });
     if(payload[p+'_syncope']==='Yes')requireFollowup(payload,p+'_syncopeDate','Syncope date',errors);
-    const compKeys=['devComp_none','devComp_leadDislodgement','devComp_infection','devComp_pocketHematoma','devComp_shockTherapy'];
-    if(!compKeys.some(function(k){return payload[p+'_'+k]===true;}))errors.push('At least one device-complication option (including None)');
+    const compKeys=['devComp_leadDislodgement','devComp_infection','devComp_pocketHematoma','devComp_shockTherapy'];
+    if(payload[p+'_deviceComplications']==='Yes'&&!compKeys.some(function(k){return payload[p+'_'+k]===true;}))errors.push('At least one device-related complication');
     if(payload[p+'_readmission']==='Yes'){
       const readm=['readm_arrhythmia','readm_heartFailure','readm_bleeding','readm_strokeTIA','readm_deviceComplication','readm_thromboembolism','readm_repeatProcedure','readm_pericardialTamponade','readm_other'];
       if(!readm.some(function(k){return payload[p+'_'+k]===true;}))errors.push('At least one readmission reason');
@@ -5973,6 +5994,7 @@ function initApp() {
         return;
       }
       if(cleaned[p+'syncope']!=='Yes')blank(['syncopeDate']);
+      if(cleaned[p+'deviceComplications']!=='Yes')blank(['devComp_leadDislodgement','devComp_infection','devComp_pocketHematoma','devComp_shockTherapy']);
       if(cleaned[p+'readmission']!=='Yes')blank(['readm_arrhythmia','readm_heartFailure','readm_bleeding','readm_strokeTIA','readm_deviceComplication','readm_thromboembolism','readm_repeatProcedure','readm_pericardialTamponade','readm_other','readm_otherText']);
       else if(!cleaned[p+'readm_other'])blank(['readm_otherText']);
       if(cleaned[p+'deviceInterrogation']!=='Yes')blank(['batteryLife','batteryNA','pacingPercent','pacingNA','leadAbnormality','reprogramming']);
@@ -6885,7 +6907,7 @@ function initApp() {
     ['Syncope','syncope','Syncope since discharge'],
     ['SyncopeDate','syncopeDate','Date of syncope'],
     ['Palpitations','palpitations','Palpitations since discharge'],
-    ['DevComp_None','devComp_none','Device complication: None'],
+    ['DeviceComplications','deviceComplications','Any device-related complications'],
     ['DevComp_LeadDislodgement','devComp_leadDislodgement','Device complication: Lead dislodgement'],
     ['DevComp_Infection','devComp_infection','Device complication: Infection'],
     ['DevComp_PocketHematoma','devComp_pocketHematoma','Device complication: Pocket hematoma'],
@@ -6922,7 +6944,7 @@ function initApp() {
     ['LastUpdatedAt','lastUpdatedAt','Last update timestamp']
   ];
   const FOLLOWUP_BINARY_SUFFIXES=new Set([
-    'syncope','palpitations','devComp_none','devComp_leadDislodgement',
+    'syncope','palpitations','deviceComplications','devComp_leadDislodgement',
     'devComp_infection','devComp_pocketHematoma','devComp_shockTherapy',
     'readmission','readm_arrhythmia','readm_heartFailure','readm_bleeding',
     'readm_strokeTIA','readm_deviceComplication','readm_thromboembolism',
